@@ -7,6 +7,7 @@ TagManager:
   - human
   - water
   - apple
+  - righthand
   layers:
   - Default
   - TransparentFX
