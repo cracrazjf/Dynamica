@@ -17,17 +17,17 @@ public class Phenotype : MonoBehaviour
     public float rotationspeed = 10;
 
     // the 5 Change values 
-    public List<string> traitLabelList = new List<string>(new string[] { "hunger_change",
-                                                                         "thirst_change",
-                                                                         "sleepiness_change",
-                                                                         "fatigue_change",
+    public List<string> traitLabelList = new List<string>(new string[] { "hunger_change", 
+                                                                         "thirst_change", 
+                                                                         "sleepiness_change", 
+                                                                         "fatigue_change", 
                                                                          "health_change",
                                                                          "hunger_threshold",
                                                                          "thirst_threshold",
                                                                          "sleepiness_threshold",
                                                                          "fatigue_threshold",
                                                                          "health_threshold"});
-    public int numTraits;
+    public int numTraits; 
     public Dictionary<string, int> traitIndexDict = new Dictionary<string, int>();
     public List<float> traitValueList = new List<float>();
     public List<float> traitDisplayList = new List<float>();
@@ -44,7 +44,7 @@ public class Phenotype : MonoBehaviour
             traitIndexDict.Add(traitLabelList[i], i);
 
             traitDisplayList.Add(0);
-
+            
 
 
             traitValueList.Add(0.1f);  // hunger change
@@ -61,7 +61,7 @@ public class Phenotype : MonoBehaviour
     }
     private void Update()
     {
-
+        
     }
 }
 

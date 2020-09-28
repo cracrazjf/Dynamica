@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System;
+using System.Text;
+using System.IO;
+//using System.Text.Json;
+//using System.Text.Json.Serialization;
 using UnityEngine;
 
 // TEMP
-using System.Text.Json;
+//using System.Text.Json;
 
 // const string FILE_NAME = "test.json"
 
@@ -13,27 +16,27 @@ using System.Text.Json;
 
 abstract public class CountableObject : MonoBehaviour
 {
-    String name;
-    Animator animator;
+    public new String name;
+    //public Animator animator;
 
     // Traits
 
-    int NumTraits;
-    unity_prefab Prefab;
-    List<String> TraitLabelList;
-    Dictionary<String, int> TraitIndexDict;
-    List<float> TraitValueList;
-    List<bool> TraitDisplayList;
+    public int NumTraits;
+    GameObject prefab;
+    public List<String> TraitLabelList;
+    public Dictionary<String, int> TraitIndexDict;
+    public List<float> TraitValueList;
+    public List<bool> TraitDisplayList;
 
     // State
 
-    int NumStates;
-    List<String> StateLabelList;
-    Dictionary<String, int> StateIndexDict;
-    List<float> StateValueList;
-    List<bool> StateDisplayList;
+    public int NumStates;
+    public List<String> StateLabelList;
+    public Dictionary<String, int> StateIndexDict;
+    public List<float> StateValueList;
+    public List<bool> StateDisplayList;
 
-    CountableObject(String name) {
+    public CountableObject(String name) {
         this.name = name;
     }
 
@@ -46,13 +49,13 @@ abstract public class CountableObject : MonoBehaviour
     }
 
     public void InitObject() {
-        const List<List<String>> attributesFromFile = this._LoadAttributes();
+        List<List<String>> attributesFromFile = this._LoadAttributes();
 
         this.TraitLabelList = attributesFromFile[0];
         this.StateLabelList = attributesFromFile[1];
 
-        this.NumTraits = this.TraitLabelList.length();
-        this.NumStates = this.StateLabelList.length();
+        this.NumTraits = this.TraitLabelList.Count;
+        this.NumStates = this.StateLabelList.Count;
 
         this.TraitIndexDict = new Dictionary<String, int>();
         this.StateIndexDict = new Dictionary<String, int>();
@@ -62,54 +65,54 @@ abstract public class CountableObject : MonoBehaviour
 
         for (int i = 0; i < this.NumTraits; i++) {
             this.TraitIndexDict.Add(TraitLabelList[i], i);
-            this.TraitValueList.Add(null);
+            this.TraitValueList.Add(0);
             this.TraitDisplayList.Add(true);
         }
 
         for (int i = 0; i < this.NumStates; i++) {
             this.StateIndexDict.Add(StateLabelList[i], i);
-            this.StateValueList.Add(null);
+            this.StateValueList.Add(0);
             this.StateDisplayList.Add(true);
         }
 
     }
-
+    
     // TODO: finish _LoadAttributes()
     private List<List<String>> _LoadAttributes() {
 
-        String fileString = File.ReadAllText(FILE_NAME);
+         String fileString = File.ReadAllText("FILE_NAME"); // should include using system.IO, and should include "" for File_Name;
 
-        String lines = fileString.Split('\n');
+         String[] lines = fileString.Split('\n'); // string.split returns a array of string;
 
-        List<String> labels = new List<String>();
-        List<float> values = new List<float>();
-        List<List<String>> attr = new List<List<String>>();
+         List<String> labels = new List<String>();
+         List<float> values = new List<float>();
+         List<List<String>> attr = new List<List<String>>();
 
-        for (int i = 0; i < lines.length(); i++) {
+         for (int i = 0; i < lines.Length; i++) {
 
-            const String line = lines[i];
+            String line = lines[i]; // do not know why should write const
 
-            if (line.includes('=')) {
-                List<string> current = line.split("=");
+             if (line.Contains("=")) { // changed '=' to "="
+                String[] current = line.Split('='); // should not use List for this, split should be Split; and "=" should be '='
 
-                if (current.length == 2) {
-                    labels.Add(current[0]);
+                 if (current.Length == 2) {
+                     labels.Add(current[0]);
 
-                    if (current[1] == "false") {
-                        // pass false
-                    } else if (current[1] == true) {
-                        // pass true
-                    } else if (current[1].includes(',')) {
+                     if (current[1] == "false") {
+                         // pass false
+                     } else if (current[1] == "true") {
+                         // pass true
+                     } else if (current[1].Contains(",")) {
                         current[1].Split(',');
-                    } else {
+                     } else {
                         float.Parse(current[1]);
-                    }
+                     }
 
-                }
+                 }
 
-            } else {
-                // sys out comment line
-                Debug.Log(line);
+             } else {
+                 // sys out comment line
+                 Debug.Log(line);
             }
 
         }
@@ -132,12 +135,13 @@ abstract public class CountableObject : MonoBehaviour
                     --> bool
                 else:
                     error
+        
         */
-
         attr.Add(labels);
-        attr.Add(values);
+        //attr.Add(values); // can not convert float to string;
 
         return attr;
     }
+    
     
 };

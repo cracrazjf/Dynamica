@@ -4,5 +4,5 @@ using UnityEngine;
 
 abstract public class MassObject : MonoBehaviour 
 {
-    String name;
+    string name;
 };
