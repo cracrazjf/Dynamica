@@ -9,6 +9,7 @@ using System.Security.Policy;
 public class HumanHCAI : MonoBehaviour {
 
     public Human human;
+    public Phenotype phenotype;
     public Transform rightHand;
     public Transform leftHand;
     public Transform humanObject;
@@ -26,9 +27,9 @@ public class HumanHCAI : MonoBehaviour {
         currentGoal = "None";
         hungry_action_index = hungry_action_list.Count - 1;
 
-        for (int i = 0; i < human.humanMotorSystem.actionLabelList.Count; i++) {
-            actionValueList.Add(0);
-        }
+        // for (int i = 0; i < human.humanMotorSystem.actionLabelList.Count; i++) {
+        //     actionValueList.Add(0);
+        // }
     }
 
     // Start is called before the first frame update
@@ -71,9 +72,9 @@ public class HumanHCAI : MonoBehaviour {
     {
 
         int hungerIndex = human.driveSystem.stateIndexDict["hunger"];
-        int hungerThresholdIndex = human.phenotype.traitIndexDict["hunger_threshold"];
+        int hungerThresholdIndex = phenotype.traitIndexDict["hunger_threshold"];
 
-        if (human.driveSystem.stateValueList[hungerIndex] >= human.phenotype.traitValueList[hungerThresholdIndex])
+        if (human.driveSystem.stateValueList[hungerIndex] >= phenotype.traitValueList[hungerThresholdIndex])
         {
 
             currentGoal = "hungry";

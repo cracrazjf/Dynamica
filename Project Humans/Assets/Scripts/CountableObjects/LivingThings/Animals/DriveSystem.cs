@@ -10,11 +10,15 @@ public class DriveSystem : MonoBehaviour
     /// <value>Holds a reference to the Human the system is associated with</value>
     private Human human;
 
+    /// <value>Holds a reference to the Animal the system is associated with</value>
+    private Animal animal;
+
     /// <value>List of states</value>
-    public var stateLabelList = new List<string> { "hunger", "thirst", "sleepiness", "fatigue", "health"};
+    public List<string> stateLabelList = new List<string> { "hunger", "thirst", "sleepiness", "fatigue", "health"};
 
     /// <value>Num of states</value>
-    public int numStates = stateLabelList.Size();  
+    public int numStates ;  
+    public int STATES;
 
     public Dictionary<string, int> stateIndexDict = new Dictionary<string, int>();
     /// <value>List of values for each state, set to baseline in Start</value>
@@ -27,19 +31,20 @@ public class DriveSystem : MonoBehaviour
     public float[] state_thresholds = { 0.90f, 0.90f, 0.001f, 0.99f, 0.90f };
 
     /// <value>List of values to resolve each state at corresponding index</value>
-    List<Action> state_action = new List<Action>();
+    public List<Action> state_action = new List<Action>();
 
     /// <summary>
     /// Drive constructor
     /// </summary>
-    public DriveSystem(Human body) {
-        this.human = body;
+    public DriveSystem(Human thisHuman) {
+        this.human = thisHuman;
 
         //set baseline state values
-        stateValueList[i] = new List<float>{ 0.001f, 0.001f, 0.001f, -0.001f, 0.001f };
+        
         for (int i = 0; i < numStates; i++)
         {
             // make the state dict
+            //stateValueList[i] = new List<float>{ 0.001f, 0.001f, 0.001f, -0.001f, 0.001f };
             stateIndexDict.Add(stateLabelList[i], i);
             //set baselines to 0
             stateValueList.Add(0);
@@ -49,11 +54,13 @@ public class DriveSystem : MonoBehaviour
         }
     }
 
-    private void Start(){}
+    private void Start(){
+        numStates = stateLabelList.Count; 
+    }
 
     public void UpdateDrives()
     {
-        float traitValue;
+        float traitValue = 0;
 
         for (int i = 0; i < STATES; i++) {
 
@@ -63,7 +70,7 @@ public class DriveSystem : MonoBehaviour
             if(stateValueList[i] > 1)
             {stateValueList[i] = 1;} */
 
-            traitValue =  human.phenotype.traitValueList[i];
+            //traitValue =  human.phenotype.traitValueList[i];
             if (stateValueList[i] < 1.0)
             {
                 stateValueList[i] += traitValue * Time.deltaTime;

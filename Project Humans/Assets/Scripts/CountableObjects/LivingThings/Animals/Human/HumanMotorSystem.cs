@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using System;
 
 public class HumanMotorSystem : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class HumanMotorSystem : MonoBehaviour
     public GameObject target;
     public Animator animator;
     public List<GameObject> allObjectList = new List<GameObject>();
+    
+    
    
     public float maxAngle;
     public float maxRadius;
@@ -19,11 +22,11 @@ public class HumanMotorSystem : MonoBehaviour
     public bool actionSwitch = false;
     
     
-   
+    
     // what is the living thing object that this class belongs to
 
     /// <value>List of actions ranging from -1 to 1</value>
-    public var actionLabelList = new List<string>({ "accelerate",   // value -1..1 translating to speed of accel./deccel.
+    public List<string> actionLabelList = new List<string>{ "accelerate",   // value -1..1 translating to speed of accel./deccel.
                                                     "rotate",       // value from -1 to 1, translating into -180..180 degree rotation
                                                     "sit",          // begin to sit
                                                     "stand",        // begin to stand
@@ -36,7 +39,7 @@ public class HumanMotorSystem : MonoBehaviour
                                                     "get_bag_LH", "get_bag__RH",
                                                     "eat_LH", "eat_RH",
                                                     "drink_LH", "drink_RH",
-                                                    "rest"});  // do we want rest to be explicit, or just not doing anything else
+                                                    "rest"};  // do we want rest to be explicit, or just not doing anything else
 
     public int numActions; // 15
     public Dictionary<string, int> actionIndexDict = new Dictionary<string, int>();

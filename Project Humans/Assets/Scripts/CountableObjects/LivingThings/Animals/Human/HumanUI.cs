@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HumanUI : MonoBehaviour
 {
@@ -91,11 +92,11 @@ public class HumanUI : MonoBehaviour
                     Human selected = ob_selected.GetComponent<Human>();
                     string concat = "";
                     for(int i = 0; i < 5; i++) {
-                        if(selected.state_display[i] == 1) {
-                            concat += selected.state_list[i] + ": " + 
-                            ((selected.state_values[i]).ToString("#.00"));
+                         if(selected./*state_display[i] == 1;*/ StateDisplayList[i] == true) { // I don't know what are we doing here 
+                             concat += selected.StateLabelList[i] + ": " + 
+                             ((selected.StateValueList[i]).ToString("#.00"));
                             concat += "\n";
-                        }
+                         }
                     }
                     toDisplay.text = concat;
                 }

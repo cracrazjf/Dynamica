@@ -3,9 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Human : Animals
+// Missing a namespace;
+
+
+public class Human : Animal 
 {
     public string activeAI;
+    public Human human;
     public HumanHCAI humanhcai;
     public NervousSystem nervousSystem;
 
@@ -27,25 +31,26 @@ public class Human : Animals
     public string currentGoal;
     /// <value>Maintained as the current action of the Human object</value>
     public string currentTask;
+    public int numActions;
 
     // END DEC OF JULIA PARAMS
 
     /// <summary>
     /// Human constructor - Julia made
     /// </summary>
-    public Human(string name, string passed_sex) {
-        super(name);
+    public Human(string name, string passed_sex) : base (name){
+        //super(name);
 
         this.sex = passed_sex;
 
         // constructors for all necessary functionale
-        this.driveSystem = new DriveSystem();
-        this.hhumanhcai = new HHumanHCAI();
+        this.driveSystem = new DriveSystem(this.human);// I have to add this since the constructor in drive system asked me to pass in a parameter;
+        this.humanhcai = new HumanHCAI(this.human); //I have to add this since the constructor in humanHcai asked me to pass in a parameter;
         this.nervousSystem = new NervousSystem();
         this.fovdetection = new FOVDetection();
         this.humanMotorSystem = new HumanMotorSystem();
 
-        activeAI = "HumanHCAI";
+        activeAI = "HumanHCAI"; // it shouldn't be here;
     }
 
     public void TakeAction()
@@ -54,12 +59,12 @@ public class Human : Animals
         {
             if (this.humanhcai.actionValueList[i] != 0)
             {
-                this.humanMotorSystem.ActionFunctionList[i]();
+                //this.humanMotorSystem.ActionFunctionList[i]();
             }
         }
     }
 
-    void Start()
+    public new void Start()
     {
         //figure out whether phenotype is a new object or declared in constructor etc... ask Jon
     }
@@ -67,18 +72,21 @@ public class Human : Animals
     /// <summary>
     /// Update is called once per frame and calls ChooseAction to direct Human object
     /// </summary>
-    void Update()
+    public new void Update()
     {
-        yield return new WaitForSeconds(1); 
+        //yield return new WaitForSeconds(1); 
 
-        this.nervousSystem.GetInput();  // this gets the 32x32x3 pixel map of the agent's camera
-        this.humanhcai.ChooseAction();
+        //this.nervousSystem.GetInput();  // this gets the 32x32x3 pixel map of the agent's camera
+        //this.humanhcai.ChooseAction();
         //neuralnetworkai.ChooseAction();
-        this.humanMotorSystem.TakeAction();
-        this.driveSystem.UpdateStates();
+        //this.humanMotorSystem.TakeAction();
+        //this.driveSystem.UpdateDrives();
+        //Debug.Log("worked");
 
     }
 }
+
+
 
 
 

@@ -15,9 +15,9 @@ public class World : MonoBehaviour
     public float minPosition = -1 * (World.worldSize) / 2;
     /// <value>Used for bounding maximum camera position</value>
     public float maxPosition = World.worldSize / 2;
-
+    
     /// <value>Define a HumanMale in world</value>
-
+    
     public GameObject HumanMale; //= new Human("Name","Male");// it was new Human("Male") but in human constructor, we need both name and sex as parameters;
     /// <value>Define a HumanFemale in world</value>
     public GameObject HumanFemale; //= new Human("Name","Femal");
@@ -25,7 +25,7 @@ public class World : MonoBehaviour
     public int numHumanMales = 2;
     /// <value>Number of HumanFemale objects to initialize</value>
     public int numHumanFemales = 2;
-    /// <value>List of all Human objects</value>
+     /// <value>List of all Human objects</value>
     public List<GameObject> humanList = new List<GameObject>();
 
     /// <value>Define an Apple in world</value>
@@ -76,9 +76,8 @@ public class World : MonoBehaviour
     /// </summary>
     void CreateApples()
     {
-        for (int i = 0; i < numApples; i++)
-        {
-            var startPosition = new Vector3(50 + Random.Range(minPosition, maxPosition), 0.21f, 50 + Random.Range(minPosition, maxPosition));
+        for (int i=0; i<numApples; i++){
+            var startPosition = new Vector3 (50 + Random.Range(minPosition,maxPosition), 0.21f, 50+Random.Range(minPosition,maxPosition));
             GameObject appleInstance = GameObject.Instantiate(Apple, startPosition, Quaternion.identity) as GameObject;
         }
     }
@@ -88,9 +87,8 @@ public class World : MonoBehaviour
     // / </summary>
     void CreateWater()
     {
-        for (int i = 0; i < numApples; i++)
-        {
-            var startPosition = new Vector3(-50 + Random.Range(minPosition, maxPosition), 0.21f, -50 + Random.Range(minPosition, maxPosition));
+        for (int i=0; i<numApples; i++){
+            var startPosition = new Vector3 (-50+Random.Range(minPosition,maxPosition), 0.21f, -50+Random.Range(minPosition,maxPosition));
             GameObject waterInstance = GameObject.Instantiate(Water, startPosition, Quaternion.identity) as GameObject;
         }
     }
@@ -100,10 +98,9 @@ public class World : MonoBehaviour
     // / </summary>
     void CreateHumans()
     {
-        for (int i = 0; i < numHumanMales; i++)
-        {
-            var startPosition = new Vector3(Random.Range(minPosition, maxPosition), 0.03f, Random.Range(minPosition, maxPosition));
-
+        for (int i=0; i<numHumanMales; i++){
+            var startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0.03f, Random.Range(minPosition,maxPosition));
+            
             // normal reproduction way: new_human = human(mother_genome, father_genome)
             // god creation way: new_human = human(read genome from file)
             // create an empty genome object for mother & father, but specifying the species
@@ -130,6 +127,7 @@ public class World : MonoBehaviour
     /// </summary>
     void Update()
     {
-
+        
     }
 }
+
