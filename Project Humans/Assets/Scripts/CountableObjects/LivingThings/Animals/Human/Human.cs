@@ -5,7 +5,6 @@ using UnityEngine;
 
 // Missing a namespace;
 
-
 public class Human : Animal 
 {
     public string activeAI;
@@ -38,11 +37,8 @@ public class Human : Animal
     /// <summary>
     /// Human constructor - Julia made
     /// </summary>
-    public Human(string name, string passed_sex) : base (name){
-        //super(name);
-
-        this.sex = passed_sex;
-
+    public Human(Genome motherGenome, Genome fatherGenome): base(motherGenome, fatherGenome) {
+   
         // constructors for all necessary functionale
         this.driveSystem = new DriveSystem(this.human);// I have to add this since the constructor in drive system asked me to pass in a parameter;
         this.humanhcai = new HumanHCAI(this.human); //I have to add this since the constructor in humanHcai asked me to pass in a parameter;

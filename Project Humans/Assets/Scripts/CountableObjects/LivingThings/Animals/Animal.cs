@@ -6,8 +6,8 @@ using UnityEngine;
 
     abstract public class Animal : LivingObject
     {
-        public Animal(string name) : base(name)
+        public Animal(Genome motherGenome, Genome fatherGenome) : base (motherGenome,fatherGenome)
         {
-            //super(name);
+            
         }
     }

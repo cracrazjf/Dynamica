@@ -206,6 +206,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HumanMale
       objectReference: {fileID: 0}
+    - target: {fileID: 37121301161414601, guid: 092030db52274434fb8fd288479fdb2f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 37121301161414644, guid: 092030db52274434fb8fd288479fdb2f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -492,6 +497,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Water (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6248316533405120216, guid: 883ff0661c81c4de49bd67b652b88a7a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6807541743452343749, guid: 883ff0661c81c4de49bd67b652b88a7a,
         type: 3}
       propertyPath: m_IsTrigger
@@ -518,7 +528,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &656374850
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -833,6 +843,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Water
       objectReference: {fileID: 0}
+    - target: {fileID: 6248316533405120216, guid: 883ff0661c81c4de49bd67b652b88a7a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6807541743452343749, guid: 883ff0661c81c4de49bd67b652b88a7a,
         type: 3}
       propertyPath: m_IsTrigger
@@ -858,7 +873,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &963194226
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1077,6 +1092,10 @@ PrefabInstance:
     - target: {fileID: 1846160755511594, guid: 5f3499b7ccca7438db0396f05573acae, type: 3}
       propertyPath: m_TagString
       value: apple
+      objectReference: {fileID: 0}
+    - target: {fileID: 1846160755511594, guid: 5f3499b7ccca7438db0396f05573acae, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4606863368001060, guid: 5f3499b7ccca7438db0396f05573acae, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1298,6 +1317,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Water (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6248316533405120216, guid: 883ff0661c81c4de49bd67b652b88a7a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6807541743452343749, guid: 883ff0661c81c4de49bd67b652b88a7a,
         type: 3}

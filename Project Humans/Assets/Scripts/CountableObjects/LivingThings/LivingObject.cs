@@ -8,7 +8,7 @@ abstract public class LivingObject : CountableObject
     Genome Genome;
     Phenotype Phenotype;
 
-    public LivingObject(string name) : base(name)
+    public LivingObject( Genome motherGenome, Genome fatherGenome)
     {
         //super(name);
     }

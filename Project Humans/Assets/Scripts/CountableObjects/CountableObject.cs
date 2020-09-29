@@ -22,7 +22,7 @@ abstract public class CountableObject : MonoBehaviour
     // Traits
 
     public int NumTraits;
-    GameObject prefab;
+    //GameObject prefab;
     public List<String> TraitLabelList;
     public Dictionary<String, int> TraitIndexDict;
     public List<float> TraitValueList;
@@ -36,8 +36,8 @@ abstract public class CountableObject : MonoBehaviour
     public List<float> StateValueList;
     public List<bool> StateDisplayList;
 
-    public CountableObject(String name) {
-        this.name = name;
+    public CountableObject() {
+        
     }
 
     public void Start() {

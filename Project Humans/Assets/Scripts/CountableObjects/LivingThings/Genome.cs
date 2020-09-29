@@ -3,18 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Genome : MonoBehaviour
 {
     int numGenes;
     public List<string> geneLabelList;
-    public Dictionary<string, int> geneDict;
+    public Dictionary<string, Gene> geneDict;
     public Dictionary<string, string> geneIndexDict;
-
-    // genome.hunger_threshold=''
-    // genome.thirst_threshold=''
-    // genome.sleepiness_threshold=''
-    // genome.fatigue_threshold=''
-    // genome.health_threshold=''
 
     void start()
     {
@@ -28,7 +23,7 @@ public class Genome : MonoBehaviour
 
     }
 
-    bool inheretGenome(Genome motherGenome, Genome fatherGenome)
+    public bool inheretGenome(Genome motherGenome, Genome fatherGenome)
     {
         bool success = true;
 
@@ -40,36 +35,64 @@ public class Genome : MonoBehaviour
             {
                 if (motherGenome.geneLabelList[i] == fatherGenome.geneLabelList[i])
                 {
-                    label = motherGenome.geneLabelList[i];
-                    geneLabelList.Add(label);
-                    geneIndexDict[label] = i;
-                    childGene = motherGenome.geneDict[label].MemberwiseClone();
-                    childGene.sexualReproduction(fatherGenome.geneDict[label]);
-                    geneDict[label] = childGene;
+                    string geneLabel = motherGenome.geneLabelList[i];
+                    Gene motherGene = motherGenome.geneDict[geneLabel];
+                    Gene childGene = motherGene.MemberwiseClone();
+                    childGene.sexualReproduction(fatherGenome.geneDict[geneLabel]);
+                    geneLabelList.Add(geneLabel);
+                    geneDict.Add(geneLabel, childGene);
+                    geneIndexDict.Add(geneLabel, i.ToString());
                 }
                 else
                 {
-                    return false;
+                    success = false;
                 }
             }
         }
         else
         {
-            return false;
+            success = false;
         }
         return success;
     }
 
-    void createGenome()
+    public Dictionary<string, List<string>> genomeInfoDict = new Dictionary<string, List<string>>();
+    public List<string> g1 = new List<string> { "float", "6", "mutable", ".3", ".25"};
+    public List<string> g2 = new List<string> { "float", "6", "mutable", ".4", ".25"};
+    public List<string> g3 = new List<string> { "float", "6", "mutable", ".5", ".25"};
+    public List<string> g4 = new List<string> { "float", "6", "mutable", ".6", ".25"};
+    public List<string> g5 = new List<string> { "float", "6", "mutable", ".7", ".25"};
+
+    public void importGeneInfo(string species){
+        // eventually replace this code with the code that reads from the file
+        genomeInfoDict.Add("hunger_threshold", g1);
+        genomeInfoDict.Add("thirst_threshold", g2);
+        genomeInfoDict.Add("fatigue_threshold", g3);
+        genomeInfoDict.Add("sleepiness_threshold", g4);
+        genomeInfoDict.Add("health_threshold", g5);
+        geneLabelList.Add("hunger_threshold");
+        geneLabelList.Add("thirst_threshold");
+        geneLabelList.Add("fatigue_threshold");
+        geneLabelList.Add("sleepiness_threshold");
+        geneLabelList.Add("health_threshold");
+        numGenes = geneLabelList.Count;
+        for (int i = 0; i < numGenes; i++){
+            geneIndexDict.Add(geneLabelList[i], i.ToString());
+        }
+    }
+
+    public void createGenome(string species)
     {
-
-        // eventually this needs to be put into a specifies specific config file
-        // and we need a function that is passed the species name so it knows which file to read
-        // and then it reads it in and parses it into this dict
-        Dictionary<string, List<String>> genomeInfoDict = new Dictionary<string, List<String>>();
-
-        public List<string> list1 = new List<string>(new string[] { "int", "5", "mutable", "3", "1" });
-    genomeInfoDict.add("max_velocity", list1);
+        importGeneInfo(species);
+        for (int i = 0; i < numGenes; i++){
+            Gene newGene = new Gene();
+            string label = geneLabelList[i];
+            List<string> geneInfo = new List<string>(genomeInfoDict[label]);
+            newGene.generateSequence(label, geneInfo[0], geneInfo[1], geneInfo[2], geneInfo[3], geneInfo[4]);
+            geneLabelList.Add(label);
+            geneDict.Add(label, newGene);
+            geneIndexDict.Add(label, i.ToString());
+        }
     }
 
 }

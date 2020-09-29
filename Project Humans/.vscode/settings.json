@@ -52,5 +52,11 @@
         "ProjectSettings/":true,
         "temp/":true,
         "Temp/":true
-    }
+    },
+    "extensions.ignoreRecommendations": true,
+    "files.autoSave": "off"
+    "extensions.ignoreRecommendations": true,
+    "files.autoSave": "off"
+    "extensions.ignoreRecommendations": true,
+    "files.autoSave": "off"
 }

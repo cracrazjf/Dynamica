@@ -6,39 +6,25 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    /// <value>Gets the value of PI.</value>
-    public GameObject Ground;
-    /// <value>Initial value for size of world</value>
-    public static float worldSize = 20.0f;
-
-    /// <value>Used for bounding minimum camera position</value>
-    public float minPosition = -1 * (World.worldSize) / 2;
-    /// <value>Used for bounding maximum camera position</value>
-    public float maxPosition = World.worldSize / 2;
-    
-    /// <value>Define a HumanMale in world</value>
-    
-    public GameObject HumanMale; //= new Human("Name","Male");// it was new Human("Male") but in human constructor, we need both name and sex as parameters;
-    /// <value>Define a HumanFemale in world</value>
-    public GameObject HumanFemale; //= new Human("Name","Femal");
-    /// <value>Number of HumanMale objects to initialize</value>
-    public int numHumanMales = 2;
-    /// <value>Number of HumanFemale objects to initialize</value>
-    public int numHumanFemales = 2;
-     /// <value>List of all Human objects</value>
-    public List<GameObject> humanList = new List<GameObject>();
-
-    /// <value>Define an Apple in world</value>
-    public GameObject Apple;
-    /// <value>Number of Apple objects to initialize</value>
-    public int numApples = 100;
-
-    /// <value>Define a waterInstance in world</value>
+    /// <value>Create unity game objects</value>
     public GameObject Water;
-    /// <value>Number of Water objects to initialize</value>
+    public GameObject Apple;
+    public GameObject Ground;
+    public GameObject HumanFemale;
+    public GameObject HumanMale;
+
+    /// <value>Init starting numbers for objects</value>
+    public int numApples = 100;
     public int numWater = 100;
+    public int numHumans = 5;
 
+    /// <value>Creating object lists</value>
+    public List<Human> humanList = new List<Human>();
 
+    /// <value>Setting initial world properties</value>
+    public static float worldSize = 20.0f;
+    public float maxPosition = World.worldSize / 2;
+    public float minPosition = -World.worldSize / 2;
 
     /// <summary>
     /// Start is called before the first frame update and initializes all scene objects
@@ -49,9 +35,7 @@ public class World : MonoBehaviour
         CreateHumans();
         CreateApples();
         CreateWater();
-
     }
-
 
     /// <summary>
     /// CreateTerrain is redundant and serves to call CreateGround
@@ -98,7 +82,7 @@ public class World : MonoBehaviour
     // / </summary>
     void CreateHumans()
     {
-        for (int i=0; i<numHumanMales; i++){
+        for (int i=0; i<numHumans; i++){
             var startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0.03f, Random.Range(minPosition,maxPosition));
             
             // normal reproduction way: new_human = human(mother_genome, father_genome)
@@ -106,19 +90,16 @@ public class World : MonoBehaviour
             // create an empty genome object for mother & father, but specifying the species
 
             // create the pseudo-random parent genomes
-            motherGenome = new Genome;
-            motherGenome.createGenome("human")
-            fatherGenome = new Genome;
-            fatherGenome.createGenome("human")
+            Genome motherGenome = new Genome();
+            motherGenome.createGenome("human");
+            Genome fatherGenome = new Genome();
+            fatherGenome.createGenome("human");
 
             // create an instance of the human class
-            newHuman = new Human(motherGenome, fatherGenome)
-
-            // does this line need to be in human
-            GameObject humanInstance = Instantiate(Human, startPosition, Quaternion.identity) as GameObject;
-            humanList.Add(humanMaleInstance);
-            humanList[i].AddComponent<Human>();
-            humanList[i].GetComponent<Human>().sex = "male";
+            Human newHuman = new Human(motherGenome, fatherGenome);
+            humanList.Add(newHuman);
+            GameObject humanInstance = Instantiate(HumanMale, startPosition, Quaternion.identity) as GameObject;
+        
         }
     }
 
