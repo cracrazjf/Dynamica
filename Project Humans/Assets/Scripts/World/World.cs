@@ -23,8 +23,8 @@ public class World : MonoBehaviour
 
     /// <value>Setting initial world properties</value>
     public static float worldSize = 20.0f;
-    public float maxPosition = World.worldSize / 2;
-    public float minPosition = -World.worldSize / 2;
+    public static float maxPosition = World.worldSize / 2;
+    public static float minPosition = -World.worldSize / 2;
 
     /// <summary>
     /// Start is called before the first frame update and initializes all scene objects
@@ -66,9 +66,9 @@ public class World : MonoBehaviour
         }
     }
 
-    // / <summary>
-    // / CreateWater initializes and places numApples waterInstance objects randomly in the world
-    // / </summary>
+    /// <summary>
+    /// CreateWater initializes and places numApples waterInstance objects randomly in the world
+    /// </summary>
     void CreateWater()
     {
         for (int i=0; i<numApples; i++){
@@ -77,13 +77,13 @@ public class World : MonoBehaviour
         }
     }
 
-    // / <summary>
-    // / CreateHumans initializes and places numHumanMales and numHumanFemales HumanMale and HumanFemale objects randomly in the world
-    // / </summary>
+    /// <summary>
+    /// CreateHumans initializes and places numHumanMales and numHumanFemales HumanMale and HumanFemale objects randomly in the world
+    /// </summary>
     void CreateHumans()
     {
         for (int i=0; i<numHumans; i++){
-            var startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0.03f, Random.Range(minPosition,maxPosition));
+            
             
             // normal reproduction way: new_human = human(mother_genome, father_genome)
             // god creation way: new_human = human(read genome from file)
@@ -98,7 +98,7 @@ public class World : MonoBehaviour
             // create an instance of the human class
             Human newHuman = new Human(motherGenome, fatherGenome);
             humanList.Add(newHuman);
-            GameObject humanInstance = Instantiate(HumanMale, startPosition, Quaternion.identity) as GameObject;
+            //GameObject humanInstance = Instantiate(HumanMale, startPosition, Quaternion.identity) as GameObject;
         
         }
     }

@@ -1,12 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.Security.Cryptography;
-using System.CodeDom.Compiler;
-using System.Security.Policy;
 
-public class HumanHCAI : MonoBehaviour {
+
+public class HumanHCAI {
 
     public Human human;
     public Phenotype phenotype;
@@ -139,7 +136,7 @@ public class HumanHCAI : MonoBehaviour {
         var infiniteNumber = Mathf.Infinity;
 		for(int i = 0; i < human.fovdetection.objects_in_vision.Count +1; i++) {
             if (human.fovdetection.objects_in_vision[i].tag == "food") {  // if edible objects are in current field of vision, appraoch to the nearest one and eat it;
-                var distance = Vector3.Distance(human.fovdetection.objects_in_vision[i].transform.position, transform.position);
+                var distance = Vector3.Distance(human.fovdetection.objects_in_vision[i].transform.position, human.gameObject.transform.position);
                 if (distance < infiniteNumber) { // check which food is the nearest one
                     infiniteNumber = distance;
                     

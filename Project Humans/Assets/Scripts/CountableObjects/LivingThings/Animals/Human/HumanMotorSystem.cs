@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 //using System;
 
-public class HumanMotorSystem : MonoBehaviour
+public class HumanMotorSystem
 {
     public Human human;
     public Phenotype phenotype;
@@ -55,7 +55,7 @@ public class HumanMotorSystem : MonoBehaviour
     private void Start()
     {
         CreateActionFunctionList();
-        human = gameObject.GetComponent<Human>();
+        //human = gameObject.GetComponent<Human>();
 
         numActions = actionLabelList.Count;
         for (int i = 0; i < numActions; i++)
@@ -141,7 +141,7 @@ public class HumanMotorSystem : MonoBehaviour
         //accelerationRate = actionValueList[actionIndexDict["acceleration"]];
         actionSwitch = true;
         phenotype.currentVelocity = phenotype.currentVelocity + (phenotype.accelerationRate * Time.deltaTime);
-        transform.Translate(0, 0, phenotype.currentVelocity);
+        human.gameObject.transform.Translate(0, 0, phenotype.currentVelocity);
         phenotype.currentVelocity = Mathf.Clamp(phenotype.currentVelocity, phenotype.initialVelocity, phenotype.finalVelocity);
         animator.SetFloat("Velocity", phenotype.currentVelocity *5);
         if (phenotype.currentVelocity > 0)
@@ -171,7 +171,7 @@ public class HumanMotorSystem : MonoBehaviour
         
             
             
-            transform.Rotate(0, phenotype.rotation, 0);
+            human.gameObject.transform.Rotate(0, phenotype.rotation, 0);
         }
     }
     void pick_up_with_LH()
@@ -272,43 +272,43 @@ public class HumanMotorSystem : MonoBehaviour
     }
 
     //Draw line to visualize visionfield
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, maxRadius);
+    // private void OnDrawGizmos()
+    // {
+    //     Gizmos.color = Color.yellow;
+    //     Gizmos.DrawWireSphere(transform.position, maxRadius);
 
-        Vector3 fovLine1 = Quaternion.AngleAxis(maxAngle, transform.up) * transform.forward * maxRadius;
-        Vector3 fovLine2 = Quaternion.AngleAxis(-maxAngle, transform.up) * transform.forward * maxRadius;
+    //     Vector3 fovLine1 = Quaternion.AngleAxis(maxAngle, transform.up) * transform.forward * maxRadius;
+    //     Vector3 fovLine2 = Quaternion.AngleAxis(-maxAngle, transform.up) * transform.forward * maxRadius;
 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, fovLine1);
-        Gizmos.DrawRay(transform.position, fovLine2);
+    //     Gizmos.color = Color.blue;
+    //     Gizmos.DrawRay(transform.position, fovLine1);
+    //     Gizmos.DrawRay(transform.position, fovLine2);
 
 
-        for (int i = 0; i < human.fovdetection.objects_in_vision.Count ; i++)
-        {
+    //     for (int i = 0; i < human.fovdetection.objects_in_vision.Count ; i++)
+    //     {
             
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(transform.position, (fovscript.objects_in_vision[i].transform.position - transform.position).normalized * maxRadius);
-        }
+    //         Gizmos.color = Color.green;
+    //         Gizmos.DrawRay(transform.position, (fovscript.objects_in_vision[i].transform.position - transform.position).normalized * maxRadius);
+    //     }
 
-        Gizmos.color = Color.black;
-        Gizmos.DrawRay(transform.position, transform.forward * maxRadius);
+    //     Gizmos.color = Color.black;
+    //     Gizmos.DrawRay(transform.position, transform.forward * maxRadius);
 
 
-    }
-        private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "water" && human.humanMotorSystem.target.tag == "water")
-        {
+    // }
+    //     private void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.gameObject.tag == "water" && human.humanMotorSystem.target.tag == "water")
+    //     {
             
-            human.humanMotorSystem.target = null;
-            human.humanMotorSystem.allObjectList.Remove(other.gameObject);
-            Destroy(other.gameObject);
-            //human.driveSystem.thirst = 0.0f;
+    //         human.humanMotorSystem.target = null;
+    //         human.humanMotorSystem.allObjectList.Remove(other.gameObject);
+    //         Destroy(other.gameObject);
+    //         //human.driveSystem.thirst = 0.0f;
 
-        }
-    }
+    //     }
+    // }
 }
 
 

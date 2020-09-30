@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,46 +7,43 @@ using UnityEngine;
 
 public class Human : Animal 
 {
-    public string activeAI;
+    /// <value>holding reference to classes</value>
     public Human human;
     public HumanHCAI humanhcai;
     public NervousSystem nervousSystem;
-
-    // access scripts
-    public DriveSystem driveSystem;
     public HumanMotorSystem humanMotorSystem;
-    public FOVDetection fovdetection;   // this would be in HumanHCAIpublic NervousSystem nervousSystem;
+    public FOVDetection fovdetection;   
 
-    //START JULIA CODE
+    /// <value>AI type</value>
+    public string activeAI;
 
-    // fixed traits
-    /// <value>Baseline movement speed of Humans</value>
-    public float movementSpeed = 1.0f;
-    /// <value>Initial sex of Humans</value>
-    public string sex = "None";
+    /// <value>Human prefab</value>
+    public GameObject humanPrefab;
 
-    // goals and tasks
-    /// <value>Maintained as the current objective of Human object</value>
-    public string currentGoal;
-    /// <value>Maintained as the current action of the Human object</value>
+    /// <value>goals and tasks</value>
+    public string currentGoal; 
     public string currentTask;
     public int numActions;
 
-    // END DEC OF JULIA PARAMS
+
+   
 
     /// <summary>
-    /// Human constructor - Julia made
+    /// Human constructor
     /// </summary>
     public Human(Genome motherGenome, Genome fatherGenome): base(motherGenome, fatherGenome) {
-   
+
         // constructors for all necessary functionale
-        this.driveSystem = new DriveSystem(this.human);// I have to add this since the constructor in drive system asked me to pass in a parameter;
-        this.humanhcai = new HumanHCAI(this.human); //I have to add this since the constructor in humanHcai asked me to pass in a parameter;
+        
+        // I have to add this since the constructor in drive system asked me to pass in a parameter;
+        this.humanhcai = new HumanHCAI(this); //I have to add this since the constructor in humanHcai asked me to pass in a parameter;
         this.nervousSystem = new NervousSystem();
         this.fovdetection = new FOVDetection();
         this.humanMotorSystem = new HumanMotorSystem();
+        //humanPrefab = Resources.Load()
+        var startPosition = new Vector3 (Random.Range(World.minPosition,World.maxPosition), 0.03f, Random.Range(World.minPosition,World.maxPosition));
+        this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, Quaternion.identity) as GameObject;// instantiate 
 
-        activeAI = "HumanHCAI"; // it shouldn't be here;
     }
 
     public void TakeAction()
@@ -80,6 +77,21 @@ public class Human : Animal
         //Debug.Log("worked");
 
     }
+    //load correct prefab when the game start and be able to change it during runtime.
+    // public void loadHumanPrefab() {
+    //     int sex = this.Phenotype.traitValueDict['sex'];
+   
+    //     if(sex == 0) 
+    //         {
+    //             humanPrefab = Resources.Load("humanMaleAdult", typeof(GameObject)) as GameObject;
+    //         } 
+    //     } else if (sex == 1) {
+
+    //             humanPrefab = Resources.Load("humanFemaleAdult", typeof(GameObject)) as GameObject;
+    
+    //         } 
+    //     }
+    // }
 }
 
 

@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DriveSystem : MonoBehaviour
+public class DriveSystem
 {
     //private Phenotype phenotype;
 
     /// <value>Holds a reference to the Human the system is associated with</value>
-    private Human human;
+    // private Human human;
 
     /// <value>Holds a reference to the Animal the system is associated with</value>
     private Animal animal;
@@ -36,8 +36,8 @@ public class DriveSystem : MonoBehaviour
     /// <summary>
     /// Drive constructor
     /// </summary>
-    public DriveSystem(Human thisHuman) {
-        this.human = thisHuman;
+    public DriveSystem(Animal thisAnimal) {
+        this.animal = thisAnimal;
 
         //set baseline state values
         

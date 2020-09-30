@@ -14,9 +14,9 @@ using UnityEngine;
 
 // TODO: Figure out file readout based off calling class (without overrides)
 
-abstract public class CountableObject : MonoBehaviour
+abstract public class CountableObject
 {
-    public new String name;
+    // public new String name;
     //public Animator animator;
 
     // Traits
@@ -35,6 +35,9 @@ abstract public class CountableObject : MonoBehaviour
     public Dictionary<String, int> StateIndexDict;
     public List<float> StateValueList;
     public List<bool> StateDisplayList;
+
+
+    public GameObject gameObject;
 
     public CountableObject() {
         
@@ -116,8 +119,6 @@ abstract public class CountableObject : MonoBehaviour
             }
 
         }
-
-
 
         /*
             for trait in traits:

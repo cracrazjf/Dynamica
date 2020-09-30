@@ -13,6 +13,7 @@ public class Gene : MonoBehaviour
     public bool mutable;
     public float specifiedMean;
     public float specifiedStdev;
+    public bool display;
 
     public float mutationRate = 0.01f;
 
@@ -27,6 +28,10 @@ public class Gene : MonoBehaviour
 
 
     }
+    //I am not sure if this is working, need test later;
+    public Gene ShallowCopy() {
+        return (Gene) this.MemberwiseClone();
+    }
 
     public void sexualReproduction(Gene fatherGene){
         // for each element in the gene sequence
@@ -36,18 +41,23 @@ public class Gene : MonoBehaviour
                 geneSequence[i] = fatherGene.geneSequence[i];
             }
             // draw a random float, if < mutation rate, flip the element to its opposite
-           // Random random = new Random();
-           float random = Random.value; // Returns a random number between 0.0 [inclusive] and 1.0 [inclusive] 
-            if (random < mutationRate){
-                geneSequence[i] = !geneSequence[i];
+            // Random random = new Random();
+            float random = Random.value; // Returns a random number between 0.0 [inclusive] and 1.0 [inclusive]
+            if (this.mutable){
+                if (random < mutationRate){
+                    geneSequence[i] = !geneSequence[i];
+                }
             }
         }
     }
 
-    public void generateSequence(string label, string geneType, string geneSize, string mutable, string specifiedMean, string specifiedStdev){
+    public void generateGene(string label, string geneType, string geneSize, 
+                                 string mutable, string specifiedMean, string specifiedStdev,
+                                 string visible){
         this.label = label;
         this.geneType = geneType;
         this.geneSize = int.Parse(geneSize);
+        this.visible = visible;
         if (mutable == "immutable"){
             this.mutable = true;
         }

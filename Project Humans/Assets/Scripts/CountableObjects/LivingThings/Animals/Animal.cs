@@ -6,8 +6,9 @@ using UnityEngine;
 
     abstract public class Animal : LivingObject
     {
+        public DriveSystem driveSystem;
         public Animal(Genome motherGenome, Genome fatherGenome) : base (motherGenome,fatherGenome)
         {
-            
+            this.driveSystem = new DriveSystem(this);
         }
     }

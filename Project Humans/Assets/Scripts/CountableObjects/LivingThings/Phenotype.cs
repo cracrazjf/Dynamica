@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class Phenotype : MonoBehaviour
 {
-    // Vekicity and accerlerationRate
+    // Velocity and accerlerationRate
+    // these now all exist in genome.constantDict
     public float initialVelocity = 0.0f;
     public float finalVelocity = 50.0f;
     public float currentVelocity = 0.0f;
@@ -16,49 +17,82 @@ public class Phenotype : MonoBehaviour
     public float rotationleft = 360;
     public float rotationspeed = 10;
 
-    // the 5 Change values 
-    public List<string> traitLabelList = new List<string>(new string[] { "hunger_change", 
-                                                                         "thirst_change", 
-                                                                         "sleepiness_change", 
-                                                                         "fatigue_change", 
-                                                                         "health_change",
-                                                                         "hunger_threshold",
-                                                                         "thirst_threshold",
-                                                                         "sleepiness_threshold",
-                                                                         "fatigue_threshold",
-                                                                         "health_threshold"});
+    // the 5 Change values
     public int numTraits; 
+    public List<string> traitLabelList = new List<string>();
     public Dictionary<string, int> traitIndexDict = new Dictionary<string, int>();
-    public List<float> traitValueList = new List<float>();
-    public List<float> traitDisplayList = new List<float>();
+    public Dictionary<string, string> traitDict = new Dictionary<string, string>();
+    public Dictionary<string, bool> traitDisplayDict = new Dictionary<string, bool>();
 
+    public Phenotype(Animal thisAnimal) {
+        this.animal = thisAnimal;
+        this.numTraits = 0;
+
+        // go through each item in genome's constant dict, and add them to the trait data structures
+        for (int i = 0; i < thisAnimal.genome.numConstants; i++){
+            string label = thisAnimal.genome.constantLabelList[i];
+            traitLabelList.Add(label)
+            traitIndexDict.Add(label, i.ToString());
+            // not sure if the following two lines are ok C# syntax
+            string traitValue = thisAnimal.genome.constantDict[label][0]; // the first value in the list of this string-list dict entry
+            string traitDisplayValue = thisAnimal.genome.constantDict[label][1]; // the second value in the list of this string-list dict entry
+            traitDict.Add(label, traitValue);
+            if (traitDisplayValue == "1"){
+                traitDisplayDict.Add(label, True);
+            }
+            else{
+                traitDisplayDict.Add(label, False);
+            }
+            
+            this.numTraits++;
+        }
+
+        // go through each item in genome's gene dict, create their phenotypic values, and add them to the trait dict
+        for (int i = 0; i < thisAnimal.genome.numGenes; i++){
+            string label = thisAnimal.genome.geneLabelList[i];
+            Gene currentGene = thisAnimal.genome.geneDict[label];
+            traitLabelList.Add(label)
+            traitIndexDict.Add(label, this.numTraits);
+            traitDisplayDict.Add(label, currentGene.display);
+            if (currentGene.geneType == "binary"){
+                int traitValue = createBinaryTrait(currentGene.geneSequence);
+            }
+            else if (currentGene.geneType == "int"){
+                int traitValue = createIntTrait(currentGene.geneSequence);
+            }
+            else if (currentGene.geneType == "float"){
+                float traitValue = createFloatTrait(currentGene.geneSequence);
+            }
+            else{
+                // if we got here, it was because someone had an incorrect gene type in a config file
+                // we need a contingency plan here, and should have one for each of the  values in that file
+            }
+            traitDict.Add(label, traitValue);
+            this.numTraits++;
+        }
+
+    }
+
+    private int createBinaryTrait(BitArray geneSequence){
+        // convert the binary bit string to an integer, ie 001101 = 13
+        return 1;
+    }
+
+    private int createIntTrait(BitArray geneSequence){
+        // sums the bitstring
+        return 1;
+    }
+
+    private float createFloatTrait(BitArray geneSequence){
+        // sums the bitstring and divides by its length
+        return 0.5;
+    }
 
     private void Start()
     {
-        //human = gameObject.GetComponent<Human>();
 
-
-        numTraits = traitLabelList.Count;
-        for (int i = 0; i < numTraits; i++)
-        {
-            traitIndexDict.Add(traitLabelList[i], i);
-
-            traitDisplayList.Add(0);
-            
-
-
-            traitValueList.Add(0.1f);  // hunger change
-            traitValueList.Add(0.001f);  // thirst change
-            traitValueList.Add(0.001f);  // sleepiness change
-            traitValueList.Add(0.001f);  // fatigue change
-            traitValueList.Add(0.001f);  // health change
-            traitValueList.Add(0.5f);  // hunger threshold
-            traitValueList.Add(0.5f);  // thirst threshold
-            traitValueList.Add(0.5f);  // sleepiness threshold
-            traitValueList.Add(0.5f);  // fatigue threshold
-            traitValueList.Add(0.5f);  // health threshold
-        }
     }
+
     private void Update()
     {
         
