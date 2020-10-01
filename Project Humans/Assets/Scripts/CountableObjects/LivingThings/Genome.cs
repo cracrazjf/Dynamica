@@ -81,7 +81,7 @@ public class Genome : MonoBehaviour
                 i++;
             }  
         } 
-        var genomeConstInfo = ConfigurationManager.GenomeConstInfo;
+        var genomeConstInfo = ConfigurationManager.GenomeInfo;
         if (genomeContiInfo.Count == 0)  {  
             Console.WriteLine("GenomeInfo is empty.");  
         } else {  
