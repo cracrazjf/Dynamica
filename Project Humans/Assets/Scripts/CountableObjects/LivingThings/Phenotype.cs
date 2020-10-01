@@ -31,7 +31,7 @@ public class Phenotype : MonoBehaviour
         // go through each item in genome's constant dict, and add them to the trait data structures
         for (int i = 0; i < thisAnimal.genome.numConstants; i++){
             string label = thisAnimal.genome.constantLabelList[i];
-            traitLabelList.Add(label)
+            traitLabelList.Add(label);
             traitIndexDict.Add(label, i.ToString());
             // not sure if the following two lines are ok C# syntax
             string traitValue = thisAnimal.genome.constantDict[label][0]; // the first value in the list of this string-list dict entry
@@ -51,7 +51,7 @@ public class Phenotype : MonoBehaviour
         for (int i = 0; i < thisAnimal.genome.numGenes; i++){
             string label = thisAnimal.genome.geneLabelList[i];
             Gene currentGene = thisAnimal.genome.geneDict[label];
-            traitLabelList.Add(label)
+            traitLabelList.Add(label);
             traitIndexDict.Add(label, this.numTraits);
             traitDisplayDict.Add(label, currentGene.display);
             if (currentGene.geneType == "binary"){
