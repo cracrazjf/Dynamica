@@ -1,5 +1,4 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,92 +6,81 @@ using UnityEngine;
 
 public class Human : Animal 
 {
-    /// <value>holding reference to classes</value>
-    public Human human;
-    public HumanHCAI humanhcai;
-    public NervousSystem nervousSystem;
-    public HumanMotorSystem humanMotorSystem;
-    public FOVDetection fovdetection;   
+    public HumanTestAI humanTestAI;
+    public HumanGPSAI humanGPSAI;
+    public HumanRNNAI humanRNNAI;
+    public string activeAI = "humanTestAI";
 
-    /// <value>AI type</value>
-    public string activeAI;
+    public HumanMotorSystem humanMotorSystem;
+    public List<float> actionValueList = new List<float>();
 
     /// <value>Human prefab</value>
     public GameObject humanPrefab;
 
-    /// <value>goals and tasks</value>
-    public string currentGoal; 
-    public string currentTask;
-    public int numActions;
-
-
-   
 
     /// <summary>
     /// Human constructor
     /// </summary>
-    public Human(Genome motherGenome, Genome fatherGenome): base(motherGenome, fatherGenome) {
+    public Human(string objectType, Genome motherGenome, Genome fatherGenome): base(objectType, motherGenome, fatherGenome) {
 
-        // constructors for all necessary functionale
-        
-        // I have to add this since the constructor in drive system asked me to pass in a parameter;
-        this.humanhcai = new HumanHCAI(this); //I have to add this since the constructor in humanHcai asked me to pass in a parameter;
-        this.nervousSystem = new NervousSystem();
-        this.fovdetection = new FOVDetection();
-        this.humanMotorSystem = new HumanMotorSystem();
-        //humanPrefab = Resources.Load()
-        var startPosition = new Vector3 (Random.Range(World.minPosition,World.maxPosition), 0.03f, Random.Range(World.minPosition,World.maxPosition));
-        this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, Quaternion.identity) as GameObject;// instantiate 
+        this.humanMotorSystem = new HumanMotorSystem(this);
 
-    }
+        //Instantiate humanPrefab
+        Vector3 startPosition = this.chooseStartPosition();
 
-    public void TakeAction()
-    {
-        for (int i = 0; i < numActions; i++)
+        // use a debug statment
+        Debug.Log(this.phenotype.traitDict["sex"]);
+        if (this.phenotype.traitDict["sex"] == "0")
         {
-            if (this.humanhcai.actionValueList[i] != 0)
-            {
-                //this.humanMotorSystem.ActionFunctionList[i]();
-            }
+            humanPrefab = Resources.Load("HumanMalePrefab",typeof(GameObject)) as GameObject;
+            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, Quaternion.identity) as GameObject;// instantiate 
+
+        }
+        if (this.phenotype.traitDict["sex"] == "1")
+        {
+            humanPrefab = Resources.Load("HumanFemalePrefab",typeof(GameObject)) as GameObject;
+            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, Quaternion.identity) as GameObject;// instantiate 
+
+        }
+
+        if (activeAI == "humanGPSAI"){
+            humanGPSAI = new HumanGPSAI(this);
+        }
+        else if (activeAI == "humanRNNAI"){
+            humanRNNAI = new HumanRNNAI(this);
+        }
+        else{
+            humanTestAI = new HumanTestAI(this);
         }
     }
 
-    public new void Start()
-    {
-        //figure out whether phenotype is a new object or declared in constructor etc... ask Jon
+    public void updateHuman(){
+        if (activeAI == "humanGPSAI"){
+            actionValueList = humanGPSAI.chooseAction();
+        }
+        else if (activeAI == "humanRNNAI"){
+            actionValueList = humanRNNAI.chooseAction();
+        }
+        else{
+            actionValueList = humanTestAI.chooseAction();
+        }
+
+        this.humanMotorSystem.takeAction(actionValueList);
     }
-
-    /// <summary>
-    /// Update is called once per frame and calls ChooseAction to direct Human object
-    /// </summary>
-    public new void Update()
-    {
-        //yield return new WaitForSeconds(1); 
-
-        //this.nervousSystem.GetInput();  // this gets the 32x32x3 pixel map of the agent's camera
-        //this.humanhcai.ChooseAction();
-        //neuralnetworkai.ChooseAction();
-        //this.humanMotorSystem.TakeAction();
-        //this.driveSystem.UpdateDrives();
-        //Debug.Log("worked");
-
-    }
-    //load correct prefab when the game start and be able to change it during runtime.
-    // public void loadHumanPrefab() {
-    //     int sex = this.Phenotype.traitValueDict['sex'];
-   
-    //     if(sex == 0) 
-    //         {
-    //             humanPrefab = Resources.Load("humanMaleAdult", typeof(GameObject)) as GameObject;
-    //         } 
-    //     } else if (sex == 1) {
-
-    //             humanPrefab = Resources.Load("humanFemaleAdult", typeof(GameObject)) as GameObject;
-    
-    //         } 
-    //     }
-    // }
 }
+
+
+
+
+
+    
+
+
+
+
+
+    
+
 
 
 

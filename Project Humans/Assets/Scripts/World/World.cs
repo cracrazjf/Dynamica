@@ -35,6 +35,8 @@ public class World : MonoBehaviour
         CreateHumans();
         CreateApples();
         CreateWater();
+        CreateGenome();
+        
     }
 
     /// <summary>
@@ -76,12 +78,19 @@ public class World : MonoBehaviour
             GameObject waterInstance = GameObject.Instantiate(Water, startPosition, Quaternion.identity) as GameObject;
         }
     }
+    public Genome motherGenome;
+    public Genome fatherGenome;
+    void CreateGenome() {
+        
+        
+    }
 
     /// <summary>
     /// CreateHumans initializes and places numHumanMales and numHumanFemales HumanMale and HumanFemale objects randomly in the world
     /// </summary>
     void CreateHumans()
     {
+        numHumans = 10;
         for (int i=0; i<numHumans; i++){
             
             
@@ -90,15 +99,15 @@ public class World : MonoBehaviour
             // create an empty genome object for mother & father, but specifying the species
 
             // create the pseudo-random parent genomes
-            Genome motherGenome = new Genome();
+            motherGenome = new Genome();
             motherGenome.createGenome("human");
-            Genome fatherGenome = new Genome();
+            fatherGenome = new Genome();
             fatherGenome.createGenome("human");
 
             // create an instance of the human class
-            Human newHuman = new Human(motherGenome, fatherGenome);
+            Human newHuman = new Human("human", motherGenome, fatherGenome);
             humanList.Add(newHuman);
-            //GameObject humanInstance = Instantiate(HumanMale, startPosition, Quaternion.identity) as GameObject;
+            
         
         }
     }

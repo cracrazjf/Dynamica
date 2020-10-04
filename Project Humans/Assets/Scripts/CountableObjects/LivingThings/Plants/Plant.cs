@@ -4,7 +4,7 @@ using UnityEngine;
 
 abstract public class Plant : LivingObject
 {
-    public Plant(Genome motherGenome, Genome fatherGenome) : base (motherGenome,fatherGenome)
+    public Plant(string objectType, Genome motherGenome, Genome fatherGenome) : base (objectType, motherGenome, fatherGenome)
         {
             //super(name);
         }

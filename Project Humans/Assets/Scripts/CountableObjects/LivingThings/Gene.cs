@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Gene : MonoBehaviour
+public class Gene 
 {
     public string label;
     public string geneType;
@@ -15,6 +15,7 @@ public class Gene : MonoBehaviour
     public float specifiedStdev;
     public bool display;
 
+    public string visible;
     public float mutationRate = 0.01f;
 
     void start() 
@@ -58,7 +59,7 @@ public class Gene : MonoBehaviour
         this.geneType = geneType;
         this.geneSize = int.Parse(geneSize);
         this.visible = visible;
-        if (mutable == "immutable"){
+        if (mutable == "immutable"){ // should be "mutable"?
             this.mutable = true;
         }
         else{
@@ -72,7 +73,7 @@ public class Gene : MonoBehaviour
         // then convert that to the appropriate bit array
         geneSequence = new BitArray(this.geneSize);
         for (int i = 0; i < this.geneSize; i++){
-            int newValue = Random.Range(0, 2);
+            int newValue = Random.Range(0, 2); // changed (0,2) to (0,1) becasue range is inclusive
             if (newValue == 0) {
                 geneSequence[i] = false;
             }

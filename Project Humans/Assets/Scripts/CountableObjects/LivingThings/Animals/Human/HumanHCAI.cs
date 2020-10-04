@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class HumanHCAI {
 
-    public Human human;
+    public Human thisHuman;
     public Phenotype phenotype;
     public Transform rightHand;
     public Transform leftHand;
@@ -17,8 +17,8 @@ public class HumanHCAI {
     public List<float> actionValueList = new List<float>();
     
 
-    public HumanHCAI (Human humanAI) {
-        this.human = humanAI;
+    public HumanHCAI (Human human) {
+        this.thisHuman = human;
 
         currentTask = "Rest";
         currentGoal = "None";
@@ -68,90 +68,89 @@ public class HumanHCAI {
     public List<float> ChooseAction()
     {
 
-        int hungerIndex = human.driveSystem.stateIndexDict["hunger"];
-        int hungerThresholdIndex = phenotype.traitIndexDict["hunger_threshold"];
+    //     int hungerIndex = human.driveSystem.stateIndexDict["hunger"];
+    //     int hungerThresholdIndex = phenotype.traitIndexDict["hunger_threshold"];
 
-        if (human.driveSystem.stateValueList[hungerIndex] >= phenotype.traitValueList[hungerThresholdIndex])
-        {
+    //     if (human.driveSystem.stateValueList[hungerIndex] >= phenotype.traitIndexDict["hungerThresholdIndex"])
+    //     {
 
-            currentGoal = "hungry";
+    //         currentGoal = "hungry";
 
-            string hungry_action = hungry_action_list[hungry_action_index];
-            int action_index = human.humanMotorSystem.actionIndexDict[hungry_action];
+    //         string hungry_action = hungry_action_list[hungry_action_index];
+    //         int action_index = human.humanMotorSystem.actionIndexDict[hungry_action];
 
-            if (currentGoal == "hungry")
-            {
-                if (hungry_action_list.Contains(hungry_action))
-                {
-                    actionValueList[action_index] = 1;
-                }
-                else if (current_hungry_action == "“None”")
-                {
-
-
-                    bool can_do_action = false;
-                    if (hungry_action == "eat")
-                    {
-                        can_eat();
-
-                    }
-                    else if (hungry_action == "grab")
-                    {
-                        can_grab();
-                    }
-                    if (can_do_action)
-                    {
-                        Debug.Log(action_index);
-                        actionValueList[action_index] = 1;
-                    }
-                    else
-                    {
-                        hungry_action_index -= 1;
-                    }
-
-                }
-                else
-                {
-                    Debug.Log("gg");
-                }
+    //         if (currentGoal == "hungry")
+    //         {
+    //             if (hungry_action_list.Contains(hungry_action))
+    //             {
+    //                 actionValueList[action_index] = 1;
+    //             }
+    //             else if (current_hungry_action == "“None”")
+    //             {
 
 
+    //                 bool can_do_action = false;
+    //                 if (hungry_action == "eat")
+    //                 {
+    //                     can_eat();
 
-            }
-        }
-        return actionValueList;
+    //                 }
+    //                 else if (hungry_action == "grab")
+    //                 {
+    //                     can_grab();
+    //                 }
+    //                 if (can_do_action)
+    //                 {
+    //                     Debug.Log(action_index);
+    //                     actionValueList[action_index] = 1;
+    //                 }
+    //                 else
+    //                 {
+    //                     hungry_action_index -= 1;
+    //                 }
+
+    //             }
+    //             else
+    //             {
+    //                 Debug.Log("gg");
+    //             }
+
+
+
+    //         }
+         return actionValueList;
     }
 
-    private bool can_eat() {
-		if (rightHand.GetChild(0).tag == "food") {
-			return true;
-		}
-		else if (leftHand.GetChild(0).tag == "food") {
-			return true;
-		}
-        return false;
-	}
+    // private bool can_eat() {
+	// 	if (rightHand.GetChild(0).tag == "food") {
+	// 		return true;
+	// 	}
+	// 	else if (leftHand.GetChild(0).tag == "food") {
+	// 		return true;
+	// 	}
+    //     return false;
+	// }
 
-	private bool can_grab() {
-        var infiniteNumber = Mathf.Infinity;
-		for(int i = 0; i < human.fovdetection.objects_in_vision.Count +1; i++) {
-            if (human.fovdetection.objects_in_vision[i].tag == "food") {  // if edible objects are in current field of vision, appraoch to the nearest one and eat it;
-                var distance = Vector3.Distance(human.fovdetection.objects_in_vision[i].transform.position, human.gameObject.transform.position);
-                if (distance < infiniteNumber) { // check which food is the nearest one
-                    infiniteNumber = distance;
+	// private bool can_grab() {
+    //     var infiniteNumber = Mathf.Infinity;
+	// 	for(int i = 0; i < human.fovdetection.objects_in_vision.Count +1; i++) {
+    //         if (human.fovdetection.objects_in_vision[i].tag == "food") {  // if edible objects are in current field of vision, appraoch to the nearest one and eat it;
+    //             var distance = Vector3.Distance(human.fovdetection.objects_in_vision[i].transform.position, human.gameObject.transform.position);
+    //             if (distance < infiniteNumber) { // check which food is the nearest one
+    //                 infiniteNumber = distance;
                     
-					if (distance <= 2) {
-						return true;
-					}
+	// 				if (distance <= 2) {
+	// 					return true;
+	// 				}
                     
                     
-                }
+    //             }
                 
-			}
+	// 		}
             
-		}
-        return false;
-	} 
+	// 	}
+    //     return false;
+	// } 
 	
     
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HumanUI : MonoBehaviour
+public class HumanUI 
 {
     //FEATURES
     //WASD/Arrows:   Movement
@@ -15,6 +15,8 @@ public class HumanUI : MonoBehaviour
     // R Click:      Hide stats
     // Q click:      Enter camera
     // G:            Exit human cam
+
+    public Human thisHuman;
 
     /// <value>Object to toggle for first person view</value>   
     public Camera firstPersonCamera;
@@ -35,6 +37,7 @@ public class HumanUI : MonoBehaviour
     /// <summary>
     /// Start is called before the first frame update
     /// </summary>
+
     private void Start()
     {
         thirdPersonCamera = Camera.main;
@@ -58,59 +61,62 @@ public class HumanUI : MonoBehaviour
     private void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            if (temp != null && thirdPersonToggle == false) {
-                firstPersonCamera.transform.position = temp.position;
-                thirdPersonToggle = true;
-                thirdPersonCamera.enabled = true;
-            }    
-        }
+    //     if (Input.GetKeyDown(KeyCode.G))
+    //     {
+    //         if (temp != null && thirdPersonToggle == false) {
+    //             firstPersonCamera.transform.position = temp.position;
+    //             thirdPersonToggle = true;
+    //             thirdPersonCamera.enabled = true;
+    //         }    
+    //     }
 
-        if (Input.GetMouseButtonDown(0) && Input.GetKeyDown(KeyCode.Q)) {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                var selected = hit.transform;
-                temp = firstPersonCamera.transform;
-                firstPersonCamera = selected.GetComponentInChildren<Camera>(); // get the camera in that person
-                thirdPersonCamera.enabled = false;
+    //     if (Input.GetMouseButtonDown(0) && Input.GetKeyDown(KeyCode.Q)) {
+    //         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         RaycastHit hit;
+    //         if (Physics.Raycast(ray, out hit))
+    //         {
+    //             var selected = hit.transform;
+    //             temp = firstPersonCamera.transform;
+    //             firstPersonCamera = selected.GetComponentInChildren<Camera>(); // get the camera in that person
+    //             thirdPersonCamera.enabled = false;
 
-            }
-        }
+    //         }
+    //     }
 
-        if (Input.GetMouseButtonDown(0)) {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit)) {
-                var ob_selected = hit.transform.gameObject;
-                panel.gameObject.SetActive(true);
-                Text toDisplay = panel.AddComponent<Text>();
+    //     if (Input.GetMouseButtonDown(0)) {
+    //         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         RaycastHit hit;
+    //         if (Physics.Raycast(ray, out hit)) {
+    //             var ob_selected = hit.transform.gameObject;
+    //             panel.gameObject.SetActive(true);
+    //             Text toDisplay = panel.AddComponent<Text>();
 
-                if (ob_selected is Human) {
-                    Human selected = ob_selected.GetComponent<Human>();
-                    string concat = "";
-                    for(int i = 0; i < 5; i++) {
-                         if(selected./*state_display[i] == 1;*/ StateDisplayList[i] == true) { // I don't know what are we doing here 
-                             concat += selected.StateLabelList[i] + ": " + 
-                             ((selected.StateValueList[i]).ToString("#.00"));
-                            concat += "\n";
-                         }
-                    }
-                    toDisplay.text = concat;
-                }
-                else if (ob_selected is Apple) {
-                    toDisplay.text = "Apple info";
-                }
-                else if (ob_selected is Water) {
-                    toDisplay.text = "Water info";
-                }
-            }
-        }
+    //             if (ob_selected is Human) {
+    //                 Human selected = ob_selected.GetComponent<Human>();
+    //                 string concat = "";
+    //                 for(int i = 0; i < 5; i++) {
+    //                     thisHuman.driveSystem.stateDisplayDict
 
-        if (Input.GetMouseButtonDown(1)) {
-            panel.gameObject.SetActive(false);
-        }
+    //                      if(selected./*state_display[i] == 1;*/ StateDisplayList[i] == true) { // I don't know what are we doing here 
+    //                          concat += selected.StateLabelList[i] + ": " + 
+    //                          ((selected.StateValueList[i]).ToString("#.00"));
+    //                         concat += "\n";
+    //                      }
+    //                 }
+    //                 toDisplay.text = concat;
+    //             }
+    //             else if (ob_selected is Apple) {
+    //                 toDisplay.text = "Apple info";
+    //             }
+    //             else if (ob_selected is Water) {
+    //                 toDisplay.text = "Water info";
+    //             }
+    //         }
+    //     }
+
+    //     if (Input.GetMouseButtonDown(1)) {
+    //         panel.gameObject.SetActive(false);
+    //     }
+    // }
     }
 }

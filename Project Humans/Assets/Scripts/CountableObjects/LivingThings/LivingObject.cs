@@ -5,11 +5,16 @@ using System;
 
 abstract public class LivingObject : CountableObject
 {
-    Genome Genome;
-    Phenotype Phenotype;
+    public Genome genome;
+    public Phenotype phenotype;
+    public string test = "test";
 
-    public LivingObject( Genome motherGenome, Genome fatherGenome)
+    public LivingObject(string objectType, Genome motherGenome, Genome fatherGenome)
     {
-        //super(name);
+        this.genome = new Genome();
+        this.genome.thisLivingObject = this;
+        this.genome.inheretGenome(motherGenome, fatherGenome);
+        this.phenotype = new Phenotype(this);
+        
     }
 };

@@ -2,36 +2,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 
-public class Genome : MonoBehaviour
+public class Genome 
 {
+    public LivingObject thisLivingObject;
+
     // this is the temp data structure that is used to read in data from the file
     public Dictionary<string, List<string>> genomeInfoDict = new Dictionary<string, List<string>>();
 
     // this is where the genes go
-    int numGenes;
-    public List<string> geneLabelList;
-    public Dictionary<string, Gene> geneDict;
-    public Dictionary<string, string> geneIndexDict;
+    public int numGenes;
+    public List<string> geneLabelList = new List<string>();
+    public Dictionary<string, Gene> geneDict = new Dictionary<string, Gene>();
+    public Dictionary<string, string> geneIndexDict = new Dictionary<string, string>();
 
     // this is where the constants get stored from each species's config file
-    int numConstants;
-    public List<string> constantLabelList;
-    public Dictionary<string, string> constantDict;
-    public Dictionary<string, int> constantIndexDict;
-
-    void start()
-    {
-
-
-    }
-
-    void update()
-    {
-
-
-    }
+    public int numConstants;
+    public List<string> constantLabelList = new List<string>();
+    public Dictionary<string, List<string>> constantDict = new Dictionary<string, List<string>>();
+    public Dictionary<string, int> constantIndexDict= new Dictionary<string, int>();
 
     public bool inheretGenome(Genome motherGenome, Genome fatherGenome)
     {
@@ -52,6 +43,7 @@ public class Genome : MonoBehaviour
                     geneLabelList.Add(geneLabel);
                     geneDict.Add(geneLabel, childGene);
                     geneIndexDict.Add(geneLabel, i.ToString());
+                    
                 }
                 else
                 {
@@ -63,80 +55,66 @@ public class Genome : MonoBehaviour
         {
             success = false;
         }
+        //FOR DEBUG
+        // Debug.Log("Inheret Genome");
+        // var arrayOfAllKeys = geneDict.Keys.ToArray();
+        // for (int i=0; i<geneDict.Count; i++){
+        //     string outputString = i.ToString();
+        //     string label = arrayOfAllKeys[i];
+            
+        //     Gene currentGene = geneDict[label];
+        //     outputString = outputString + " " + label;
+        //     outputString = outputString + " " + currentGene.geneType;
+        //     outputString = outputString + " " + currentGene.geneSize.ToString();
+        //     outputString += " ";
+        //     for (int j=0; j<currentGene.geneSize; j++){
+        //         int value = Convert.ToInt32(currentGene.geneSequence[j]);
+        //         outputString += value.ToString();
+        //     }
+        //     Debug.Log(outputString);
+        // }
         return success;
     }
 
-    
-    public List<string> g1 = new List<string> { "float", "6", "mutable", ".3", ".25", "1"};
-    public List<string> g2 = new List<string> { "float", "6", "mutable", ".4", ".25", "1"};
-    public List<string> g3 = new List<string> { "float", "6", "mutable", ".5", ".25", "1"};
-    public List<string> g4 = new List<string> { "float", "6", "mutable", ".6", ".25", "1"};
-    public List<string> g5 = new List<string> { "float", "6", "mutable", ".7", ".25", "1"};
-    public List<string> g6 = new List<string> { "float", "100", "mutable", ".01", ".0", "1"};
-    public List<string> g7 = new List<string> { "float", "100", "mutable", ".01", ".0", "1"};
-    public List<string> g8 = new List<string> { "float", "100", "mutable", ".01", ".0", "1"};
-    public List<string> g9 = new List<string> { "float", "100", "mutable", ".01", ".0", "1"};
-    public List<string> g10 = new List<string> { "float", "100", "mutable", ".01", ".0", "1"};
-    public List<string> g11 = new List<string> { "binary", "1", "mutable", "-1", "-1", "1"};
-
-    public List<string> c1 = new List<string> { "0.0", "1"};
-    public List<string> c2 = new List<string> { "50.0", "1"};
-    public List<string> c3 = new List<string> { "0.0", "1"};
-    public List<string> c4 = new List<string> { "0.01", "1"};
-
     public void importSpeciesInfo(string species){
-        // eventually replace this code with the code that reads from the file
-        // note the config file now has constants and genome examples in it
-        // each needs to get read into its own identical data structure
-        // the genome items need to get inserted into genomeInfoDict
-        // the constants need to get inserted into the constantDict
-        genomeInfoDict.Add("hunger_threshold", g1);
-        genomeInfoDict.Add("thirst_threshold", g2);
-        genomeInfoDict.Add("fatigue_threshold", g3);
-        genomeInfoDict.Add("sleepiness_threshold", g4);
-        genomeInfoDict.Add("health_threshold", g5);
-        genomeInfoDict.Add("hunger_change", g6);
-        genomeInfoDict.Add("thirst_change", g7);
-        genomeInfoDict.Add("fatigue_change", g8);
-        genomeInfoDict.Add("sleepiness_change", g9);
-        genomeInfoDict.Add("health_change", g10);
-        genomeInfoDict.Add("sex", g11);
+        int counter = 0;  
+        string line;  
+        
+        // Read the file and display it line by line.  
+        System.IO.StreamReader file = new System.IO.StreamReader(@"Assets/config/human.config");  
+        while((line = file.ReadLine()) != null)  
+        {  
+            string[] lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
+            string[] leftArray = lineInfo[0].Split(new[] { "." }, StringSplitOptions.None);
+            string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
+            if (leftArray[0] == "genome"){
+                geneLabelList.Add(leftArray[1]);
+                geneIndexDict.Add(leftArray[1], numGenes.ToString());
+                numGenes++;
 
-        constantDict.Add("initial_velocity", c1)
-        constantDict.Add("initial_velocity", c2)
-        constantDict.Add("initial_velocity", c3)
-        constantDict.Add("initial_velocity", c4)
-
-
-        // then, using the data in genomeInfoDict and constantInfoDict
-        //      create the data structures below algorithmically rather than hard coded
-        numGenes = 11;
-        geneLabelList.Add("hunger_threshold");
-        geneLabelList.Add("thirst_threshold");
-        geneLabelList.Add("fatigue_threshold");
-        geneLabelList.Add("sleepiness_threshold");
-        geneLabelList.Add("health_threshold");
-        geneLabelList.Add("hunger_change");
-        geneLabelList.Add("thirst_change");
-        geneLabelList.Add("fatigue_change");
-        geneLabelList.Add("sleepiness_change");
-        geneLabelList.Add("health_change");
-        geneLabelList.Add("sex");
-        for (int i = 0; i < numGenes; i++){
-            geneIndexDict.Add(geneLabelList[i], i.ToString());
-        }
-
-        numConstants = 4;
-        constantLabelList.add(""); // the label of the constant in a list
-        constantLabelList.add("final_velocity");
-        constantLabelList.add("current_velocity");
-        constantLabelList.add("acceleration_rate");
-        for (int i = 0; i < numConstants; i++){
-            constantIndexDict.Add(constantLabelList[i], i.ToString());
-        }
-
+                genomeInfoDict.Add(leftArray[1], rightArray.ToList());
+            }
+            else if (leftArray[0] == "constant"){
+                constantLabelList.Add(leftArray[1]);
+                constantDict.Add(leftArray[1], rightArray.ToList());
+                constantIndexDict.Add(leftArray[1], numConstants);
+                numConstants++;
+            }
+    
+            counter++;  
+        }  
+        
+        file.Close();
+        // FOR DEBUGGING
+        // var arrayOfAllKeys = genomeInfoDict.Keys.ToArray();
+        // for (int i=0; i<genomeInfoDict.Count; i++){
+        //     string key = arrayOfAllKeys[i];
+        //     Debug.Log(i);
+        //     Debug.Log(key);
+        //     Debug.Log(genomeInfoDict[key][0]);
+        // }
     }
-
+    
     public void createGenome(string species)
     {
         importSpeciesInfo(species);
@@ -144,12 +122,30 @@ public class Genome : MonoBehaviour
         for (int i = 0; i < numGenes; i++){
             Gene newGene = new Gene();
             string label = geneLabelList[i];
-            List<string> geneInfo = new List<string>(genomeInfoDict[label]);
+            List<string> geneInfo = genomeInfoDict[label];
             newGene.generateGene(label, geneInfo[0], geneInfo[1], geneInfo[2], geneInfo[3], geneInfo[4], geneInfo[5]);
-            geneLabelList.Add(label);
             geneDict.Add(label, newGene);
-            geneIndexDict.Add(label, i.ToString());
         }
+        // FOR DEBUG
+        // Debug.Log("Create Genome");
+        // var arrayOfAllKeys = geneDict.Keys.ToArray();
+        // for (int i=0; i<geneDict.Count; i++){
+        //     string outputString = i.ToString();
+        //     string label = arrayOfAllKeys[i];
+            
+        //     Gene currentGene = geneDict[label];
+        //     outputString = outputString + " " + label;
+        //     outputString = outputString + " " + currentGene.geneType;
+        //     outputString = outputString + " " + currentGene.geneSize.ToString();
+        //     outputString += " ";
+        //     for (int j=0; j<currentGene.geneSize; j++){
+        //         int value = Convert.ToInt32(currentGene.geneSequence[j]);
+        //         outputString += value.ToString();
+        //     }
+        //     Debug.Log(outputString);
+
+        
+
     }
 
 }

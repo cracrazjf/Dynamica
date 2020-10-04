@@ -5,75 +5,70 @@ using UnityEngine;
 
 public class DriveSystem
 {
-    //private Phenotype phenotype;
-
-    /// <value>Holds a reference to the Human the system is associated with</value>
-    // private Human human;
-
     /// <value>Holds a reference to the Animal the system is associated with</value>
-    private Animal animal;
+    public Animal thisAnimal;
 
     /// <value>List of states</value>
-    public List<string> stateLabelList = new List<string> { "hunger", "thirst", "sleepiness", "fatigue", "health"};
+    public List<string> stateLabelList = new List<string> { "hunger", "thirst", "wakefulness", "energy", "health"};
 
     /// <value>Num of states</value>
-    public int numStates ;  
-    public int STATES;
+    public int numStates; 
 
     public Dictionary<string, int> stateIndexDict = new Dictionary<string, int>();
     /// <value>List of values for each state, set to baseline in Start</value>
-    public List<float> stateValueList = new List<float>();
+    public Dictionary<string, float> stateDict = new Dictionary<string, float>();
 
     /// <value>List of values for each state, automatically set to True for all</value>
-    public List<float> stateDisplayList = new List<float>();
-
-    // Jon -- do we need this?
-    public float[] state_thresholds = { 0.90f, 0.90f, 0.001f, 0.99f, 0.90f };
-
-    /// <value>List of values to resolve each state at corresponding index</value>
-    public List<Action> state_action = new List<Action>();
+    public Dictionary<string, bool> stateDisplayDict = new Dictionary<string, bool>();
 
     /// <summary>
     /// Drive constructor
     /// </summary>
-    public DriveSystem(Animal thisAnimal) {
-        this.animal = thisAnimal;
-
+    public DriveSystem(Animal animal) {
+        this.thisAnimal = animal;
         //set baseline state values
         
+        numStates = stateLabelList.Count;
+
         for (int i = 0; i < numStates; i++)
         {
             // make the state dict
             //stateValueList[i] = new List<float>{ 0.001f, 0.001f, 0.001f, -0.001f, 0.001f };
             stateIndexDict.Add(stateLabelList[i], i);
             //set baselines to 0
-            stateValueList.Add(0);
+            stateDict.Add(stateLabelList[i], 1.0f);
 
             // default each state display to true
-            stateDisplayList.Add(1);
+            stateDisplayDict.Add(stateLabelList[i], true);
         }
-    }
-
-    private void Start(){
-        numStates = stateLabelList.Count; 
     }
 
     public void UpdateDrives()
     {
-        float traitValue = 0;
+        for (int i = 0; i < numStates; i++) {
+            string stateLabel = stateLabelList[i];
+            string changeLabel = stateLabel + "_change";
+            
+            // add some error checking to make sure the labels in config and stateLabelList match
+            float changeValue = float.Parse(thisAnimal.phenotype.traitDict[changeLabel]);
+            stateDict[stateLabel] += changeValue;
 
-        for (int i = 0; i < STATES; i++) {
+            if (stateDict["hunger"] <= 0.0){
+                // add check to make sure starvation_damage is a key in the dict
+                stateDict["health"] -= float.Parse(thisAnimal.phenotype.traitDict["starvation_damage"]);
+            }
+            if (stateDict["thirst"] <= 0.0){
+                // add check to make sure dehydration_damage is a key in the dict
+                stateDict["health"] -= float.Parse(thisAnimal.phenotype.traitDict["dehydration_damage"]);
+            }
 
-            /* change_label = stateLabelList[i] + "_change";
-            trait_index = human.phenotype.traitIndexDict[change_label];
-            stateValueList[i] += trait_value * Time.deltaTime;
-            if(stateValueList[i] > 1)
-            {stateValueList[i] = 1;} */
-
-            //traitValue =  human.phenotype.traitValueList[i];
-            if (stateValueList[i] < 1.0)
+            if (stateDict[stateLabel] > 1.0)
             {
-                stateValueList[i] += traitValue * Time.deltaTime;
+                stateDict[stateLabel] = 1.0f;
+            }
+            else if (stateDict[stateLabel] < 0.0)
+            {
+                stateDict[stateLabel] = 0.0f;
             }
         }
     }
