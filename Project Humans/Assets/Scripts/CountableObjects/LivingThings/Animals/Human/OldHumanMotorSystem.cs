@@ -72,7 +72,7 @@ public class oldHumanMotorSystem
     {
         if (active_AI == "HCAI")
         {
-            actionValueList = humanhcai.chooseAction();
+            //actionValueList = humanhcai.chooseAction();
         }
         else if (active_AI == "NNAI")
         {

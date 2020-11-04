@@ -18,7 +18,7 @@ public class HumanRNNAI
             actionValueList.Add(0.0f);
         
 
-
+        
         return actionValueList;
         
     }

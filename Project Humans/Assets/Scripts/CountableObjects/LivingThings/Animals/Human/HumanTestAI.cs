@@ -6,36 +6,46 @@ using UnityEngine;
 public class HumanTestAI 
 {
     public Human thisHuman;
-    public List<float> actionValueList = new List<float>();
+    public HumanActionChoice actionChoice;
+    public FOVDetection thisfOVDetection;
+    public string actionChoiceLabel;
+    public string hand;
 
     public HumanTestAI (Human human) {
         this.thisHuman = human;
+        actionChoice = new HumanActionChoice(this.thisHuman.humanMotorSystem.actionLabelList);
+        thisfOVDetection = this.thisHuman.gameObject.GetComponent<FOVDetection>();
     }
+    public float counter = 0;
 
-    public List<float> chooseAction(){
-        for (int i = 0; i < thisHuman.humanMotorSystem.numActions; i++) {
-            actionValueList.Add(0.0f);
+
+    public HumanActionChoice chooseAction(){
+        actionChoiceLabel = "sit";
+        float hand = 0.0f;
+
+        
+        actionChoice.argumentDict.Clear();
+        actionChoice.actionValueDict.Clear();
+        actionChoice.initActionChoices(this.thisHuman.humanMotorSystem.actionLabelList);
+        
+        actionChoice.actionValueDict[actionChoiceLabel] = 1;
+
+        if (actionChoiceLabel == "accellerate"){
+            actionChoice.argumentDict["accellerationRate"] = 0.2f;
         }
 
-        actionValueList[0] = 1.0f;
-        return actionValueList;
+        else if (actionChoiceLabel == "rotate"){
+            actionChoice.argumentDict["rotationAngle"] = 0.2f;
+        }
+
+        else if (actionChoiceLabel == "pick_up" || actionChoiceLabel == "set_down" || actionChoiceLabel == "put_in" || actionChoiceLabel == "get_from" || actionChoiceLabel == "eat"){
+            actionChoice.argumentDict["hand"] = hand;
+        }
+
+        return actionChoice;
         
     }
-        // "accelerate",   // value -1..1 translating to speed of accel./deccel.
-        // "rotate",       // value from -1 to 1, translating into -180..180 degree rotation
-        // "sit",          // begin to sit
-        // "stand",        // begin to stand
-        // "lay",          // begin to lay down
-        // "sleep",        // begin to sleep
-        // "wake_up",      // begin to wake
-        // "pick_up_LH", "pick_up_RH",
-        // "set_down_LH","set_down_RH",
-        // "put_bag_LH", "put_bag_RH",
-        // "get_bag_LH", "get_bag__RH",
-        // "eat_LH", "eat_RH",
-        // "drink_LH", "drink_RH",
-        // "rest"
-
 }
+
 
     

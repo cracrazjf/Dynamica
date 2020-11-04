@@ -9,7 +9,7 @@ public class DriveSystem
     public Animal thisAnimal;
 
     /// <value>List of states</value>
-    public List<string> stateLabelList = new List<string> { "hunger", "thirst", "wakefulness", "energy", "health"};
+    public List<string> stateLabelList = new List<string> { "hunger", "thirst", "sleepiness", "fatigue", "health"};
 
     /// <value>Num of states</value>
     public int numStates; 
@@ -35,12 +35,14 @@ public class DriveSystem
             // make the state dict
             //stateValueList[i] = new List<float>{ 0.001f, 0.001f, 0.001f, -0.001f, 0.001f };
             stateIndexDict.Add(stateLabelList[i], i);
-            //set baselines to 0
-            stateDict.Add(stateLabelList[i], 1.0f);
-
             // default each state display to true
             stateDisplayDict.Add(stateLabelList[i], true);
         }
+        stateDict.Add("hunger", 0.0f);
+        stateDict.Add("thirst", 0.0f);
+        stateDict.Add("sleepiness", 0.0f);
+        stateDict.Add("fatigue", 0.0f);
+        stateDict.Add("health", 1.0f);
     }
 
     public void UpdateDrives()
@@ -51,7 +53,8 @@ public class DriveSystem
             
             // add some error checking to make sure the labels in config and stateLabelList match
             float changeValue = float.Parse(thisAnimal.phenotype.traitDict[changeLabel]);
-            stateDict[stateLabel] += changeValue;
+            stateDict[stateLabel] += changeValue * Time.deltaTime;
+            
 
             if (stateDict["hunger"] <= 0.0){
                 // add check to make sure starvation_damage is a key in the dict

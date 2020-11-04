@@ -19,7 +19,8 @@ public class World : MonoBehaviour
     public int numHumans = 5;
 
     /// <value>Creating object lists</value>
-    public List<Human> humanList = new List<Human>();
+    public static bool populationChanged = false;
+    public static List<Human> humanList = new List<Human>();
 
     /// <value>Setting initial world properties</value>
     public static float worldSize = 20.0f;
@@ -31,6 +32,7 @@ public class World : MonoBehaviour
     /// </summary>
     void Start()
     {
+       
         CreateTerrain();
         CreateHumans();
         CreateApples();
@@ -63,7 +65,7 @@ public class World : MonoBehaviour
     void CreateApples()
     {
         for (int i=0; i<numApples; i++){
-            var startPosition = new Vector3 (50 + Random.Range(minPosition,maxPosition), 0.21f, 50+Random.Range(minPosition,maxPosition));
+            var startPosition = new Vector3 (50 + Random.Range(minPosition,maxPosition), 0, 50+Random.Range(minPosition,maxPosition));
             GameObject appleInstance = GameObject.Instantiate(Apple, startPosition, Quaternion.identity) as GameObject;
         }
     }
@@ -74,7 +76,7 @@ public class World : MonoBehaviour
     void CreateWater()
     {
         for (int i=0; i<numApples; i++){
-            var startPosition = new Vector3 (-50+Random.Range(minPosition,maxPosition), 0.21f, -50+Random.Range(minPosition,maxPosition));
+            var startPosition = new Vector3 (-50+Random.Range(minPosition,maxPosition), 0f, -50+Random.Range(minPosition,maxPosition));
             GameObject waterInstance = GameObject.Instantiate(Water, startPosition, Quaternion.identity) as GameObject;
         }
     }
@@ -90,7 +92,7 @@ public class World : MonoBehaviour
     /// </summary>
     void CreateHumans()
     {
-        numHumans = 10;
+        numHumans = 1;
         for (int i=0; i<numHumans; i++){
             
             
@@ -108,16 +110,37 @@ public class World : MonoBehaviour
             Human newHuman = new Human("human", motherGenome, fatherGenome);
             humanList.Add(newHuman);
             
+
+            
         
+        }
+    }
+    
+
+
+    public void updateHumans() {
+       
+        for(int i= 0; i< humanList.Count; i++) {
+            //humanList[i].TestUpdate();
+            humanList[i].updateHuman();
         }
     }
 
     /// <summary>
     /// Update is called once per frame
     /// </summary>
+    
+    int updateCounter = 0;
+
     void Update()
     {
-        
+        updateHumans();
+
+
     }
+    
+    
 }
+
+
 

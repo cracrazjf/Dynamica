@@ -28,25 +28,23 @@ public class Phenotype {
     public Phenotype(LivingObject livingObject) {
         this.thisLivingObject = livingObject;
         this.numTraits = 0;
-
         this.createGeneTraits();
         this.createConstantTraits();
 
-        Debug.Log("Phenotype Constructor");
+        //Debug.Log("Phenotype Constructor");
         for (int i=0; i<numTraits; i++){
             string outputString = i.ToString();
             string label = traitLabelList[i];
             outputString = outputString + " " + label;
             outputString = outputString + " " + traitDict[label];
             outputString = outputString + " Display=" + traitDisplayDict[label].ToString();
-            Debug.Log(outputString);
+            //Debug.Log(outputString);
         }
     }
 
     private void createGeneTraits(){
         
         // go through each item in genome's gene dict, create their phenotypic values, and add them to the trait dict
-        
         for (int i = 0; i < thisLivingObject.genome.numGenes; i++){
 
             string label = thisLivingObject.genome.geneLabelList[i];
@@ -78,9 +76,11 @@ public class Phenotype {
     }
 
     private void createConstantTraits(){
+        
                 // go through each item in genome's constant dict, and add them to the trait data structures
         for (int i = 0; i < thisLivingObject.genome.numConstants; i++){
             string label = thisLivingObject.genome.constantLabelList[i];
+            //Debug.Log(label);
             traitLabelList.Add(label);
             traitIndexDict.Add(label, i);
             // not sure if the following two lines are ok C# syntax
@@ -96,6 +96,8 @@ public class Phenotype {
             
             this.numTraits++;
         }
+        
+        
     }
 
     private string createBinaryTrait(BitArray geneSequence){

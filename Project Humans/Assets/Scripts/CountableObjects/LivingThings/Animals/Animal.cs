@@ -7,10 +7,12 @@ using UnityEngine;
     abstract public class Animal : LivingObject
     {
         public DriveSystem driveSystem;
+        public NervousSystem nervousSystem;
 
         public Animal(string objectType, Genome motherGenome, Genome fatherGenome) : base (objectType, motherGenome, fatherGenome)
         {
             this.driveSystem = new DriveSystem(this);
+            this.nervousSystem = new NervousSystem(this);
         }
 
         public Vector3 chooseStartPosition(){

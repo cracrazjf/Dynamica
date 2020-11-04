@@ -4,22 +4,24 @@ using UnityEngine;
 
 public class HumanGPSAI 
 {
-
     public Human thisHuman;
-    public List<float> actionValueList = new List<float>();
+    public HumanActionChoice actionChoice;
+    public FOVDetection thisfOVDetection;
+    public string actionChoiceLabel;
+    public string hand;
 
     public HumanGPSAI (Human human) {
         this.thisHuman = human;
+        actionChoice = new HumanActionChoice(this.thisHuman.humanMotorSystem.actionLabelList);
+        thisfOVDetection = this.thisHuman.gameObject.GetComponent<FOVDetection>();
     }
-
-    public List<float> chooseAction(){
-        for (int i = 0; i < thisHuman.humanMotorSystem.numActions; )
-            actionValueList.Add(0.0f);
-        
+    public float counter = 0;
 
 
-        return actionValueList;
+    public HumanActionChoice chooseAction(){
+
+
+        return actionChoice;
         
     }
-
 }

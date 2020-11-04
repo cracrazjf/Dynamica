@@ -5,15 +5,46 @@ using System.ComponentModel.Design;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
+
 public class FOVDetection : MonoBehaviour
 {
 
     //basic stat
-    
+     
 
     public List<GameObject> targets = new List<GameObject>();
         // rename this a little more specific
     public List<GameObject> objects_in_vision = new List<GameObject>();
+    public void OnDrawGizmos() {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, 10);
+        Vector3 fovLine1 = Quaternion.AngleAxis(45,transform.up)* transform.forward * 10;
+        Vector3 fovLine2 = Quaternion.AngleAxis(-45,transform.up)* transform.forward * 10;
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(transform.position, fovLine1);
+        Gizmos.DrawRay(transform.position, fovLine2);
+
+        for (int i = 0; i < objects_in_vision.Count; i++) {
+            Gizmos.color= Color.green;
+            Gizmos.DrawRay(transform.position, (objects_in_vision[i].transform.position- transform.position).normalized * 10);
+        }
+    }
+
+    // public RenderTexture currrentRT;
+
+    // public void CamCapture() {
+        
+    //     Camera cam = GetComponent<Camera>();
+    //     currrentRT = RenderTexture.active;
+    //     RenderTexture.active = cam.targetTexture;
+        
+
+    // }
+
+    // private void Update() {
+    //     CamCapture();
+    // }
 
     public void inFov(Transform checkingObject, float maxAngle, float maxRadius)
     {
@@ -28,11 +59,7 @@ public class FOVDetection : MonoBehaviour
             
             if (overlaps[i] != null)
             {
-                Debug.Log(count);
-                
-
-
-                    // eliminate this loop
+                //Debug.Log(count);
 
                     Vector3 directionBetween = (overlaps[i].transform.position - checkingObject.position).normalized;
                     directionBetween.y *= 0;
@@ -46,11 +73,11 @@ public class FOVDetection : MonoBehaviour
 
                     if (Physics.Raycast(ray, out hit, maxRadius))
                     {
-                        Debug.Log("hit");
+                        //Debug.Log("hit");
                         if (hit.transform == overlaps[i].transform)
                         {
 
-                            if (!objects_in_vision.Contains(overlaps[i].gameObject))
+                            if (!objects_in_vision.Contains(overlaps[i].gameObject) && overlaps[i].tag != "ground")
                             {
                                 objects_in_vision.Add(overlaps[i].gameObject);
 
@@ -60,18 +87,11 @@ public class FOVDetection : MonoBehaviour
                     }
 
                 }
-
-
-
-
-
-
-                
             }
-
         }
     }
 
-
-
+    
 }
+    
+

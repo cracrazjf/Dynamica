@@ -37,14 +37,17 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\polyperfect\Common\Wander Script\Common_AudioManager.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\OldHumanMotorSystem.cs" />
      <Compile Include="Assets\polyperfect\Common\Wander Script\Common_WanderManager.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanHCAI.cs" />
      <Compile Include="Assets\polyperfect\Common\Wander Script\AIState.cs" />
      <Compile Include="Assets\polyperfect\Common\Wander Script\AIStats.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated Animals\- Scripts\Wander Script\Animal_WanderScript.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanGPSAI.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Phenotype.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\Human.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanMotorSystem.cs" />
+     <Compile Include="Assets\Animation\IKControl.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated Animals\- Scripts\Wander Script\Animal_AIStats.cs" />
      <Compile Include="Assets\Scripts\MassObjects\MassObject.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\DriveSystem.cs" />
@@ -60,16 +63,21 @@
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\Wander Script\People_WanderManager.cs" />
      <Compile Include="Assets\polyperfect\Common\Common_RandomInt.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated Animals\- Scripts\AnimalWanderManager.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanSimpleAI2.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\IK\HumanBoneOffset.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Gene.cs" />
      <Compile Include="Assets\SurvivalAnimsetPro1\Scripts\IKControlRight.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\Wander Script\People_WanderScript.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated Animals\- Scripts\Wander Script\Animal_SurfaceRotation.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingThings\LivingObject.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanActionChoice.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\Wander Script\People_SurfaceRotation.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\IK\PolyIk.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanRNNAI.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\NonlivingObjects\Water.cs" />
      <Compile Include="Assets\testScript.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanSimpleAI.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanTestAI.cs" />
      <Compile Include="Assets\Scripts\World\World.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanUI.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\CustomPeople.cs" />
@@ -94,10 +102,7 @@
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\PolyMorpher.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Plants\Plant.cs" />
      <Compile Include="Assets\polyperfect\Common\Common_AnimSpeed.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\OldHumanMotorSystem.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanTestAI.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanGPSAI.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanRNNAI.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingThings\Animals\Human\HumanSimpleAI3.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />

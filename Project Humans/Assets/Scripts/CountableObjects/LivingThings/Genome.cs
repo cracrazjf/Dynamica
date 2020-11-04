@@ -29,8 +29,9 @@ public class Genome
     {
         bool success = true;
 
-        if (motherGenome.numGenes == fatherGenome.numGenes)
+        if (motherGenome.numGenes == fatherGenome.numGenes && motherGenome.numConstants == fatherGenome.numConstants)
         {
+            numConstants = motherGenome.numConstants;
             numGenes = motherGenome.numGenes;
 
             for (int i = 0; i < numGenes; i++)
@@ -45,12 +46,30 @@ public class Genome
                     geneDict.Add(geneLabel, childGene);
                     geneIndexDict.Add(geneLabel, i.ToString());
                     
+                   
+
+                    
                 }
                 else
                 {
                     success = false;
                 }
             }
+            for (int i = 0; i < numConstants; i++) {
+                if (motherGenome.constantLabelList[i] == fatherGenome.constantLabelList[i]) {
+                    string constantLable = motherGenome.constantLabelList[i];
+                    var constantValue = motherGenome.constantDict[constantLable];
+
+                    constantLabelList.Add(constantLable);
+                    constantDict.Add(constantLable,constantValue);
+                    constantIndexDict.Add(constantLable,numConstants);
+                        
+                }
+                else
+                {
+                    success = false;
+                }
+            }   
         }
         else
         {
@@ -100,6 +119,7 @@ public class Genome
                 constantDict.Add(leftArray[1], rightArray.ToList());
                 constantIndexDict.Add(leftArray[1], numConstants);
                 numConstants++;
+                
             }
     
             counter++;  
@@ -144,6 +164,8 @@ public class Genome
         //         outputString += value.ToString();
         //     }
         //     Debug.Log(outputString);
+
+        // }
 
         
 

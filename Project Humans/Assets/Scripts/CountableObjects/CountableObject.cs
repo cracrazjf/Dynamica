@@ -16,7 +16,7 @@ using UnityEngine;
 
 abstract public class CountableObject
 {
-    public new String objectType;
+    public  String objectType;
     
     // unity variables
     public GameObject gameObject;
