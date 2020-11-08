@@ -46,8 +46,6 @@ public class HumanSimpleAI3
         subGoalListDict.Add("Decrease Fatigue", new List<string> {"GoTo Water", "SearchFor Water"});
     }
 
-
-    
     public HumanActionChoice chooseAction(float[ , , ] visualInput){
         doingNothing = thisHuman.animator.GetCurrentAnimatorStateInfo(0).IsName("Default");
         if (doingNothing){ // or an exception has occurred
@@ -72,6 +70,7 @@ public class HumanSimpleAI3
         }
         return actionChoice;
     }
+
     public void setActionChoiceValues() {
         // take the current subgoal, which we know we can do, and set actionChoice.actionValueArray and .actionArgumentArray appropriately
         //int actionIndex;

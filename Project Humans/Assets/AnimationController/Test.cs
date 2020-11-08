@@ -19,6 +19,7 @@ public class Test : MonoBehaviour
         Accelerate(); 
         
     }
+    
     void Accelerate()
     {
         gameObject.transform.Translate(0,0,5 *Time.deltaTime);

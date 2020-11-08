@@ -12,7 +12,7 @@ public class DriveSystem
     public List<string> stateLabelList = new List<string> { "hunger", "thirst", "sleepiness", "fatigue", "health"};
 
     /// <value>Num of states</value>
-    public int numStates; 
+    public const int numStates = 5; 
 
     public Dictionary<string, int> stateIndexDict = new Dictionary<string, int>();
     /// <value>List of values for each state, set to baseline in Start</value>
@@ -28,16 +28,18 @@ public class DriveSystem
         this.thisAnimal = animal;
         //set baseline state values
         
-        numStates = stateLabelList.Count;
 
         for (int i = 0; i < numStates; i++)
         {
             // make the state dict
-            //stateValueList[i] = new List<float>{ 0.001f, 0.001f, 0.001f, -0.001f, 0.001f };
+            
             stateIndexDict.Add(stateLabelList[i], i);
+
             // default each state display to true
+
             stateDisplayDict.Add(stateLabelList[i], true);
         }
+
         stateDict.Add("hunger", 0.0f);
         stateDict.Add("thirst", 0.0f);
         stateDict.Add("sleepiness", 0.0f);
@@ -74,5 +76,9 @@ public class DriveSystem
                 stateDict[stateLabel] = 0.0f;
             }
         }
+    }
+
+    public Dictionary<string, float> GetStateValues() {
+        return this.stateDict;
     }
 }

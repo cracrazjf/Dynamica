@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NervousSystem {
-    public float[ , , ] visualInput = new float[32, 32, 3];
+    float[ , , ] visualInput = new float[32, 32, 3];
+    float[] touchInput = new float[5]; // standing, sitting, laying, holding_LH, holding_RH
+
     public Animal thisAnimal;
 
     public NervousSystem(Animal animal) {
@@ -18,6 +20,18 @@ public class NervousSystem {
             }
         }
 
+        for (int i=0; i<5; i++){
+            touchInput[i] = 0;
+        }
+        touchInput[0] = 1; // this assumes that the human starts standing
+    }
+
+    public void updateTouchInput(int touchIndex, float value){
+        touchInput[touchIndex] = value;
+    }
+
+    public float[] GetTouchInput(){
+        return touchInput;
     }
 
     public float[ , , ] GetVisualInput ()

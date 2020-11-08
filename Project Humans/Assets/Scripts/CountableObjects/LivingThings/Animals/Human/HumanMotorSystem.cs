@@ -10,7 +10,7 @@ public class HumanMotorSystem
     public Animal thisAnimal; // we need this if we want to access drive system
     public LivingObject thisLivingObject; // we need this if we want to access genome or phenotype
     public Human thisHuman; // we need this if we want to access 
-
+    public float rotateAngle = 360;
     public float velocity;
     public float maxVelocity;
     public float minVelocity;
@@ -40,6 +40,12 @@ public class HumanMotorSystem
     public Transform Eye_L;
     public Transform Eye_R;
 
+    int sittingDownIndex;
+    int standingUpIndex;
+    int layingDownIndex;
+    int holdingLHIndex;
+    int holdingRHIndex;
+
     public HumanMotorSystem(Human human) {
         this.thisHuman = human;
         for (int i = 0; i < actionLabelList.Count; i++){
@@ -52,6 +58,11 @@ public class HumanMotorSystem
         maxAcceleration_rate = float.Parse(thisHuman.phenotype.traitDict["maxacceleration_rate"]);
         max_rotation_speed = float.Parse(thisHuman.phenotype.traitDict["max_rotation_speed"]);
         
+        sittingDownIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["sitting down"];
+        standingUpIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["standing up"];
+        layingDownIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["laying down"];
+        holdingLHIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["holding LH"];
+        holdingRHIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["holding RH"];
 
     }
 
@@ -108,6 +119,10 @@ public class HumanMotorSystem
 // each human has a max velocity (10), and a max accellaration (2)
 // 
 
+
+    // 
+    // DIRECTION, DISTANCE = 24, 
+    // step 
     public void accellerate(float velocity, Vector3 targetPosition){
         // you can only do this while standing
         if(velocity > maxVelocity) {
@@ -133,7 +148,8 @@ public class HumanMotorSystem
 
     }
     //public float degreePerSec = 0;
-    public float rotateAngle = 360;
+    
+
     public void rotate(float rotationAngle){
         
         float RA = rotationAngle * max_rotation_speed;
@@ -150,9 +166,12 @@ public class HumanMotorSystem
         this.thisHuman.gameObject.transform.Rotate(0,rotation,0); 
         
     }
+
     public void drink() {
+        // drink should only be possible if standing
         this.thisHuman.animator.SetTrigger("Drink");
     }
+    
     public void sit(){
         this.thisHuman.animator.SetBool("sit", true);
         this.thisHuman.animator.SetBool("keepsitting", true);
@@ -171,29 +190,27 @@ public class HumanMotorSystem
         
         this.thisHuman.animator.SetBool("sit", true);
         this.thisHuman.animator.SetBool("sleep", true);
-        this.thisHuman.Eye_L.localScale = new Vector3(1,0.09f,2);
-        this.thisHuman.Eye_R.localScale = new Vector3(1,0.09f,2);
+        this.thisHuman.leftEye.localScale = new Vector3(1,0.09f,2);
+        this.thisHuman.rightEye.localScale = new Vector3(1,0.09f,2);
     }
     
     public void wakeUp(){
         
-        this.thisHuman.Eye_L.localScale = new Vector3(1,1,1);
-        this.thisHuman.Eye_R.localScale = new Vector3(1,1,1);
+        this.thisHuman.leftEye.localScale = new Vector3(1,1,1);
+        this.thisHuman.rightEye.localScale = new Vector3(1,1,1);
         this.thisHuman.animator.SetBool("sleep", false);
         this.thisHuman.animator.SetBool("sit", true);
     }
     public void pickUp(float hand){
         Collider[] pickableObj = new Collider[5];
     
-        if (hand == 0 && this.thisHuman.Hand_L.childCount == 0) {
-            int numObj = Physics.OverlapSphereNonAlloc(this.thisHuman.Hand_L.position,0.2f,pickableObj);
+        if (hand == 0 && this.thisHuman.leftHand.childCount == 0) {
+            int numObj = Physics.OverlapSphereNonAlloc(this.thisHuman.leftHand.position,0.2f,pickableObj);
             for(int i = 0; i < numObj; i++) {
                 pickableObj[i].GetComponent<Rigidbody>().isKinematic = true;
                 pickableObj[i].GetComponent<Rigidbody>().useGravity = false;
-                pickableObj[i].transform.parent = this.thisHuman.Hand_L.transform;
+                pickableObj[i].transform.parent = this.thisHuman.leftHand.transform;
                 pickableObj[i].transform.localPosition = new Vector3(0,0,0);
-                   
-                
             }
             this.thisHuman.rigidbody.isKinematic = true;
             this.thisHuman.animator.SetBool("pickup", true);
@@ -201,14 +218,13 @@ public class HumanMotorSystem
             Debug.Log("pick up with left hand");
         }
             
-        else if (hand == 1 && this.thisHuman.Hand_R.childCount == 0) {
+        else if (hand == 1 && this.thisHuman.rightHand.childCount == 0) {
 
-            int numObj = Physics.OverlapSphereNonAlloc(this.thisHuman.Hand_R.position,0.2f,pickableObj);
+            int numObj = Physics.OverlapSphereNonAlloc(this.thisHuman.rightHand.position,0.2f,pickableObj);
             for(int i = 0; i < numObj; i++) {
                 pickableObj[i].GetComponent<Rigidbody>().isKinematic = true;
-                pickableObj[i].transform.parent = this.thisHuman.Hand_R.transform;
+                pickableObj[i].transform.parent = this.thisHuman.rightHand.transform;
                 pickableObj[i].transform.localPosition = new Vector3(0,0,0);
-                
             }
             this.thisHuman.rigidbody.isKinematic = true;
             this.thisHuman.animator.SetBool("pickup", true);
@@ -226,24 +242,24 @@ public class HumanMotorSystem
     public void setDown(float hand){
         // check to make sure something is in the hand
         
-        if (hand == 0 && this.thisHuman.Hand_L.childCount ==1) {
+        if (hand == 0 && this.thisHuman.leftHand.childCount ==1) {
             this.thisHuman.animator.SetBool("setDown", true);
             this.thisHuman.animator.SetFloat("SetdownL/R",1);
-            if (thisHuman.Hand_L.GetChild(0).transform.position.y < 0.1) {
-                thisHuman.Hand_L.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
-                thisHuman.Hand_L.GetChild(0).transform.parent = null;
-                Debug.Log(this.thisHuman.Hand_L.childCount);
+            if (thisHuman.leftHand.GetChild(0).transform.position.y < 0.1) {
+                thisHuman.leftHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
+                thisHuman.leftHand.GetChild(0).transform.parent = null;
+                Debug.Log(this.thisHuman.leftHand.childCount);
             }
             
             Debug.Log("set down with left hand");
         }
             
-        else if (hand == 1 && this.thisHuman.Hand_R.childCount ==1) {
+        else if (hand == 1 && this.thisHuman.rightHand.childCount ==1) {
             this.thisHuman.animator.SetBool("setDown", true);
             this.thisHuman.animator.SetFloat("Setdown/R",0);
-            if (thisHuman.Hand_R.GetChild(0).transform.position.y < 0.1) {
-                thisHuman.Hand_R.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
-                thisHuman.Hand_R.GetChild(0).transform.parent = null;
+            if (thisHuman.rightHand.GetChild(0).transform.position.y < 0.1) {
+                thisHuman.rightHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
+                thisHuman.rightHand.GetChild(0).transform.parent = null;
             }
             Debug.Log("set down with right hand");
         }
@@ -255,11 +271,11 @@ public class HumanMotorSystem
     }
     
     public void putIn(float hand){
-        if (hand == 0 && this.thisHuman.Hand_L.childCount == 1) {
+        if (hand == 0 && this.thisHuman.leftHand.childCount == 1) {
             this.thisHuman.animator.SetTrigger("putin");
             this.thisHuman.animator.SetFloat("PutInL/R",1);
         }
-        else if (hand == 1 && this.thisHuman.Hand_R.childCount == 1) {
+        else if (hand == 1 && this.thisHuman.rightHand.childCount == 1) {
             this.thisHuman.animator.SetTrigger("putin");
             this.thisHuman.animator.SetFloat("PutInL/R",0);
         }
@@ -270,11 +286,11 @@ public class HumanMotorSystem
     }
 
     public void getFrom(float hand){
-        if (hand == 0 && this.thisHuman.Hand_L.childCount == 0) {
+        if (hand == 0 && this.thisHuman.leftHand.childCount == 0) {
             this.thisHuman.animator.SetTrigger("getfrom");
             this.thisHuman.animator.SetFloat("GetFromL/R",1);
         }
-        else if (hand == 1 && this.thisHuman.Hand_R.childCount == 0) {
+        else if (hand == 1 && this.thisHuman.rightHand.childCount == 0) {
             this.thisHuman.animator.SetTrigger("getfrom");
             this.thisHuman.animator.SetFloat("GetFrom",0);
         }
@@ -283,11 +299,11 @@ public class HumanMotorSystem
         }
     }
         public void eat(float hand) {
-        if (hand == 0 && this.thisHuman.Hand_L.childCount == 1) {
+        if (hand == 0 && this.thisHuman.leftHand.childCount == 1) {
             this.thisHuman.animator.SetBool("eat", true);
             this.thisHuman.animator.SetFloat("EatL/R",1);
         }
-        else if (hand == 1 && this.thisHuman.Hand_R.childCount == 1) {
+        else if (hand == 1 && this.thisHuman.rightHand.childCount == 1) {
             this.thisHuman.animator.SetBool("eat", true);
             this.thisHuman.animator.SetFloat("EatL/R",0);
         }

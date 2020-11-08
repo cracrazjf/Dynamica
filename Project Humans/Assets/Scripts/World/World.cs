@@ -14,13 +14,13 @@ public class World : MonoBehaviour
     public GameObject HumanMale;
 
     /// <value>Init starting numbers for objects</value>
-    public int numApples = 100;
-    public int numWater = 100;
-    public int numHumans = 5;
+    private int numApples = 5;
+    private int numWater = 5;
+    private int numHumans = 5;
 
     /// <value>Creating object lists</value>
     public static bool populationChanged = false;
-    public static List<Human> humanList = new List<Human>();
+    private static List<Animal> humanList = new List<Animal>();
 
     /// <value>Setting initial world properties</value>
     public static float worldSize = 20.0f;
@@ -31,22 +31,11 @@ public class World : MonoBehaviour
     /// Start is called before the first frame update and initializes all scene objects
     /// </summary>
     void Start()
-    {
-       
-        CreateTerrain();
+    { 
+        CreateGround();
         CreateHumans();
         CreateApples();
         CreateWater();
-        CreateGenome();
-        
-    }
-
-    /// <summary>
-    /// CreateTerrain is redundant and serves to call CreateGround
-    /// </summary>
-    void CreateTerrain()
-    {
-        CreateGround();
     }
 
     /// <summary>
@@ -80,12 +69,9 @@ public class World : MonoBehaviour
             GameObject waterInstance = GameObject.Instantiate(Water, startPosition, Quaternion.identity) as GameObject;
         }
     }
+
     public Genome motherGenome;
     public Genome fatherGenome;
-    void CreateGenome() {
-        
-        
-    }
 
     /// <summary>
     /// CreateHumans initializes and places numHumanMales and numHumanFemales HumanMale and HumanFemale objects randomly in the world
@@ -95,51 +81,47 @@ public class World : MonoBehaviour
         numHumans = 1;
         for (int i=0; i<numHumans; i++){
             
-            
             // normal reproduction way: new_human = human(mother_genome, father_genome)
             // god creation way: new_human = human(read genome from file)
             // create an empty genome object for mother & father, but specifying the species
 
             // create the pseudo-random parent genomes
             motherGenome = new Genome();
-            motherGenome.createGenome("human");
+            motherGenome.CreateGenome("human");
             fatherGenome = new Genome();
-            fatherGenome.createGenome("human");
+            fatherGenome.CreateGenome("human");
+
+            string name = "Human " + i.ToString();
 
             // create an instance of the human class
-            Human newHuman = new Human("human", motherGenome, fatherGenome);
+            Animal newHuman = new Human(name, motherGenome, fatherGenome);
             humanList.Add(newHuman);
             
-
-            
-        
         }
     }
-    
 
+    public static Animal GetHuman(int i) {
+        return humanList[i];
+    }
 
-    public void updateHumans() {
+    public void UpdateHumans() {
        
         for(int i= 0; i< humanList.Count; i++) {
             //humanList[i].TestUpdate();
-            humanList[i].updateHuman();
+            humanList[i].UpdateAnimal();
         }
     }
+    
+    int updateCounter = 0;
+
 
     /// <summary>
     /// Update is called once per frame
     /// </summary>
-    
-    int updateCounter = 0;
-
     void Update()
     {
-        updateHumans();
-
-
+        UpdateHumans();
     }
-    
-    
 }
 
 

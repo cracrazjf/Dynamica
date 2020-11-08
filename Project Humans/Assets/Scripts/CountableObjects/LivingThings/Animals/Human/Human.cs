@@ -18,26 +18,23 @@ public class Human : Animal
     public string activeAI = "humanTestAI";
 
     public HumanMotorSystem humanMotorSystem;
+    public HumanNervousSystem humanNervousSystem;
     public List<float> actionValueList = new List<float>();
 
     /// <value>Human prefab</value>
     public GameObject humanPrefab;
+    private string named;
 
-    public Transform Eye_L;
-    public Transform Eye_R;
+    public Transform leftEye;
+    public Transform rightEye;
 
-    public Transform Hand_L;
-    public Transform Hand_R;
+    public Transform leftHand;
+    public Transform rightHand;
     public Rigidbody rigidbody;
 
     public bool doingNothing = true;
     
-
     public GameObject TestObj;
-    
-    public float x;
-    public float z;
-
 
     /// <summary>
     /// Human constructor
@@ -46,27 +43,31 @@ public class Human : Animal
 
         this.humanMotorSystem = new HumanMotorSystem(this);
         this.humanActionChoice = new HumanActionChoice(this.humanMotorSystem.actionLabelList);
+        this.humanNervousSystem = new HumanNervousSystem(this);
         
         TestObj = GameObject.Find("TestObj");
         
-       
         //Instantiate humanPrefab
         Vector3 startPosition = this.chooseStartPosition();
+        Quaternion startRotation = this.chooseStartRotation();
 
-        // use a debug statment
-        //Debug.Log(this.phenotype.traitDict["sex"]);
         if (this.phenotype.traitDict["sex"] == "0")
         {
             humanPrefab = Resources.Load("HumanMalePrefab",typeof(GameObject)) as GameObject;
-            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, Quaternion.identity) as GameObject;// instantiate 
+            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;// instantiate
+            this.gameObject.name = named; 
 
+            gameObject.SetActive(true);
         }
         if (this.phenotype.traitDict["sex"] == "1")
         {
             humanPrefab = Resources.Load("HumanFemalePrefab",typeof(GameObject)) as GameObject;
-            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, Quaternion.identity) as GameObject;// instantiate 
+            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;// instantiate 
+            this.gameObject.name = named;
 
+            gameObject.SetActive(true);
         }
+
         this.gameObject.AddComponent<FOVDetection>();
         animator = this.gameObject.GetComponent<Animator>();
 
@@ -81,22 +82,14 @@ public class Human : Animal
             humanSimpleAI3 = new HumanSimpleAI3(this);
         }
         
-        
         fOVDetection = this.gameObject.GetComponent<FOVDetection>();
         rigidbody = this.gameObject.GetComponent<Rigidbody>();
 
-        Eye_L = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(2);
-        Eye_R = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(3);
+        leftEye = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(2);
+        rightEye = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(3);
 
-        Hand_L = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetChild(5);
-        Hand_R = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(5);
-
-
-        var direction = (TestObj.transform.position - this.gameObject.transform.position);
-        var distance = Vector3.Distance(this.gameObject.transform.position, TestObj.transform.position);
-        var magnitude = (this.gameObject.transform.position - TestObj.transform.position).magnitude;
-        z  = TestObj.transform.position.z - (1/distance) * Mathf.Abs(direction.z);
-        x =  TestObj.transform.position.x - (1/distance) * Mathf.Abs(direction.x);
+        leftHand = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetChild(5);
+        rightHand = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(5);
 
     }
     
@@ -104,20 +97,17 @@ public class Human : Animal
         // this.gameObject.transform.LookAt(new Vector3(x,0,z));
         // this.humanMotorSystem.accellerate(2,new Vector3(x,0,z));
         this.humanMotorSystem.rotate(1);
-        
     }
 
-    public void updateHuman(){
+    public void UpdateAnimal(){
 
-        float[ , , ] visualInput = this.nervousSystem.GetVisualInput();
+        float[ , , ] visualInput = this.humanNervousSystem.GetVisualInput();
         fOVDetection.inFov(this.gameObject.transform, 45,10);
+
         this.humanActionChoice = humanSimpleAI3.chooseAction(visualInput);
         this.humanMotorSystem.takeAction(this.humanActionChoice);
         this.driveSystem.UpdateDrives();
-
-        
     }
-    
 }
 
 

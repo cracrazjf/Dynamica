@@ -23,7 +23,6 @@ public class HumanSimpleAI
     }
     public double counter = 0;
     
-    
     public HumanActionChoice chooseAction(){
         float hand = 0.0f;
         float accellerationRate = 0.0f;

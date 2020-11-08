@@ -136,7 +136,7 @@ public class Genome
         // }
     }
     
-    public void createGenome(string species)
+    public void CreateGenome(string species)
     {
         importSpeciesInfo(species);
         
