@@ -4,12 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - human
-  - water
-  - apple
+  - Human
   - righthand
-  - food
-  - ground
+  - Apple
+  - Water
   layers:
   - Default
   - TransparentFX

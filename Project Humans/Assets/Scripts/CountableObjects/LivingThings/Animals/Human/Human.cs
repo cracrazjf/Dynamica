@@ -14,7 +14,7 @@ public class Human : Animal
     public HumanGPSAI humanGPSAI;
     public HumanRNNAI humanRNNAI;
     public FOVDetection fOVDetection;
-  
+
     public string activeAI = "humanTestAI";
 
     public HumanMotorSystem humanMotorSystem;
@@ -23,7 +23,6 @@ public class Human : Animal
 
     /// <value>Human prefab</value>
     public GameObject humanPrefab;
-    private string named;
 
     public Transform leftEye;
     public Transform rightEye;
@@ -55,7 +54,7 @@ public class Human : Animal
         {
             humanPrefab = Resources.Load("HumanMalePrefab",typeof(GameObject)) as GameObject;
             this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;// instantiate
-            this.gameObject.name = named; 
+            this.gameObject.name = this.name; 
 
             gameObject.SetActive(true);
         }
@@ -63,7 +62,7 @@ public class Human : Animal
         {
             humanPrefab = Resources.Load("HumanFemalePrefab",typeof(GameObject)) as GameObject;
             this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;// instantiate 
-            this.gameObject.name = named;
+            this.gameObject.name = this.name;
 
             gameObject.SetActive(true);
         }
@@ -99,7 +98,7 @@ public class Human : Animal
         this.humanMotorSystem.rotate(1);
     }
 
-    public void UpdateAnimal(){
+    public override void UpdateAnimal(){
 
         float[ , , ] visualInput = this.humanNervousSystem.GetVisualInput();
         fOVDetection.inFov(this.gameObject.transform, 45,10);

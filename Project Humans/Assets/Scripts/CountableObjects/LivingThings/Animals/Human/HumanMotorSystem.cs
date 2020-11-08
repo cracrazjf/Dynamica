@@ -58,11 +58,11 @@ public class HumanMotorSystem
         maxAcceleration_rate = float.Parse(thisHuman.phenotype.traitDict["maxacceleration_rate"]);
         max_rotation_speed = float.Parse(thisHuman.phenotype.traitDict["max_rotation_speed"]);
         
-        sittingDownIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["sitting down"];
+        /*sittingDownIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["sitting down"];
         standingUpIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["standing up"];
         layingDownIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["laying down"];
         holdingLHIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["holding LH"];
-        holdingRHIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["holding RH"];
+        holdingRHIndex = this.thisHuman.humanNervousSystem.touchInputLabelIndexDict["holding RH"]; */
 
     }
 

@@ -98,7 +98,7 @@ public class HumanSimpleAI3
             
         }
         if (currentSubGoal == "SearchFor Water") {
-            searchForThing(1,"water");
+            searchForThing(1,"Water");
         }
         if (currentSubGoal == "GoTo Water") {
             if (closestTargetIndex >= 0) {
@@ -153,14 +153,14 @@ public class HumanSimpleAI3
             }
         }
         if (subGoal == "GoTo Water") {
-            if (checkIfTargetVisible("water")) {
+            if (checkIfTargetVisible("Water")) {
                 if (!checkIfTargetReachable()) {
                     return true;
                 }
             }
         }
         if (subGoal == "SearchFor Water") {
-            if(!checkIfTargetVisible("water")) {
+            if(!checkIfTargetVisible("Water")) {
                 return true;
             }
         }

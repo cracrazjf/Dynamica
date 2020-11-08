@@ -8,8 +8,8 @@ using UnityEngine;
     {
         public DriveSystem driveSystem;
         
-        private string name;
-        private string displayName;
+        public string name;
+        public string displayName;
 
         public Animal(string objectType, Genome motherGenome, Genome fatherGenome) : base (objectType, motherGenome, fatherGenome)
         {
@@ -36,8 +36,7 @@ using UnityEngine;
             return driveSystem;
         }
 
-        public void UpdateAnimal() {
-            Debug.Log("No update defined");
+        public virtual void UpdateAnimal(){
+            Debug.Log("No update defined for this animal");
         }
-
     }

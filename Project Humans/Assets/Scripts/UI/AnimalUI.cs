@@ -41,7 +41,7 @@ public class AnimalUI : MonoBehaviour
 
     public void ReceiveAnimal(GameObject clicked) {
 
-        if(clicked.tag == "human") {
+        if(clicked.tag == "Human") {
             Debug.Log ("Got a human!");
 
             string process = clicked.name;
@@ -72,7 +72,6 @@ public class AnimalUI : MonoBehaviour
     }
 
     public void DisplayDrives(){
-        //List<string> stateLabelList = new List<string> { "hunger", "thirst", "wakefulness", "energy", "health"};
 
         float[] to_display = new float[5];
         DriveSystem passed = selectedAnimal.GetDrive();
@@ -80,10 +79,10 @@ public class AnimalUI : MonoBehaviour
 
         Debug.Log(passedDrives.ToString());
 
-        this.hunger.text = passedDrives["hunger"].ToString();
+        hunger.text = passedDrives["hunger"].ToString();
         thirst.text = passedDrives["thirst"].ToString();
-        sleep.text = passedDrives["wakefulness"].ToString();
-        stamina.text = passedDrives["energy"].ToString();
+        sleep.text = passedDrives["sleepiness"].ToString();
+        stamina.text = passedDrives["fatigue"].ToString();
         health.text = passedDrives["health"].ToString();
 
         OGName.text = selectedAnimal.GetDisplayName();

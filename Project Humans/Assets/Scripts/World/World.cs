@@ -16,7 +16,7 @@ public class World : MonoBehaviour
     /// <value>Init starting numbers for objects</value>
     private int numApples = 5;
     private int numWater = 5;
-    private int numHumans = 5;
+    public const int numHumans = 2;
 
     /// <value>Creating object lists</value>
     public static bool populationChanged = false;
@@ -32,13 +32,13 @@ public class World : MonoBehaviour
     /// </summary>
     void Start()
     { 
-        CreateGround();
+        //CreateGround();
         CreateHumans();
         CreateApples();
         CreateWater();
     }
 
-    /// <summary>
+/*     /// <summary>
     /// CreateGround initializes the Ground object
     /// </summary>
     void CreateGround()
@@ -46,7 +46,7 @@ public class World : MonoBehaviour
         GameObject groundInstance = GameObject.Instantiate(Ground) as GameObject;
         var groundScript = groundInstance.GetComponent<Ground>();
         groundScript.Init(worldSize);
-    }
+    } */
 
     /// <summary>
     /// CreateApples initializes and places numApples appleInstance objectsFs randomly in the world
@@ -54,7 +54,7 @@ public class World : MonoBehaviour
     void CreateApples()
     {
         for (int i=0; i<numApples; i++){
-            var startPosition = new Vector3 (50 + Random.Range(minPosition,maxPosition), 0, 50+Random.Range(minPosition,maxPosition));
+            var startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0, Random.Range(minPosition,maxPosition));
             GameObject appleInstance = GameObject.Instantiate(Apple, startPosition, Quaternion.identity) as GameObject;
         }
     }
@@ -65,7 +65,7 @@ public class World : MonoBehaviour
     void CreateWater()
     {
         for (int i=0; i<numApples; i++){
-            var startPosition = new Vector3 (-50+Random.Range(minPosition,maxPosition), 0f, -50+Random.Range(minPosition,maxPosition));
+            var startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0f, Random.Range(minPosition,maxPosition));
             GameObject waterInstance = GameObject.Instantiate(Water, startPosition, Quaternion.identity) as GameObject;
         }
     }
@@ -78,7 +78,6 @@ public class World : MonoBehaviour
     /// </summary>
     void CreateHumans()
     {
-        numHumans = 1;
         for (int i=0; i<numHumans; i++){
             
             // normal reproduction way: new_human = human(mother_genome, father_genome)
