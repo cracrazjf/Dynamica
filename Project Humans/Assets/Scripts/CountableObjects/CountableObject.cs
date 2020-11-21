@@ -16,18 +16,43 @@ using UnityEngine;
 
 abstract public class CountableObject
 {
-    public  String objectType;
+    private static String objectType;
+    private static float nutrition;
+    private static float healthEffect;
     
     // unity variables
     public GameObject gameObject;
     public Animator animator;
 
-    public void Start() {
+    public CountableObject(string objectType, float nutrition, float healthEffect) {
 
     }
 
-    public void Update() {
+    public void Start() {}
 
+    public void Update() {}
+
+    public static float GetNutrition() {
+        return nutrition;
     }
 
+    public static float GetHealthEffect() {
+        return healthEffect;
+    }
+
+    public static string GetObjectType() {
+        return objectType;
+    }
+
+    public static void SetNutrition(float passed) {
+        nutrition = passed;
+    }
+
+    public static void SetHealthEffect(float passed) {
+        healthEffect = passed;
+    }
+
+    public static void SetObjectType(string passed) {
+        objectType = passed;
+    }
 }

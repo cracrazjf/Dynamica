@@ -20,10 +20,10 @@ public class MainCamera : MonoBehaviour
 
     private static bool brainMode = false;
 
-
     private static Transform toSwitch;
     private static bool resetPos = false;
     private static bool switchCenter = false;
+
 
     /// <summary>
     /// Start is called before the first frame update and sets the starting camera position and angle
@@ -112,7 +112,7 @@ public class MainCamera : MonoBehaviour
         resetPos = true;
     }
 
-    public void ToggleBrain() {
+    public static void ToggleBrain() {
         Debug.Log("Brain toggle");
         brainMode = !brainMode;
         
@@ -126,7 +126,7 @@ public class MainCamera : MonoBehaviour
     }
 
     public static void CenterObject(Transform passed) {
-        Debug.Log("Centering on animal");
+        Debug.Log("Centering on object");
         toSwitch = passed;
         resetPos = true;
         switchCenter = true;
@@ -135,7 +135,9 @@ public class MainCamera : MonoBehaviour
     public static void EnterAnimalCam(Camera passed) {
         Debug.Log("Entering animal cam");
 
-    
+        
+        //ToggleBrain();
+        
     }
 
     public void ResetPos(bool isIndependent) {

@@ -12,15 +12,20 @@ public class World : MonoBehaviour
     public GameObject Ground;
     public GameObject HumanFemale;
     public GameObject HumanMale;
+    public GameObject Penguin;
 
     /// <value>Init starting numbers for objects</value>
     private int numApples = 5;
     private int numWater = 5;
+    private int numPenguins = 2;
     public const int numHumans = 2;
 
     /// <value>Creating object lists</value>
     public static bool populationChanged = false;
+
     private static List<Animal> humanList = new List<Animal>();
+    private static Dictionary<string, Animal> allAnimalDict = new Dictionary<string, Animal>();
+    //private static Dictionary<string, int> speciesCount = new Dictionary<string, int>();
 
     /// <value>Setting initial world properties</value>
     public static float worldSize = 20.0f;
@@ -79,11 +84,7 @@ public class World : MonoBehaviour
     void CreateHumans()
     {
         for (int i=0; i<numHumans; i++){
-            
-            // normal reproduction way: new_human = human(mother_genome, father_genome)
-            // god creation way: new_human = human(read genome from file)
-            // create an empty genome object for mother & father, but specifying the species
-
+    
             // create the pseudo-random parent genomes
             motherGenome = new Genome();
             motherGenome.CreateGenome("human");
@@ -95,12 +96,32 @@ public class World : MonoBehaviour
             // create an instance of the human class
             Animal newHuman = new Human(name, motherGenome, fatherGenome);
             humanList.Add(newHuman);
+            allAnimalDict[name] = newHuman;
             
         }
     }
 
-    public static Animal GetHuman(int i) {
-        return humanList[i];
+    void CreatePenguins()
+    {
+        for (int i=0; i<numPenguins; i++){
+    
+            // create the pseudo-random parent genomes
+            motherGenome = new Genome();
+            motherGenome.CreateGenome("penguin");
+            fatherGenome = new Genome();
+            fatherGenome.CreateGenome("penguin");
+
+            string name = "Penguin " + i.ToString();
+
+            // create an instance of the human class
+            Animal newPenguin = new Penguin(name, motherGenome, fatherGenome);
+            allAnimalDict[name] = newPenguin;
+            
+        }
+    } 
+
+    public static Animal GetAnimal(string name) {
+        return allAnimalDict[name];
     }
 
     public void UpdateHumans() {
@@ -112,7 +133,6 @@ public class World : MonoBehaviour
     }
     
     int updateCounter = 0;
-
 
     /// <summary>
     /// Update is called once per frame

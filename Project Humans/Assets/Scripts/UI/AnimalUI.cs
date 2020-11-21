@@ -8,11 +8,13 @@ public class AnimalUI : MonoBehaviour
 {
     public Animal selectedAnimal = null;
 
-    /// <value>Used for camera transformations</value>
-    Transform temp = null;
-    bool togglePanel = true;
+    bool togglePanel = false;
+    bool toggleGenePanel = false;
     GameObject panel;
+    GameObject genePanel;
     GameObject mainCam;
+
+    public GameObject halo;
 
     public Text hunger;
     public Text thirst;
@@ -21,34 +23,61 @@ public class AnimalUI : MonoBehaviour
     public Text health;
     public Text OGName;
 
+    bool showMutable = true;
+
+    public Text displayText;
+    public Text muteText;
+
+    Genome displayGenome;
+    Phenotype displayPhenotype;
+
     private void Start()
     {
         mainCam = GameObject.Find("Main Camera");
-        panel = GameObject.Find("ObjectPanel");
+        panel = GameObject.Find("AnimalPanel");
+        panel = GameObject.Find("GenomePanel");
+
+        halo.SetActive(false);
     }
     
     private void Update(){
+        if(toggleGenePanel) {
+            DisplayGenome();
+        }
+
         if (Input.GetMouseButtonDown(0)) {
             Debug.Log("Logged a click!");
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if(Physics.Raycast(ray, out hit)) {
+                halo.SetActive(true);
+                Vector3 haloPos = new Vector3 (hit.transform.position.x, 0.1f, hit.transform.position.z);
+                halo.transform.position = haloPos;
+
                ReceiveAnimal(hit.transform.gameObject); 
             }
+        }
+
+        if(!togglePanel){
+            halo.SetActive(false);
         }
     }
 
     public void ReceiveAnimal(GameObject clicked) {
-
+        
         if(clicked.tag == "Human") {
             Debug.Log ("Got a human!");
+            panel.SetActive(true);
 
-            string process = clicked.name;
-            string[] splitName = process.Split(' ');
-            int originalIndex = int.Parse(splitName[1]);
+            selectedAnimal = World.GetAnimal(clicked.name);
+        }
 
-            selectedAnimal = World.GetHuman(originalIndex);
+        if(clicked.tag == "Penguin") {
+            Debug.Log ("He wants fish!");
+            panel.SetActive(true);
+
+            selectedAnimal = World.GetAnimal(clicked.name);
         }
 
         if(selectedAnimal != null) {
@@ -59,6 +88,11 @@ public class AnimalUI : MonoBehaviour
     public void TogglePanel() {
         togglePanel = !togglePanel;
         panel.SetActive(togglePanel);
+    }
+
+    public void ToggleGenePanel() {
+        toggleGenePanel = !toggleGenePanel;
+        genePanel.SetActive(toggleGenePanel);
     }
 
     public void PassAnimalTransform() {
@@ -87,4 +121,35 @@ public class AnimalUI : MonoBehaviour
 
         OGName.text = selectedAnimal.GetDisplayName();
     }
+
+    public void ExitPanel() {
+        panel.SetActive(false);
+    }
+
+    public void DisplayGenome(){
+        displayGenome = selectedAnimal.GetGenome();
+        displayPhenotype = selectedAnimal.GetPhenotype();
+
+        string toDisplay = "";
+
+        if(showMutable){
+            toDisplay = displayPhenotype.GetDisplayInfo();
+        } else {
+            toDisplay = displayGenome.GetConstantInfo();
+        }
+        Debug.Log(toDisplay);
+        displayText.text = toDisplay;
+    }
+
+    public void ToggleMutable() {
+        showMutable = !showMutable;
+        DisplayGenome();
+
+        if(showMutable) {
+            muteText.text = "Mutable";
+        } else {
+            muteText.text = "Immutable";
+        }
+    }
+
 }

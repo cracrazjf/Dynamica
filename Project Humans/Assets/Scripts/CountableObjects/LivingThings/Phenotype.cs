@@ -30,16 +30,6 @@ public class Phenotype {
         this.numTraits = 0;
         this.createGeneTraits();
         this.createConstantTraits();
-
-        //Debug.Log("Phenotype Constructor");
-        for (int i=0; i<numTraits; i++){
-            string outputString = i.ToString();
-            string label = traitLabelList[i];
-            outputString = outputString + " " + label;
-            outputString = outputString + " " + traitDict[label];
-            outputString = outputString + " Display=" + traitDisplayDict[label].ToString();
-            //Debug.Log(outputString);
-        }
     }
 
     private void createGeneTraits(){
@@ -77,7 +67,7 @@ public class Phenotype {
 
     private void createConstantTraits(){
         
-                // go through each item in genome's constant dict, and add them to the trait data structures
+            // go through each item in genome's constant dict, and add them to the trait data structures
         for (int i = 0; i < thisLivingObject.genome.numConstants; i++){
             string label = thisLivingObject.genome.constantLabelList[i];
             //Debug.Log(label);
@@ -137,13 +127,23 @@ public class Phenotype {
         return stringValue;
     }
 
-    private void Start()
-    {
+    public string GetDisplayInfo() {
+        string toReturn = "";
 
+        for (int i=0; i<numTraits; i++){
+            string outputString = i.ToString();
+            string label = traitLabelList[i];
+            outputString = outputString + " " + label;
+            outputString = outputString + " " + traitDict[label];
+            outputString = outputString + " Display=" + traitDisplayDict[label].ToString();
+            
+            toReturn += outputString + "\n";
+        }
+
+        return toReturn;
     }
 
-    private void Update()
-    {
-        
-    }
+    private void Start(){}
+
+    private void Update(){}
 }

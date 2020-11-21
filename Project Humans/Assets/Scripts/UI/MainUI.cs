@@ -8,6 +8,10 @@ public class MainUI : MonoBehaviour
 
     private GameObject objectPanel;
     private GameObject alwaysPanel;
+    private GameObject nonPanel;
+    private GameObject animalPanel;
+    private GameObject genomePanel;
+    private GameObject brainPanel;
     private GameObject help;
     private GameObject pause;
     private Button[] buttons;
@@ -20,14 +24,19 @@ public class MainUI : MonoBehaviour
     /// Start is called before the first frame update and sets the starting camera position and angle
     /// </summary>
     void Start() {
-
-        objectPanel = GameObject.Find("ObjectPanel");
         alwaysPanel = GameObject.Find("AlwaysPanel");
         help = GameObject.Find("InfoPanel");
         pause = GameObject.Find("PauseText");
-
+        nonPanel = GameObject.Find("NonlivingPanel");
+        animalPanel = GameObject.Find("AnimalPanel");
+        genomePanel = GameObject.Find("GenomePanel");
+        brainPanel = GameObject.Find("BrainPanel");
         help.SetActive(false);
         pause.SetActive(false);
+        nonPanel.SetActive(false);
+        animalPanel.SetActive(false);
+        genomePanel.SetActive(false);
+        brainPanel.SetActive(false);
 
     }
 
@@ -36,9 +45,7 @@ public class MainUI : MonoBehaviour
     /// </summary>
     void Update() { }
 
-    public void ExitPanel() {
-        objectPanel.SetActive(false);
-    }
+    
 
     public void ToggleFF() {
         buttons = alwaysPanel.GetComponentsInChildren<Button>();

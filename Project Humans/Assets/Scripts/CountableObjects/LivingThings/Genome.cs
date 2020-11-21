@@ -45,10 +45,7 @@ public class Genome
                     geneLabelList.Add(geneLabel);
                     geneDict.Add(geneLabel, childGene);
                     geneIndexDict.Add(geneLabel, i.ToString());
-                    
-                   
-
-                    
+   
                 }
                 else
                 {
@@ -75,33 +72,22 @@ public class Genome
         {
             success = false;
         }
-        //FOR DEBUG
-        // Debug.Log("Inheret Genome");
-        // var arrayOfAllKeys = geneDict.Keys.ToArray();
-        // for (int i=0; i<geneDict.Count; i++){
-        //     string outputString = i.ToString();
-        //     string label = arrayOfAllKeys[i];
-            
-        //     Gene currentGene = geneDict[label];
-        //     outputString = outputString + " " + label;
-        //     outputString = outputString + " " + currentGene.geneType;
-        //     outputString = outputString + " " + currentGene.geneSize.ToString();
-        //     outputString += " ";
-        //     for (int j=0; j<currentGene.geneSize; j++){
-        //         int value = Convert.ToInt32(currentGene.geneSequence[j]);
-        //         outputString += value.ToString();
-        //     }
-        //     Debug.Log(outputString);
-        // }
+
         return success;
     }
 
     public void importSpeciesInfo(string species){
         int counter = 0;  
-        string line;  
+        string line;
+        System.IO.StreamReader file;
         
-        // Read the file and display it line by line.  
-        System.IO.StreamReader file = new System.IO.StreamReader(@"Assets/config/human.config");  
+        // Read the file and display it line by line. 
+        if (species == "human") {
+            file = new System.IO.StreamReader(@"Assets/config/human.config");  
+        } else {
+            file = new System.IO.StreamReader(@"Assets/config/penguin.config");  
+        }
+        
         while((line = file.ReadLine()) != null)  
         {  
             string[] lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
@@ -121,19 +107,10 @@ public class Genome
                 numConstants++;
                 
             }
-    
             counter++;  
         }  
         
         file.Close();
-        // FOR DEBUGGING
-        // var arrayOfAllKeys = genomeInfoDict.Keys.ToArray();
-        // for (int i=0; i<genomeInfoDict.Count; i++){
-        //     string key = arrayOfAllKeys[i];
-        //     Debug.Log(i);
-        //     Debug.Log(key);
-        //     Debug.Log(genomeInfoDict[key][0]);
-        // }
     }
     
     public void CreateGenome(string species)
@@ -147,28 +124,22 @@ public class Genome
             newGene.generateGene(label, geneInfo[0], geneInfo[1], geneInfo[2], geneInfo[3], geneInfo[4], geneInfo[5]);
             geneDict.Add(label, newGene);
         }
-        // FOR DEBUG
-        // Debug.Log("Create Genome");
-        // var arrayOfAllKeys = geneDict.Keys.ToArray();
-        // for (int i=0; i<geneDict.Count; i++){
-        //     string outputString = i.ToString();
-        //     string label = arrayOfAllKeys[i];
+
+    }
+
+    public string GetConstantInfo() {
+        string toReturn = "";
+
+        for (int i=0; i<numConstants; i++){
+            string outputString = i.ToString();
+            string label = constantLabelList[i];
+            outputString = outputString + " " + label;
+            outputString = outputString + " " + constantDict[label];
             
-        //     Gene currentGene = geneDict[label];
-        //     outputString = outputString + " " + label;
-        //     outputString = outputString + " " + currentGene.geneType;
-        //     outputString = outputString + " " + currentGene.geneSize.ToString();
-        //     outputString += " ";
-        //     for (int j=0; j<currentGene.geneSize; j++){
-        //         int value = Convert.ToInt32(currentGene.geneSequence[j]);
-        //         outputString += value.ToString();
-        //     }
-        //     Debug.Log(outputString);
+            toReturn += outputString + "\n";
+        }
 
-        // }
-
-        
-
+        return toReturn;
     }
 
 }

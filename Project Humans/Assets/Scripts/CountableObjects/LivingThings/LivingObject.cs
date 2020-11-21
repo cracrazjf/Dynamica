@@ -10,13 +10,20 @@ abstract public class LivingObject : CountableObject
     
     public string test = "test";
 
-    public LivingObject(string objectType, Genome motherGenome, Genome fatherGenome)
+    public LivingObject(string objectType, float nutrition, float healthEffect, Genome motherGenome, Genome fatherGenome) 
+    : base (objectType, nutrition, healthEffect)
     {
-        
         this.genome = new Genome();
         this.genome.thisLivingObject = this;
         this.genome.inheretGenome(motherGenome, fatherGenome);
         this.phenotype = new Phenotype(this);
-        
+    }
+
+    public Phenotype GetPhenotype(){
+        return phenotype;
+    }
+
+    public Genome GetGenome(){
+        return genome;
     }
 };
