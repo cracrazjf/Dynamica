@@ -35,7 +35,7 @@ public class AnimalUI : MonoBehaviour
     {
         mainCam = GameObject.Find("Main Camera");
         panel = GameObject.Find("AnimalPanel");
-        panel = GameObject.Find("GenomePanel");
+        genePanel = GameObject.Find("GenomePanel");
 
         halo.SetActive(false);
     }
@@ -108,7 +108,7 @@ public class AnimalUI : MonoBehaviour
     public void DisplayDrives(){
 
         float[] to_display = new float[5];
-        DriveSystem passed = selectedAnimal.GetDrive();
+        DriveSystem passed = selectedAnimal.GetDriveSystem();
         Dictionary<string, float> passedDrives = passed.GetStateValues();
 
         Debug.Log(passedDrives.ToString());

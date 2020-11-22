@@ -44,7 +44,10 @@ public class NonlivingUI : MonoBehaviour
             Debug.Log ("Got a thing!");
             selectedObject = clicked;
 
-            panel.SetActive(true);
+            selectedObject = World.GetObject(clicked.name).gameObject;
+        }
+
+        if(selectedObject != null) {
             DisplayInfo();
         }
     }

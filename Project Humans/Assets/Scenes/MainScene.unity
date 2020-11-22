@@ -285,9 +285,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GenomeUI, Assembly-CSharp
-        m_MethodName: ExitPanel
+      - m_Target: {fileID: 963194228}
+        m_TargetAssemblyTypeName: AnimalUI, Assembly-CSharp
+        m_MethodName: ToggleGenePanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2840,14 +2840,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d57bd19c23aca04b915a721fa76bee4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Water: {fileID: 1875389735474708, guid: 051a30049c31948d8956ef9fc0b81c13, type: 3}
-  Apple: {fileID: 1846160755511594, guid: 5f3499b7ccca7438db0396f05573acae, type: 3}
-  Ground: {fileID: 656374849}
-  HumanFemale: {fileID: 1836293742052832, guid: 1d6fdc94aff822e43b42a74383801014,
-    type: 3}
-  HumanMale: {fileID: 654695087079363681, guid: 67d8a2aa59ead8d478a2c133a1067a83,
-    type: 3}
-  Penguin: {fileID: 161238, guid: a346c7be19d41f44fb911c9043372213, type: 3}
 --- !u!114 &963194231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5840,8 +5832,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1411839736}
   m_HandleRect: {fileID: 1411839735}
   m_Direction: 3
-  m_Value: 1
-  m_Size: 0.9999999
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 3
   m_OnValueChanged:
     m_PersistentCalls:

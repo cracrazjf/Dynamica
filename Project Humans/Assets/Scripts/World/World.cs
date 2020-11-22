@@ -6,13 +6,6 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    /// <value>Create unity game objects</value>
-    public GameObject Water;
-    public GameObject Apple;
-    public GameObject Ground;
-    public GameObject HumanFemale;
-    public GameObject HumanMale;
-    public GameObject Penguin;
 
     /// <value>Init starting numbers for objects</value>
     private int numApples = 5;
@@ -25,6 +18,7 @@ public class World : MonoBehaviour
 
     private static List<Animal> humanList = new List<Animal>();
     private static Dictionary<string, Animal> allAnimalDict = new Dictionary<string, Animal>();
+    private static Dictionary<string, NonlivingObject> allObjectDict = new Dictionary<string, NonlivingObject>();
     //private static Dictionary<string, int> speciesCount = new Dictionary<string, int>();
 
     /// <value>Setting initial world properties</value>
@@ -37,21 +31,10 @@ public class World : MonoBehaviour
     /// </summary>
     void Start()
     { 
-        //CreateGround();
         CreateHumans();
         CreateApples();
         CreateWater();
     }
-
-/*     /// <summary>
-    /// CreateGround initializes the Ground object
-    /// </summary>
-    void CreateGround()
-    {
-        GameObject groundInstance = GameObject.Instantiate(Ground) as GameObject;
-        var groundScript = groundInstance.GetComponent<Ground>();
-        groundScript.Init(worldSize);
-    } */
 
     /// <summary>
     /// CreateApples initializes and places numApples appleInstance objectsFs randomly in the world
@@ -59,8 +42,12 @@ public class World : MonoBehaviour
     void CreateApples()
     {
         for (int i=0; i<numApples; i++){
-            var startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0, Random.Range(minPosition,maxPosition));
-            GameObject appleInstance = GameObject.Instantiate(Apple, startPosition, Quaternion.identity) as GameObject;
+
+            string name = "Apple " + i.ToString();
+
+            // create an instance of the human class
+            NonlivingObject newApple = new Apple(name);
+            allObjectDict.Add(name, newApple);
         }
     }
 
@@ -69,9 +56,13 @@ public class World : MonoBehaviour
     /// </summary>
     void CreateWater()
     {
-        for (int i=0; i<numApples; i++){
-            var startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0f, Random.Range(minPosition,maxPosition));
-            GameObject waterInstance = GameObject.Instantiate(Water, startPosition, Quaternion.identity) as GameObject;
+        for (int i=0; i<numWater; i++){
+
+            string name = "Water " + i.ToString();
+
+            // create an instance of the human class
+            NonlivingObject newWater = new Water(name);
+            allObjectDict.Add(name, newWater);
         }
     }
 
@@ -96,7 +87,7 @@ public class World : MonoBehaviour
             // create an instance of the human class
             Animal newHuman = new Human(name, motherGenome, fatherGenome);
             humanList.Add(newHuman);
-            allAnimalDict[name] = newHuman;
+            allAnimalDict.Add(name, newHuman);
             
         }
     }
@@ -115,7 +106,7 @@ public class World : MonoBehaviour
 
             // create an instance of the human class
             Animal newPenguin = new Penguin(name, motherGenome, fatherGenome);
-            allAnimalDict[name] = newPenguin;
+            allAnimalDict.Add(name, newPenguin);
             
         }
     } 
@@ -123,6 +114,11 @@ public class World : MonoBehaviour
     public static Animal GetAnimal(string name) {
         return allAnimalDict[name];
     }
+
+    public static NonlivingObject GetObject(string name) {
+        return allObjectDict[name];
+    }
+
 
     public void UpdateHumans() {
        
