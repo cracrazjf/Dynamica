@@ -11,12 +11,12 @@ public class World : MonoBehaviour
     private int numApples = 5;
     private int numWater = 5;
     private int numPenguins = 2;
-    public const int numHumans = 2;
+    public const int numHumans = 1;
 
     /// <value>Creating object lists</value>
     public static bool populationChanged = false;
 
-    private static List<Animal> humanList = new List<Animal>();
+    public static List<Animal> humanList = new List<Animal>();
     private static Dictionary<string, Animal> allAnimalDict = new Dictionary<string, Animal>();
     private static Dictionary<string, NonlivingObject> allObjectDict = new Dictionary<string, NonlivingObject>();
     //private static Dictionary<string, int> speciesCount = new Dictionary<string, int>();
@@ -88,7 +88,6 @@ public class World : MonoBehaviour
             Animal newHuman = new Human(name, motherGenome, fatherGenome);
             humanList.Add(newHuman);
             allAnimalDict.Add(name, newHuman);
-            
         }
     }
 

@@ -77,8 +77,8 @@ public class HumanSimpleAI2
         // check if sleeping
 
         if (this.thisHuman.bodyState == "standing") {
-            if (checkIfTargetVisible("water").Count > 0) {
-                List<GameObject> targets = checkIfTargetVisible("water");
+            if (checkIfTargetVisible("Water").Count > 0) {
+                List<GameObject> targets = checkIfTargetVisible("Water");
                 GameObject target = caculateCloestObject(targets);
                 if (checkIfTargetReachable(target)) {
                     actionChoice.actionValueDict["drink"] = 1;
@@ -136,6 +136,7 @@ public class HumanSimpleAI2
                             }
                             else{
                                 if (objectTypeInLH == "None") {
+                                    Debug.Log("here");
                                     pickUpPosition = target.transform.position;
                                     actionChoice.argumentDict["hand"] = 0;
                                     actionChoice.actionValueDict["pick_up"] = 1;
@@ -154,7 +155,11 @@ public class HumanSimpleAI2
                             }
                         }
                         else {
-                            goToObject(target);
+                            if (this.thisHuman.actionState == "none" || this.thisHuman.actionState =="taking steps") {
+                                this.thisHuman.gameObject.transform.LookAt(target.transform);
+                                goToObject(target);
+                            }
+                            
                         }
                     }
                     else {
@@ -237,7 +242,7 @@ public class HumanSimpleAI2
 
     public void goToObject(GameObject target) {
         if (target != null) {
-            thisHuman.gameObject.transform.LookAt(target.transform);
+            
             var distance = Vector3.Distance(thisHuman.gameObject.transform.position,target.transform.position);
             if (distance > 0) {
                 if (distance > 1) {

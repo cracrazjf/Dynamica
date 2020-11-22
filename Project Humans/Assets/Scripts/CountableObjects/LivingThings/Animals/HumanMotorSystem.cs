@@ -11,10 +11,10 @@ public class HumanMotorSystem : MotorSystem
     public HumanMotorSystem(Human human) : base(human) {
 
         this.thisHuman = human;
-        for (int i = 0; i < actionLabelList.Count; i++){
-            actionIndexDict.Add(actionLabelList[i], i);
-            actionDisplayDict.Add(actionLabelList[i], true);
-        }
+        // for (int i = 0; i < actionLabelList.Count; i++){
+        //     actionIndexDict.Add(actionLabelList[i], i);
+        //     actionDisplayDict.Add(actionLabelList[i], true);
+        // }
         
         velocity = float.Parse(thisHuman.phenotype.traitDict["current_velocity"]);
         maxStepDistance = float.Parse(thisHuman.phenotype.traitDict["maxStepDistance"]);
@@ -148,7 +148,7 @@ public class HumanMotorSystem : MotorSystem
                         this.thisHuman.animator.SetTrigger("pick");
                         this.thisHuman.animator.SetFloat("PickupL/R",pickUpHand);
                         for(int i = 0; i < numObj; i++) {
-                            if (!pickableObj[i].CompareTag("human") && !pickableObj[i].CompareTag("ground")) {
+                            if (!pickableObj[i].CompareTag("Human") && !pickableObj[i].CompareTag("ground")) {
                                 pickableObj[i].GetComponent<Rigidbody>().isKinematic = true;
                                 pickableObj[i].GetComponent<Rigidbody>().useGravity = false;
                                 if (pickUpHand == 0){

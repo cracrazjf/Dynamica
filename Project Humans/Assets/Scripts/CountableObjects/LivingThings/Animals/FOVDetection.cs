@@ -48,8 +48,7 @@ public class FOVDetection : MonoBehaviour
 
     public void inFov(Transform checkingObject, float maxAngle, float maxRadius)
     {
-        Collider[] overlaps = new Collider[10];
-        //Collider[] overlaps = new Collider[60];
+        Collider[] overlaps = new Collider[60];
         int count = Physics.OverlapSphereNonAlloc(checkingObject.position, maxRadius, overlaps);
 
         objects_in_vision.Clear();

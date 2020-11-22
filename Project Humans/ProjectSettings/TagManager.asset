@@ -8,6 +8,8 @@ TagManager:
   - righthand
   - Apple
   - Water
+  - ground
+  - food
   layers:
   - Default
   - TransparentFX

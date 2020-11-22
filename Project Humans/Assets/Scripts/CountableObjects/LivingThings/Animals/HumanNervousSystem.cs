@@ -65,7 +65,10 @@ public class HumanNervousSystem : NervousSystem {
 
     public void updateBodyState(){
         bodyStateArray[bodyStateIndexDict[this.thisHuman.bodyState]] = 1.0f;
-        bodyStateArray[bodyStateIndexDict[this.thisHuman.actionState]] = 1.0f;
+        if(this.thisHuman.actionState != "none") {
+            bodyStateArray[bodyStateIndexDict[this.thisHuman.actionState]] = 1.0f;
+        }
+        
 
         if (this.thisHuman.sleepingState == true){
             bodyStateArray[bodyStateIndexDict["sleeping"]] = 1.0f;
@@ -96,12 +99,120 @@ public class HumanNervousSystem : NervousSystem {
 
     public override float [ , ] GetVisualInput()
     {
-        // we need to get the human's current camera image as a 3-d bitmap matrix of rgb-values
-        // for example, if the camera resolution is 256x256, then the matrix would be 256x256x3, where those 
-        // three are r,g,b
-        // then we look in our preferences for what the nervous system resolution is, and we downsample
-        // 32x32x3, 256/x = 32, x = 8, basically an algorithm that 
-    
+        if (this.thisHuman.visualInputCamera.gameObject.activeInHierarchy) {
+            if (Input.GetKeyDown(KeyCode.Space)){ // replace this with the visual refresh rate at some point
+                Texture2D visualInputTexture = new Texture2D(visualResolution, visualResolution, TextureFormat.RGB24, false);
+
+                this.thisHuman.visualInputCamera.Render();
+                RenderTexture.active = this.thisHuman.visualInputCamera.targetTexture;
+                visualInputTexture.ReadPixels(new Rect(0, 0, visualResolution, visualResolution), 0, 0);
+
+                //visualInputTexture = ResizeTexture(visualInputTexture, (float)nervousSystemRes / (float)resWidth);
+
+                Color[] visualInputArray = visualInputTexture.GetPixels();
+                
+                Debug.Log(visualInputArray.Length);
+                // 1024
+
+                int resolutionSquared = visualResolution*visualResolution;
+                for (int i=0; i<resolutionSquared; i++){
+                    visualInput[0,i] = visualInputArray[i].r;
+                    visualInput[1,i] = visualInputArray[i].g;
+                    visualInput[2,i] = visualInputArray[i].b;
+                }
+
+                saveVisualImage(visualInputTexture);
+            
+            }
+            else{
+                // return the previous visual state
+            }
+        }
+        else{
+            Debug.Log("Camera is off");
+        }
+        
+
         return visualInput;
+    
+    }
+
+    void saveVisualImage(Texture2D visualInputTexture){
+        byte[] bytes = visualInputTexture.EncodeToPNG();
+        string fileName = visualInputName();
+        System.IO.File.WriteAllBytes(fileName, bytes);
+    }
+
+    string visualInputName() {
+        return string.Format("{0}/VisualInputs/visualInput_{1}x{2}_{3}.png",
+        Application.dataPath,
+        visualResolution,
+        visualResolution,
+        System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+    }
+
+    Texture2D ResizeTexture(Texture2D pSource, float pScale){
+        //*** Variables
+        int i;
+    
+        //*** Get All the source pixels
+        Color[] aSourceColor = pSource.GetPixels(0);
+        Vector2 vSourceSize = new Vector2(pSource.width, pSource.height);
+    
+        //*** Calculate New Size
+        float xWidth = Mathf.RoundToInt((float)pSource.width * pScale);                     
+        float xHeight = Mathf.RoundToInt((float)pSource.height * pScale);
+    
+        //*** Make New
+        Texture2D oNewTex = new Texture2D((int)xWidth, (int)xHeight, TextureFormat.RGB24, false);
+    
+        //*** Make destination array
+        int xLength = (int)xWidth * (int)xHeight;
+        Color[] aColor = new Color[xLength];
+    
+        Vector2 vPixelSize = new Vector2(vSourceSize.x / xWidth, vSourceSize.y / xHeight);
+    
+        //*** Loop through destination pixels and process
+        Vector2 vCenter = new Vector2();
+        for(i=0; i<xLength; i++){
+    
+            //*** Figure out x&y
+            float xX = (float)i % xWidth;
+            float xY = Mathf.Floor((float)i / xWidth);
+    
+            //*** Calculate Center
+            vCenter.x = (xX / xWidth) * vSourceSize.x;
+            vCenter.y = (xY / xHeight) * vSourceSize.y;
+
+
+            int xXFrom = (int)Mathf.Max(Mathf.Floor(vCenter.x - (vPixelSize.x * 0.5f)), 0);
+            int xXTo = (int)Mathf.Min(Mathf.Ceil(vCenter.x + (vPixelSize.x * 0.5f)), vSourceSize.x);
+            int xYFrom = (int)Mathf.Max(Mathf.Floor(vCenter.y - (vPixelSize.y * 0.5f)), 0);
+            int xYTo = (int)Mathf.Min(Mathf.Ceil(vCenter.y + (vPixelSize.y * 0.5f)), vSourceSize.y);
+ 
+            //*** Loop and accumulate
+            Vector4 oColorTotal = new Vector4();
+            Color oColorTemp = new Color();
+            float xGridCount = 0;
+            for(int iy = xYFrom; iy < xYTo; iy++){
+                for(int ix = xXFrom; ix < xXTo; ix++){
+ 
+                    //*** Get Color
+                    oColorTemp += aSourceColor[(int)(((float)iy * vSourceSize.x) + ix)];
+ 
+                    //*** Sum
+                    xGridCount++;
+                }
+            }
+ 
+            //*** Average Color
+            aColor[i] = oColorTemp / (float)xGridCount;
+        }
+        oNewTex.SetPixels(aColor);
+        oNewTex.Apply();
+        Debug.Log("visualInput taken");
+        return oNewTex;
+        
+
     }
 }

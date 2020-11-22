@@ -65,9 +65,9 @@ public class MotorSystem
             actionDisplayDict.Add(actionLabelList[i], true);
         }
         
-        velocity = float.Parse(thisAnimal.phenotype.traitDict["currentVelocity"]);
-        maxStepDistance = float.Parse(thisAnimal.phenotype.traitDict["maxStepDistance"]);
-        maxRotationSpeed = float.Parse(thisAnimal.phenotype.traitDict["maxRotationSpeed"]);
+        // velocity = float.Parse(thisAnimal.phenotype.traitDict["currentVelocity"]);
+        // maxStepDistance = float.Parse(thisAnimal.phenotype.traitDict["maxStepDistance"]);
+        // maxRotationSpeed = float.Parse(thisAnimal.phenotype.traitDict["maxRotationSpeed"]);
 
 
     }

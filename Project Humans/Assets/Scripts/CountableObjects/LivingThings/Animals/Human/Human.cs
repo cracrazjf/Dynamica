@@ -69,7 +69,7 @@ public class Human : Animal
         }
 
         this.gameObject.AddComponent<FOVDetection>();
-        //this.gameObject.AddComponent<HumanMonobehaviour>();
+        this.gameObject.AddComponent<HumanMonobehaviour>();
         animator = this.gameObject.GetComponent<Animator>();
         visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
 
