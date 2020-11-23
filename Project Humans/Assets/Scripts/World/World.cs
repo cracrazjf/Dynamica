@@ -6,25 +6,32 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-
-    /// <value>Init starting numbers for objects</value>
+    // move the num of everything into a config file
     private int numApples = 5;
     private int numWater = 5;
-    private int numPenguins = 2;
-    public const int numHumans = 1;
+    private int numPenguins = 0;
+    public const int numHumans = 2;
 
-    /// <value>Creating object lists</value>
-    public static bool populationChanged = false;
+    private static Dictionary<string, int> countableObjectCountDict = new Dictionary<string, int>();
+    
+    /// <value> These dicts keep track of GameObject </value>
+    private static Dictionary<string, NonlivingObject> nonlivingObjectDict = new Dictionary<string, NonlivingObject>();
+    private static Dictionary<string, Animal> animalDict = new Dictionary<string, Animal>();
+    private static Dictionary<string, Plant> plantDict = new Dictionary<string, Plant>();
+    
+    /// <value> These lists keep track of entities needing an update each epoch</value>
+    public static List<Animal> animalList = new List<Animal>();
+    public static List<Plant> plantList = new List<Plant>();
 
-    public static List<Animal> humanList = new List<Animal>();
-    private static Dictionary<string, Animal> allAnimalDict = new Dictionary<string, Animal>();
-    private static Dictionary<string, NonlivingObject> allObjectDict = new Dictionary<string, NonlivingObject>();
-    //private static Dictionary<string, int> speciesCount = new Dictionary<string, int>();
+    /// <value> These genome variables are used to instantiate every living thing that is created</value>
+    public Genome motherGenome;
+    public Genome fatherGenome;
 
     /// <value>Setting initial world properties</value>
     public static float worldSize = 20.0f;
     public static float maxPosition = World.worldSize / 2;
     public static float minPosition = -World.worldSize / 2;
+
 
     /// <summary>
     /// Start is called before the first frame update and initializes all scene objects
@@ -36,94 +43,104 @@ public class World : MonoBehaviour
         CreateWater();
     }
 
+
     /// <summary>
     /// CreateApples initializes and places numApples appleInstance objectsFs randomly in the world
     /// </summary>
     void CreateApples()
     {
+        countableObjectCountDict.Add("Apple", 0);
         for (int i=0; i<numApples; i++){
 
-            string name = "Apple " + i.ToString();
-
-            // create an instance of the human class
-            NonlivingObject newApple = new Apple(name);
-            allObjectDict.Add(name, newApple);
+            // create an instance of the apple class
+            NonlivingObject newApple = new Apple(countableObjectCountDict["Apple"]);
+            countableObjectCountDict["Apple"]++;
+            
+            nonlivingObjectDict.Add(newApple.gameObject.name, newApple);
         }
     }
+
 
     /// <summary>
     /// CreateWater initializes and places numApples waterInstance objects randomly in the world
     /// </summary>
     void CreateWater()
     {
+        countableObjectCountDict.Add("Water", 0);
         for (int i=0; i<numWater; i++){
 
-            string name = "Water " + i.ToString();
+            // create an instance of the water class
+            NonlivingObject newWater = new Water(countableObjectCountDict["Water"]);
+            countableObjectCountDict["Water"]++;
 
-            // create an instance of the human class
-            NonlivingObject newWater = new Water(name);
-            allObjectDict.Add(name, newWater);
+            nonlivingObjectDict.Add(newWater.gameObject.name, newWater);
         }
     }
 
-    public Genome motherGenome;
-    public Genome fatherGenome;
 
     /// <summary>
     /// CreateHumans initializes and places numHumanMales and numHumanFemales HumanMale and HumanFemale objects randomly in the world
     /// </summary>
     void CreateHumans()
     {
+        countableObjectCountDict.Add("Human", 0);
         for (int i=0; i<numHumans; i++){
     
             // create the pseudo-random parent genomes
             motherGenome = new Genome();
-            motherGenome.CreateGenome("human");
+            motherGenome.CreateGenome("Human");
             fatherGenome = new Genome();
-            fatherGenome.CreateGenome("human");
-
-            string name = "Human " + i.ToString();
+            fatherGenome.CreateGenome("Human");
 
             // create an instance of the human class
-            Animal newHuman = new Human(name, motherGenome, fatherGenome);
-            humanList.Add(newHuman);
-            allAnimalDict.Add(name, newHuman);
+            Animal newHuman = new Human(countableObjectCountDict["Human"], motherGenome, fatherGenome);
+            countableObjectCountDict["Human"]++;
+            
+            animalList.Add(newHuman);
+            animalDict.Add(newHuman.gameObject.name, newHuman);
         }
     }
 
+
     void CreatePenguins()
     {
+        countableObjectCountDict.Add("Penguin", 0);
         for (int i=0; i<numPenguins; i++){
     
             // create the pseudo-random parent genomes
             motherGenome = new Genome();
-            motherGenome.CreateGenome("penguin");
+            motherGenome.CreateGenome("Penguin");
             fatherGenome = new Genome();
-            fatherGenome.CreateGenome("penguin");
-
-            string name = "Penguin " + i.ToString();
+            fatherGenome.CreateGenome("Penguin");
 
             // create an instance of the human class
-            Animal newPenguin = new Penguin(name, motherGenome, fatherGenome);
-            allAnimalDict.Add(name, newPenguin);
+            Animal newPenguin = new Penguin(countableObjectCountDict["Penguin"], motherGenome, fatherGenome);
+            countableObjectCountDict["Penguin"]++;
+            
+            animalList.Add(newPenguin);
+            animalDict.Add(newPenguin.gameObject.name, newPenguin);
             
         }
     } 
 
     public static Animal GetAnimal(string name) {
-        return allAnimalDict[name];
+        return animalDict[name];
     }
 
     public static NonlivingObject GetObject(string name) {
-        return allObjectDict[name];
+        return nonlivingObjectDict[name];
     }
 
+    public static Plant GetPlant(string name) {
+        return plantDict[name];
+    }
 
-    public void UpdateHumans() {
-       
-        for(int i= 0; i< humanList.Count; i++) {
+    
+    public void UpdateAnimals() {
+        for(int i= 0; i< animalList.Count; i++) {
+            
             //humanList[i].TestUpdate();
-            humanList[i].UpdateAnimal();
+            animalList[i].UpdateAnimal();
         }
     }
     
@@ -134,7 +151,7 @@ public class World : MonoBehaviour
     /// </summary>
     void Update()
     {
-        UpdateHumans();
+        UpdateAnimals();
     }
 }
 

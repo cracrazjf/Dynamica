@@ -10,12 +10,12 @@ public class Water : NonlivingObject
     public GameObject waterPrefab;
 
 
-    public Water(string objectType) : base(objectType, 10f, 10f){
+    public Water(int index) : base("Water", index, 10f, 10f){
         Vector3 startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0f, Random.Range(minPosition,maxPosition));
-
         waterPrefab = Resources.Load("WaterPrefab",typeof(GameObject)) as GameObject;
-        this.gameObject = GameObject.Instantiate(waterPrefab, startPosition, Quaternion.Euler(0f, 0f, 0f)) as GameObject;// instantiate
-        this.gameObject.name = GetObjectType(); 
+
+        this.gameObject = GameObject.Instantiate(waterPrefab, startPosition, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
+        this.gameObject.name = GetObjectType() + (GetIndex().ToString());
 
         gameObject.SetActive(true);
         

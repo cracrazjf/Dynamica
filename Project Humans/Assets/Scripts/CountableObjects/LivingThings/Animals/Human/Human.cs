@@ -39,14 +39,13 @@ public class Human : Animal
     /// <summary>
     /// Human constructor
     /// </summary>
-    public Human(string objectType, Genome motherGenome, Genome fatherGenome): base(objectType, 1.0f, 1.0f, motherGenome, fatherGenome) {
+    public Human(int index, Genome motherGenome, Genome fatherGenome): base("Human", index, 1.0f, 1.0f, motherGenome, fatherGenome) {
         bodyState = "standing";
         actionState = "none";
         sleepingState = false;
         LHState = false;
         RHState = false;
 
-        
         //Instantiate humanPrefab
         Vector3 startPosition = this.chooseStartPosition();
         Quaternion startRotation = this.chooseStartRotation();
@@ -54,16 +53,15 @@ public class Human : Animal
         if (this.phenotype.traitDict["sex"] == "0")
         {
             humanPrefab = Resources.Load("HumanMalePrefab",typeof(GameObject)) as GameObject;
-            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;// instantiate
-            this.gameObject.name = GetObjectType(); 
+            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;
 
             gameObject.SetActive(true);
         }
         if (this.phenotype.traitDict["sex"] == "1")
         {
             humanPrefab = Resources.Load("HumanFemalePrefab",typeof(GameObject)) as GameObject;
-            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;// instantiate 
-            this.gameObject.name = GetObjectType();
+            this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;
+            this.gameObject.name = GetObjectType() + (GetIndex().ToString());
 
             gameObject.SetActive(true);
         }

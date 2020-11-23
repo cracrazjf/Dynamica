@@ -15,8 +15,8 @@ using UnityEngine;
 
         public string displayName;
 
-        public Animal(string objectType, float nutrition, float healthEffect, Genome motherGenome, Genome fatherGenome) 
-        : base (objectType, nutrition, healthEffect, motherGenome, fatherGenome)
+        public Animal(string objectType, int index, float nutrition, float healthEffect, Genome motherGenome, Genome fatherGenome) 
+        : base (objectType, index, nutrition, healthEffect, motherGenome, fatherGenome)
         {
 
             this.displayName = GetObjectType();

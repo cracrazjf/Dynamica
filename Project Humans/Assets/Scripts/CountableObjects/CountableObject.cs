@@ -17,6 +17,7 @@ using UnityEngine;
 abstract public class CountableObject
 {
     private static String objectType;
+    private static int index;
     private static float nutrition;
     private static float healthEffect;
     
@@ -24,8 +25,11 @@ abstract public class CountableObject
     public GameObject gameObject;
     public Animator animator;
 
-    public CountableObject(string objectType, float nutrition, float healthEffect) {
-
+    public CountableObject(string objectType, int index,  float nutrition, float healthEffect) {
+        this.objectType = objectType;
+        this.index = index;
+        this.nutrition = nutrition;
+        this.healthEffect = healthEffect;
     }
 
     public void Start() {}
@@ -44,6 +48,10 @@ abstract public class CountableObject
         return objectType;
     }
 
+    public static int SetIndex() {
+        return index;
+    }
+
     public static void SetNutrition(float passed) {
         nutrition = passed;
     }
@@ -55,4 +63,9 @@ abstract public class CountableObject
     public static void SetObjectType(string passed) {
         objectType = passed;
     }
+
+    public static void SetIndex(string passed) {
+        objectType = passed;
+    }
+
 }
