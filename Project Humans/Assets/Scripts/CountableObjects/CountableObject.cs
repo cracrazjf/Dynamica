@@ -20,21 +20,20 @@ abstract public class CountableObject
     private static int index;
     private static float nutrition;
     private static float healthEffect;
+    public String name;
     
     // unity variables
     public GameObject gameObject;
     public Animator animator;
 
     public CountableObject(string objectType, int index,  float nutrition, float healthEffect) {
-        this.objectType = objectType;
-        this.index = index;
-        this.nutrition = nutrition;
-        this.healthEffect = healthEffect;
+        SetObjectType(objectType);
+        SetIndex(index);
+        SetNutrition(nutrition);
+        SetHealthEffect(healthEffect);
+
+        name = (objectType + " " + index.ToString());
     }
-
-    public void Start() {}
-
-    public void Update() {}
 
     public static float GetNutrition() {
         return nutrition;
@@ -48,7 +47,7 @@ abstract public class CountableObject
         return objectType;
     }
 
-    public static int SetIndex() {
+    public static int GetIndex() {
         return index;
     }
 
@@ -64,8 +63,8 @@ abstract public class CountableObject
         objectType = passed;
     }
 
-    public static void SetIndex(string passed) {
-        objectType = passed;
+    public static void SetIndex(int passed) {
+        index = passed;
     }
 
 }

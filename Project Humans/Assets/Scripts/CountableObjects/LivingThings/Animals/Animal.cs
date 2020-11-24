@@ -12,7 +12,6 @@ using UnityEngine;
         private ActionChoice actionChoice;
         private FOVDetection fovDetection;
 
-
         public string displayName;
 
         public Animal(string objectType, int index, float nutrition, float healthEffect, Genome motherGenome, Genome fatherGenome) 

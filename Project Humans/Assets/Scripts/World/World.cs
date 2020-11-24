@@ -56,7 +56,7 @@ public class World : MonoBehaviour
             NonlivingObject newApple = new Apple(countableObjectCountDict["Apple"]);
             countableObjectCountDict["Apple"]++;
             
-            nonlivingObjectDict.Add(newApple.gameObject.name, newApple);
+            nonlivingObjectDict.Add(newApple.name, newApple);
         }
     }
 
@@ -73,7 +73,7 @@ public class World : MonoBehaviour
             NonlivingObject newWater = new Water(countableObjectCountDict["Water"]);
             countableObjectCountDict["Water"]++;
 
-            nonlivingObjectDict.Add(newWater.gameObject.name, newWater);
+            nonlivingObjectDict.Add(newWater.name, newWater);
         }
     }
 
@@ -97,7 +97,7 @@ public class World : MonoBehaviour
             countableObjectCountDict["Human"]++;
             
             animalList.Add(newHuman);
-            animalDict.Add(newHuman.gameObject.name, newHuman);
+            animalDict.Add(newHuman.name, newHuman);
         }
     }
 
@@ -118,7 +118,7 @@ public class World : MonoBehaviour
             countableObjectCountDict["Penguin"]++;
             
             animalList.Add(newPenguin);
-            animalDict.Add(newPenguin.gameObject.name, newPenguin);
+            animalDict.Add(newPenguin.name, newPenguin);
             
         }
     } 

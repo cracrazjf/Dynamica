@@ -28,8 +28,6 @@ public class MotorSystem
         "eat"
         };
 
-    // 
-
     public Dictionary<string, List<List<string>>> actionRequirementsDict = new Dictionary<string, List<List<string>>>();
 
     // these lists contain states from the human nervous system bodyStateInputLabelList
@@ -65,12 +63,11 @@ public class MotorSystem
             actionDisplayDict.Add(actionLabelList[i], true);
         }
         
-        // velocity = float.Parse(thisAnimal.phenotype.traitDict["currentVelocity"]);
-        // maxStepDistance = float.Parse(thisAnimal.phenotype.traitDict["maxStepDistance"]);
-        // maxRotationSpeed = float.Parse(thisAnimal.phenotype.traitDict["maxRotationSpeed"]);
-
-
+        velocity = float.Parse(thisAnimal.phenotype.traitDict["currentVelocity"]);
+        maxStepDistance = float.Parse(thisAnimal.phenotype.traitDict["maxStepDistance"]);
+        maxRotationSpeed = float.Parse(thisAnimal.phenotype.traitDict["maxRotationSpeed"]);
     }
+
 
     public void takeAction(ActionChoice actionChoice){
 

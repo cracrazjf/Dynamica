@@ -36,8 +36,6 @@ public class AnimalUI : MonoBehaviour
         mainCam = GameObject.Find("Main Camera");
         panel = GameObject.Find("AnimalPanel");
         genePanel = GameObject.Find("GenomePanel");
-
-        halo.SetActive(false);
     }
     
     private void Update(){
@@ -71,6 +69,7 @@ public class AnimalUI : MonoBehaviour
             panel.SetActive(true);
 
             selectedAnimal = World.GetAnimal(clicked.name);
+            DisplayDrives();
         }
 
         if(clicked.tag == "Penguin") {
@@ -78,9 +77,6 @@ public class AnimalUI : MonoBehaviour
             panel.SetActive(true);
 
             selectedAnimal = World.GetAnimal(clicked.name);
-        }
-
-        if(selectedAnimal != null) {
             DisplayDrives();
         }
     }

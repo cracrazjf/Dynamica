@@ -6,22 +6,19 @@ using UnityEngine.UI;
 
 public class NonlivingUI : MonoBehaviour
 {
-    public GameObject selectedObject = null;
-
-    bool togglePanel = true;
+    GameObject selectedObject = null;
     GameObject panel;
     GameObject mainCam;
-    GameObject halo;
 
+    public GameObject halo;
     public Text OGName;
 
-
+    bool togglePanel = true;
+    
     private void Start()
     {
         mainCam = GameObject.Find("Main Camera");
         panel = GameObject.Find("NonlivingPanel");
-
-        ExitPanel();
     }
     
     private void Update(){
@@ -45,9 +42,6 @@ public class NonlivingUI : MonoBehaviour
             selectedObject = clicked;
 
             selectedObject = World.GetObject(clicked.name).gameObject;
-        }
-
-        if(selectedObject != null) {
             DisplayInfo();
         }
     }

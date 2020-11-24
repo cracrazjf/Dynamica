@@ -15,17 +15,9 @@ public class Water : NonlivingObject
         waterPrefab = Resources.Load("WaterPrefab",typeof(GameObject)) as GameObject;
 
         this.gameObject = GameObject.Instantiate(waterPrefab, startPosition, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
-        this.gameObject.name = GetObjectType() + (GetIndex().ToString());
+        this.gameObject.name = this.name;
 
         gameObject.SetActive(true);
         
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {}
-
-    // Update is called once per frame
-    void Update()
-    {}
 }

@@ -51,17 +51,16 @@ public class Human : Animal
         Quaternion startRotation = this.chooseStartRotation();
 
         if (this.phenotype.traitDict["sex"] == "0")
-        {
+        {   
             humanPrefab = Resources.Load("HumanMalePrefab",typeof(GameObject)) as GameObject;
             this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;
+            this.gameObject.name = this.name;
 
             gameObject.SetActive(true);
-        }
-        if (this.phenotype.traitDict["sex"] == "1")
-        {
+        } else {
             humanPrefab = Resources.Load("HumanFemalePrefab",typeof(GameObject)) as GameObject;
             this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;
-            this.gameObject.name = GetObjectType() + (GetIndex().ToString());
+            this.gameObject.name = this.name;
 
             gameObject.SetActive(true);
         }

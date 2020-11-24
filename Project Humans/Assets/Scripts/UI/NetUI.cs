@@ -15,7 +15,6 @@ public class NetUI : MonoBehaviour
     private void Start()
     {
         panel = GameObject.Find("BrainPanel");
-        ExitPanel();
     }
     
     private void Update(){}

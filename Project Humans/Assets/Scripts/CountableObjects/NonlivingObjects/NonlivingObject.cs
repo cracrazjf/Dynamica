@@ -16,5 +16,5 @@ using UnityEngine;
 
 abstract public class NonlivingObject : CountableObject
 {
-    public NonlivingObject(string objectType, float nutrition, float healthEffect) : base (objectType, nutrition, healthEffect) {}
+    public NonlivingObject(string objectType, int index, float nutrition, float healthEffect) : base (objectType, index, nutrition, healthEffect) {}
 }

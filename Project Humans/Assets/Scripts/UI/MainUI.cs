@@ -65,10 +65,13 @@ public class MainUI : MonoBehaviour
         is_paused = !is_paused;
         if(is_paused) {
             usedButton.GetComponentInChildren<Text>().text = ">";
+            usedButton.GetComponent<SpriteRenderer>().color = Color.green;
             pause.SetActive(true);
             
         } else {
             usedButton.GetComponentInChildren<Text>().text = "| |";
+            usedButton.GetComponent<SpriteRenderer>().color = Color.red;
+            pause.SetActive(false);
         }
         
     }

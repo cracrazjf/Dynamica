@@ -17,6 +17,7 @@ public class MainCamera : MonoBehaviour
     private float rotationY = 0.0f;
 
     private bool birdView = true;
+    private bool toggleRotate = false;
 
     private static bool brainMode = false;
 
@@ -82,7 +83,12 @@ public class MainCamera : MonoBehaviour
             }
 
             //hold L Ctrl to rotate in sky mode
-            if (Input.GetKeyDown(KeyCode.LeftControl)) {
+            if(Input.GetKeyDown(KeyCode.LeftControl)) {
+                toggleRotate = !toggleRotate;
+            }
+
+
+            if (toggleRotate) {
                 rotationX += Input.GetAxis("Mouse X") * cameraSensitivity * 10 * Time.deltaTime;
                 rotationY += Input.GetAxis("Mouse Y") * cameraSensitivity * 10 * Time.deltaTime;
 
@@ -109,6 +115,7 @@ public class MainCamera : MonoBehaviour
     public void ToggleWalk() {
         Debug.Log("Walk toggle");
         birdView = !birdView;
+        toSwitch = transform;
         resetPos = true;
     }
 
@@ -121,6 +128,7 @@ public class MainCamera : MonoBehaviour
     public void ToggleReset() {
         if(!birdView) {
             resetPos = true;
+            toSwitch = transform;
             ToggleWalk();
         }
     }
