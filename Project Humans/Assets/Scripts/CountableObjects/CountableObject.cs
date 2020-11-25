@@ -16,11 +16,11 @@ using UnityEngine;
 
 abstract public class CountableObject
 {
-    private static String objectType;
-    private static int index;
-    private static float nutrition;
-    private static float healthEffect;
-    public String name;
+    private String objectType;
+    private int index;
+    private float nutrition;
+    private float healthEffect;
+    private String name;
     
     // unity variables
     public GameObject gameObject;
@@ -35,36 +35,44 @@ abstract public class CountableObject
         name = (objectType + " " + index.ToString());
     }
 
-    public static float GetNutrition() {
+    public float GetNutrition() {
         return nutrition;
     }
 
-    public static float GetHealthEffect() {
+    public float GetHealthEffect() {
         return healthEffect;
     }
 
-    public static string GetObjectType() {
+    public string GetObjectType() {
         return objectType;
     }
 
-    public static int GetIndex() {
+    public int GetIndex() {
         return index;
     }
 
-    public static void SetNutrition(float passed) {
+    public String GetName() {
+        return name;
+    }
+
+    public void SetNutrition(float passed) {
         nutrition = passed;
     }
 
-    public static void SetHealthEffect(float passed) {
+    public void SetHealthEffect(float passed) {
         healthEffect = passed;
     }
 
-    public static void SetObjectType(string passed) {
+    public void SetObjectType(string passed) {
         objectType = passed;
     }
 
-    public static void SetIndex(int passed) {
+    public void SetIndex(int passed) {
         index = passed;
+    }
+
+    public void SetName(String passed) {
+        name = passed;
     }
 
 }

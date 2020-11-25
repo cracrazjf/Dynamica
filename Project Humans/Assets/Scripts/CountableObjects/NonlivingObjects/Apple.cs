@@ -16,7 +16,7 @@ public class Apple : NonlivingObject
         applePrefab = Resources.Load("ApplePrefab",typeof(GameObject)) as GameObject;
 
         this.gameObject = GameObject.Instantiate(applePrefab, startPosition, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
-        this.gameObject.name = this.name;
+        this.gameObject.name = GetName();
 
         gameObject.SetActive(true);
         

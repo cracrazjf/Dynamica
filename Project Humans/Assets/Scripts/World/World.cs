@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class World : MonoBehaviour
 {
@@ -41,6 +41,8 @@ public class World : MonoBehaviour
         CreateHumans();
         CreateApples();
         CreateWater();
+        
+        DebugPrint();
     }
 
 
@@ -56,7 +58,7 @@ public class World : MonoBehaviour
             NonlivingObject newApple = new Apple(countableObjectCountDict["Apple"]);
             countableObjectCountDict["Apple"]++;
             
-            nonlivingObjectDict.Add(newApple.name, newApple);
+            nonlivingObjectDict.Add(newApple.GetName(), newApple);
         }
     }
 
@@ -73,7 +75,7 @@ public class World : MonoBehaviour
             NonlivingObject newWater = new Water(countableObjectCountDict["Water"]);
             countableObjectCountDict["Water"]++;
 
-            nonlivingObjectDict.Add(newWater.name, newWater);
+            nonlivingObjectDict.Add(newWater.GetName(), newWater);
         }
     }
 
@@ -83,21 +85,22 @@ public class World : MonoBehaviour
     /// </summary>
     void CreateHumans()
     {
+        
         countableObjectCountDict.Add("Human", 0);
         for (int i=0; i<numHumans; i++){
-    
             // create the pseudo-random parent genomes
             motherGenome = new Genome();
             motherGenome.CreateGenome("Human");
             fatherGenome = new Genome();
             fatherGenome.CreateGenome("Human");
-
+            
             // create an instance of the human class
-            Animal newHuman = new Human(countableObjectCountDict["Human"], motherGenome, fatherGenome);
-            countableObjectCountDict["Human"]++;
+            int currentCount = countableObjectCountDict["Human"];
+            Animal newHuman = new Human(currentCount, motherGenome, fatherGenome);
+            countableObjectCountDict["Human"] = currentCount++;
             
             animalList.Add(newHuman);
-            animalDict.Add(newHuman.name, newHuman);
+            animalDict[newHuman.GetName()] = newHuman;
         }
     }
 
@@ -118,7 +121,7 @@ public class World : MonoBehaviour
             countableObjectCountDict["Penguin"]++;
             
             animalList.Add(newPenguin);
-            animalDict.Add(newPenguin.name, newPenguin);
+            animalDict.Add(newPenguin.GetName(), newPenguin);
             
         }
     } 
@@ -152,6 +155,18 @@ public class World : MonoBehaviour
     void Update()
     {
         UpdateAnimals();
+    }
+
+    void DebugPrint() {
+        Debug.Log("DEBUG PRINT");
+        Debug.Log(animalDict);
+        Debug.Log("\n");
+
+        foreach (string key in animalDict.Keys)  
+            {  
+                //Debug.Log("Key: {0}", key.ToString());  
+                Debug.Log(key.ToString());  
+            }  
     }
 }
 
