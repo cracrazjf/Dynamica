@@ -19,6 +19,5 @@ public class Apple : NonlivingObject
         this.gameObject.name = GetName();
 
         gameObject.SetActive(true);
-        
     }
 }

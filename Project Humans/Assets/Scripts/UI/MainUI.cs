@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class MainUI : MonoBehaviour
 {
-
     private GameObject objectPanel;
     private GameObject alwaysPanel;
     private GameObject nonPanel;

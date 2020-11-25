@@ -41,8 +41,6 @@ public class World : MonoBehaviour
         CreateHumans();
         CreateApples();
         CreateWater();
-        
-        DebugPrint();
     }
 
 
@@ -155,18 +153,6 @@ public class World : MonoBehaviour
     void Update()
     {
         UpdateAnimals();
-    }
-
-    void DebugPrint() {
-        Debug.Log("DEBUG PRINT");
-        Debug.Log(animalDict);
-        Debug.Log("\n");
-
-        foreach (string key in animalDict.Keys)  
-            {  
-                //Debug.Log("Key: {0}", key.ToString());  
-                Debug.Log(key.ToString());  
-            }  
     }
 }
 

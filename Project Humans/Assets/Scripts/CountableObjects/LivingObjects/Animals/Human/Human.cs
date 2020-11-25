@@ -54,13 +54,13 @@ public class Human : Animal
         {   
             humanPrefab = Resources.Load("HumanMalePrefab",typeof(GameObject)) as GameObject;
             this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;
-            this.gameObject.name = this.name;
+            this.gameObject.name = GetName();
 
             gameObject.SetActive(true);
         } else {
             humanPrefab = Resources.Load("HumanFemalePrefab",typeof(GameObject)) as GameObject;
             this.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;
-            this.gameObject.name = this.name;
+            this.gameObject.name = GetName();
 
             gameObject.SetActive(true);
         }

@@ -81,12 +81,8 @@ public class Genome
         string line;
         System.IO.StreamReader file;
         
-        // Read the file and display it line by line. 
-        if (species == "human") {
-            file = new System.IO.StreamReader(@"Assets/config/human.config");  
-        } else {
-            file = new System.IO.StreamReader(@"Assets/config/penguin.config");  
-        }
+        string filename = @"Assets/config/"+ species.ToLower() + ".config";
+        file = new System.IO.StreamReader(filename);  
         
         while((line = file.ReadLine()) != null)  
         {  

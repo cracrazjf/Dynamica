@@ -7,8 +7,6 @@ abstract public class LivingObject : CountableObject
 {
     public Genome genome;
     public Phenotype phenotype;
-    
-    public string test = "test";
 
     public LivingObject(string objectType, int index, float nutrition, float healthEffect, Genome motherGenome, Genome fatherGenome) 
     : base (objectType, index, nutrition, healthEffect)

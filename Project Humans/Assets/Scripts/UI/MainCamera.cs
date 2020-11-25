@@ -9,7 +9,6 @@ public class MainCamera : MonoBehaviour
     // Space:         Climb
     // Shift:         Drop
     // G:             Toggle bird's eye view
-
     public float cameraSensitivity = 100;
     public float climbSpeed = 4;
     public float normalMoveSpeed = 10;

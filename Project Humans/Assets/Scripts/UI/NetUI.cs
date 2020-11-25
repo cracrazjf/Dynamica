@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class NetUI : MonoBehaviour
 {
-
     bool togglePanel = true;
 
     GameObject panel;

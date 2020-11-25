@@ -9,7 +9,6 @@ public class NonlivingUI : MonoBehaviour
     GameObject selectedObject = null;
     GameObject panel;
     GameObject mainCam;
-
     public GameObject halo;
     public Text OGName;
 
