@@ -3,17 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Configuration;
+using System.Linq;
+
 
 public class World : MonoBehaviour
 {
-    // move the num of everything into a config file
-    private int numApples = 5;
-    private int numWater = 5;
-    private int numPenguins = 0;
-    public const int numHumans = 2;
-
+    /// <value> This dict keeps track of the total number of each kind of object that has been created</value>
     private static Dictionary<string, int> countableObjectCountDict = new Dictionary<string, int>();
     
+    /// <value> This dict keeps track of data in world.config</value>
+    private Dictionary<string, string> worldConfigDict = new Dictionary<string, string>();
+    private Dictionary<string, int> startingAnimalCountsDict = new Dictionary<string, int>();
+    private Dictionary<string, int> startingPlantCountsDict = new Dictionary<string, int>();
+    private Dictionary<string, int> startingNonLivingObjectCounts = new Dictionary<string, int>();
+
     /// <value> These dicts keep track of GameObject </value>
     private static Dictionary<string, NonlivingObject> nonlivingObjectDict = new Dictionary<string, NonlivingObject>();
     private static Dictionary<string, Animal> animalDict = new Dictionary<string, Animal>();
@@ -38,19 +42,60 @@ public class World : MonoBehaviour
     /// </summary>
     void Start()
     { 
-        CreateHumans();
+        loadWorldConfig();
+        CreateAnimals();
+        // CreateHumans();
+        // CreatePenguins();
         CreateApples();
         CreateWater();
     }
 
+
+    void CreateAnimals(){
+
+        string speciesType;
+        int n;
+        Animal newAnimal;
+
+        foreach(KeyValuePair<string, int> entry in startingAnimalCountsDict)
+        {
+            speciesType = entry.Key;
+            n = entry.Value;
+            countableObjectCountDict.Add(speciesType, 0);
+
+            for (int i=0; i<n; i++){
+                // create the pseudo-random parent genomes
+                motherGenome = new Genome();
+                motherGenome.CreateGenome(speciesType);
+                fatherGenome = new Genome();
+                fatherGenome.CreateGenome(speciesType);
+
+                if (speciesType == "Human"){
+                    newAnimal = new Human(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    animalList.Add(newAnimal);
+                    animalDict[newAnimal.GetName()] = newAnimal;
+                    countableObjectCountDict[speciesType]++;
+                }
+                else if (speciesType == "Penguin"){
+                    newAnimal = new Penguin(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    animalList.Add(newAnimal);
+                    animalDict[newAnimal.GetName()] = newAnimal;
+                    countableObjectCountDict[speciesType]++;
+                }
+            }
+            
+            // do something with entry.Value or entry.Key
+        }
+    }
 
     /// <summary>
     /// CreateApples initializes and places numApples appleInstance objectsFs randomly in the world
     /// </summary>
     void CreateApples()
     {
+        int n = startingNonLivingObjectCounts["Apple"];
         countableObjectCountDict.Add("Apple", 0);
-        for (int i=0; i<numApples; i++){
+        for (int i=0; i<n; i++){
 
             // create an instance of the apple class
             NonlivingObject newApple = new Apple(countableObjectCountDict["Apple"]);
@@ -66,8 +111,9 @@ public class World : MonoBehaviour
     /// </summary>
     void CreateWater()
     {
+        int n = startingNonLivingObjectCounts["Water"];
         countableObjectCountDict.Add("Water", 0);
-        for (int i=0; i<numWater; i++){
+        for (int i=0; i<n; i++){
 
             // create an instance of the water class
             NonlivingObject newWater = new Water(countableObjectCountDict["Water"]);
@@ -76,53 +122,6 @@ public class World : MonoBehaviour
             nonlivingObjectDict.Add(newWater.GetName(), newWater);
         }
     }
-
-
-    /// <summary>
-    /// CreateHumans initializes and places numHumanMales and numHumanFemales HumanMale and HumanFemale objects randomly in the world
-    /// </summary>
-    void CreateHumans()
-    {
-        
-        countableObjectCountDict.Add("Human", 0);
-        for (int i=0; i<numHumans; i++){
-            // create the pseudo-random parent genomes
-            motherGenome = new Genome();
-            motherGenome.CreateGenome("Human");
-            fatherGenome = new Genome();
-            fatherGenome.CreateGenome("Human");
-            
-            // create an instance of the human class
-            int currentCount = countableObjectCountDict["Human"];
-            Animal newHuman = new Human(currentCount, motherGenome, fatherGenome);
-            countableObjectCountDict["Human"] = currentCount++;
-            
-            animalList.Add(newHuman);
-            animalDict[newHuman.GetName()] = newHuman;
-        }
-    }
-
-
-    void CreatePenguins()
-    {
-        countableObjectCountDict.Add("Penguin", 0);
-        for (int i=0; i<numPenguins; i++){
-    
-            // create the pseudo-random parent genomes
-            motherGenome = new Genome();
-            motherGenome.CreateGenome("Penguin");
-            fatherGenome = new Genome();
-            fatherGenome.CreateGenome("Penguin");
-
-            // create an instance of the human class
-            Animal newPenguin = new Penguin(countableObjectCountDict["Penguin"], motherGenome, fatherGenome);
-            countableObjectCountDict["Penguin"]++;
-            
-            animalList.Add(newPenguin);
-            animalDict.Add(newPenguin.GetName(), newPenguin);
-            
-        }
-    } 
 
     public static Animal GetAnimal(string name) {
         return animalDict[name];
@@ -154,7 +153,36 @@ public class World : MonoBehaviour
     {
         UpdateAnimals();
     }
+
+    /// <summary>
+    /// loadWorldConfig loads the information from Assets/config/world.config into the appropriate config dict or starting count dict
+    /// </summary>
+    void loadWorldConfig(){
+        // int counter = 0;  
+        string line;
+        System.IO.StreamReader file;
+        
+        string filename = @"Assets/config/world.config";
+        file = new System.IO.StreamReader(filename);  
+        
+        while((line = file.ReadLine()) != null)  
+        {  
+            string[] lineInfo = line.Split(new[] { "," }, StringSplitOptions.None);
+            if (lineInfo[0] == "Animal_Count"){
+                startingAnimalCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
+            }
+            else if (lineInfo[0] == "Plant_Count"){
+                startingPlantCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
+            }
+            else if (lineInfo[0] == "Nonliving_Object_Count"){
+                startingNonLivingObjectCounts.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
+            }
+            else{
+                worldConfigDict.Add(lineInfo[1], lineInfo[2]);
+            }
+        }  
+        file.Close();
+    }
+
+
 }
-
-
-
