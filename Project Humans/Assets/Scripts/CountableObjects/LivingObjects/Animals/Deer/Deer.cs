@@ -25,7 +25,6 @@ public class Deer : Animal
 
         gameObject.SetActive(true);
         
-
         this.gameObject.AddComponent<FOVDetection>();
         animator = this.gameObject.GetComponent<Animator>();
         

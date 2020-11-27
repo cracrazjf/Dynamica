@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Penguin : Animal
 {
-
     /// <value>Penguin prefab</value>
     public GameObject penguinPrefab;
     public Rigidbody rigidbody;
@@ -13,7 +12,6 @@ public class Penguin : Animal
 
     public bool doingNothing = true;
     
-
     /// <summary>
     /// Penguin constructor
     /// </summary>
@@ -27,7 +25,6 @@ public class Penguin : Animal
 
         gameObject.SetActive(true);
         
-
         this.gameObject.AddComponent<FOVDetection>();
         animator = this.gameObject.GetComponent<Animator>();
         

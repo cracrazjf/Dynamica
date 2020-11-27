@@ -18,14 +18,15 @@ public class World : MonoBehaviour
     private Dictionary<string, int> startingPlantCountsDict = new Dictionary<string, int>();
     private Dictionary<string, int> startingNonLivingObjectCounts = new Dictionary<string, int>();
 
-    /// <value> These dicts keep track of GameObject </value>
-    private static Dictionary<string, NonlivingObject> nonlivingObjectDict = new Dictionary<string, NonlivingObject>();
+    /// <value> These dicts keep track of GameObjects </value>
     private static Dictionary<string, Animal> animalDict = new Dictionary<string, Animal>();
     private static Dictionary<string, Plant> plantDict = new Dictionary<string, Plant>();
+    private static Dictionary<string, NonlivingObject> nonlivingObjectDict = new Dictionary<string, NonlivingObject>();
     
     /// <value> These lists keep track of entities needing an update each epoch</value>
     public static List<Animal> animalList = new List<Animal>();
     public static List<Plant> plantList = new List<Plant>();
+    public static List<NonlivingObject> nonlivingObjectList = new List<NonlivingObject>();
 
     /// <value> These genome variables are used to instantiate every living thing that is created</value>
     public Genome motherGenome;
@@ -44,13 +45,14 @@ public class World : MonoBehaviour
     { 
         loadWorldConfig();
         CreateAnimals();
-        // CreateHumans();
-        // CreatePenguins();
-        CreateApples();
-        CreateWater();
+        CreateNonLivingObjects();
+        // CreateApples();
+        // CreateWater();
     }
 
-
+    /// <summary>
+    /// CreateAnimals initializes and places all the animals
+    /// </summary>
     void CreateAnimals(){
 
         string speciesType;
@@ -70,6 +72,7 @@ public class World : MonoBehaviour
                 fatherGenome = new Genome();
                 fatherGenome.CreateGenome(speciesType);
 
+                // should be able to move lines 77-79 and 83-85 out of these if's, but it creates an error I dont understand
                 if (speciesType == "Human"){
                     newAnimal = new Human(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
@@ -83,45 +86,76 @@ public class World : MonoBehaviour
                     countableObjectCountDict[speciesType]++;
                 }
             }
-            
-            // do something with entry.Value or entry.Key
         }
     }
 
     /// <summary>
-    /// CreateApples initializes and places numApples appleInstance objectsFs randomly in the world
-    /// </summary>
-    void CreateApples()
+    /// CreateNonLivingObjects initializes and places all the nonliving objects in the world
+    /// </summary>  
+    void CreateNonLivingObjects()
     {
-        int n = startingNonLivingObjectCounts["Apple"];
-        countableObjectCountDict.Add("Apple", 0);
-        for (int i=0; i<n; i++){
+        NonlivingObject newNonlivingObject;
+        string objectType;
+        int n;
 
-            // create an instance of the apple class
-            NonlivingObject newApple = new Apple(countableObjectCountDict["Apple"]);
-            countableObjectCountDict["Apple"]++;
+        foreach(KeyValuePair<string, int> entry in startingNonLivingObjectCounts){
+            objectType = entry.Key;
+            n = entry.Value;
+            countableObjectCountDict.Add(objectType, 0);
+
+            for (int i=0; i<n; i++){
+                if (objectType == "Apple"){
+                    newNonlivingObject = new Apple(countableObjectCountDict[objectType]);
+                    nonlivingObjectList.Add(newNonlivingObject);
+                    nonlivingObjectDict[newNonlivingObject.GetName()] = newNonlivingObject;
+                    countableObjectCountDict[objectType]++;
+                }
+                else if (objectType == "Water"){
+                    newNonlivingObject = new Water(countableObjectCountDict[objectType]);
+                    nonlivingObjectList.Add(newNonlivingObject);
+                    nonlivingObjectDict[newNonlivingObject.GetName()] = newNonlivingObject;
+                    countableObjectCountDict[objectType]++;
+                }
+            }
+        }
+
+    }
+
+
+    // /// <summary>
+    // /// CreateApples initializes and places numApples appleInstance objectsFs randomly in the world
+    // /// </summary>
+    // void CreateApples()
+    // {
+    //     int n = startingNonLivingObjectCounts["Apple"];
+    //     countableObjectCountDict.Add("Apple", 0);
+    //     for (int i=0; i<n; i++){
+
+    //         // create an instance of the apple class
+    //         NonlivingObject newApple = new Apple(countableObjectCountDict["Apple"]);
+    //         countableObjectCountDict["Apple"]++;
             
-            nonlivingObjectDict.Add(newApple.GetName(), newApple);
-        }
-    }
+    //         nonlivingObjectDict.Add(newApple.GetName(), newApple);
+    //     }
+    // }
 
 
-    /// <summary>
-    /// CreateWater initializes and places numApples waterInstance objects randomly in the world
-    /// </summary>
-    void CreateWater()
-    {
-        int n = startingNonLivingObjectCounts["Water"];
-        countableObjectCountDict.Add("Water", 0);
-        for (int i=0; i<n; i++){
+    // /// <summary>
+    // /// CreateWater initializes and places numApples waterInstance objects randomly in the world
+    // /// </summary>
+    // void CreateWater()
+    // {
+    //     int n = startingNonLivingObjectCounts["Water"];
+    //     countableObjectCountDict.Add("Water", 0);
+    //     for (int i=0; i<n; i++){
 
-            // create an instance of the water class
-            NonlivingObject newWater = new Water(countableObjectCountDict["Water"]);
-            countableObjectCountDict["Water"]++;
+    //         // create an instance of the water class
+    //         NonlivingObject newWater = new Water(countableObjectCountDict["Water"]);
+    //         countableObjectCountDict["Water"]++;
 
-            nonlivingObjectDict.Add(newWater.GetName(), newWater);
-        }
-    }
+    //         nonlivingObjectDict.Add(newWater.GetName(), newWater);
+    //     }
+    // }
 
     public static Animal GetAnimal(string name) {
         return animalDict[name];
