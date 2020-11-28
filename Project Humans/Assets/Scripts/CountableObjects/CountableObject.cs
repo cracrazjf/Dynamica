@@ -4,8 +4,7 @@ using System;
 using System.Text;
 using System.IO;
 using UnityEngine;
-
-// const string FILE_NAME = "test.json"
+using Random=UnityEngine.Random;
 
 abstract public class CountableObject
 {
@@ -26,6 +25,16 @@ abstract public class CountableObject
         SetHealthEffect(healthEffect);
 
         name = (objectType + " " + index.ToString());
+    }
+
+    public Vector3 chooseStartPosition(){
+        var startPosition = new Vector3 (Random.Range(World.minPosition,World.maxPosition), 0.03f, Random.Range(World.minPosition,World.maxPosition));
+        return startPosition;
+    }
+
+    public Quaternion chooseStartRotation(){
+        var startRotation = Quaternion.Euler(0.0f, Random.Range(World.minPosition,World.maxPosition), 0.0f);
+        return startRotation;
     }
 
     public float GetNutrition() {

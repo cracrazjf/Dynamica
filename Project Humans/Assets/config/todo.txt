@@ -1,0 +1,93 @@
+HIGH PRIORITY
+#####################################################################################
+
+- Fix Object Location Generation so that object creation involves passing in an argument that is used
+    to specify the spawn location, or random if one is not provided
+
+- AppleTree
+    - have its genes dictate its height, width, & color
+    - also have its genes dictate the nutriousnessness, health effects, and color of its fruit
+    - at one end of continuum, fruit is red, nutritious, and not poisonous
+    - at other end of continuum, fruit is purple, not nutritious, and poisoness
+    - make the genome bimodal, so that fruits in the middle are rare
+    - make the genome properties that affect the fruit also affect the shape of the tree
+    - make a gene that affects the size of the fruit, and that acts as a multiplier on its health and nutrition values
+    - make the tree grow in height over time to its max height
+
+- Water
+    - needs to be made ponds of water, not water bottles
+
+- SimpleAI2 
+    - Fix PickUp
+
+- RNNAI
+    - impliment and test rudimentary feed forward network
+    - add prediction learning
+    - add reinforcement learning
+
+- UI
+    - visualization of rudimentary feed forward network
+
+
+MEDIUM PRIORITY
+#####################################################################################
+
+Animals
+    - Convert as many of data structures as possible to arrays and eliminate lists and dicts
+    - Convert motor system checks to lists of indexes approach
+    - Convert Phenotype traitDict to <string,float> instead of <string,string>, and deal with
+        all the consequences where it was being used and recast to int or float
+
+Objects
+    - Add a second kind of tree called pine tree
+        - have its genes dictate its height, width, & color
+        - make the tree grow in height over time to its max height
+        - make the tree produce pine cones that have no nutrition and bad health
+    - Add deer
+        - - sit, stand, lay, sleep, wake, walk, rotate, eat (from ground), drink
+    - Add elephants
+        - - sit, stand, lay, sleep, wake, walk, rotate, eat (from ground), drink, hitWithTrunk
+    - Add wolves
+        - sit, stand, lay, sleep, wake, walk, rotate, eat (from ground), drink
+
+Ground
+    - Needs to be patches of grass of varying properties
+        - height
+        - color (green to yellow-green)
+        - minimal to no nutrition, correlated with color
+        - some way to deal with borders
+
+LOW PRIORITY
+#####################################################################################
+
+Collisions
+    - Pre-fixing animator and physics, impliment collisions
+        - if impact is too large (determined as function of force from collider & mass of collided)
+            - object falls over
+            - health damage occurs
+
+Wolf
+    - bite and claw actions, causing damage
+
+Human
+    - hit action, causing damage
+
+AIs
+    - move FOVDetection and other AI functionality from Human/Animal to within the AI script 
+    - make sure AI scripts have no way to access anything other than the information they are passed
+
+Remove Animator
+    - have all animations be a static change from position x to position y
+    - call animations directly from script
+    - no animation loops
+
+Add Realistic Physics
+    - Objects should fall over, run into each other etc.
+    - stand up, sit down, lay down, rotate, take steps should all work with this system
+    - ideally, pick up would too, hand must grasp an object, if it is too big or too heavy it wont work
+
+QUESTIONS
+#####################################################################################
+    - what does gameObject.SetActive(true) do?
+    - when an object is created, but before its position is changed, where does it appear, if at all? Is that what SetActive does, make it appear
+        after its position has been set?

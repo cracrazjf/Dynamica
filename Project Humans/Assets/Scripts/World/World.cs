@@ -121,7 +121,6 @@ public class World : MonoBehaviour
 
     }
 
-
     // /// <summary>
     // /// CreateApples initializes and places numApples appleInstance objectsFs randomly in the world
     // /// </summary>

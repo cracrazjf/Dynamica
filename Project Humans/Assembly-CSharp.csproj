@@ -138,6 +138,7 @@
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Wolf\Wolf.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Deer\Deer.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\ActionChoice.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Plants\AppleTree\AppleTree.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\FastIK\Documentation.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
@@ -158,6 +159,7 @@
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
      <None Include="Assets\SurvivalAnimsetPro1\readme.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
+     <None Include="Assets\config\todo.txt" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>/Users/jon/Desktop/ProjectHumans/Project Humans/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
