@@ -9,21 +9,16 @@ using Random=UnityEngine.Random;
 abstract public class CountableObject
 {
     private String objectType;
-    private int index;
-    private float nutrition;
-    private float healthEffect;
     private String name;
+    private int index;
     
     // unity variables
     public GameObject gameObject;
     public Animator animator;
 
-    public CountableObject(string objectType, int index,  float nutrition, float healthEffect) {
+    public CountableObject(string objectType, int index) {
         SetObjectType(objectType);
         SetIndex(index);
-        SetNutrition(nutrition);
-        SetHealthEffect(healthEffect);
-
         name = (objectType + " " + index.ToString());
     }
 
@@ -37,44 +32,32 @@ abstract public class CountableObject
         return startRotation;
     }
 
-    public float GetNutrition() {
-        return nutrition;
-    }
-
-    public float GetHealthEffect() {
-        return healthEffect;
-    }
-
     public string GetObjectType() {
         return objectType;
-    }
-
-    public int GetIndex() {
-        return index;
     }
 
     public String GetName() {
         return name;
     }
 
-    public void SetNutrition(float passed) {
-        nutrition = passed;
-    }
-
-    public void SetHealthEffect(float passed) {
-        healthEffect = passed;
+    public int GetIndex() {
+        return index;
     }
 
     public void SetObjectType(string passed) {
         objectType = passed;
     }
 
+    public void SetName(String passed) {
+        name = passed;
+    }
+
     public void SetIndex(int passed) {
         index = passed;
     }
 
-    public void SetName(String passed) {
-        name = passed;
+    public void SetGameObject(GameObject passed) {
+        gameObject = passed;
     }
 
 }

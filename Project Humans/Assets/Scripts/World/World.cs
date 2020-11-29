@@ -18,6 +18,12 @@ public class World : MonoBehaviour
     private Dictionary<string, int> startingPlantCountsDict = new Dictionary<string, int>();
     private Dictionary<string, int> startingNonLivingObjectCounts = new Dictionary<string, int>();
 
+    /// <value> This dict keeps track of data in world.config</value>
+    private Dictionary<string, Dictionary<string, Dictionary<string, float>>> countableObjectGenomeDict =
+     new Dictionary<string, Dictionary<string, Dictionary<string, float>>>();
+    private Dictionary<string, Dictionary<string, Dictionary<string, float>>> countableObjectConstantDict =
+     new Dictionary<string, Dictionary<string, Dictionary<string, float>>>();
+
     /// <value> These dicts keep track of GameObjects </value>
     private static Dictionary<string, Animal> animalDict = new Dictionary<string, Animal>();
     private static Dictionary<string, Plant> plantDict = new Dictionary<string, Plant>();
@@ -46,8 +52,6 @@ public class World : MonoBehaviour
         loadWorldConfig();
         CreateAnimals();
         CreateNonLivingObjects();
-        // CreateApples();
-        // CreateWater();
     }
 
     /// <summary>
@@ -121,41 +125,6 @@ public class World : MonoBehaviour
 
     }
 
-    // /// <summary>
-    // /// CreateApples initializes and places numApples appleInstance objectsFs randomly in the world
-    // /// </summary>
-    // void CreateApples()
-    // {
-    //     int n = startingNonLivingObjectCounts["Apple"];
-    //     countableObjectCountDict.Add("Apple", 0);
-    //     for (int i=0; i<n; i++){
-
-    //         // create an instance of the apple class
-    //         NonlivingObject newApple = new Apple(countableObjectCountDict["Apple"]);
-    //         countableObjectCountDict["Apple"]++;
-            
-    //         nonlivingObjectDict.Add(newApple.GetName(), newApple);
-    //     }
-    // }
-
-
-    // /// <summary>
-    // /// CreateWater initializes and places numApples waterInstance objects randomly in the world
-    // /// </summary>
-    // void CreateWater()
-    // {
-    //     int n = startingNonLivingObjectCounts["Water"];
-    //     countableObjectCountDict.Add("Water", 0);
-    //     for (int i=0; i<n; i++){
-
-    //         // create an instance of the water class
-    //         NonlivingObject newWater = new Water(countableObjectCountDict["Water"]);
-    //         countableObjectCountDict["Water"]++;
-
-    //         nonlivingObjectDict.Add(newWater.GetName(), newWater);
-    //     }
-    // }
-
     public static Animal GetAnimal(string name) {
         return animalDict[name];
     }
@@ -171,8 +140,6 @@ public class World : MonoBehaviour
     
     public void UpdateAnimals() {
         for(int i= 0; i< animalList.Count; i++) {
-            
-            //humanList[i].TestUpdate();
             animalList[i].UpdateAnimal();
         }
     }
@@ -191,6 +158,24 @@ public class World : MonoBehaviour
     /// loadWorldConfig loads the information from Assets/config/world.config into the appropriate config dict or starting count dict
     /// </summary>
     void loadWorldConfig(){
+        // DirectoryInfo d = new DirectoryInfo(@"Assets/config/");
+        // FileInfo[] Files = d.GetFiles("*.config"); //Getting Text files
+        // string str = "";
+        // foreach(FileInfo file in Files){
+        //      if filename is not world.config
+                        // str = str + ", " + file.Name;
+                        // get objectType from str
+                        // countableObjectGenomeDict[objectType] = new Dictionary<string, float>;
+                        // countableObjectConstantDict[objectType] = new Dictionary<string, float>;
+
+                        // open the file
+                        // for each line in the file
+                        //      if the current line is a genome entry, add it to countableObjectGenomeDict[objectType]
+                        //      else if the current line is a constant entry, add it to countableObjectConstantDict[objectType]
+        //      else
+        //          do the stuff below to import world.config
+        // }
+
         // int counter = 0;  
         string line;
         System.IO.StreamReader file;
@@ -215,6 +200,10 @@ public class World : MonoBehaviour
             }
         }  
         file.Close();
+
+
+
+
     }
 
 

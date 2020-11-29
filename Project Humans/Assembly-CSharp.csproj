@@ -67,6 +67,7 @@
      <Compile Include="Assets\FastIK\Scripts\Sample\SampleSinMover.cs" />
      <Compile Include="Assets\test\ParabolaMovement.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Human\Human.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Plants\AppleTree\AppleTree.cs" />
      <Compile Include="Assets\Animation\IKControl.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\MotorSystem.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated Animals\- Scripts\Wander Script\Animal_AIStats.cs" />
@@ -75,7 +76,6 @@
      <Compile Include="Assets\Scripts\CountableObjects\NonlivingObjects\Apple.cs" />
      <Compile Include="Assets\test\FPScontroller.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\FOVDetection.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\NonlivingObjects\BadApple.cs" />
      <Compile Include="Assets\SurvivalAnimsetPro1\Scripts\IKControlLeft.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Penguin\Penguin.cs" />
      <Compile Include="Assets\Scripts\MassObjects\Ground.cs" />
@@ -138,7 +138,6 @@
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Wolf\Wolf.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Deer\Deer.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\ActionChoice.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Plants\AppleTree\AppleTree.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\FastIK\Documentation.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />

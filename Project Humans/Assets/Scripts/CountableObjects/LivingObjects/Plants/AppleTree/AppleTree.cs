@@ -17,7 +17,7 @@ public class AppleTree : Plant
     /// <summary>
     /// AppleTree constructor
     /// </summary>
-    public AppleTree(int index, Genome motherGenome, Genome fatherGenome): base("AppleTree", index, 1.0f, 1.0f, motherGenome, fatherGenome) {
+    public AppleTree(int index, Genome motherGenome, Genome fatherGenome): base("AppleTree", index, motherGenome, fatherGenome) {
         Vector3 startPosition = this.chooseStartPosition();
         Quaternion startRotation = this.chooseStartRotation();
         appleTreePrefab = Resources.Load("TreeRoundPrefab",typeof(GameObject)) as GameObject;
@@ -83,17 +83,13 @@ public class AppleTree : Plant
         // countableObjectCountDict[objectType]++;
 
         float fruitSize = float.Parse(this.phenotype.traitDict["fruit_max_size"]) * float.Parse(this.phenotype.traitDict["fruit_size_proportion"]);
-        int fruitType = Int32.Parse(this.phenotype.traitDict["fruit_type"]);
+        int cyanide = Int32.Parse(this.phenotype.traitDict["cyanide"]);
 
-        if (fruitType == 0){
+        if (cyanide == 0){
             // set fruit color mesh to red
-            this.SetHealthEffect(float.Parse(this.phenotype.traitDict["healthy_fruit_health_effect"])*fruitSize);
-            this.SetNutrition(float.Parse(this.phenotype.traitDict["healthy_fruit_nutrition_effect"])*fruitSize);
         }
         else{
             // set the fruit color mesh to purple
-            this.SetHealthEffect(float.Parse(this.phenotype.traitDict["unhealthy_fruit_health_effect"])*fruitSize);
-            this.SetNutrition(float.Parse(this.phenotype.traitDict["unhealthy_fruit_nutrition_effect"])*fruitSize);
         }
     }
 

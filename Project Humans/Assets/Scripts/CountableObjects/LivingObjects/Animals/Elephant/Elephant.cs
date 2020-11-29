@@ -17,7 +17,7 @@ public class Elephant : Animal
     /// <summary>
     /// Elephant constructor
     /// </summary>
-    public Elephant(int index, Genome motherGenome, Genome fatherGenome): base("Elephant", index, 1.0f, 1.0f, motherGenome, fatherGenome) {
+    public Elephant(int index, Genome motherGenome, Genome fatherGenome): base("Elephant", index, motherGenome, fatherGenome) {
         Vector3 startPosition = this.chooseStartPosition();
         Quaternion startRotation = this.chooseStartRotation();
         elephantPrefab = Resources.Load("ElephantPrefab",typeof(GameObject)) as GameObject;

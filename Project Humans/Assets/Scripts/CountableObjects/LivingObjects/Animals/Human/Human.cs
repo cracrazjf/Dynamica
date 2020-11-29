@@ -39,7 +39,7 @@ public class Human : Animal
     /// <summary>
     /// Human constructor
     /// </summary>
-    public Human(int index, Genome motherGenome, Genome fatherGenome): base("Human", index, 1.0f, 1.0f, motherGenome, fatherGenome) {
+    public Human(int index, Genome motherGenome, Genome fatherGenome): base("Human", index, motherGenome, fatherGenome) {
         bodyState = "standing";
         actionState = "none";
         sleepingState = false;

@@ -15,7 +15,7 @@ public class Deer : Animal
     /// <summary>
     /// Deer constructor
     /// </summary>
-    public Deer(int index, Genome motherGenome, Genome fatherGenome): base("Deer", index, 1.0f, 1.0f, motherGenome, fatherGenome) {
+    public Deer(int index, Genome motherGenome, Genome fatherGenome): base("Deer", index, motherGenome, fatherGenome) {
         Vector3 startPosition = this.chooseStartPosition();
         Quaternion startRotation = this.chooseStartRotation();
         deerPrefab = Resources.Load("DeerPrefab",typeof(GameObject)) as GameObject;

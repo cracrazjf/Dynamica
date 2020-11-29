@@ -9,9 +9,8 @@ public class Apple : NonlivingObject
     public static float minPosition = -World.worldSize / 2;
     public GameObject applePrefab;
 
-    public Apple(int index) : base("Apple", index, 10f, 10f) {
-        // it could read its nutrition and mass from a config file
-        // set those values, including the name, here, instead of passing them into the constructor
+    public Apple(int index) : base("Apple", index) {
+
         Vector3 startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0f, Random.Range(minPosition,maxPosition));
         applePrefab = Resources.Load("ApplePrefab",typeof(GameObject)) as GameObject;
 

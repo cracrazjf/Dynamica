@@ -7,14 +7,8 @@ using System.IO;
 //using System.Text.Json.Serialization;
 using UnityEngine;
 
-// TEMP
-//using System.Text.Json;
-
-// const string FILE_NAME = "test.json"
-
-// TODO: Figure out file readout based off calling class (without overrides)
 
 abstract public class NonlivingObject : CountableObject
 {
-    public NonlivingObject(string objectType, int index, float nutrition, float healthEffect) : base (objectType, index, nutrition, healthEffect) {}
+    public NonlivingObject(string objectType, int index) : base (objectType, index) {}
 }

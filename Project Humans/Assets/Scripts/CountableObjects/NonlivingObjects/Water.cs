@@ -9,7 +9,7 @@ public class Water : NonlivingObject
     public static float minPosition = -World.worldSize / 2;
     public GameObject waterPrefab;
 
-    public Water(int index) : base("Water", index, 10f, 10f){
+    public Water(int index) : base("Water", index){
         Vector3 startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0f, Random.Range(minPosition,maxPosition));
         waterPrefab = Resources.Load("WaterPrefab",typeof(GameObject)) as GameObject;
 
