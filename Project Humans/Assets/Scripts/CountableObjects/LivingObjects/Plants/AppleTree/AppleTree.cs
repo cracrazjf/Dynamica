@@ -18,6 +18,7 @@ public class AppleTree : Plant
     /// AppleTree constructor
     /// </summary>
     public AppleTree(int index, Genome motherGenome, Genome fatherGenome): base("AppleTree", index, motherGenome, fatherGenome) {
+        // these should be moved up the hierarchy, countable object
         Vector3 startPosition = this.chooseStartPosition();
         Quaternion startRotation = this.chooseStartRotation();
         appleTreePrefab = Resources.Load("TreeRoundPrefab",typeof(GameObject)) as GameObject;
@@ -76,13 +77,15 @@ public class AppleTree : Plant
         // it needs access to world to see the index it needs to add for name
         // How do we add these things to the world info lists and dicts?
         // We could have each object contain a pointer back up to world, but is there another solution?
-        Apple newApple = new Apple(-1);
+        int indexNumber = -1; // this needs to be the value of world.countableObjectCountDict['Apple']
+        Apple newApple = new Apple(indexNumber);
         // nonlivingObject newNonlivingObject = new Apple(countableObjectCountDict[objectType]);
         // nonlivingObjectList.Add(newNonlivingObject);
         // nonlivingObjectDict[newNonlivingObject.GetName()] = newNonlivingObject;
         // countableObjectCountDict[objectType]++;
-
         float fruitSize = float.Parse(this.phenotype.traitDict["fruit_max_size"]) * float.Parse(this.phenotype.traitDict["fruit_size_proportion"]);
+        // change the newApple.size = fruitSize;
+        
         int cyanide = Int32.Parse(this.phenotype.traitDict["cyanide"]);
 
         if (cyanide == 0){
@@ -91,6 +94,7 @@ public class AppleTree : Plant
         else{
             // set the fruit color mesh to purple
         }
+        // instantiate the apple
     }
 
     public void Grow(){

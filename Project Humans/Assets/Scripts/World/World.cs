@@ -16,13 +16,13 @@ public class World : MonoBehaviour
     private Dictionary<string, string> worldConfigDict = new Dictionary<string, string>();
     private Dictionary<string, int> startingAnimalCountsDict = new Dictionary<string, int>();
     private Dictionary<string, int> startingPlantCountsDict = new Dictionary<string, int>();
-    private Dictionary<string, int> startingNonLivingObjectCounts = new Dictionary<string, int>();
+    private Dictionary<string, int> startingNonLivingObjectCountsDict = new Dictionary<string, int>();
 
     /// <value> This dict keeps track of data in world.config</value>
     private Dictionary<string, Dictionary<string, Dictionary<string, float>>> countableObjectGenomeDict =
-     new Dictionary<string, Dictionary<string, Dictionary<string, float>>>();
+    new Dictionary<string, Dictionary<string, Dictionary<string, float>>>();
     private Dictionary<string, Dictionary<string, Dictionary<string, float>>> countableObjectConstantDict =
-     new Dictionary<string, Dictionary<string, Dictionary<string, float>>>();
+    new Dictionary<string, Dictionary<string, Dictionary<string, float>>>();
 
     /// <value> These dicts keep track of GameObjects </value>
     private static Dictionary<string, Animal> animalDict = new Dictionary<string, Animal>();
@@ -39,7 +39,7 @@ public class World : MonoBehaviour
     public Genome fatherGenome;
 
     /// <value>Setting initial world properties</value>
-    public static float worldSize = 20.0f;
+    public static float worldSize = 20.0f; // this needs to be in world.config
     public static float maxPosition = World.worldSize / 2;
     public static float minPosition = -World.worldSize / 2;
 
@@ -89,6 +89,57 @@ public class World : MonoBehaviour
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }
+                else if (speciesType == "Wolf"){
+                    newAnimal = new Wolf(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    animalList.Add(newAnimal);
+                    animalDict[newAnimal.GetName()] = newAnimal;
+                    countableObjectCountDict[speciesType]++;
+                }
+                else if (speciesType == "Elephant"){
+                    newAnimal = new Elephant(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    animalList.Add(newAnimal);
+                    animalDict[newAnimal.GetName()] = newAnimal;
+                    countableObjectCountDict[speciesType]++;
+                }                
+                else if (speciesType == "Deer"){
+                    newAnimal = new Deer(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    animalList.Add(newAnimal);
+                    animalDict[newAnimal.GetName()] = newAnimal;
+                    countableObjectCountDict[speciesType]++;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// CreatePlants initializes and places all the nonliving objects in the world
+    /// </summary>  
+    void CreatePlants()
+    {
+        string speciesType;
+        int n;
+        Plant newPlant;
+
+        foreach(KeyValuePair<string, int> entry in startingPlantCountsDict)
+        {
+            speciesType = entry.Key;
+            n = entry.Value;
+            countableObjectCountDict.Add(speciesType, 0);
+
+            for (int i=0; i<n; i++){
+                // create the pseudo-random parent genomes
+                motherGenome = new Genome();
+                motherGenome.CreateGenome(speciesType);
+                fatherGenome = new Genome();
+                fatherGenome.CreateGenome(speciesType);
+
+                // should be able to move lines 77-79 and 83-85 out of these if's, but it creates an error I dont understand
+                if (speciesType == "Apple_Tree"){
+                    newPlant = new AppleTree(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    plantList.Add(newPlant);
+                    plantDict[newPlant.GetName()] = newPlant;
+                    countableObjectCountDict[speciesType]++;
+                }
             }
         }
     }
@@ -102,7 +153,7 @@ public class World : MonoBehaviour
         string objectType;
         int n;
 
-        foreach(KeyValuePair<string, int> entry in startingNonLivingObjectCounts){
+        foreach(KeyValuePair<string, int> entry in startingNonLivingObjectCountsDict){
             objectType = entry.Key;
             n = entry.Value;
             countableObjectCountDict.Add(objectType, 0);
@@ -122,7 +173,6 @@ public class World : MonoBehaviour
                 }
             }
         }
-
     }
 
     public static Animal GetAnimal(string name) {
@@ -137,7 +187,6 @@ public class World : MonoBehaviour
         return plantDict[name];
     }
 
-    
     public void UpdateAnimals() {
         for(int i= 0; i< animalList.Count; i++) {
             animalList[i].UpdateAnimal();
@@ -193,7 +242,7 @@ public class World : MonoBehaviour
                 startingPlantCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
             }
             else if (lineInfo[0] == "Nonliving_Object_Count"){
-                startingNonLivingObjectCounts.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
+                startingNonLivingObjectCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
             }
             else{
                 worldConfigDict.Add(lineInfo[1], lineInfo[2]);

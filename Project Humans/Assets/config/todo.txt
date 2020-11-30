@@ -3,6 +3,7 @@ HIGH PRIORITY
 
 - Fix Object Location Generation so that object creation involves passing in an argument that is used
     to specify the spawn location, or random if one is not provided
+    move this code into countableObject and delete it from all the other objects
 
 - AppleTree
     - have its genes dictate its height, width, & color
@@ -14,8 +15,11 @@ HIGH PRIORITY
     - make a gene that affects the size of the fruit, and that acts as a multiplier on its health and nutrition values
     - make the tree grow in height over time to its max height
 
-- Water
-    - needs to be made ponds of water, not water bottles
+- Nonliving object 
+    - add a propertyDict, to store the values in apple.config, water.config, etc.
+
+- Apple
+    - add cyanide property
 
 - SimpleAI2 
     - Fix PickUp
@@ -31,6 +35,9 @@ HIGH PRIORITY
 
 MEDIUM PRIORITY
 #####################################################################################
+
+- Water
+    - needs to be made ponds of water, not water bottles
 
 Day Night Cycles
     - add day night cycles, with full moon creating less light (but not no light) during the night
@@ -112,8 +119,6 @@ Collisions
         - if impact is too large (determined as function of force from collider & mass of collided)
             - object falls over
             - health damage occurs
-
-
 
 Wolf
     - bite and claw actions, causing damage
