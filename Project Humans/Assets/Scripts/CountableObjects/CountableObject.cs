@@ -22,12 +22,19 @@ abstract public class CountableObject
         name = (objectType + " " + index.ToString());
     }
 
-    public Vector3 chooseStartPosition(){
-        var startPosition = new Vector3 (Random.Range(World.minPosition,World.maxPosition), 0.03f, Random.Range(World.minPosition,World.maxPosition));
+    public Vector3 chooseStartPosition(Nullable<Vector3> Position){
+        var startPosition = new Vector3();
+        if (Position != null) {
+            startPosition = (Vector3)Position;
+        }
+        else {
+            startPosition = new Vector3 (Random.Range(World.minPosition,World.maxPosition), 0.03f, Random.Range(World.minPosition,World.maxPosition));
+        }
         return startPosition;
     }
 
     public Quaternion chooseStartRotation(){
+        
         var startRotation = Quaternion.Euler(0.0f, Random.Range(World.minPosition,World.maxPosition), 0.0f);
         return startRotation;
     }

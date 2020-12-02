@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2379060}
   - component: {fileID: 64077636534296622}
   m_Layer: 0
-  m_Name: PenguinPrefab
+  m_Name: penguin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

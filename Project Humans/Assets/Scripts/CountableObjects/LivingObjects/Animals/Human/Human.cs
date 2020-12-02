@@ -40,6 +40,7 @@ public class Human : Animal
     /// Human constructor
     /// </summary>
     public Human(int index, Genome motherGenome, Genome fatherGenome): base("Human", index, motherGenome, fatherGenome) {
+        SetObjectType("human");
         bodyState = "standing";
         actionState = "none";
         sleepingState = false;
@@ -47,7 +48,7 @@ public class Human : Animal
         RHState = false;
 
         //Instantiate humanPrefab
-        Vector3 startPosition = this.chooseStartPosition();
+        Vector3 startPosition = this.chooseStartPosition(null);
         Quaternion startRotation = this.chooseStartRotation();
 
         if (this.phenotype.traitDict["sex"] == "0")

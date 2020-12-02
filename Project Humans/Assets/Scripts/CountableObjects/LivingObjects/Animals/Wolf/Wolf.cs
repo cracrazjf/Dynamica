@@ -17,7 +17,7 @@ public class Wolf : Animal
     /// Penguin constructor
     /// </summary>
     public Wolf(int index, Genome motherGenome, Genome fatherGenome): base("Wolf", index, motherGenome, fatherGenome) {
-        Vector3 startPosition = this.chooseStartPosition();
+        Vector3 startPosition = this.chooseStartPosition(null);
         Quaternion startRotation = this.chooseStartRotation();
         wolfPrefab = Resources.Load("GreyWolfPrefab",typeof(GameObject)) as GameObject;
 

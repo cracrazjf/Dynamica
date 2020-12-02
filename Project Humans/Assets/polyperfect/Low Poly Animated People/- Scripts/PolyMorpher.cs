@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PolyMorpher : MonoBehaviour {
+public class PolyMorpher : MonoBehaviour
+{
 
     public AvatarMask customPartMask;
 
@@ -18,10 +19,10 @@ public class PolyMorpher : MonoBehaviour {
         [HideInInspector] public Vector3 startScale;
     }
 
-    List<CustomBodyElement> customBodyElement = new List<CustomBodyElement>();
+    public List<CustomBodyElement> customBodyElement = new List<CustomBodyElement>();
 
     [ContextMenu("Get Body Parts")]
-    void GetBodyParts()
+    IEnumerator GetBodyParts()
     {
         customBodyElement.Clear();
 
@@ -32,14 +33,26 @@ public class PolyMorpher : MonoBehaviour {
                 var newCustomBodyElement = new CustomBodyElement();
                 newCustomBodyElement.name = customPartMask.GetTransformPath(i);
                 newCustomBodyElement.bodyElement = transform.Find(customPartMask.GetTransformPath(i));
-                newCustomBodyElement.startScale = Vector3.one;
 
-                if (!newCustomBodyElement.bodyElement.GetComponent<SkinnedMeshRenderer>())
+                if (newCustomBodyElement.bodyElement == null)
                 {
-                    customBodyElement.Add(newCustomBodyElement);
+                    Debug.Log("Could not find");
+                    continue;
+                }
+
+                else
+                {
+                    newCustomBodyElement.startScale = Vector3.one;
+
+                    if (newCustomBodyElement.bodyElement.GetComponent<SkinnedMeshRenderer>())
+                    {
+                        customBodyElement.Add(newCustomBodyElement);
+                    }
                 }
             }
         }
+
+        yield return null;
     }
 
     [ContextMenu("Random Size")]
@@ -67,14 +80,19 @@ public class PolyMorpher : MonoBehaviour {
 
     void Start()
     {
-        if(MorphOnStart)
+        if (MorphOnStart)
         {
-            GetBodyParts();
+            StartCoroutine(Morph());
+        }
+    }
 
-            if (customBodyElement.Count > 0)
-            {
-                RandomSize();
-            }
+    IEnumerator Morph()
+    {
+        yield return GetBodyParts();
+
+        if (customBodyElement.Count > 0)
+        {
+            RandomSize();
         }
     }
 }

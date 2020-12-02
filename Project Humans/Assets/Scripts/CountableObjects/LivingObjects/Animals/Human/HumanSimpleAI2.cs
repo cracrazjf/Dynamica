@@ -278,7 +278,7 @@ public class HumanSimpleAI2
                                 thisHuman.gameObject.transform.position.x + Range), 0, 
                                 Random.Range(thisHuman.gameObject.transform.position.z - Range, 
                                 thisHuman.gameObject.transform.position.z + Range));
-                                Debug.Log(randomPoint  + " and " + (thisHuman.gameObject.transform.position - randomPoint).magnitude);
+                                //Debug.Log(randomPoint  + " and " + (thisHuman.gameObject.transform.position - randomPoint).magnitude);
             newRandomPos = true;
             }
             thisHuman.gameObject.transform.LookAt(randomPoint);

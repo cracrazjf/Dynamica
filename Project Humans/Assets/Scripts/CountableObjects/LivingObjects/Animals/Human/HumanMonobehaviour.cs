@@ -8,27 +8,30 @@ using UnityEngine;
 
 public class HumanMonobehaviour : MonoBehaviour
 {
-    void OnAnimatorIK()
-        {
-            Debug.Log("here");
-            // for(int i= 0; i< World.humanList.Count; i++) {
-            //     if (World.humanList[i].animator) {
-                   
-            //         if (((Human) World.humanList[i]).GetActionChoice().actionValueDict["pick_up"] == 1) {
-                        
-            //             if (World.humanList[i].GetActionChoice().argumentDict["hand"] == 0) {
-                            
-            //                 World.humanList[i].animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
-            //                 World.humanList[i].animator.SetIKPosition(AvatarIKGoal.LeftHand, ((Human) World.humanList[i]).humanSimpleAI2.pickUpPosition);
-                            
-            //             }
-            //             else if (World.humanList[i].GetActionChoice().argumentDict["hand"] == 1) {
-            //                 World.humanList[i].animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-            //                 World.humanList[i].animator.SetIKPosition(AvatarIKGoal.RightHand, ((Human) World.humanList[i]).humanSimpleAI2.pickUpPosition);
-            //             }
-            //         }
-            //     }
-            // }
-            
+    List<Human> humanList = new List<Human>();
+
+    void Update() {
+        for(int i= 0; i< World.animalList.Count; i++) {
+            if (World.animalList[i].GetObjectType() == "human") {
+                humanList.Add(((Human)World.animalList[i]));
+            }
         }
+                
+    }
+    void OnAnimatorIK()
+    {
+        for(int i= 0; i< humanList.Count; i++) {
+            if (humanList[i].animator) {
+                if (humanList[i].actionState == "picking up with left hand") {  
+                    humanList[i].animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0.5f);
+                    humanList[i].animator.SetIKPosition(AvatarIKGoal.LeftHand,  humanList[i].humanSimpleAI2.pickUpPosition);
+                }
+                else if (humanList[i].actionState == "picking up with right hand") {
+                    humanList[i].animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+                    humanList[i].animator.SetIKPosition(AvatarIKGoal.RightHand, humanList[i].humanSimpleAI2.pickUpPosition);
+                }
+            }
+        }
+        //Debug.Log("here");
+    }
 }

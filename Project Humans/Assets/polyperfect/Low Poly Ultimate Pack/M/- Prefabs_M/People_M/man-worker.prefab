@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 4000013728119262}
   - component: {fileID: 33000014107266176}
   - component: {fileID: 23000013225418270}
-  - component: {fileID: 136537058194489658}
-  m_Layer: 11
+  - component: {fileID: 1283429690}
+  m_Layer: 0
   m_Name: man-worker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,11 +56,12 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 3b20fc9e84b968641b7312bdcdd1ffd8, type: 2}
-  - {fileID: 2100000, guid: 6e3ac6e47b4d7a44685dfef9bf209413, type: 2}
+  - {fileID: 2100000, guid: 3193cf6cf65b8a748b1a843c78e6c26d, type: 2}
   - {fileID: 2100000, guid: f9c4a99059a34d842b70997d0245fde2, type: 2}
   - {fileID: 2100000, guid: d8b3608c06351da4f8e09a879c0ddc66, type: 2}
   m_StaticBatchInfo:
@@ -74,7 +75,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -83,7 +84,8 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!136 &136537058194489658
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &1283429690
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,7 +95,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.36235732
-  m_Height: 1.7922788
+  m_Radius: 0.2674141
+  m_Height: 1.8296546
   m_Direction: 1
-  m_Center: {x: 0, y: 0.89613914, z: 0.0017079636}
+  m_Center: {x: 0, y: 0.91551894, z: 0.024380408}

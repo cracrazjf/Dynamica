@@ -49,6 +49,7 @@ public class PolyIkEditor : Editor
         SerializedProperty leftHandIk = serializedObject.FindProperty("leftHandIk");
         SerializedProperty rightFootIk = serializedObject.FindProperty("rightFootIk");
 
+
         var mainTexture = Resources.Load<Texture2D>("IKLogo");
 
         //Main Image    	
