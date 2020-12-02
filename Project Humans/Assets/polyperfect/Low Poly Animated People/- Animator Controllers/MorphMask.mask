@@ -16,6 +16,8 @@ AvatarMask:
     m_Weight: 0
   - m_Path: Geometry/man-basketball-player
     m_Weight: 0
+  - m_Path: Geometry/man-boxer
+    m_Weight: 0
   - m_Path: Geometry/man-business
     m_Weight: 0
   - m_Path: Geometry/man-casual
@@ -46,6 +48,8 @@ AvatarMask:
     m_Weight: 0
   - m_Path: Geometry/man-ninja
     m_Weight: 0
+  - m_Path: Geometry/man-pirate
+    m_Weight: 0
   - m_Path: Geometry/man-police
     m_Weight: 0
   - m_Path: Geometry/man-prehistoric
@@ -53,6 +57,8 @@ AvatarMask:
   - m_Path: Geometry/man-skate
     m_Weight: 0
   - m_Path: Geometry/man-skeleton
+    m_Weight: 0
+  - m_Path: Geometry/man-ski
     m_Weight: 0
   - m_Path: Geometry/man-soldier
     m_Weight: 0
@@ -66,6 +72,8 @@ AvatarMask:
     m_Weight: 0
   - m_Path: Geometry/woman-basketball-player
     m_Weight: 0
+  - m_Path: Geometry/woman-boxer
+    m_Weight: 0
   - m_Path: Geometry/woman-business
     m_Weight: 0
   - m_Path: Geometry/woman-casual
@@ -78,13 +86,21 @@ AvatarMask:
     m_Weight: 0
   - m_Path: Geometry/woman-cowgirl
     m_Weight: 0
+  - m_Path: Geometry/woman-cyclist
+    m_Weight: 0
   - m_Path: Geometry/woman-doctor
     m_Weight: 0
   - m_Path: Geometry/woman-farm
     m_Weight: 0
   - m_Path: Geometry/woman-fire
     m_Weight: 0
+  - m_Path: Geometry/woman-hazard
+    m_Weight: 0
   - m_Path: Geometry/woman-lumberjack
+    m_Weight: 0
+  - m_Path: Geometry/woman-ninja
+    m_Weight: 0
+  - m_Path: Geometry/woman-pirate
     m_Weight: 0
   - m_Path: Geometry/woman-police
     m_Weight: 0

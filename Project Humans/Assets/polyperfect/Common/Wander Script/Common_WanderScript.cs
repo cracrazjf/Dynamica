@@ -301,6 +301,7 @@ namespace PolyPerfect
             //Assign the stats to variables
             originalDominance = stats.dominance;
             dominance = originalDominance;
+            power = stats.power;
 
             toughness = stats.toughness;
             territorial = stats.territorial;
@@ -424,8 +425,11 @@ namespace PolyPerfect
                         continue;
                     }
 
-                    ChaseAnimal(allAnimals[i]);
-                    return;
+                    else
+                    {
+                        ChaseAnimal(allAnimals[i]);
+                        return;
+                    }
                 }
             }
 

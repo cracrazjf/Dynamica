@@ -154,13 +154,15 @@ public class HumanMotorSystem : MotorSystem
                                     pickableObj[i].transform.parent = this.thisHuman.leftHand.transform;
                                     this.thisHuman.LHState = true;
                                     this.thisHuman.animator.ResetTrigger("pick");
+                                    pickableObj[i].transform.localPosition = new Vector3(0.1311f,0.0341f,0.073f);
                                 }
                                 else{
                                     pickableObj[i].transform.parent = this.thisHuman.rightHand.transform;
                                     this.thisHuman.RHState = true;
                                     this.thisHuman.animator.ResetTrigger("pick");
+                                    pickableObj[i].transform.localPosition = new Vector3(-0.1593f,-0.026f,-0.0665f);
                                 }
-                                pickableObj[i].transform.localPosition = new Vector3(0,0,0);
+                                
                             }
                         }
                     }

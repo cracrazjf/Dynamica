@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Configuration;
 using System.Linq;
+using System.IO;
 
 
 public class World : MonoBehaviour
@@ -19,10 +20,8 @@ public class World : MonoBehaviour
     private Dictionary<string, int> startingNonLivingObjectCountsDict = new Dictionary<string, int>();
 
     /// <value> This dict keeps track of data in world.config</value>
-    private Dictionary<string, Dictionary<string, Dictionary<string, float>>> countableObjectGenomeDict =
-    new Dictionary<string, Dictionary<string, Dictionary<string, float>>>();
-    private Dictionary<string, Dictionary<string, Dictionary<string, float>>> countableObjectConstantDict =
-    new Dictionary<string, Dictionary<string, Dictionary<string, float>>>();
+    private Dictionary<string, Dictionary<string, List<string>>> genomeInfoDict = new Dictionary<string, Dictionary<string, List<string>>>();
+    private Dictionary<string, Dictionary<string, List<string>>> constantInfoDict = new Dictionary<string, Dictionary<string, List<string>>>();
 
     /// <value> These dicts keep track of GameObjects </value>
     private static Dictionary<string, Animal> animalDict = new Dictionary<string, Animal>();
@@ -43,14 +42,17 @@ public class World : MonoBehaviour
     public static float maxPosition = World.worldSize / 2;
     public static float minPosition = -World.worldSize / 2;
 
+    int updateCounter;
 
     /// <summary>
     /// Start is called before the first frame update and initializes all scene objects
     /// </summary>
     void Start()
     { 
+        updateCounter = 0;
         loadWorldConfig();
         CreateAnimals();
+        CreatePlants();
         CreateNonLivingObjects();
     }
 
@@ -159,13 +161,7 @@ public class World : MonoBehaviour
             countableObjectCountDict.Add(objectType, 0);
 
             for (int i=0; i<n; i++){
-                if (objectType == "Apple"){
-                    newNonlivingObject = new Apple(countableObjectCountDict[objectType]);
-                    nonlivingObjectList.Add(newNonlivingObject);
-                    nonlivingObjectDict[newNonlivingObject.GetName()] = newNonlivingObject;
-                    countableObjectCountDict[objectType]++;
-                }
-                else if (objectType == "Water"){
+                if (objectType == "Water"){
                     newNonlivingObject = new Water(countableObjectCountDict[objectType]);
                     nonlivingObjectList.Add(newNonlivingObject);
                     nonlivingObjectDict[newNonlivingObject.GetName()] = newNonlivingObject;
@@ -193,7 +189,11 @@ public class World : MonoBehaviour
         }
     }
     
-    int updateCounter = 0;
+    public void UpdatePlants() {
+        for(int i= 0; i< plantList.Count; i++) {
+            plantList[i].UpdatePlant(updateCounter);
+        }
+    }
 
     /// <summary>
     /// Update is called once per frame
@@ -201,59 +201,70 @@ public class World : MonoBehaviour
     void Update()
     {
         UpdateAnimals();
+        UpdatePlants();
+        updateCounter++;
     }
 
     /// <summary>
     /// loadWorldConfig loads the information from Assets/config/world.config into the appropriate config dict or starting count dict
     /// </summary>
     void loadWorldConfig(){
-        // DirectoryInfo d = new DirectoryInfo(@"Assets/config/");
-        // FileInfo[] Files = d.GetFiles("*.config"); //Getting Text files
-        // string str = "";
-        // foreach(FileInfo file in Files){
-        //      if filename is not world.config
-                        // str = str + ", " + file.Name;
-                        // get objectType from str
-                        // countableObjectGenomeDict[objectType] = new Dictionary<string, float>;
-                        // countableObjectConstantDict[objectType] = new Dictionary<string, float>;
-
-                        // open the file
-                        // for each line in the file
-                        //      if the current line is a genome entry, add it to countableObjectGenomeDict[objectType]
-                        //      else if the current line is a constant entry, add it to countableObjectConstantDict[objectType]
-        //      else
-        //          do the stuff below to import world.config
-        // }
-
-        // int counter = 0;  
+        DirectoryInfo d = new DirectoryInfo(@"Assets/config/");
+        FileInfo[] Files = d.GetFiles("*.config"); //Getting Text files
         string line;
-        System.IO.StreamReader file;
-        
-        string filename = @"Assets/config/world.config";
-        file = new System.IO.StreamReader(filename);  
-        
-        while((line = file.ReadLine()) != null)  
-        {  
-            string[] lineInfo = line.Split(new[] { "," }, StringSplitOptions.None);
-            if (lineInfo[0] == "Animal_Count"){
-                startingAnimalCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
-            }
-            else if (lineInfo[0] == "Plant_Count"){
-                startingPlantCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
-            }
-            else if (lineInfo[0] == "Nonliving_Object_Count"){
-                startingNonLivingObjectCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
+        string[] lineInfo;
+        string objectType;
+        string lineType;
+
+        string propertyName;
+
+        foreach(FileInfo file in Files){
+            if (file.Name == "world.config"){
+                using (StreamReader sr = file.OpenText()){
+                    
+                    while ((line = sr.ReadLine()) != null){
+                        lineInfo = line.Split(new[] { "," }, StringSplitOptions.None);
+                        if (lineInfo[0] == "Animal_Count"){
+                            startingAnimalCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
+                        }
+                        else if (lineInfo[0] == "Plant_Count"){
+                            startingPlantCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
+                        }
+                        else if (lineInfo[0] == "Nonliving_Object_Count"){
+                            startingNonLivingObjectCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
+                        }
+                        else{
+                            worldConfigDict.Add(lineInfo[1], lineInfo[2]);
+                        }
+                    }
+                }  
             }
             else{
-                worldConfigDict.Add(lineInfo[1], lineInfo[2]);
+
+                string[] fileNameInfo = file.Name.Split(new[] { "." }, StringSplitOptions.None);
+                objectType = fileNameInfo[0];
+
+                constantInfoDict.Add(fileNameInfo[0], new Dictionary<string, List<string>>());
+                genomeInfoDict.Add(fileNameInfo[0], new Dictionary<string, List<string>>());
+
+                using (StreamReader sr = file.OpenText()){
+                    while ((line = sr.ReadLine()) != null){
+                        // genome.sex=binary,1,mutable,.3,.25,1
+                        lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
+                        string[] leftArray = lineInfo[0].Split(new[] { "." }, StringSplitOptions.None);
+                        string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
+                        lineType = leftArray[0];
+                        propertyName = leftArray[1];
+
+                        if (lineInfo[0] == "genome"){
+                            genomeInfoDict[objectType].Add(leftArray[1], rightArray.ToList());
+                        }
+                        else if(lineInfo[0] == "constant"){
+                            constantInfoDict[objectType].Add(leftArray[1], rightArray.ToList());
+                        }
+                    }
+                }
             }
-        }  
-        file.Close();
-
-
-
-
-    }
-
-
+        }
+    }     
 }

@@ -5,22 +5,6 @@ HIGH PRIORITY
     to specify the spawn location, or random if one is not provided
     move this code into countableObject and delete it from all the other objects
 
-- AppleTree
-    - have its genes dictate its height, width, & color
-    - also have its genes dictate the nutriousnessness, health effects, and color of its fruit
-    - at one end of continuum, fruit is red, nutritious, and not poisonous
-    - at other end of continuum, fruit is purple, not nutritious, and poisoness
-    - make the genome bimodal, so that fruits in the middle are rare
-    - make the genome properties that affect the fruit also affect the shape of the tree
-    - make a gene that affects the size of the fruit, and that acts as a multiplier on its health and nutrition values
-    - make the tree grow in height over time to its max height
-
-- Nonliving object 
-    - add a propertyDict, to store the values in apple.config, water.config, etc.
-
-- Apple
-    - add cyanide property
-
 - SimpleAI2 
     - Fix PickUp
 
@@ -35,6 +19,10 @@ HIGH PRIORITY
 
 MEDIUM PRIORITY
 #####################################################################################
+- AppleTree
+    - impliment tree size and growth
+    - make the genome properties that affect the fruit also affect the shape of the tree
+    - impliment apple size
 
 - Water
     - needs to be made ponds of water, not water bottles
