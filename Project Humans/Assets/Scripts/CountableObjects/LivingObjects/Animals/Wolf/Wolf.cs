@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 
 public class Wolf : Animal
@@ -16,9 +18,9 @@ public class Wolf : Animal
     /// <summary>
     /// Penguin constructor
     /// </summary>
-    public Wolf(int index, Genome motherGenome, Genome fatherGenome): base("Wolf", index, motherGenome, fatherGenome) {
-        Vector3 startPosition = this.chooseStartPosition(null);
-        Quaternion startRotation = this.chooseStartRotation();
+    public Wolf(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome): 
+            base("Wolf", index, position, motherGenome, fatherGenome) {
+
         wolfPrefab = Resources.Load("GreyWolfPrefab",typeof(GameObject)) as GameObject;
 
         this.gameObject = GameObject.Instantiate(wolfPrefab, startPosition, startRotation) as GameObject;

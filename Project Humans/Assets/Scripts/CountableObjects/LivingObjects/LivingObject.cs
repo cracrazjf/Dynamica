@@ -9,8 +9,8 @@ abstract public class LivingObject : CountableObject
     public Phenotype phenotype;
     public int age;
 
-    public LivingObject(string objectType, int index, Genome motherGenome, Genome fatherGenome) 
-    : base (objectType, index)
+    public LivingObject(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) 
+    : base (objectType, index, position)
     {
         this.genome = new Genome();
         this.genome.thisLivingObject = this;

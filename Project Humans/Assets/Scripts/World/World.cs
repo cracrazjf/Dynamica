@@ -11,22 +11,22 @@ using System.IO;
 public class World : MonoBehaviour
 {
     /// <value> This dict keeps track of the total number of each kind of object that has been created</value>
-    private static Dictionary<string, int> countableObjectCountDict = new Dictionary<string, int>();
+    public static Dictionary<string, int> countableObjectCountDict = new Dictionary<string, int>();
     
     /// <value> This dict keeps track of data in world.config</value>
-    private Dictionary<string, string> worldConfigDict = new Dictionary<string, string>();
-    private Dictionary<string, int> startingAnimalCountsDict = new Dictionary<string, int>();
-    private Dictionary<string, int> startingPlantCountsDict = new Dictionary<string, int>();
-    private Dictionary<string, int> startingNonLivingObjectCountsDict = new Dictionary<string, int>();
+    public Dictionary<string, string> worldConfigDict = new Dictionary<string, string>();
+    public Dictionary<string, int> startingAnimalCountsDict = new Dictionary<string, int>();
+    public Dictionary<string, int> startingPlantCountsDict = new Dictionary<string, int>();
+    public Dictionary<string, int> startingNonLivingObjectCountsDict = new Dictionary<string, int>();
 
     /// <value> This dict keeps track of data in world.config</value>
-    private Dictionary<string, Dictionary<string, List<string>>> genomeInfoDict = new Dictionary<string, Dictionary<string, List<string>>>();
-    private Dictionary<string, Dictionary<string, List<string>>> constantInfoDict = new Dictionary<string, Dictionary<string, List<string>>>();
+    public Dictionary<string, Dictionary<string, List<string>>> genomeInfoDict = new Dictionary<string, Dictionary<string, List<string>>>();
+    public Dictionary<string, Dictionary<string, List<string>>> constantInfoDict = new Dictionary<string, Dictionary<string, List<string>>>();
 
     /// <value> These dicts keep track of GameObjects </value>
-    private static Dictionary<string, Animal> animalDict = new Dictionary<string, Animal>();
-    private static Dictionary<string, Plant> plantDict = new Dictionary<string, Plant>();
-    private static Dictionary<string, NonlivingObject> nonlivingObjectDict = new Dictionary<string, NonlivingObject>();
+    public static Dictionary<string, Animal> animalDict = new Dictionary<string, Animal>();
+    public static Dictionary<string, Plant> plantDict = new Dictionary<string, Plant>();
+    public static Dictionary<string, NonlivingObject> nonlivingObjectDict = new Dictionary<string, NonlivingObject>();
     
     /// <value> These lists keep track of entities needing an update each epoch</value>
     public static List<Animal> animalList = new List<Animal>();
@@ -80,31 +80,31 @@ public class World : MonoBehaviour
 
                 // should be able to move lines 77-79 and 83-85 out of these if's, but it creates an error I dont understand
                 if (speciesType == "Human"){
-                    newAnimal = new Human(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    newAnimal = new Human(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }
                 else if (speciesType == "Penguin"){
-                    newAnimal = new Penguin(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    newAnimal = new Penguin(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }
                 else if (speciesType == "Wolf"){
-                    newAnimal = new Wolf(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    newAnimal = new Wolf(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }
                 else if (speciesType == "Elephant"){
-                    newAnimal = new Elephant(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    newAnimal = new Elephant(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }                
                 else if (speciesType == "Deer"){
-                    newAnimal = new Deer(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    newAnimal = new Deer(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
@@ -137,7 +137,7 @@ public class World : MonoBehaviour
 
                 // should be able to move lines 77-79 and 83-85 out of these if's, but it creates an error I dont understand
                 if (speciesType == "Apple_Tree"){
-                    newPlant = new AppleTree(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
+                    newPlant = new AppleTree(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome, this);
                     plantList.Add(newPlant);
                     plantDict[newPlant.GetName()] = newPlant;
                     countableObjectCountDict[speciesType]++;
@@ -154,7 +154,8 @@ public class World : MonoBehaviour
         NonlivingObject newNonlivingObject;
         string objectType;
         int n;
-
+        Nullable<Vector3> position = null;
+        
         foreach(KeyValuePair<string, int> entry in startingNonLivingObjectCountsDict){
             objectType = entry.Key;
             n = entry.Value;
@@ -162,7 +163,7 @@ public class World : MonoBehaviour
 
             for (int i=0; i<n; i++){
                 if (objectType == "Water"){
-                    newNonlivingObject = new Water(countableObjectCountDict[objectType]);
+                    newNonlivingObject = new Water(countableObjectCountDict[objectType], null, constantInfoDict["water"]);
                     nonlivingObjectList.Add(newNonlivingObject);
                     nonlivingObjectDict[newNonlivingObject.GetName()] = newNonlivingObject;
                     countableObjectCountDict[objectType]++;

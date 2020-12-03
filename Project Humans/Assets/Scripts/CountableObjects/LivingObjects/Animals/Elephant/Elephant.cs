@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 
 public class Elephant : Animal
@@ -17,10 +18,11 @@ public class Elephant : Animal
     /// <summary>
     /// Elephant constructor
     /// </summary>
-    public Elephant(int index, Genome motherGenome, Genome fatherGenome): base("Elephant", index, motherGenome, fatherGenome) {
-        Vector3 startPosition = this.chooseStartPosition(null);
-        Quaternion startRotation = this.chooseStartRotation();
+    public Elephant(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome): 
+            base("Elephant", index, position, motherGenome, fatherGenome) {
+
         elephantPrefab = Resources.Load("ElephantPrefab",typeof(GameObject)) as GameObject;
+
 
         this.gameObject = GameObject.Instantiate(elephantPrefab, startPosition, startRotation) as GameObject;
         this.gameObject.name = GetName();

@@ -11,26 +11,31 @@ abstract public class CountableObject
     private String objectType;
     private String name;
     private int index;
+    public Vector3 startPosition;
+    public Quaternion startRotation;
     
     // unity variables
     public GameObject gameObject;
     public Animator animator;
 
-    public CountableObject(string objectType, int index) {
+    public CountableObject(string objectType, int index, Nullable<Vector3> position) {
         SetObjectType(objectType);
         SetIndex(index);
         name = (objectType + " " + index.ToString());
+
+        startPosition = chooseStartPosition(position);
+        startRotation = chooseStartRotation();
     }
 
-    public Vector3 chooseStartPosition(Nullable<Vector3> Position){
-        var startPosition = new Vector3();
-        if (Position != null) {
-            startPosition = (Vector3)Position;
+    public Vector3 chooseStartPosition(Nullable<Vector3> position){
+        Vector3 newStartPosition = new Vector3();
+        if (position != null) {
+            newStartPosition = (Vector3)position;
         }
         else {
-            startPosition = new Vector3 (Random.Range(World.minPosition,World.maxPosition), 0.03f, Random.Range(World.minPosition,World.maxPosition));
+            newStartPosition = new Vector3 (Random.Range(World.minPosition,World.maxPosition), 0.03f, Random.Range(World.minPosition,World.maxPosition));
         }
-        return startPosition;
+        return newStartPosition;
     }
 
     public Quaternion chooseStartRotation(){

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
     abstract public class Animal : LivingObject
     {
@@ -12,8 +13,8 @@ using UnityEngine;
 
         public string displayName;
 
-        public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome) 
-        : base (objectType, index, motherGenome, fatherGenome)
+        public Animal(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) 
+        : base (objectType, index, position, motherGenome, fatherGenome)
         {
 
             this.displayName = GetObjectType();

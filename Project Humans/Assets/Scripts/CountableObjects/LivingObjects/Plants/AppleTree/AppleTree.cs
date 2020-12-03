@@ -12,16 +12,18 @@ public class AppleTree : Plant
     public GameObject appleTreePrefab;
     public GameObject applePrefab;
     public Rigidbody rigidbody;
+    public World theWorld;
 
     public bool doingNothing = true;
     
     /// <summary>
     /// AppleTree constructor
     /// </summary>
-    public AppleTree(int index, Genome motherGenome, Genome fatherGenome): base("AppleTree", index, motherGenome, fatherGenome) {
-        // these should be moved up the hierarchy, countable object
-        Vector3 startPosition = this.chooseStartPosition(null);
-        Quaternion startRotation = this.chooseStartRotation();
+    public AppleTree(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome, World theWorld): 
+            base("AppleTree", index, position, motherGenome, fatherGenome) {
+
+        this.theWorld = theWorld;
+        
         appleTreePrefab = Resources.Load("TreeRoundPrefab",typeof(GameObject)) as GameObject;
 
         this.gameObject = GameObject.Instantiate(appleTreePrefab, startPosition, startRotation) as GameObject;
@@ -39,7 +41,7 @@ public class AppleTree : Plant
         int fruitRate = Int32.Parse(this.phenotype.traitDict["fruit_rate"]);
         int reproductionAge = Int32.Parse(this.phenotype.traitDict["reproduction_age"]);
         int age = this.GetAge();
-        Debug.Log("Update Apple Tree");
+        //Debug.Log("Update Apple Tree");
 
         if (age % growthRefreshRate == 0){
             Grow();
@@ -58,29 +60,36 @@ public class AppleTree : Plant
         float distance = float.Parse(this.phenotype.traitDict["fruit_drop_distance"]);
         Vector3 fruitDisplacement = new Vector3(Random.Range(-distance,distance),0,Random.Range(-distance,distance));                           
         Vector3 fruitLocation = this.gameObject.transform.position + fruitDisplacement;
+        List<string> sizeInfo;
+        List<string> poisonInfo;
+        List<string> colorInfo;
 
-        Dictionary<string, string> propertyDict = new Dictionary<string, string>();
+        Dictionary<string, List<string>> propertyDict = new Dictionary<string, List<string>>(theWorld.constantInfoDict["apple"]);
+
         float fruitSize = float.Parse(this.phenotype.traitDict["fruit_max_size"]) * float.Parse(this.phenotype.traitDict["fruit_size_proportion"]);
-        propertyDict.Add("Size", fruitSize.ToString());
+        sizeInfo = new List<string>{fruitSize.ToString(), "1"};
+        propertyDict.Add("Size", sizeInfo);
         
         int poison = Int32.Parse(this.phenotype.traitDict["poison"]);
-
         if (poison == 1){
-            propertyDict.Add("poison", "1");
-            propertyDict.Add("color", "purple");
-        }
-        else{
-            propertyDict.Add("poison", "0");
-            propertyDict.Add("color", "red");
+            poisonInfo = new List<string>{"1", "1"};
+            propertyDict.Add("poison", poisonInfo);
+            colorInfo = new List<string>{"purple", "1"};
+            propertyDict.Add("color", colorInfo);
         }
 
-        int indexNumber = -1; // this needs to be the value of world.countableObjectCountDict['Apple']
-       
+        else{
+            poisonInfo = new List<string>{"0", "1"};
+            propertyDict.Add("poison", poisonInfo);
+            colorInfo = new List<string>{"red", "1"};
+            propertyDict.Add("color", colorInfo);
+        }
+
+        int indexNumber = World.countableObjectCountDict["Apple"];
         Apple newApple = new Apple(indexNumber, fruitLocation, propertyDict);
-        // nonlivingObject newNonlivingObject = new Apple(countableObjectCountDict[objectType]);
-        // nonlivingObjectList.Add(newNonlivingObject);
-        // nonlivingObjectDict[newNonlivingObject.GetName()] = newNonlivingObject;
-        // countableObjectCountDict[objectType]++;
+        World.nonlivingObjectList.Add(newApple);
+        World.nonlivingObjectDict[newApple.GetName()] = newApple;
+        World.countableObjectCountDict["Apple"]++;
     }
 
     public void Grow(){

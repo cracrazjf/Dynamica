@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 
 public class Penguin : Animal
@@ -15,11 +16,10 @@ public class Penguin : Animal
     /// <summary>
     /// Penguin constructor
     /// </summary>
-    public Penguin(int index, Genome motherGenome, Genome fatherGenome): base("Penguin", index, motherGenome, fatherGenome) {
-        Vector3 startPosition = this.chooseStartPosition(null);
-        Quaternion startRotation = this.chooseStartRotation();
-        penguinPrefab = Resources.Load("PenguinPrefab",typeof(GameObject)) as GameObject;
+    public Penguin(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome): 
+            base("Penguin", index, position, motherGenome, fatherGenome) {
 
+        penguinPrefab = Resources.Load("PenguinPrefab",typeof(GameObject)) as GameObject;
         this.gameObject = GameObject.Instantiate(penguinPrefab, startPosition, startRotation) as GameObject;
         this.gameObject.name = GetName();
 

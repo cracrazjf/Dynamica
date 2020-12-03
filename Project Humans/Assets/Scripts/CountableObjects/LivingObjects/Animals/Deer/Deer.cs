@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 
 public class Deer : Animal
@@ -15,9 +16,9 @@ public class Deer : Animal
     /// <summary>
     /// Deer constructor
     /// </summary>
-    public Deer(int index, Genome motherGenome, Genome fatherGenome): base("Deer", index, motherGenome, fatherGenome) {
-        Vector3 startPosition = this.chooseStartPosition(null);
-        Quaternion startRotation = this.chooseStartRotation();
+    public Deer(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome): 
+            base("Deer", index, position, motherGenome, fatherGenome) {
+
         deerPrefab = Resources.Load("DeerPrefab",typeof(GameObject)) as GameObject;
 
         this.gameObject = GameObject.Instantiate(deerPrefab, startPosition, startRotation) as GameObject;

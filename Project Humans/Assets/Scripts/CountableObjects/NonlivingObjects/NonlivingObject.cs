@@ -9,7 +9,11 @@ using UnityEngine;
 abstract public class NonlivingObject : CountableObject
 {
 
-    public Dictionary<string,string> propertyDict = new Dictionary<string, string>();
+    public Dictionary<string,List<string>> propertyDict = new Dictionary<string, List<string>>();
 
-    public NonlivingObject(string objectType, int index) : base (objectType, index) {}
+    public NonlivingObject(string objectType, int index, Nullable<Vector3> position, Dictionary<string, List<string>> passedPropertyDict) : 
+            base (objectType, index, position) 
+    {
+        propertyDict = passedPropertyDict;
+    }
 }

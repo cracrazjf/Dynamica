@@ -1,9 +1,8 @@
 HIGH PRIORITY
 #####################################################################################
 
-- Fix Object Location Generation so that object creation involves passing in an argument that is used
-    to specify the spawn location, or random if one is not provided
-    move this code into countableObject and delete it from all the other objects
+- GenomeDict and ConstantDict
+    - load these from the existing dictionaries, rather than reading from files, when an object is created
 
 - SimpleAI2 
     - Fix PickUp

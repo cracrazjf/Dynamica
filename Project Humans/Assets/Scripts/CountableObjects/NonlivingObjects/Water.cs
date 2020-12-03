@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Water : NonlivingObject
 {
@@ -9,13 +10,13 @@ public class Water : NonlivingObject
     public static float minPosition = -World.worldSize / 2;
     public GameObject waterPrefab;
 
-    public Water(int index) : base("Water", index){
-        Vector3 startPosition = new Vector3 (Random.Range(minPosition,maxPosition), 0f, Random.Range(minPosition,maxPosition));
+    public Water(int index, Nullable<Vector3> position, Dictionary<string,List<string>> propertyDict) : base("Water", index, position, propertyDict) {
+
         waterPrefab = Resources.Load("WaterPrefab",typeof(GameObject)) as GameObject;
 
         this.gameObject = GameObject.Instantiate(waterPrefab, startPosition, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
         this.gameObject.name = GetName();
+
         gameObject.SetActive(true);
-        
     }
 }
