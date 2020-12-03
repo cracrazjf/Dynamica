@@ -18,6 +18,7 @@ public class HumanMonobehaviour : MonoBehaviour
         }
                 
     }
+    
     void OnAnimatorIK()
     {
         for(int i= 0; i< humanList.Count; i++) {
@@ -32,6 +33,5 @@ public class HumanMonobehaviour : MonoBehaviour
                 }
             }
         }
-        //Debug.Log("here");
     }
 }

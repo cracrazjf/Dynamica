@@ -14,7 +14,8 @@ public class Human : Animal
     public HumanSimpleAI2 humanSimpleAI2;
     public HumanRNNAI humanRNNAI;
 
-    public string activeAI = "humanTestAI";
+    //public string activeAI = "humanRNNAI";
+    public string activeAI = "test";
 
     public List<float> actionValueList = new List<float>();
 
@@ -64,7 +65,7 @@ public class Human : Animal
             gameObject.SetActive(true);
         }
 
-        this.gameObject.AddComponent<FOVDetection>();
+        //this.gameObject.AddComponent<FOVDetection>();
         this.gameObject.AddComponent<HumanMonobehaviour>();
         animator = this.gameObject.GetComponent<Animator>();
         visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
@@ -88,7 +89,7 @@ public class Human : Animal
         leftHand = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetChild(5);
         rightHand = this.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(5);
 
-        SetFOVDetection(this.gameObject.GetComponent<FOVDetection>());
+        //SetFOVDetection(this.gameObject.GetComponent<FOVDetection>());
         rigidbody = this.gameObject.GetComponent<Rigidbody>();
 
         SetActionChoice(new ActionChoice(this.GetMotorSystem().actionLabelList));
@@ -168,8 +169,6 @@ public class Human : Animal
         float[ , ] visualInput = GetNervousSystem().GetVisualInput();
         float[] bodyState = GetNervousSystem().GetBodyState();
         float[] driveState = GetDriveSystem().GetDriveStatesArray();
-
-        GetFOVDetection().inFov(this.gameObject.transform, 45,10);
 
         GetActionChoice().initActionChoices(GetMotorSystem().actionLabelList);
         if (activeAI == "humanRNNAI"){

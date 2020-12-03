@@ -9,7 +9,7 @@ using System;
         private MotorSystem motorSystem;
         private NervousSystem nervousSystem;
         private ActionChoice actionChoice;
-        private FOVDetection fovDetection;
+        // private FOVDetection fovDetection;
 
         public string displayName;
 
@@ -37,9 +37,9 @@ using System;
             return actionChoice;
         }
 
-        public virtual FOVDetection GetFOVDetection(){
-            return fovDetection;
-        }
+        // public virtual FOVDetection GetFOVDetection(){
+        //     return fovDetection;
+        // }
 
         public virtual MotorSystem GetMotorSystem(){
             return motorSystem;
@@ -57,9 +57,9 @@ using System;
             actionChoice = passed;
         }
 
-        public void SetFOVDetection(FOVDetection passed){
-            fovDetection = passed;
-        }
+        // public void SetFOVDetection(FOVDetection passed){
+        //     fovDetection = passed;
+        // }
 
         public void SetMotorSystem(MotorSystem passed){
             motorSystem = passed;
