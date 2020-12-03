@@ -7,7 +7,6 @@ public class HumanSimpleAI2
 {
     public Human thisHuman;
     public ActionChoice actionChoice;
-    public FOVDetection thisfOVDetection;
     Vector3 randomPoint;
     int Range = 10;
     string currentGoal = "None";
@@ -23,7 +22,6 @@ public class HumanSimpleAI2
     public HumanSimpleAI2 (Human human){
         this.thisHuman = human;
         actionChoice = new ActionChoice(this.thisHuman.GetMotorSystem().actionLabelList);
-        thisfOVDetection = this.thisHuman.gameObject.GetComponent<FOVDetection>();
     }
 
     public ActionChoice chooseAction(){
@@ -171,6 +169,7 @@ public class HumanSimpleAI2
                 }
             }
         }
+        
         else {
            if (this.thisHuman.bodyState == "sitting") {
                 actionChoice.actionValueDict["stand_up"] = 1;
@@ -184,7 +183,6 @@ public class HumanSimpleAI2
         }
     }
     
-
     public void decreaseSleepiness() {
         if (this.thisHuman.bodyState == "laying") {
             actionChoice.actionValueDict["sleep"] = 1;
@@ -192,8 +190,6 @@ public class HumanSimpleAI2
         else {
             actionChoice.actionValueDict["lay_down"] = 1;
         }
-        
-        
     }
     
     // this checks if visible and calculates closest

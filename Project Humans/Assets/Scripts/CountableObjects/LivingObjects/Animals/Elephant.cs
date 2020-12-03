@@ -10,7 +10,6 @@ public class Elephant : Animal
     /// <value>Penguin prefab</value>
     public GameObject elephantPrefab;
     public Rigidbody rigidbody;
-    public FOVDetection fOVDetection;
 
     public bool doingNothing = true;
     
@@ -23,16 +22,12 @@ public class Elephant : Animal
 
         elephantPrefab = Resources.Load("ElephantPrefab",typeof(GameObject)) as GameObject;
 
-
         this.gameObject = GameObject.Instantiate(elephantPrefab, startPosition, startRotation) as GameObject;
         this.gameObject.name = GetName();
 
         gameObject.SetActive(true);
 
-        this.gameObject.AddComponent<FOVDetection>();
         animator = this.gameObject.GetComponent<Animator>();
-        
-        fOVDetection = this.gameObject.GetComponent<FOVDetection>();
         rigidbody = this.gameObject.GetComponent<Rigidbody>();
     }
 

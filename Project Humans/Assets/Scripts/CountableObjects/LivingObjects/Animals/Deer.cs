@@ -9,7 +9,6 @@ public class Deer : Animal
     /// <value>Deer prefab</value>
     public GameObject deerPrefab;
     public Rigidbody rigidbody;
-    public FOVDetection fOVDetection;
 
     public bool doingNothing = true;
     
@@ -25,11 +24,7 @@ public class Deer : Animal
         this.gameObject.name = GetName();
 
         gameObject.SetActive(true);
-        
-        this.gameObject.AddComponent<FOVDetection>();
         animator = this.gameObject.GetComponent<Animator>();
-        
-        fOVDetection = this.gameObject.GetComponent<FOVDetection>();
         rigidbody = this.gameObject.GetComponent<Rigidbody>();
     }
 

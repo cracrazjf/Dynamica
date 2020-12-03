@@ -11,7 +11,6 @@ public class Wolf : Animal
     /// <value>Wolf prefab</value>
     public GameObject wolfPrefab;
     public Rigidbody rigidbody;
-    public FOVDetection fOVDetection;
 
     public bool doingNothing = true;
     
@@ -28,11 +27,7 @@ public class Wolf : Animal
 
         gameObject.SetActive(true);
         
-
-        this.gameObject.AddComponent<FOVDetection>();
         animator = this.gameObject.GetComponent<Animator>();
-        
-        fOVDetection = this.gameObject.GetComponent<FOVDetection>();
         rigidbody = this.gameObject.GetComponent<Rigidbody>();
     }
 

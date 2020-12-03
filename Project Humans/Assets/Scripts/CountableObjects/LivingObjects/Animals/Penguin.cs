@@ -9,7 +9,6 @@ public class Penguin : Animal
     /// <value>Penguin prefab</value>
     public GameObject penguinPrefab;
     public Rigidbody rigidbody;
-    public FOVDetection fOVDetection;
 
     public bool doingNothing = true;
     
@@ -24,11 +23,7 @@ public class Penguin : Animal
         this.gameObject.name = GetName();
 
         gameObject.SetActive(true);
-        
-        this.gameObject.AddComponent<FOVDetection>();
         animator = this.gameObject.GetComponent<Animator>();
-        
-        fOVDetection = this.gameObject.GetComponent<FOVDetection>();
         rigidbody = this.gameObject.GetComponent<Rigidbody>();
     }
 
