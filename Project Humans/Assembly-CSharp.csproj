@@ -41,11 +41,8 @@
      <Compile Include="Assets\polyperfect\Common\Wander Script\AIState.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Phenotype.cs" />
      <Compile Include="Assets\test\moving.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Human\HumanNervousSystem.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Human\HumanMotorSystem.cs" />
      <Compile Include="Assets\FastIK\Scripts\Sample\SampleSinMover.cs" />
      <Compile Include="Assets\test\ParabolaMovement.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Human\Human.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Plants\AppleTree\AppleTree.cs" />
      <Compile Include="Assets\Animation\IKControl.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\MotorSystem.cs" />
@@ -54,7 +51,6 @@
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\DriveSystem.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\NonlivingObjects\Apple.cs" />
      <Compile Include="Assets\test\FPScontroller.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\FOVDetection.cs" />
      <Compile Include="Assets\SurvivalAnimsetPro1\Scripts\IKControlLeft.cs" />
      <Compile Include="Assets\Scripts\MassObjects\Ground.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\Character Viewer\EditorExtensions.cs" />
@@ -98,7 +94,6 @@
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\Wander Script\People_AIStats.cs" />
      <Compile Include="Assets\FastIK\Scripts\Sample\SampleRotator.cs" />
      <Compile Include="Assets\FastIK\Scripts\FastIK\FastIKLook.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Human\HumanMonobehaviour.cs" />
      <Compile Include="Assets\AnimationController\Test.cs" />
      <Compile Include="Assets\Scripts\UI\AnimalUI.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\PolyMorpher.cs" />
@@ -115,6 +110,10 @@
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Elephant.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Wolf.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Deer.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\HumanMotorSystem.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Human.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\HumanNervousSystem.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\HumanMonobehaviour.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\FastIK\Documentation.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
