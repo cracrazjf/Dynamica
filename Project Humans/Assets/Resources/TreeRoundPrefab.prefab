@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 2358290}
   - component: {fileID: 64140451716563118}
   m_Layer: 0
-  m_Name: tree-round
-  m_TagString: Untagged
+  m_Name: TreeRoundPrefab
+  m_TagString: Plant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -9,6 +9,8 @@ TagManager:
   - Apple
   - Water
   - ground
+  - Food
+  - Plant
   - food
   layers:
   - Default

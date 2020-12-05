@@ -8,10 +8,8 @@ using Random=UnityEngine.Random;
 
 public class Apple : NonlivingObject
 {
-    public static float worldSize = 20.0f;
-    public static float maxPosition = World.worldSize / 2;
-    public static float minPosition = -World.worldSize / 2;
     public GameObject applePrefab;
+
 
     public Apple(int index, Nullable<Vector3> position, Dictionary<string,List<string>> propertyDict) : base("Apple", index, position, propertyDict) {
 

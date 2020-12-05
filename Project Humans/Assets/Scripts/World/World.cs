@@ -50,6 +50,7 @@ public class World : MonoBehaviour
     void Start()
     { 
         updateCounter = 0;
+        
         loadWorldConfig();
         CreateAnimals();
         CreatePlants();

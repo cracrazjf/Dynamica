@@ -36,7 +36,7 @@ public class NonlivingUI : MonoBehaviour
     }
 
     public void ReceiveObject(GameObject clicked) {
-        if(clicked.tag == "Apple" || clicked.tag == "Water") {
+        if(clicked.tag == "Food") {
             Debug.Log ("Got a thing!");
             selectedObject = clicked;
 

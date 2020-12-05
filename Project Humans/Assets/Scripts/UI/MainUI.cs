@@ -9,6 +9,7 @@ public class MainUI : MonoBehaviour
     private GameObject alwaysPanel;
     private GameObject nonPanel;
     private GameObject animalPanel;
+    private GameObject plantPanel;
     private GameObject genomePanel;
     private GameObject brainPanel;
     private GameObject help;
@@ -29,11 +30,13 @@ public class MainUI : MonoBehaviour
         nonPanel = GameObject.Find("NonlivingPanel");
         animalPanel = GameObject.Find("AnimalPanel");
         genomePanel = GameObject.Find("GenomePanel");
+        plantPanel = GameObject.Find("PlantPanel");
         brainPanel = GameObject.Find("BrainPanel");
         help.SetActive(false);
         pause.SetActive(false);
         nonPanel.SetActive(false);
         animalPanel.SetActive(false);
+        plantPanel.SetActive(false);
         genomePanel.SetActive(false);
         brainPanel.SetActive(false);
 

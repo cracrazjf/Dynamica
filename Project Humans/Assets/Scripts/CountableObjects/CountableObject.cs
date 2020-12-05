@@ -13,6 +13,7 @@ abstract public class CountableObject
     private int index;
     public Vector3 startPosition;
     public Quaternion startRotation;
+    public int age;
     
     // unity variables
     public GameObject gameObject;
@@ -70,6 +71,18 @@ abstract public class CountableObject
 
     public void SetGameObject(GameObject passed) {
         gameObject = passed;
+    }
+
+    public void SetAge(int newAge){
+        this.age = newAge;
+    }
+
+    public int GetAge(){
+        return this.age;
+    }
+
+    public void IncreaseAge(int amount){
+        this.age += amount;
     }
 
 }

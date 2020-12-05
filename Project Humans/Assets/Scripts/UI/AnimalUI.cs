@@ -56,10 +56,6 @@ public class AnimalUI : MonoBehaviour
                ReceiveAnimal(hit.transform.gameObject); 
             }
         }
-
-        if(!togglePanel){
-            halo.SetActive(false);
-        }
     }
 
     public void ReceiveAnimal(GameObject clicked) {
@@ -72,7 +68,7 @@ public class AnimalUI : MonoBehaviour
             DisplayDrives();
         }
 
-        if(clicked.tag == "Penguin") {
+        if(clicked.tag == "Animal") {
             Debug.Log ("He wants fish!");
             panel.SetActive(true);
 
@@ -120,6 +116,7 @@ public class AnimalUI : MonoBehaviour
 
     public void ExitPanel() {
         panel.SetActive(false);
+        halo.SetActive(false);
     }
 
     public void DisplayGenome(){
@@ -147,5 +144,4 @@ public class AnimalUI : MonoBehaviour
             muteText.text = "Immutable";
         }
     }
-
 }

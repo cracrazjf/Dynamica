@@ -106,9 +106,11 @@ public class HumanSimpleAI2
         }
     }
     
+    // "Food" is a tag and should be capitalized!
+
     public void decreaseHunger(){
         if (this.thisHuman.bodyState == "standing") {
-            if (objectTypeInLH == "food"){
+            if (objectTypeInLH == "Food"){
                 actionChoice.argumentDict["hand"] = 0;
                 actionChoice.actionValueDict["eat"] = 1;
                 if (!this.thisHuman.LHState) {
@@ -118,15 +120,15 @@ public class HumanSimpleAI2
                 
             }
             else{
-                if (objectTypeInRH == "food"){
+                if (objectTypeInRH == "Food"){
                     actionChoice.actionValueDict["eat"] = 1;
                     actionChoice.argumentDict["hand"] = 1;
                     currentGoal = "None";
                     objectTypeInRH = "None";
                 }
                 else{
-                    if (checkIfTargetVisible("food").Count > 0) {
-                        List<GameObject> targets = checkIfTargetVisible("food");
+                    if (checkIfTargetVisible("Food").Count > 0) {
+                        List<GameObject> targets = checkIfTargetVisible("Food");
                         GameObject target = caculateCloestObject(targets);
                         if (checkIfTargetReachable(target)) {
                             if ((objectTypeInLH != "None") && (objectTypeInRH != "None")){
@@ -141,7 +143,7 @@ public class HumanSimpleAI2
                                     actionChoice.argumentDict["hand"] = 0;
                                     actionChoice.actionValueDict["pick_up"] = 1;
                                     if (this.thisHuman.LHState){
-                                        objectTypeInLH = "food";
+                                        objectTypeInLH = "Food";
                                     }
                                 }
                                 else if (objectTypeInRH == "None"){
@@ -149,7 +151,7 @@ public class HumanSimpleAI2
                                     actionChoice.argumentDict["hand"] = 1;
                                     actionChoice.actionValueDict["pick_up"] = 1;
                                     if (this.thisHuman.LHState){
-                                        objectTypeInRH = "food";
+                                        objectTypeInRH = "Food";
                                     }
                                 }
                             }
