@@ -21,14 +21,14 @@ public class HumanSimpleAI2
     
     public HumanSimpleAI2 (Human human){
         this.thisHuman = human;
-        actionChoice = new ActionChoice(this.thisHuman.GetMotorSystem().actionLabelList);
+        actionChoice = new ActionChoice(this.thisHuman.GetMotorSystem().actionLabelList, this.thisHuman.GetMotorSystem().actionArgumentList);
     }
 
     public ActionChoice chooseAction(){
         InFov(this.thisHuman.gameObject.transform, 45,10);
         //Debug.Log(currentGoal);
         doingNothing = this.thisHuman.animator.GetCurrentAnimatorStateInfo(0).IsName("Default");
-        actionChoice.initActionChoices(this.thisHuman.GetMotorSystem().actionLabelList);
+        actionChoice.initActionChoices(this.thisHuman.GetMotorSystem().actionLabelList, this.thisHuman.GetMotorSystem().actionArgumentList);
         if (currentGoal == "Decrease Thirst"){
             decreaseThirst();
         }

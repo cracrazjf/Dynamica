@@ -71,7 +71,7 @@ public class Human : Animal
         visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
 
         SetMotorSystem(new HumanMotorSystem(this));
-        SetActionChoice(new ActionChoice(GetMotorSystem().actionLabelList));
+        SetActionChoice(new ActionChoice(GetMotorSystem().actionLabelList, GetMotorSystem().actionArgumentList));
         SetNervousSystem(new HumanNervousSystem(this));
 
         if (activeAI == "humanRNNAI"){
@@ -92,7 +92,7 @@ public class Human : Animal
         //SetFOVDetection(this.gameObject.GetComponent<FOVDetection>());
         rigidbody = this.gameObject.GetComponent<Rigidbody>();
 
-        SetActionChoice(new ActionChoice(this.GetMotorSystem().actionLabelList));
+        SetActionChoice(new ActionChoice(this.GetMotorSystem().actionLabelList, this.GetMotorSystem().actionArgumentList));
     }
     
      public void updateStates() {
@@ -170,7 +170,7 @@ public class Human : Animal
         float[] bodyState = GetNervousSystem().GetBodyState();
         float[] driveState = GetDriveSystem().GetDriveStatesArray();
 
-        GetActionChoice().initActionChoices(GetMotorSystem().actionLabelList);
+        GetActionChoice().initActionChoices(GetMotorSystem().actionLabelList, GetMotorSystem().actionArgumentList);
         if (activeAI == "humanRNNAI"){
             SetActionChoice(humanRNNAI.chooseAction(visualInput, bodyState, driveState, GetActionChoice()));
             GetMotorSystem().takeAction(GetActionChoice());

@@ -27,6 +27,15 @@ public class MotorSystem
         "drink",
         "eat"
         };
+    
+    public List<string> actionArgumentList = new List<string> {
+        "movementVelocity",            
+        "rotationAngle",               
+        "rotationVelocity",               
+        "hand",             
+    };
+
+
 
     public Dictionary<string, List<List<string>>> actionRequirementsDict = new Dictionary<string, List<List<string>>>();
 

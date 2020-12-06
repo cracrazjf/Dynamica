@@ -10,24 +10,20 @@ public class ActionChoice {
     public Dictionary<string, float> actionValueDict = new Dictionary<string, float>();
     public Vector3 targetPos = new Vector3();
 
-    public ActionChoice(List<string> actionLabelList){
-        initActionChoices(actionLabelList);
+    public ActionChoice(List<string> actionLabelList, List<string> actionArgumentList){
+        initActionChoices(actionLabelList, actionArgumentList);
     }
 
-
-    public void initActionChoices(List<string> actionLabelList){
+    public void initActionChoices(List<string> actionLabelList, List<string> actionArgumentList){
         this.actionValueDict.Clear();
+        this.argumentDict.Clear();
+
         for (int i = 0; i < actionLabelList.Count; i++) {
             this.actionValueDict.Add(actionLabelList[i], 0);
         }
         
-        this.argumentDict.Clear();
-        //this.argumentDict.Add("movementDistance", 0);   // this is -inf to inf
-        this.argumentDict.Add("movementVelocity", 0);   // this is 0 to 1
-        this.argumentDict.Add("rotationAngle", 0);      // this is -1 to 1
-        this.argumentDict.Add("rotationVelocity", 0);   // this is 0 to 1
-        this.argumentDict.Add("hand", 0);
-
-
+        for (int i = 0; i < actionArgumentList.Count; i++){
+            this.argumentDict.Add(actionArgumentList[i], 0);
+        }
     }
 }
