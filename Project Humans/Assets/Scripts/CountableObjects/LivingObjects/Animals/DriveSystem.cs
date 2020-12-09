@@ -8,93 +8,60 @@ public class DriveSystem
     /// <value>Holds a reference to the Animal the system is associated with</value>
     public Animal thisAnimal;
 
-    /// <value>List of states</value>
-    public List<string> stateLabelList = new List<string> { "hunger", "thirst", "sleepiness", "fatigue", "health"};
-
-    /// <value>Num of states</value>
-    public const int numStates = 5; 
-
-    public Dictionary<string, int> stateIndexDict = new Dictionary<string, int>();
-    
-    /// <value>List of values for each state, set to baseline in Start</value>
-    public Dictionary<string, float> stateDict = new Dictionary<string, float>();
-
-    /// <value>List of values for each state, automatically set to True for all</value>
-    public Dictionary<string, bool> stateDisplayDict = new Dictionary<string, bool>();
+    private int numDriveStates;
+    private float[] driveStateArray;
+    private List<string> driveStateLabelList;
+    private Dictionary<string, int> driveStateIndexDict;
 
     /// <summary>
     /// Drive constructor
     /// </summary>
     public DriveSystem(Animal animal) {
         this.thisAnimal = animal;
-        //set baseline state values
-        
-
-        for (int i = 0; i < numStates; i++)
-        {
-            // make the state dict
-            
-            stateIndexDict.Add(stateLabelList[i], i);
-
-            // default each state display to true
-
-            stateDisplayDict.Add(stateLabelList[i], true);
-        }
-
-        stateDict.Add("hunger", 0.0f);
-        stateDict.Add("thirst", 0.0f);
-        stateDict.Add("sleepiness", 0.0f);
-        stateDict.Add("fatigue", 0.0f);
-        stateDict.Add("health", 1.0f);
     }
 
-    public void UpdateDrives()
-    {
-        for (int i = 0; i < numStates; i++) {
-            string stateLabel = stateLabelList[i];
-            string changeLabel = stateLabel + "_change";
-            
-            // add some error checking to make sure the labels in config and stateLabelList match
-            float changeValue = float.Parse(thisAnimal.phenotype.traitDict[changeLabel]);
-            if (this.thisAnimal is Human) {
-                if (((Human) this.thisAnimal).GetMotorSystem().sleeping) {
-                    if (stateLabel == "sleepiness") {
-                        changeValue = -0.05f;
-                    }
-                }
-            }
-            stateDict[stateLabel] += changeValue * Time.deltaTime;
-            
+    public void InitDriveStates(List<string> driveStateLabelList){
+        driveStateIndexDict = new Dictionary <string, int>();
 
-            if (stateDict["hunger"] <= 0.0){
-                // add check to make sure starvation_damage is a key in the dict
-                stateDict["health"] -= float.Parse(thisAnimal.phenotype.traitDict["starvation_damage"]);
-            }
-            if (stateDict["thirst"] <= 0.0){
-                // add check to make sure dehydration_damage is a key in the dict
-                stateDict["health"] -= float.Parse(thisAnimal.phenotype.traitDict["dehydration_damage"]);
-            }
-
-            if (stateDict[stateLabel] > 1.0)
-            {
-                stateDict[stateLabel] = 1.0f;
-            }
-            else if (stateDict[stateLabel] < 0.0)
-            {
-                stateDict[stateLabel] = 0.0f;
-            }
+        int i;
+        for (i=0; i<driveStateLabelList.Count; i++){
+            driveStateIndexDict.Add(driveStateLabelList[i], i);
         }
+        numDriveStates = i;
+        driveStateArray = new float[numDriveStates];
     }
 
-    public float[] GetDriveStatesArray() {
-        float[] driveStateArray =  new float[numStates];
-        for (int i=0; i<numStates; i++){
-            driveStateArray[i] = stateDict[stateLabelList[i]];
-        }
+    public virtual void UpdateDrives(){
+        Debug.Log("No drive states defined for this animal");
+    }
+
+
+    // getters for drive state data structures
+    public int GetNumDriveStates(){
+        return numDriveStates;
+    }
+
+    public float[] GetDriveStateLabelList(){
+        return driveStateLabelList;
+    }
+
+    public bool[] GetDriveStateArray(){
         return driveStateArray;
     }
 
-    public Dictionary<string, float> GetStateValues() {
-        return this.stateDict;
+    public Dictionary<string, int> GetDriveStateIndexDict(){
+        return driveStateIndexDict;
+    }
+
+    public string getDriveStateLabel(int index){
+        return driveStateLabelList[index];
+    }
+
+    public float getDriveState(int index){
+        return driveStateArray[index];
+    }
+
+    public int getDriveStateIndex(string label){
+        return driveStateIndexDict[label];
     }
 }

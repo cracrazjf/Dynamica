@@ -81,7 +81,7 @@ public class Genome
         string line;
         System.IO.StreamReader file;
         
-        string filename = @"Assets/config/"+ species.ToLower() + ".config";
+        string filename = @"Assets/Scripts/config/"+ species.ToLower() + ".config";
         file = new System.IO.StreamReader(filename);  
         
         while((line = file.ReadLine()) != null)  

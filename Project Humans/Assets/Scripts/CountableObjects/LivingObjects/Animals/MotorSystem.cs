@@ -5,140 +5,76 @@ using UnityEngine;
 
 public class MotorSystem 
 {
-    
-    public Animal thisAnimal; // we need this if we want to access drive system
-    public LivingObject thisLivingObject; // we need this if we want to access genome or phenotype
-    public float rotateAngle = 360;
-    public float maxStepDistance;
-    public float maxRotationSpeed;
-    public float velocity;
+    public Animal thisAnimal;
 
-    public List<string> actionLabelList = new List<string> {
-        "take_step",            // value -1..1 translating to speed of accel./deccel.
-        "rotate",               // value from -1 to 1, translating into -180..180 degree rotation
-        "sit_up",               // begin to sit up
-        "sit_down",             // begin to sit down
-        "stand_up",             // begin to stand
-        "lay_down",             // begin to lay down
-        "sleep",                // begin to sleep
-        "wake_up",              // begin to wake
-        "pick_up", 
-        "set_down",
-        "drink",
-        "eat"
-        };
-    
-    public List<string> actionArgumentList = new List<string> {
-        "movementVelocity",            
-        "rotationAngle",               
-        "rotationVelocity",               
-        "hand",             
-    };
+    protected int numActionStates;
+    protected bool[] actionStateArray;
+    protected List<string> actionStateLabelList;
+    protected Dictionary<string, int> actionStateIndexDict;
 
+    protected int numActionArguments;
+    protected float[] actionArgumentArray;
+    protected List<string> actionArgumentLabelList;
+    protected Dictionary<string, int> actionArgumentIndexDict;
 
+    protected Dictionary<string, List<string>> actionRequirementDict = new Dictionary<string, List<string>>();
+    protected Dictionary<string, List<string>> actionObstructorDict = new Dictionary<string, List<string>>();
+    protected Dictionary<string, List<string>> bodyStateRequirementDict = new Dictionary<string, List<string>>();
+    protected Dictionary<string, List<string>> bodyStateObstructorDict = new Dictionary<string, List<string>>();
 
-    public Dictionary<string, List<List<string>>> actionRequirementsDict = new Dictionary<string, List<List<string>>>();
-
-    // these lists contain states from the human nervous system bodyStateInputLabelList
-    /* 
-        body states: standing, sitting, laying, holding LH, holding RH
-        sleeping states: asleep, awake
-        action states: eating, drinking, picking up, setting down, stepping, rotating, sitting up, sitting down, standing up, laying down
-        
-        rotate: standing
-        eat: standing sitting
-    */
-
-    public int numActions; // 12
-    
-    public Dictionary<string, int> actionIndexDict = new Dictionary<string, int>();
-    public List<float> actionValueList = new List<float>(); // [1 0 0 0 0 0 1 0 0 0 0 1 0]
-    public Dictionary<string, bool> actionDisplayDict = new Dictionary<string, bool>();
-    public Transform Eye_L;
-    public Transform Eye_R;
-
-    public int sittingDownIndex;
-    public int standingUpIndex;
-    public int layingDownIndex;
-    public int holdingLHIndex;
-    public int holdingRHIndex;
-
-    public bool sleeping = false;
 
     public MotorSystem(Animal passed) {
         this.thisAnimal = passed;
-        for (int i = 0; i < actionLabelList.Count; i++){
-            actionIndexDict.Add(actionLabelList[i], i);
-            actionDisplayDict.Add(actionLabelList[i], true);
-        }
-        
-        velocity = float.Parse(thisAnimal.phenotype.traitDict["current_velocity"]);
-        maxStepDistance = float.Parse(thisAnimal.phenotype.traitDict["max_step_distance"]);
-        maxRotationSpeed = float.Parse(thisAnimal.phenotype.traitDict["max_rotation_speed"]);
     }
 
+    public void InitActionStates(){
+        this.actionStateLabelList = actionStateLabelList;
 
-    public void takeAction(ActionChoice actionChoice){
+        actionStateIndexDict = new Dictionary <string, int>();
 
-        if (actionChoice.actionValueDict["sit_down"] == 1){
-            sitDown();
+        int i;
+        for (i=0; i<actionStateLabelList.Count; i++){
+            actionStateIndexDict.Add(actionStateLabelList[i], i);
+            
+            actionRequirementDict.Add(actionStateLabelList[i], new List<string>());
+            actionObstructorDict.Add(actionStateLabelList[i], new List<string>());
+            bodyStateRequirementDict.Add(bodyStateLabelList[i], new List<string>());
+            bodyStateObstructorDict.Add(bodyStateLabelList[i], new List<string>());
         }
-        if (actionChoice.actionValueDict["sit_up"] == 1) {
-            sitUp();
-        }
-        else if (actionChoice.actionValueDict["stand_up"] == 1){
-            standUp();
-        }
-        else if (actionChoice.actionValueDict["lay_down"] == 1){
-            layDown();
-        }
-        else if (actionChoice.actionValueDict["sleep"] == 1){
-            sleep();
-        }
-        else if (actionChoice.actionValueDict["wake_up"] == 1){
-            wakeUp();
-        }
-        else if (actionChoice.actionValueDict["take_step"] == 1){
-            takeSteps(actionChoice.argumentDict["stepRate"]);
-        }
-        else if (actionChoice.actionValueDict["rotate"] == 1){
-            rotate(actionChoice.argumentDict["rotationAngle"]);
-        }
-        else if (actionChoice.actionValueDict["pick_up"] == 1){
-            pickUp(actionChoice.argumentDict["hand"]);
-        }
-        else if (actionChoice.actionValueDict["set_down"] == 1){
-            setDown(actionChoice.argumentDict["hand"]);
-        }
-        else if (actionChoice.actionValueDict["eat"] == 1){
-            eat(actionChoice.argumentDict["hand"]);
-        }
-        else if (actionChoice.actionValueDict["drink"] == 1) {
-            drink();
-        }
+        numActionStates = i;
+        actionStateArray = new bool[numBodyStates];
     }
 
-    public virtual void takeSteps(float stepProportion) {}
+    public void InitActionArguments(){
+        actionArgumentIndexDict = new Dictionary <string, int>();
 
-    public virtual void rotate(float rotationAngle){}
+        int i;
+        for (i=0; i<actionArgumentLabelList.Count; i++){
+            actionArgumentIndexDict.Add(actionArgumentLabelList[i], i);
+        }
+        numActionArguments = i;
+        actionArgumentArray = new float[numActionArguments];
+    }
 
-    public virtual void drink(){}
-    
-    public virtual void sitDown(){}
+    public virtual void InitActionRuleDicts(){
+        Debug.Log("No Action Rules for this animal");
+    }
 
-    public virtual void sitUp(){}
-        
-    public virtual void standUp(){}
+    public virtual void TakeAction(struct actionChoiceStruct){
+        Debug.Log("No Actions Defined for this animal");
+    }
 
-    public virtual void layDown(){}
+    public virtual void UpdateActionStates(){
+        Debug.Log("No Actions Defined for this animal");
+    }
 
-    public virtual void sleep(){}
-    
-    public virtual void wakeUp(){}
-    
-    public virtual void pickUp(float hand){}
+    public virtual bool CheckActionLegality(){
+        Debug.Log("No Actions Defined for this animal");
+        return false;
+    }
 
-    public virtual void setDown(float hand){}
+    public int GetNumActionStates(){
+        return numActionStates;
+    }
 
-    public virtual void eat(float hand) {}
 }

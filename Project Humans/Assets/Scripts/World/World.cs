@@ -211,7 +211,7 @@ public class World : MonoBehaviour
     /// loadWorldConfig loads the information from Assets/config/world.config into the appropriate config dict or starting count dict
     /// </summary>
     void loadWorldConfig(){
-        DirectoryInfo d = new DirectoryInfo(@"Assets/config/");
+        DirectoryInfo d = new DirectoryInfo(@"Assets/Scripts/config/");
         FileInfo[] Files = d.GetFiles("*.config"); //Getting Text files
         string line;
         string[] lineInfo;

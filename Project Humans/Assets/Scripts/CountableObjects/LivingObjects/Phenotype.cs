@@ -6,17 +6,6 @@ using UnityEngine;
 public class Phenotype {
     //holding the reference of Animal
     public LivingObject thisLivingObject;
-    // Velocity and accerlerationRate
-    // these now all exist in genome.constantDict
-    public float initialVelocity = 0.0f;
-    public float finalVelocity = 50.0f;
-    public float currentVelocity = 0.0f;
-    public float accelerationRate = 0.01f;
-
-    //rotate angle and rotate speed;
-    public float rotation;
-    public float rotationleft = 360;
-    public float rotationspeed = 10;
 
     // the 5 Change values
     public int numTraits; 

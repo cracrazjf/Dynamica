@@ -5,20 +5,21 @@ using System;
 
     abstract public class Animal : LivingObject
     {
-        private DriveSystem driveSystem;
-        private MotorSystem motorSystem;
-        private NervousSystem nervousSystem;
-        private ActionChoice actionChoice;
-        // private FOVDetection fovDetection;
-
         public string displayName;
 
+        private Body body;
+        private DriveSystem driveSystem;
+        private MotorSystem motorSystem;
+        private SensorySystem sensorySystem;
+        private struct actionChoiceStruct{
+            bool[] actionChoiceArray;
+            float[] actionArgumentArray;
+        };
+        
         public Animal(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) 
         : base (objectType, index, position, motherGenome, fatherGenome)
         {
-
-            this.displayName = GetObjectType();
-            this.driveSystem = new DriveSystem(this);
+            this.displayName = GetObjectType();            
         }
 
         public string GetDisplayName(){
@@ -29,44 +30,61 @@ using System;
             Debug.Log("No update defined for this animal");
         }
 
+        // getters and setters for body, drive system, motor system, sensory system, and action choice class
+        public Body GetBody(){
+            return body;
+        }
+
         public DriveSystem GetDriveSystem(){
             return driveSystem;
         }
 
-        public virtual ActionChoice GetActionChoice(){
-            return actionChoice;
-        }
-
-        // public virtual FOVDetection GetFOVDetection(){
-        //     return fovDetection;
-        // }
-
-        public virtual MotorSystem GetMotorSystem(){
+        public MotorSystem GetMotorSystem(){
             return motorSystem;
         }
 
-        public virtual NervousSystem GetNervousSystem(){
-            return nervousSystem;
+        public SensorySystem GetSensorySystem(){
+            return sensorySystem;
+        }
+
+        public actionChoiceStruct GetActionChoiceStruct(){
+            return actionChoiceStruct;
+        }
+
+        public bool[] getActionChoiceArray(){
+            return actionChoiceStruct.actionChoiceArray;
+        }
+
+        public float[] getActionArgumentArray() {
+            return actionChoiceStruct.actionArgumentArray;
+        }
+
+        public void SetBody(Body passed){
+            body = passed;
         }
 
         public void SetDriveSystem(DriveSystem passed){
             driveSystem = passed;
         }
 
-        public void SetActionChoice(ActionChoice passed){
-            actionChoice = passed;
-        }
-
-        // public void SetFOVDetection(FOVDetection passed){
-        //     fovDetection = passed;
-        // }
-
         public void SetMotorSystem(MotorSystem passed){
             motorSystem = passed;
         }
 
-        public void SetNervousSystem(NervousSystem passed){
-            nervousSystem = passed;
+        public void SetSensorySystem(SensorySystem passed){
+            sensorySystem = passed;
         }
-        
+
+        public void SetActionChoiceStruct(struct passed){
+            actionChoiceStruct = passed;
+        }
+
+        public void SetActionChoiceArray(bool[] passed){
+            actionChoiceStruct.actionChoiceArray = passed;
+        }
+
+        public void SetActionArgumentArray(float[] passed){
+            actionChoiceStruct.actionArgumentArray = passed;
+        }
+
     }

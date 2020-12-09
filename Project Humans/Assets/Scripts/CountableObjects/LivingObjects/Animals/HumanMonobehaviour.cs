@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
-
-// Missing a namespace;
+using System;
 
 public class HumanMonobehaviour : MonoBehaviour
 {
@@ -19,15 +16,17 @@ public class HumanMonobehaviour : MonoBehaviour
                 
     }
     
+    // why is this iterating through the whole human list, rather than just calling lines 28,29 or 32,33 from the picking up function?
     void OnAnimatorIK()
     {
         for(int i= 0; i< humanList.Count; i++) {
             if (humanList[i].animator) {
-                if (humanList[i].actionState == "picking up with left hand") {  
+
+                if (humanList[i].nervousSystem.GetActionState(humanList[i].nervousSystem.actionStateIndexDict["picking up with left hand"])) {  
                     humanList[i].animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0.5f);
                     humanList[i].animator.SetIKPosition(AvatarIKGoal.LeftHand,  humanList[i].humanSimpleAI2.pickUpPosition);
                 }
-                else if (humanList[i].actionState == "picking up with right hand") {
+                else if (humanList[i].nervousSystem.GetActionState(humanList[i].nervousSystem.actionStateIndexDict["picking up with right hand"])) {
                     humanList[i].animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
                     humanList[i].animator.SetIKPosition(AvatarIKGoal.RightHand, humanList[i].humanSimpleAI2.pickUpPosition);
                 }

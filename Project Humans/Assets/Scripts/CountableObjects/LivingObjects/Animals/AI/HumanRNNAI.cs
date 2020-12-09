@@ -82,7 +82,7 @@ public class HumanRNNAI : AI
         }
     }
 
-    public ActionChoice chooseAction(float[ , ] visualInput, float[] humanBodyState, float[] humanDriveStats, ActionChoice actionchoice){
+    public ActionChoice chooseAction(float[ , ] visualInput, bool[] bodyStateArray, bool[] actionStateArray, float[] driveStateArray, ActionChoice actionchoice){
         
         // zh = zh_bias + (zh_r*visualInput[0,:]) + (zh_gzh*visualInput[1,:]) + (zh_b*visualInput[2,:]) + (zh_body*humanBodyState) + (zh_drive*humanDriveState);
         // h = sigmoid(zh);

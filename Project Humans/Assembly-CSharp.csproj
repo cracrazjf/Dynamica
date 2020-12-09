@@ -80,11 +80,9 @@
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Deer.cs" />
      <Compile Include="Assets\test\testScript.cs" />
      <Compile Include="Assets\Scripts\World\World.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\HumanNervousSystem.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\CustomPeople.cs" />
      <Compile Include="Assets\Scripts\UI\MainCamera.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\HumanMonobehaviour.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\NervousSystem.cs" />
      <Compile Include="Assets\test\FootController.cs" />
      <Compile Include="Assets\FastIK\Scripts\FastIK\FastIKCCD.cs" />
      <Compile Include="Assets\polyperfect\Common\Wander Script\AIStats.cs" />
@@ -112,9 +110,13 @@
      <Compile Include="Assets\polyperfect\Common\Common_AnimSpeed.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\Character Viewer\CharacterManager.cs" />
      <Compile Include="Assets\Scripts\UI\PlantUI.cs" />
-     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\ActionChoice.cs" />
      <Compile Include="Assets\polyperfect\Low Poly Animated People\- Scripts\MakeCharacters.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\AI\HumanTestAI.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\HumanSensorySystem.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Body.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\SensorySystem.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\HumanDriveSystem.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\HumanBody.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\FastIK\Documentation.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
@@ -136,7 +138,7 @@
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
      <None Include="Assets\SurvivalAnimsetPro1\readme.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
-     <None Include="Assets\config\todo.txt" />
+     <None Include="Assets\Scripts\Config\todo.txt" />
     <Reference Include="UnityEngine">
         <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
