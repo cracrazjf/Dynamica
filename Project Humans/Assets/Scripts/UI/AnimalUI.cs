@@ -101,15 +101,15 @@ public class AnimalUI : MonoBehaviour
 
         float[] to_display = new float[5];
         DriveSystem passed = selectedAnimal.GetDriveSystem();
-        Dictionary<string, float> passedDrives = passed.GetStateValues();
+        float[] passedDrives = passed.GetDriveStateArray();
 
         Debug.Log(passedDrives.ToString());
 
-        hunger.text = passedDrives["hunger"].ToString();
-        thirst.text = passedDrives["thirst"].ToString();
-        sleep.text = passedDrives["sleepiness"].ToString();
-        stamina.text = passedDrives["fatigue"].ToString();
-        health.text = passedDrives["health"].ToString();
+        // hunger.text = passedDrives["hunger"].ToString();
+        // thirst.text = passedDrives["thirst"].ToString();
+        // sleep.text = passedDrives["sleepiness"].ToString();
+        // stamina.text = passedDrives["fatigue"].ToString();
+        // health.text = passedDrives["health"].ToString();
 
         OGName.text = selectedAnimal.GetDisplayName();
     }

@@ -6,7 +6,6 @@ using UnityEngine;
 public class HumanBody : Body {
 
     public Human thisHuman;
-
     public Transform leftEye;
     public Transform rightEye;
 
@@ -17,20 +16,21 @@ public class HumanBody : Body {
         
         this.thisHuman = human;
 
-        if (this.phenotype.traitDict["sex"] == "0")
+        if (this.thisHuman.phenotype.traitDict["sex"] == "0")
         {   
             humanPrefab = Resources.Load("HumanMalePrefab",typeof(GameObject)) as GameObject;
-            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;
-            this.thisHuman.gameObject.name = GetName();
+            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition, thisHuman.startRotation) as GameObject;
+            this.thisHuman.gameObject.name = this.thisHuman.GetName();
 
-            gameObject.SetActive(true);
-        } else {
+             this.thisHuman.gameObject.SetActive(true);
+        } 
+        else {
             humanPrefab = Resources.Load("HumanFemalePrefab",typeof(GameObject)) as GameObject;
-            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, startPosition, startRotation) as GameObject;
-            this.thisHuman.gameObject.name = GetName();
+            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition, thisHuman.startRotation) as GameObject;
+            this.thisHuman.gameObject.name = this.thisHuman.GetName();
 
             this.thisHuman.gameObject.SetActive(true);
-
+        }
             bodyStateLabelList = new List<string>
             {
                 "standing", 
@@ -40,10 +40,9 @@ public class HumanBody : Body {
                 "holding with right hand",
                 "sleeping"
             };
-        }
 
         this.thisHuman.gameObject.AddComponent<HumanMonobehaviour>();
-        animator = this.thisHuman.gameObject.GetComponent<Animator>();
+        this.thisHuman.animator = this.thisHuman.gameObject.GetComponent<Animator>();
 
         leftEye = this.thisHuman.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(2);
         rightEye = this.thisHuman.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(3);
@@ -56,7 +55,7 @@ public class HumanBody : Body {
     
     public override void UpdateBodyStates() {
   
-        this.SetBodyStateArray(new bool[this.GetNumBodyStates()]);
+        this.bodyStateArray = (new bool[this.GetNumBodyStates()]);
         
         if (this.thisHuman.animator.GetCurrentAnimatorStateInfo(0).IsName("Laying Loop")) {
             this.SetBodyState(this.bodyStateIndexDict["laying"], true);
@@ -76,5 +75,4 @@ public class HumanBody : Body {
 
         // checked to see if the hands had stuff in them
     }
-
 }

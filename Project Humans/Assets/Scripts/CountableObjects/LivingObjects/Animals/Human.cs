@@ -22,29 +22,40 @@ public class Human : Animal
         SetObjectType("human");
 
         SetBody(new HumanBody(this));
-        GetBody().InitBodyStates();
+        GetBody().InitBodyStates(GetBody().GetBodyStateLabelList());
         GetBody().SetBodyState(GetBody().GetBodyStateIndex("standing"), true);
-
+        visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
+        
         SetDriveSystem(new HumanDriveSystem(this));
-        GetDriveSystem().InitDriveStates();
+        GetDriveSystem().InitDriveStates(GetDriveSystem().GetDriveStateLabelList());
         GetDriveSystem().SetDriveState(GetDriveSystem().GetDriveStateIndex("health"), 1);
 
         SetSensorySystem(new HumanSensorySystem(this));
 
         SetMotorSystem(new HumanMotorSystem(this));
-        InitActionStates();
-        InitActionArguments();
+        GetMotorSystem().InitActionStates(GetMotorSystem().GetActionStateLabelList());
+        GetMotorSystem().InitActionRuleDicts();
+        GetMotorSystem().InitActionArguments();
+
+        this.InitActionChoiceStruct();
+        Debug.Log(this.getActionChoiceArray() == null);
+        
         
         if (activeAI == "humanRNNAI"){
             humanRNNAI = new HumanRNNAI();
         }
         else{
-            humanSimpleAI2 = new HumanSimpleAI2(this);
+            humanSimpleAI2 = new HumanSimpleAI2(this,
+                                                GetBody().GetBodyStateIndexDict(), 
+                                                GetDriveSystem().GetDriveStateIndexDict(), 
+                                                GetMotorSystem().GetActionStateIndexDict(),
+                                                GetMotorSystem().GetActionArgumentIndexDict(),
+                                                GetPhenotype().traitDict);
         }
     }
     
     public void TestUpdate() {
-        GetMotorSystem().rotate(1);
+        
     }
 
     public override void UpdateAnimal(){
@@ -53,21 +64,24 @@ public class Human : Animal
         GetDriveSystem().UpdateDrives();
         GetMotorSystem().UpdateActionStates();
         float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
-        bool[] bodyStateArray = GetSensorySystem().GetBodyStateArray();
-        bool[] actionStateArray = GetSensorySystem().GetActionStateArray();
-        float[] driveStateArray = GetDriveSystem().GetDriveStatesArray();
-
+        bool[] bodyStateArray = GetBody().GetBodyStateArray();
+        bool[] actionStateArray = GetMotorSystem().GetActionStateArray();
+        float[] driveStateArray = GetDriveSystem().GetDriveStateArray();
+        // these two ifs needs debug
         if (activeAI == "humanRNNAI"){
-            actionChoiceStruct = humanRNNAI.chooseAction(visualInputMatrix, bodyStateArray, actionStateArray, driveStateArray, GetPhenotype().traitDict));
+            actionChoiceStruct = humanRNNAI.ChooseAction(visualInputMatrix, bodyStateArray, actionStateArray, driveStateArray, GetPhenotype().traitDict);
         }
         else {
-            actionChoiceStruct = humanSimpleAI2.chooseAction();
+            actionChoiceStruct = humanSimpleAI2.ChooseAction(GetSensorySystem().GetVisualInput(), 
+                                                            GetBody().GetBodyStateArray(),
+                                                            GetMotorSystem().GetActionStateArray(),
+                                                            GetDriveSystem().GetDriveStateArray(),
+                                                            this.actionChoiceStruct);
         }
 
-        GetMotorSystem().takeAction(actionChoiceStruct);
+        GetMotorSystem().TakeAction(actionChoiceStruct);
         
     }
-
 }
 
 

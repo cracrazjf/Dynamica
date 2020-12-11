@@ -7,22 +7,23 @@ public class HumanDriveSystem : DriveSystem {
 
     public Human thisHuman;
 
-    private List<string> humanDriveStateLabelList = new List<string>
-    {
-        "hunger", 
-        "thirst", 
-        "sleepiness",
-        "fatigue",
-        "health",
-    };
+    public List<string> humanDriveStateLabelList;
 
     public HumanDriveSystem(Human human) : base(human) {
         this.thisHuman = human;
+        driveStateLabelList = new List<string>
+        {
+            "hunger", 
+            "thirst", 
+            "sleepiness",
+            "fatigue",
+            "health",
+        };
     }
 
     public override void UpdateDrives()
     {
-        for (int i = 0; i < numStates; i++) {
+        for (int i = 0; i < this.GetNumDriveStates(); i++) {
             string driveStateLabel = driveStateLabelList[i];
             string changeLabel = driveStateLabel + "_change";
             

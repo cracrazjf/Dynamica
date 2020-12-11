@@ -6,7 +6,6 @@ using UnityEngine;
 public class MotorSystem 
 {
     public Animal thisAnimal;
-
     protected int numActionStates;
     protected bool[] actionStateArray;
     protected List<string> actionStateLabelList;
@@ -27,22 +26,20 @@ public class MotorSystem
         this.thisAnimal = passed;
     }
 
-    public void InitActionStates(){
-        this.actionStateLabelList = actionStateLabelList;
+    public void InitActionStates(List<string> passedActionStateLableList){
 
         actionStateIndexDict = new Dictionary <string, int>();
-
         int i;
-        for (i=0; i<actionStateLabelList.Count; i++){
-            actionStateIndexDict.Add(actionStateLabelList[i], i);
+        for (i=0; i<passedActionStateLableList.Count; i++){
+            actionStateIndexDict.Add(passedActionStateLableList[i], i);
             
-            actionRequirementDict.Add(actionStateLabelList[i], new List<string>());
-            actionObstructorDict.Add(actionStateLabelList[i], new List<string>());
-            bodyStateRequirementDict.Add(bodyStateLabelList[i], new List<string>());
-            bodyStateObstructorDict.Add(bodyStateLabelList[i], new List<string>());
+            actionRequirementDict.Add(passedActionStateLableList[i], new List<string>());
+            actionObstructorDict.Add(passedActionStateLableList[i], new List<string>());
+            bodyStateRequirementDict.Add(passedActionStateLableList[i], new List<string>());
+            bodyStateObstructorDict.Add(passedActionStateLableList[i], new List<string>());
         }
         numActionStates = i;
-        actionStateArray = new bool[numBodyStates];
+        actionStateArray = new bool[this.thisAnimal.GetBody().GetNumBodyStates()];
     }
 
     public void InitActionArguments(){
@@ -60,7 +57,7 @@ public class MotorSystem
         Debug.Log("No Action Rules for this animal");
     }
 
-    public virtual void TakeAction(struct actionChoiceStruct){
+    public virtual void TakeAction(Animal.BoolAndFloat actionChoiceStruct){
         Debug.Log("No Actions Defined for this animal");
     }
 
@@ -68,13 +65,29 @@ public class MotorSystem
         Debug.Log("No Actions Defined for this animal");
     }
 
-    public virtual bool CheckActionLegality(){
+    public virtual bool CheckActionLegality(string action){
         Debug.Log("No Actions Defined for this animal");
         return false;
     }
 
     public int GetNumActionStates(){
         return numActionStates;
+    }
+    public int GetNumActionArguments() {
+        return numActionArguments;
+    }
+    public bool[] GetActionStateArray() {
+        return actionStateArray;
+    }
+    public List<string> GetActionStateLabelList() {
+        return actionStateLabelList;
+    }
+    public Dictionary<string, int> GetActionStateIndexDict() {
+        return actionStateIndexDict;
+    }
+
+    public Dictionary<string, int> GetActionArgumentIndexDict() {
+        return actionArgumentIndexDict;
     }
 
 }

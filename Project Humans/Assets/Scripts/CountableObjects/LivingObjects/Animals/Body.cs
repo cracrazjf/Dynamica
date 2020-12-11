@@ -10,25 +10,22 @@ public class Body {
     public GameObject humanPrefab;
     public Rigidbody rigidbody;
 
-    private int numBodyStates;
-    private bool[] bodyStateArray;
-    private List<string> bodyStateLabelList;
-    private Dictionary<string, int> bodyStateIndexDict;
+    protected int numBodyStates;
+    protected bool[] bodyStateArray;
+    protected List<string> bodyStateLabelList;
+    protected Dictionary<string, int> bodyStateIndexDict;
 
     public Body(Animal animal) {
         this.thisAnimal = animal;
     }
 
-    public void InitBodyStates(){
-
-        if (bodyStateLabelList.Count() > 0){
-            this.bodyStateLabelList = passedBodyStateLabelList;
-    
+    public void InitBodyStates(List<string> passedBodyStateLabelList){
+        if (passedBodyStateLabelList != null){
             bodyStateIndexDict = new Dictionary <string, int>();
 
             int i;
-            for (i=0; i<bodyStateLabelList.Count; i++){
-                bodyStateIndexDict.Add(bodyStateLabelList[i], i);
+            for (i=0; i<passedBodyStateLabelList.Count; i++){
+                bodyStateIndexDict.Add(passedBodyStateLabelList[i], i);
             }
             numBodyStates = i;
             bodyStateArray = new bool[numBodyStates];
@@ -42,12 +39,16 @@ public class Body {
         Debug.Log("No update body states defined for this animal");
     }
 
+    public void SetBodyState(int index, bool value) {
+        bodyStateArray[index] = value;
+    }
+
     // getters for body state data structures
     public int GetNumBodyStates(){
         return numBodyStates;
     }
 
-    public float[] GetBodyStateLabelList(){
+    public List<string> GetBodyStateLabelList(){
         return bodyStateLabelList;
     }
 
@@ -59,15 +60,15 @@ public class Body {
         return bodyStateIndexDict;
     }
 
-    public string getBodyStateLabel(int index){
+    public string GetBodyStateLabel(int index){
         return bodyStateLabelList[index];
     }
 
-    public bool getBodyState(int index){
+    public bool GetBodyState(int index){
         return bodyStateArray[index];
     }
 
-    public int getBodyStateIndex(string label){
+    public int GetBodyStateIndex(string label){
         return bodyStateIndexDict[label];
     }
 }

@@ -6,20 +6,25 @@ using System;
     abstract public class Animal : LivingObject
     {
         public string displayName;
-
+        public Camera visualInputCamera;
+        
         private Body body;
         private DriveSystem driveSystem;
         private MotorSystem motorSystem;
         private SensorySystem sensorySystem;
-        private struct actionChoiceStruct{
-            bool[] actionChoiceArray;
-            float[] actionArgumentArray;
+        public struct BoolAndFloat {
+            public bool[] actionChoiceArray;
+            public float[] actionArgumentArray;
         };
+        protected BoolAndFloat actionChoiceStruct;
         
         public Animal(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) 
         : base (objectType, index, position, motherGenome, fatherGenome)
         {
-            this.displayName = GetObjectType();            
+            this.displayName = GetObjectType();
+            
+            
+                        
         }
 
         public string GetDisplayName(){
@@ -47,7 +52,7 @@ using System;
             return sensorySystem;
         }
 
-        public actionChoiceStruct GetActionChoiceStruct(){
+        public BoolAndFloat GetActionChoiceStruct(){
             return actionChoiceStruct;
         }
 
@@ -75,7 +80,7 @@ using System;
             sensorySystem = passed;
         }
 
-        public void SetActionChoiceStruct(struct passed){
+        public void SetActionChoiceStruct(BoolAndFloat passed){
             actionChoiceStruct = passed;
         }
 
@@ -85,6 +90,12 @@ using System;
 
         public void SetActionArgumentArray(float[] passed){
             actionChoiceStruct.actionArgumentArray = passed;
+        }
+
+        public void InitActionChoiceStruct () {
+            this.actionChoiceStruct = new BoolAndFloat();
+            this.actionChoiceStruct.actionChoiceArray = new bool[GetMotorSystem().GetNumActionStates()];
+            this.actionChoiceStruct.actionArgumentArray = new float[GetMotorSystem().GetNumActionArguments()];
         }
 
     }

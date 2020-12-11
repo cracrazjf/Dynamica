@@ -10,11 +10,12 @@ public class SensorySystem {
     public Camera visualInputCamera;
     float[ , ] visualInputArray;
 
-    int visualResolution = Int32.Parse(this.thisAnimal.phenotype.traitDict["visual_resolution"]);
+    int visualResolution;
 
     public SensorySystem(Animal animal) {
         this.thisAnimal = animal;
         visualInputCamera = this.thisAnimal.gameObject.GetComponentInChildren<Camera>();
+        visualResolution = Int32.Parse(this.thisAnimal.phenotype.traitDict["visual_resolution"]);
     
         InitVisualInput();
     }

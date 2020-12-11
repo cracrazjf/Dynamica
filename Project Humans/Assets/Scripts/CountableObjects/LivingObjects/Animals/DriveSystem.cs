@@ -8,10 +8,10 @@ public class DriveSystem
     /// <value>Holds a reference to the Animal the system is associated with</value>
     public Animal thisAnimal;
 
-    private int numDriveStates;
-    private float[] driveStateArray;
-    private List<string> driveStateLabelList;
-    private Dictionary<string, int> driveStateIndexDict;
+    protected int numDriveStates;
+    protected float[] driveStateArray;
+    protected List<string> driveStateLabelList;
+    protected Dictionary<string, int> driveStateIndexDict;
 
     /// <summary>
     /// Drive constructor
@@ -37,15 +37,18 @@ public class DriveSystem
 
 
     // getters for drive state data structures
+    public void SetDriveState(int index, float value){
+        driveStateArray[index] = value;
+    }
     public int GetNumDriveStates(){
         return numDriveStates;
     }
 
-    public float[] GetDriveStateLabelList(){
+    public List<string> GetDriveStateLabelList(){
         return driveStateLabelList;
     }
 
-    public bool[] GetDriveStateArray(){
+    public float[] GetDriveStateArray(){
         return driveStateArray;
     }
 
@@ -53,15 +56,15 @@ public class DriveSystem
         return driveStateIndexDict;
     }
 
-    public string getDriveStateLabel(int index){
+    public string GetDriveStateLabel(int index){
         return driveStateLabelList[index];
     }
 
-    public float getDriveState(int index){
+    public float GetDriveState(int index){
         return driveStateArray[index];
     }
 
-    public int getDriveStateIndex(string label){
+    public int GetDriveStateIndex(string label){
         return driveStateIndexDict[label];
     }
 }
