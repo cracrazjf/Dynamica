@@ -57,7 +57,7 @@ public class MotorSystem
         Debug.Log("No Action Rules for this animal");
     }
 
-    public virtual void TakeAction(Animal.BoolAndFloat actionChoiceStruct){
+    public virtual void TakeAction(Animal.ActionChoiceStruct actionChoiceStruct){
         Debug.Log("No Actions Defined for this animal");
     }
 
@@ -73,21 +73,58 @@ public class MotorSystem
     public int GetNumActionStates(){
         return numActionStates;
     }
-    public int GetNumActionArguments() {
-        return numActionArguments;
-    }
+
     public bool[] GetActionStateArray() {
         return actionStateArray;
     }
-    public List<string> GetActionStateLabelList() {
-        return actionStateLabelList;
+
+    public bool GetActionState(int index) {
+        return actionStateArray[index];
     }
+
     public Dictionary<string, int> GetActionStateIndexDict() {
         return actionStateIndexDict;
     }
 
+    public int getActionStateIndex(string label){
+        return actionStateIndexDict[label];
+    }
+
+    public List<string> GetActionStateLabelList() {
+        return actionStateLabelList;
+    }
+
+    public string GetActionStateLabel(int index){
+        return actionStateLabelList[index];
+    }
+
+    public int GetNumActionArguments() {
+        return numActionArguments;
+    }
+
+    public float[] GetActionArgumentArray() {
+        return actionArgumentArray;
+    }
+
+    public float GetActionArgument(int index) {
+        return actionArgumentArray[index];
+    }
+    
     public Dictionary<string, int> GetActionArgumentIndexDict() {
         return actionArgumentIndexDict;
     }
+    
+    public int GetActionArgumentIndex(string label) {
+        return actionArgumentIndexDict[label];
+    }
+
+    public List<string> GetActionArgumentLabelList() {
+        return actionArgumentLabelList;
+    }
+
+    public string GetActionArgumentLabel(int index){
+        return actionArgumentLabelList[index];
+    }
+    
 
 }

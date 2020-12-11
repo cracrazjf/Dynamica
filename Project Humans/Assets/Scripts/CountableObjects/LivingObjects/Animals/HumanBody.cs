@@ -42,6 +42,7 @@ public class HumanBody : Body {
             };
 
         this.thisHuman.gameObject.AddComponent<HumanMonobehaviour>();
+        this.thisHuman.gameObject.GetComponent<HumanMonobehaviour>().SetHuman(this.thisHuman);
         this.thisHuman.animator = this.thisHuman.gameObject.GetComponent<Animator>();
 
         leftEye = this.thisHuman.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(2);

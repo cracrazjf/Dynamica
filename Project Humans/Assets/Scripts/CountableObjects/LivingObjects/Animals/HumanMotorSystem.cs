@@ -24,12 +24,9 @@ public class HumanMotorSystem : MotorSystem
             "standing up", 
             "rotating", 
             "taking steps",
-            "picking up with left hand", 
-            "picking up with right hand", 
-            "setting down with left hand",
-            "setting down with right hand",
-            "eating with left hand", 
-            "eating with right hand",
+            "picking up", 
+            "setting down",
+            "eating", 
             "drinking",
             "waking up",
             "falling asleep"
@@ -41,21 +38,47 @@ public class HumanMotorSystem : MotorSystem
             "step rate",            
             "rotation angle",               
             "rotation velocity",               
-            "hand"
+            "hand",
+            "hand target x",
+            "hand target y",
+            "hand target z"
         };
-
-        
     }
 
     public override void InitActionRuleDicts(){
-        bodyStateRequirementDict["taking steps"].Add("standing");
-        bodyStateObstructorDict["taking steps"].Add("sleeping");
+
+        bodyStateRequirementDict["sitting down"].Add("standing");
+        bodyStateObstructorDict["sitting down"].Add("sleeping");
+        
+        bodyStateRequirementDict["sitting up"].Add("laying");
+        bodyStateObstructorDict["sitting up"].Add("sleeping");
+
+        bodyStateRequirementDict["laying down"].Add("sitting");
+        bodyStateObstructorDict["laying down"].Add("sleeping");
+        
+        bodyStateRequirementDict["standing up"].Add("sitting");
+        bodyStateObstructorDict["standing up"].Add("sleeping");
 
         bodyStateRequirementDict["rotating"].Add("standing");
         bodyStateObstructorDict["rotating"].Add("sleeping");
 
+        bodyStateRequirementDict["taking steps"].Add("standing");
+        bodyStateObstructorDict["taking steps"].Add("sleeping");
+
+        bodyStateRequirementDict["picking up"].Add("standing");
+        bodyStateObstructorDict["picking up"].Add("sleeping");
+
+        bodyStateRequirementDict["setting down"].Add("standing");
+        bodyStateObstructorDict["setting down"].Add("sleeping");
+
+        bodyStateRequirementDict["eating"].Add("standing");
+        bodyStateObstructorDict["eating"].Add("sleeping");
+
         bodyStateRequirementDict["drinking"].Add("standing");
         bodyStateObstructorDict["drinking"].Add("sleeping");
+
+        bodyStateRequirementDict["waking up"].Add("laying");
+        bodyStateRequirementDict["waking up"].Add("sleeping");
 
         bodyStateRequirementDict["falling asleep"].Add("laying");
         bodyStateObstructorDict["falling asleep"].Add("sleeping");
@@ -110,24 +133,40 @@ public class HumanMotorSystem : MotorSystem
 
     public override bool CheckActionLegality(string action){
         bool legal = false;
-        
-        // action == "waking up"
 
         List<string> requiredBodyStateList = bodyStateRequirementDict[action];
-        // ["laying", "sleeping"]
-        for (int i = 0; i < requiredBodyStateList.Count; i++){
-            string bodyState = requiredBodyStateList[i];
-            if (this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex(bodyState))){
-                legal = true;
-            }
-            else{
-                legal = false;
-            }
+        List<string> obstructorBodyStateList = bodyStateObstructorDict[action];
+
+        int numRequirements = requiredBodyStateList.Count;
+        int numObstructors = obstructorBodyStateList.Count;
+
+        bool[] bodyStateRequirementArray = new bool[numRequirements];
+        bool[] bodyStateObstructorArray = new bool[numObstructors];
+        bool status;
+        int index;
+
+        for (int i = 0; i < numRequirements; i++){
+            index = this.thisHuman.GetBody().GetBodyStateIndex(requiredBodyStateList[i]);
+            status = this.thisHuman.GetBody().GetBodyState(index);
+            bodyStateRequirementArray[i] = status;
+        }
+
+        for (int i = 0; i < numObstructors; i++){
+            index = this.thisHuman.GetBody().GetBodyStateIndex(obstructorBodyStateList[i]);
+            status = this.thisHuman.GetBody().GetBodyState(index);
+            bodyStateObstructorArray[i] = status;
+        }
+
+        if (bodyStateRequirementArray.All(x => x)){
+            legal = true;
+        }
+        if (bodyStateObstructorArray.Any(x => x)){
+            legal = false;
         }
         return legal;
     }
 
-    public override void TakeAction(Animal.BoolAndFloat actionChoiceStruct){
+    public override void TakeAction(Animal.ActionChoiceStruct actionChoiceStruct){
         Debug.Log(actionChoiceStruct.actionChoiceArray== null);
         bool doingNothing = !actionChoiceStruct.actionChoiceArray.Any(x => x);
 
@@ -150,10 +189,7 @@ public class HumanMotorSystem : MotorSystem
             else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["waking up"]]){
                 WakeUp();
             }
-            else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eating with left hand"]]){
-                Eat(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
-            }
-            else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eating with right hand"]]){
+            else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eating"]]){
                 Eat(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
             }
             else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["drinking"]]){
@@ -165,16 +201,10 @@ public class HumanMotorSystem : MotorSystem
             else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["rotating"]]){
                 Rotate(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]]);
             }
-            else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up with left hand"]]){
+            else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up"]]){
                 PickUp(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
             }
-            else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up with right hand"]]){
-                PickUp(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
-            }
-            else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["setting down with left hand"]]){
-                SetDown(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
-            }
-            else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["setting down with right hand"]]){
+            else if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["setting down"]]){
                 SetDown(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
             }
                 
@@ -192,24 +222,14 @@ public class HumanMotorSystem : MotorSystem
                 }
             }
 
-            else if (actionStateArray[actionStateIndexDict["picking up with left hand"]] == true){
-                if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up with left hand"]]){
-                    PickUp(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
-                }
-            }
-            else if (actionStateArray[actionStateIndexDict["picking up with right hand"]] == true){
-                if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up with right hand"]]){
+            else if (actionStateArray[actionStateIndexDict["picking up"]] == true){
+                if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up"]]){
                     PickUp(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
                 }
             }
 
-            else if (actionStateArray[actionStateIndexDict["setting down with left hand"]] == true){
-                if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["setting down with left hand"]]){
-                   SetDown(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
-                }
-            }
-            else if (actionStateArray[actionStateIndexDict["setting down with right hand"]] == true){
-                if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["setting down with right hand"]]){
+            else if (actionStateArray[actionStateIndexDict["setting down"]] == true){
+                if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["setting down"]]){
                    SetDown(actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]]);
                 }
             }

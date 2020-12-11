@@ -9,8 +9,14 @@ public class HumanRNNAI : AI
     List<int> layerSizeList = new List<int>();
     List<List<string>> layerConnectionList = new List<List<string>>();
     Dictionary<string, float> parameterDict = new Dictionary<string, float>();
-    
-    Animal.BoolAndFloat actionChoiceStruct = new Animal.BoolAndFloat();
+
+    Dictionary<string, int> bodyStateIndexDict;
+    Dictionary<string, int> driveStateIndexDict;
+    Dictionary<string, int> actionStateIndexDict;
+    Dictionary<string, int> actionArgumentIndexDict;
+    Dictionary<string, string> traitDict;
+
+    Animal.ActionChoiceStruct actionChoiceStruct;
     float[,] zh_r = new float[64,1024];
     float[,] zh_g = new float[64,1024];
     float[,] zh_b = new float[64,1024];
@@ -30,9 +36,18 @@ public class HumanRNNAI : AI
     float[] zaction = new float[12];
     float[] action = new float[12];
 
-    public HumanRNNAI () : base() {
-        
+    public HumanRNNAI (Dictionary<string, int> bodyStateIndexDict,
+                       Dictionary<string, int> driveStateIndexDict,
+                       Dictionary<string, int> actionStateIndexDict, 
+                       Dictionary<string, int> actionArgumentIndexDict,
+                       Dictionary<string, string> traitDict) : base() {
+        this.bodyStateIndexDict = bodyStateIndexDict;
+        this.driveStateIndexDict = driveStateIndexDict;
+        this.actionStateIndexDict = actionStateIndexDict;
+        this.actionArgumentIndexDict = actionArgumentIndexDict;
+        this.traitDict = traitDict;
         initNetwork();
+        initActionChoiceStruct();
     }
 
     public void initNetwork(){
@@ -82,7 +97,7 @@ public class HumanRNNAI : AI
         }
     }
 
-    public Animal.BoolAndFloat ChooseAction(float[ , ] visualInput, bool[] bodyStateArray, bool[] actionStateArray, float[] driveStateArray, Dictionary<string, string> traitDict){
+    public Animal.ActionChoiceStruct ChooseAction(float[ , ] visualInput, bool[] bodyStateArray, bool[] actionStateArray, float[] driveStateArray, Dictionary<string, string> traitDict){
         
         // zh = zh_bias + (zh_r*visualInput[0,:]) + (zh_gzh*visualInput[1,:]) + (zh_b*visualInput[2,:]) + (zh_body*humanBodyState) + (zh_drive*humanDriveState);
         // h = sigmoid(zh);
@@ -92,11 +107,17 @@ public class HumanRNNAI : AI
         // action = sigmoid(zaction)
 
         // find the highest value in action, and set actionChoice to that action
+        
 
         return actionChoiceStruct;
         
     }
 
+    public void initActionChoiceStruct(){
+        this.actionChoiceStruct = new Animal.ActionChoiceStruct();
+        this.actionChoiceStruct.actionChoiceArray = new bool[actionStateIndexDict.Count];
+        this.actionChoiceStruct.actionArgumentArray = new float[actionArgumentIndexDict.Count];
+    }
 }
 
     

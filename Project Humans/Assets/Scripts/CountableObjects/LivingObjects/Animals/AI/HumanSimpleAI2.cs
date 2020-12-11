@@ -25,15 +25,13 @@ public class HumanSimpleAI2 : AI
     Dictionary<string, int> actionStateIndexDict;
     Dictionary<string, int> actionArgumentIndexDict;
     Dictionary<string, string> traitDict;
-
-    private Animal.BoolAndFloat actionChoicestruct = new Animal.BoolAndFloat();
+    
     float[,] visualInputMatrix;
     bool[] bodyStateArray;
     bool[] actionStateArray;
     float[] driveStateArray;
 
-    float[] actionChoiceArray;
-    float[] actionChoiceArgumentArray;
+    public Animal.ActionChoiceStruct actionChoiceStruct;
 
     public HumanSimpleAI2 (Human human,
                            Dictionary<string, int> bodyStateIndexDict,
@@ -48,13 +46,14 @@ public class HumanSimpleAI2 : AI
         this.actionStateIndexDict = actionStateIndexDict;
         this.actionArgumentIndexDict = actionArgumentIndexDict;
         this.traitDict = traitDict;
+        initActionChoiceStruct();
     }
 
-    public Animal.BoolAndFloat ChooseAction(float[,] visualInputMatrix, bool[] bodyStateArray, bool[] actionStateArray, float[] driveStateArray, Animal.BoolAndFloat passedActionChoiceStruct){
+    public Animal.ActionChoiceStruct ChooseAction(float[,] visualInputMatrix, bool[] bodyStateArray, bool[] actionStateArray, float[] driveStateArray, Dictionary<string, string> passedTraitDict){
         this.bodyStateArray = bodyStateArray;
         this.actionStateArray = actionStateArray;
         this.driveStateArray = driveStateArray;
-        //this.traitDict = traitDict;
+        this.traitDict = passedTraitDict;
 
         InFov(this.thisHuman.gameObject.transform, 45,10);
 
@@ -77,7 +76,7 @@ public class HumanSimpleAI2 : AI
             DecreaseHunger();
         }
 
-        return actionChoicestruct;
+        return actionChoiceStruct;
     }
 
     public void ChooseGoal(){
@@ -369,6 +368,12 @@ public class HumanSimpleAI2 : AI
                 }
             }
         }
+    }
+
+    public void initActionChoiceStruct(){
+        this.actionChoiceStruct = new Animal.ActionChoiceStruct();
+        this.actionChoiceStruct.actionChoiceArray = new bool[actionStateIndexDict.Count];
+        this.actionChoiceStruct.actionArgumentArray = new float[actionArgumentIndexDict.Count];
     }
     
 }

@@ -30,19 +30,19 @@ public class Human : Animal
         GetDriveSystem().InitDriveStates(GetDriveSystem().GetDriveStateLabelList());
         GetDriveSystem().SetDriveState(GetDriveSystem().GetDriveStateIndex("health"), 1);
 
-        SetSensorySystem(new HumanSensorySystem(this));
-
         SetMotorSystem(new HumanMotorSystem(this));
         GetMotorSystem().InitActionStates(GetMotorSystem().GetActionStateLabelList());
         GetMotorSystem().InitActionRuleDicts();
         GetMotorSystem().InitActionArguments();
 
-        this.InitActionChoiceStruct();
-        Debug.Log(this.getActionChoiceArray() == null);
-        
-        
+        SetSensorySystem(new HumanSensorySystem(this));
+
         if (activeAI == "humanRNNAI"){
-            humanRNNAI = new HumanRNNAI();
+            humanRNNAI = new HumanRNNAI(GetBody().GetBodyStateIndexDict(), 
+                                        GetDriveSystem().GetDriveStateIndexDict(), 
+                                        GetMotorSystem().GetActionStateIndexDict(),
+                                        GetMotorSystem().GetActionArgumentIndexDict(),
+                                        GetPhenotype().traitDict);
         }
         else{
             humanSimpleAI2 = new HumanSimpleAI2(this,
@@ -76,7 +76,7 @@ public class Human : Animal
                                                             GetBody().GetBodyStateArray(),
                                                             GetMotorSystem().GetActionStateArray(),
                                                             GetDriveSystem().GetDriveStateArray(),
-                                                            this.actionChoiceStruct);
+                                                            GetPhenotype().traitDict);
         }
 
         GetMotorSystem().TakeAction(actionChoiceStruct);

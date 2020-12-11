@@ -12,11 +12,11 @@ using System;
         private DriveSystem driveSystem;
         private MotorSystem motorSystem;
         private SensorySystem sensorySystem;
-        public struct BoolAndFloat {
+        public struct ActionChoiceStruct {
             public bool[] actionChoiceArray;
             public float[] actionArgumentArray;
         };
-        protected BoolAndFloat actionChoiceStruct;
+        protected ActionChoiceStruct actionChoiceStruct;
         
         public Animal(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) 
         : base (objectType, index, position, motherGenome, fatherGenome)
@@ -52,7 +52,7 @@ using System;
             return sensorySystem;
         }
 
-        public BoolAndFloat GetActionChoiceStruct(){
+        public ActionChoiceStruct GetActionChoiceStruct(){
             return actionChoiceStruct;
         }
 
@@ -80,7 +80,7 @@ using System;
             sensorySystem = passed;
         }
 
-        public void SetActionChoiceStruct(BoolAndFloat passed){
+        public void SetActionChoiceStruct(ActionChoiceStruct passed){
             actionChoiceStruct = passed;
         }
 
@@ -92,10 +92,8 @@ using System;
             actionChoiceStruct.actionArgumentArray = passed;
         }
 
-        public void InitActionChoiceStruct () {
-            this.actionChoiceStruct = new BoolAndFloat();
-            this.actionChoiceStruct.actionChoiceArray = new bool[GetMotorSystem().GetNumActionStates()];
-            this.actionChoiceStruct.actionArgumentArray = new float[GetMotorSystem().GetNumActionArguments()];
+        public void InitActionChoiceStruct() {
+
         }
 
     }

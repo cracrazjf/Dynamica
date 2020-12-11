@@ -75,8 +75,6 @@ public class Phenotype {
             
             this.numTraits++;
         }
-        
-        
     }
 
     private string createBinaryTrait(BitArray geneSequence){
