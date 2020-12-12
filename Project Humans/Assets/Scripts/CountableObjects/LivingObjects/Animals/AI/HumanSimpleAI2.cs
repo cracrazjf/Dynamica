@@ -54,7 +54,8 @@ public class HumanSimpleAI2 : AI
         this.actionStateArray = actionStateArray;
         this.driveStateArray = driveStateArray;
         this.traitDict = passedTraitDict;
-
+        this.actionChoiceStruct.actionChoiceArray = new bool[actionStateIndexDict.Count];
+        this.actionChoiceStruct.actionArgumentArray = new float[actionArgumentIndexDict.Count];
         InFov(this.thisHuman.gameObject.transform, 45,10);
 
         bool doingNothing = !this.actionStateArray.Any(x => x);
@@ -106,7 +107,7 @@ public class HumanSimpleAI2 : AI
                 List<GameObject> targets = CheckIfTargetVisible("Water");
                 GameObject target = CalculateClosestObject(targets);
                 if (CheckIfTargetReachable(target)) {
-                    thisHuman.getActionChoiceArray()[actionStateIndexDict["drinking"]] = true;
+                    this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["drinking"]] = true;
                     currentGoal = "None";
                 }
                 else {
@@ -120,13 +121,13 @@ public class HumanSimpleAI2 : AI
         }
         else {
             if (bodyStateArray[bodyStateIndexDict["sitting"]]) {
-                thisHuman.getActionChoiceArray()[actionStateIndexDict["standing up"]] = true;
+                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["standing up"]] = true;
             }
             if (bodyStateArray[bodyStateIndexDict["laying"]]) {
-                thisHuman.getActionChoiceArray()[actionStateIndexDict["sitting up"]] = true;
+                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["sitting up"]] = true;
             }
             if (bodyStateArray[bodyStateIndexDict["sleeping"]]) {
-                thisHuman.getActionChoiceArray()[actionStateIndexDict["waking up"]] = true;
+                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["waking up"]] = true;
             }
         }
     }
@@ -134,8 +135,8 @@ public class HumanSimpleAI2 : AI
     public void DecreaseHunger(){
         if (bodyStateArray[bodyStateIndexDict["sitting"]]) {
             if (objectTypeInLH == "Food"){
-                thisHuman.getActionChoiceArray()[actionStateIndexDict["eatting"]] = true;
-                thisHuman.getActionArgumentArray()[actionArgumentIndexDict["hand"]] = 0;
+                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eatting"]] = true;
+                this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 0;
                 if (!bodyStateArray[bodyStateIndexDict["holding with left hand"]]) {
                     objectTypeInLH = "None";
                     currentGoal = "None";
@@ -144,8 +145,8 @@ public class HumanSimpleAI2 : AI
             }
             else{
                 if (objectTypeInRH == "Food"){
-                    thisHuman.getActionChoiceArray()[actionStateIndexDict["eatting"]] = true;
-                    thisHuman.getActionArgumentArray()[actionArgumentIndexDict["hand"]] = 1;
+                    this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eatting"]] = true;
+                    this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 1;
                     currentGoal = "None";
                     objectTypeInRH = "None";
                 }
@@ -155,24 +156,24 @@ public class HumanSimpleAI2 : AI
                         GameObject target = CalculateClosestObject(targets);
                         if (CheckIfTargetReachable(target)) {
                             if ((objectTypeInLH != "None") && (objectTypeInRH != "None")){
-                                thisHuman.getActionChoiceArray()[actionStateIndexDict["setting down"]] = true;
-                                thisHuman.getActionArgumentArray()[actionArgumentIndexDict["hand"]] = 0;
+                                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["setting down"]] = true;
+                                this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 0;
                                 objectTypeInLH = "None";
                             }
                             else{
                                 if (objectTypeInLH == "None") {
                                     Debug.Log("here");
                                     pickUpPosition = target.transform.position;
-                                    thisHuman.getActionChoiceArray()[actionStateIndexDict["picking up"]] = true;
-                                    thisHuman.getActionArgumentArray()[actionArgumentIndexDict["hand"]] = 0;
+                                    this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up"]] = true;
+                                    this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 0;
                                     if (bodyStateArray[bodyStateIndexDict["holding with left hand"]]){
                                         objectTypeInLH = "Food";
                                     }
                                 }
                                 else if (objectTypeInRH == "None"){
                                     pickUpPosition = target.transform.position;
-                                    thisHuman.getActionChoiceArray()[actionStateIndexDict["picking up"]] = true;
-                                    thisHuman.getActionArgumentArray()[actionArgumentIndexDict["hand"]] = 1;
+                                    this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up"]] = true;
+                                    this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 1;
                                     if (bodyStateArray[bodyStateIndexDict["holding with right hand"]]){
                                         objectTypeInRH = "Food";
                                     }
@@ -199,32 +200,32 @@ public class HumanSimpleAI2 : AI
         
         else {
             if (bodyStateArray[bodyStateIndexDict["sitting"]]) {
-                thisHuman.getActionChoiceArray()[actionStateIndexDict["standing up"]] = true;
+                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["standing up"]] = true;
             }
             if (bodyStateArray[bodyStateIndexDict["laying"]]) {
-                thisHuman.getActionChoiceArray()[actionStateIndexDict["sitting up"]] = true;
+                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["sitting up"]] = true;
             }
             if (bodyStateArray[bodyStateIndexDict["sleeping"]]) {
-                thisHuman.getActionChoiceArray()[actionStateIndexDict["waking up"]] = true;
+                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["waking up"]] = true;
             }
         }
     }
     
     public void DecreaseSleepiness() {
         if (bodyStateArray[bodyStateIndexDict["laying"]]) {
-            thisHuman.getActionChoiceArray()[actionStateIndexDict["falling asleep"]] = true;
+            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["falling asleep"]] = true;
         }
         else {
-            thisHuman.getActionChoiceArray()[actionStateIndexDict["laying down"]] = true;
+            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["laying down"]] = true;
         }
     }
 
     public void DecreaseFatigue() {
         if (bodyStateArray[bodyStateIndexDict["standing"]]) {
-            thisHuman.getActionChoiceArray()[actionStateIndexDict["sitting down"]] = true;
+            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["sitting down"]] = true;
         }
         else if (bodyStateArray[bodyStateIndexDict["laying"]]) {
-            thisHuman.getActionChoiceArray()[actionStateIndexDict["sitting up"]] = true;
+            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["sitting up"]] = true;
         }
     }
     
@@ -273,6 +274,7 @@ public class HumanSimpleAI2 : AI
     }
 
     public void GoToObject(GameObject target) {
+        Debug.Log(target);
         float maxStepDistance = traitDict["thirst_threshold"];
 
         if (target != null) {
@@ -284,31 +286,42 @@ public class HumanSimpleAI2 : AI
                     var step = stepRate * maxStepDistance;
                     if (step >= distance) {
                         var nextStep = distance;
-                        thisHuman.getActionChoiceArray()[actionStateIndexDict["taking steps"]] = true;
-                        thisHuman.getActionArgumentArray()[actionArgumentIndexDict["movement"]] = 1;
-                        thisHuman.getActionArgumentArray()[actionArgumentIndexDict["step rate"]] = nextStep / traitDict["max_step_distance"];
+                        this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]] = true;
+                        this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["step rate"]] = nextStep / traitDict["max_step_distance"];
 
                     }
                     else {
-                        thisHuman.getActionChoiceArray()[actionStateIndexDict["taking steps"]] = true;
-                        thisHuman.getActionArgumentArray()[actionArgumentIndexDict["movement"]] = 0.5f;
+                        this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]] = true;
+                        this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["step rate"]] = 0.5f;
                     }
                 }
                 else if (distance <= 1){
-                    thisHuman.getActionChoiceArray()[actionStateIndexDict["taking steps"]] = true;
-                    thisHuman.getActionArgumentArray()[actionArgumentIndexDict["movement"]] = 0;
+                   this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]] = true;
+                   this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["step rate"]] = 0;
                 }
             }
         }
     }
+    float rotatedAngle;
+    bool restoreRotatedAngle = false;
+
 
     public void Rotate(float Angle) {
-        thisHuman.getActionChoiceArray()[actionStateIndexDict["rotating"]] = true;
-        thisHuman.getActionArgumentArray()[actionArgumentIndexDict["rotation angel"]] = 1;
+        if (rotatedAngle >= 360) {
+            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]] = 0;
+        }
+        else {
+            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["rotating"]] = true;
+            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]] = Angle;
+            rotatedAngle += Angle * traitDict["max_rotation_speed"] *Time.deltaTime;
+            Debug.Log(rotatedAngle);
+        }
+        
+        
     }
 
     public void SearchForThing(){
-        if (((HumanMotorSystem)thisHuman.GetMotorSystem()).rotateAngle == 0) {
+        if (rotatedAngle >= 360) {
             if (!newRandomPos) {
             randomPoint = new Vector3(Random.Range(thisHuman.gameObject.transform.position.x - Range, 
                                 thisHuman.gameObject.transform.position.x + Range), 0, 
@@ -317,8 +330,8 @@ public class HumanSimpleAI2 : AI
             newRandomPos = true;
             }
             thisHuman.gameObject.transform.LookAt(randomPoint);
-            thisHuman.getActionChoiceArray()[actionStateIndexDict["taking steps"]] = true;
-            thisHuman.getActionArgumentArray()[actionArgumentIndexDict["movement"]] = 0.5f;
+            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]] = true;
+            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["step rate"]] = 0.5f;
             if ((thisHuman.gameObject.transform.position - randomPoint).magnitude < 3) {
                 newRandomPos = false;
             }

@@ -80,6 +80,7 @@ public class Human : Animal
         }
 
         GetMotorSystem().TakeAction(actionChoiceStruct);
+        //Debug.Log(actionChoiceStruct.actionChoiceArray[this.GetMotorSystem().getActionStateIndex("eating")]);
         
     }
 }

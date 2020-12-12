@@ -56,7 +56,6 @@ public class AppleTree : Plant
     }
 
     public void CreateApple(){
-        Debug.Log("Create an Apple");
 
         // figure out where the apple should appear
         float distance = this.phenotype.traitDict["fruit_drop_distance"];

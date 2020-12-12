@@ -53,7 +53,7 @@ public class HumanMotorSystem : MotorSystem
         bodyStateRequirementDict["sitting up"].Add("laying");
         bodyStateObstructorDict["sitting up"].Add("sleeping");
 
-        bodyStateRequirementDict["laying down"].Add("sitting");
+        bodyStateRequirementDict["laying down"].Add("standing");
         bodyStateObstructorDict["laying down"].Add("sleeping");
         
         bodyStateRequirementDict["standing up"].Add("sitting");
@@ -167,9 +167,7 @@ public class HumanMotorSystem : MotorSystem
     }
 
     public override void TakeAction(Animal.ActionChoiceStruct actionChoiceStruct){
-
-        bool doingNothing = !actionChoiceStruct.actionChoiceArray.Any(x => x);
-
+        bool doingNothing = !this.actionStateArray.Any(x => x);
         if (doingNothing) {
             if (actionChoiceStruct.actionChoiceArray[actionStateIndexDict["sitting down"]]){
                 SitDown();
@@ -238,7 +236,7 @@ public class HumanMotorSystem : MotorSystem
 
     public void TakeSteps(float stepProportion) {
         // call check to see if legal
-        if (CheckActionLegality("take steps")){
+        if (CheckActionLegality("taking steps")){
             velocity = (stepProportion * maxStepDistance);
             if (stepProportion != 0) {
                 var step = stepProportion * maxStepDistance;
@@ -262,15 +260,9 @@ public class HumanMotorSystem : MotorSystem
         float rotation = rotationAngle * thisHuman.phenotype.traitDict["max_rotation_speed"] * Time.deltaTime;
         //what works for take steps works here
         if (CheckActionLegality("rotating")) {
-
-            if (rotateAngle > rotation) {
-                rotateAngle -= rotation;
-            }
-            else {
-                rotation = rotateAngle;
-                rotateAngle = 0;
-            }
             this.thisHuman.gameObject.transform.Rotate(0,rotation,0);
+
+
             this.thisHuman.animator.SetBool("rotate", true);
             this.actionStateArray = new bool[this.numActionStates];
             this.actionStateArray[this.actionStateIndexDict["rotating"]] = true;
@@ -357,11 +349,13 @@ public class HumanMotorSystem : MotorSystem
 
             this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("sitting"), false);
             this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("laying"), true);  
+            
         }
     }
 
     public void Sleep(){
         bool doingNothing = !this.actionStateArray.Any(x => x);
+        Debug.Log("sleep");
         //same
         if (CheckActionLegality("falling asleep")) {
 
