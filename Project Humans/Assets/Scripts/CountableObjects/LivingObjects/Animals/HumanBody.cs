@@ -16,7 +16,7 @@ public class HumanBody : Body {
         
         this.thisHuman = human;
 
-        if (this.thisHuman.phenotype.traitDict["sex"] == "0")
+        if (this.thisHuman.phenotype.traitDict["sex"] == 0)
         {   
             humanPrefab = Resources.Load("HumanMalePrefab",typeof(GameObject)) as GameObject;
             this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition, thisHuman.startRotation) as GameObject;

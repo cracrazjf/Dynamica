@@ -24,7 +24,7 @@ public class HumanSimpleAI2 : AI
     Dictionary<string, int> driveStateIndexDict;
     Dictionary<string, int> actionStateIndexDict;
     Dictionary<string, int> actionArgumentIndexDict;
-    Dictionary<string, string> traitDict;
+    Dictionary<string, float> traitDict;
     
     float[,] visualInputMatrix;
     bool[] bodyStateArray;
@@ -38,7 +38,7 @@ public class HumanSimpleAI2 : AI
                            Dictionary<string, int> driveStateIndexDict,
                            Dictionary<string, int> actionStateIndexDict, 
                            Dictionary<string, int> actionArgumentIndexDict,
-                           Dictionary<string, string> traitDict)
+                           Dictionary<string, float> traitDict)
     {
         this.thisHuman = human;
         this.bodyStateIndexDict = bodyStateIndexDict;
@@ -49,7 +49,7 @@ public class HumanSimpleAI2 : AI
         initActionChoiceStruct();
     }
 
-    public Animal.ActionChoiceStruct ChooseAction(float[,] visualInputMatrix, bool[] bodyStateArray, bool[] actionStateArray, float[] driveStateArray, Dictionary<string, string> passedTraitDict){
+    public Animal.ActionChoiceStruct ChooseAction(float[,] visualInputMatrix, bool[] bodyStateArray, bool[] actionStateArray, float[] driveStateArray, Dictionary<string, float> passedTraitDict){
         this.bodyStateArray = bodyStateArray;
         this.actionStateArray = actionStateArray;
         this.driveStateArray = driveStateArray;
@@ -81,19 +81,19 @@ public class HumanSimpleAI2 : AI
 
     public void ChooseGoal(){
 
-        if (driveStateArray[driveStateIndexDict["thirst"]] > float.Parse(traitDict["thirst_threshold"])) {
+        if (driveStateArray[driveStateIndexDict["thirst"]] > traitDict["thirst_threshold"]) {
             currentGoal = "Decrease Thirst";
         }
-        if (driveStateArray[driveStateIndexDict["hunger"]] > float.Parse(traitDict["hunger_threshold"])) {
+        if (driveStateArray[driveStateIndexDict["hunger"]] > traitDict["hunger_threshold"]) {
             currentGoal = "Decrease Hunger";
         }
-        if (driveStateArray[driveStateIndexDict["sleepiness"]] > float.Parse(traitDict["sleepiness_threshold"])) {
+        if (driveStateArray[driveStateIndexDict["sleepiness"]] > traitDict["sleepiness_threshold"]) {
             currentGoal = "Decrease Sleepiness";
         }
-        if (driveStateArray[driveStateIndexDict["fatigue"]] > float.Parse(traitDict["fatigue_threshold"])) {
+        if (driveStateArray[driveStateIndexDict["fatigue"]] > traitDict["fatigue_threshold"]) {
             currentGoal = "Decrease Fatigue";
         }
-        if (driveStateArray[driveStateIndexDict["health"]] < float.Parse(traitDict["health_threshold"])) {
+        if (driveStateArray[driveStateIndexDict["health"]] < traitDict["health_threshold"]) {
             currentGoal = "Increase Health";
         }
         rotateAngle = 360; // and why is it being set here, wasnt it defined outside and passed in? does it change sometimes?
@@ -273,7 +273,7 @@ public class HumanSimpleAI2 : AI
     }
 
     public void GoToObject(GameObject target) {
-        float maxStepDistance = float.Parse(traitDict["thirst_threshold"]);
+        float maxStepDistance = traitDict["thirst_threshold"];
 
         if (target != null) {
             
@@ -286,7 +286,7 @@ public class HumanSimpleAI2 : AI
                         var nextStep = distance;
                         thisHuman.getActionChoiceArray()[actionStateIndexDict["taking steps"]] = true;
                         thisHuman.getActionArgumentArray()[actionArgumentIndexDict["movement"]] = 1;
-                        thisHuman.getActionArgumentArray()[actionArgumentIndexDict["step rate"]] = nextStep / float.Parse(traitDict["max_step_distance"]);
+                        thisHuman.getActionArgumentArray()[actionArgumentIndexDict["step rate"]] = nextStep / traitDict["max_step_distance"];
 
                     }
                     else {

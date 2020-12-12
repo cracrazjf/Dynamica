@@ -22,7 +22,7 @@ public class Genome
     // this is where the constants get stored from each species's config file
     public int numConstants;
     public List<string> constantLabelList = new List<string>();
-    public Dictionary<string, List<string>> constantDict = new Dictionary<string, List<string>>();
+    public Dictionary<string, float> constantDict = new Dictionary<string, float>();
     public Dictionary<string, int> constantIndexDict= new Dictionary<string, int>();
 
     public bool inheretGenome(Genome motherGenome, Genome fatherGenome)
@@ -54,12 +54,12 @@ public class Genome
             }
             for (int i = 0; i < numConstants; i++) {
                 if (motherGenome.constantLabelList[i] == fatherGenome.constantLabelList[i]) {
-                    string constantLable = motherGenome.constantLabelList[i];
-                    var constantValue = motherGenome.constantDict[constantLable];
+                    string constantLabel = motherGenome.constantLabelList[i];
+                    var constantValue = motherGenome.constantDict[constantLabel];
 
-                    constantLabelList.Add(constantLable);
-                    constantDict.Add(constantLable,constantValue);
-                    constantIndexDict.Add(constantLable,numConstants);
+                    constantLabelList.Add(constantLabel);
+                    constantDict.Add(constantLabel,constantValue);
+                    constantIndexDict.Add(constantLabel,numConstants);
                         
                 }
                 else
@@ -98,7 +98,7 @@ public class Genome
             }
             else if (leftArray[0] == "constant"){
                 constantLabelList.Add(leftArray[1]);
-                constantDict.Add(leftArray[1], rightArray.ToList());
+                constantDict.Add(leftArray[1], float.Parse(rightArray[0]));
                 constantIndexDict.Add(leftArray[1], numConstants);
                 numConstants++;
                 
@@ -112,15 +112,15 @@ public class Genome
     public void CreateGenome(string species)
     {
         importSpeciesInfo(species);
-        
+        string outputString;
+
         for (int i = 0; i < numGenes; i++){
             Gene newGene = new Gene();
             string label = geneLabelList[i];
             List<string> geneInfo = genomeInfoDict[label];
-            newGene.generateGene(label, geneInfo[0], geneInfo[1], geneInfo[2], geneInfo[3], geneInfo[4], geneInfo[5]);
+            newGene.generateGene(label, geneInfo[0], geneInfo[1], geneInfo[2], geneInfo[3], geneInfo[4]);
             geneDict.Add(label, newGene);
         }
-
     }
 
     public string GetConstantInfo() {

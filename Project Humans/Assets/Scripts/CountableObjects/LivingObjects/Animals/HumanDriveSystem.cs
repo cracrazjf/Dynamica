@@ -28,7 +28,7 @@ public class HumanDriveSystem : DriveSystem {
             string changeLabel = driveStateLabel + "_change";
             
             // add some error checking to make sure the labels in config and stateLabelList match
-            float changeValue = float.Parse(thisAnimal.phenotype.traitDict[changeLabel]);
+            float changeValue = thisAnimal.phenotype.traitDict[changeLabel];
             driveStateArray[i] += changeValue;
             if (driveStateArray[i] < 0){
                 driveStateArray[i] = 0;
@@ -40,11 +40,11 @@ public class HumanDriveSystem : DriveSystem {
 
         if (driveStateArray[driveStateIndexDict["hunger"]] >= 1.0){
             // add check to make sure starvation_damage is a key in the dict
-            driveStateArray[driveStateIndexDict["health"]] -= float.Parse(thisAnimal.phenotype.traitDict["starvation_damage"]);
+            driveStateArray[driveStateIndexDict["health"]] -= thisAnimal.phenotype.traitDict["starvation_damage"];
         }
         if (driveStateArray[driveStateIndexDict["thirst"]] >= 0.0){
             // add check to make sure dehydration_damage is a key in the dict
-            driveStateArray[driveStateIndexDict["health"]] -= float.Parse(thisAnimal.phenotype.traitDict["dehydration_damage"]);
+            driveStateArray[driveStateIndexDict["health"]] -= thisAnimal.phenotype.traitDict["dehydration_damage"];
         }
             
     }

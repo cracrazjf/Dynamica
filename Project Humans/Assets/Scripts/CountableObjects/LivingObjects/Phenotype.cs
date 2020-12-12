@@ -11,8 +11,7 @@ public class Phenotype {
     public int numTraits; 
     public List<string> traitLabelList = new List<string>();
     public Dictionary<string, int> traitIndexDict = new Dictionary<string, int>();
-    public Dictionary<string, string> traitDict = new Dictionary<string, string>();
-    public Dictionary<string, bool> traitDisplayDict = new Dictionary<string, bool>();
+    public Dictionary<string, float> traitDict = new Dictionary<string, float>();
 
     public Phenotype(LivingObject livingObject) {
         this.thisLivingObject = livingObject;
@@ -30,20 +29,20 @@ public class Phenotype {
             Gene currentGene = thisLivingObject.genome.geneDict[label];
             traitLabelList.Add(label);
             traitIndexDict.Add(label, this.numTraits);
-            traitDisplayDict.Add(label, currentGene.display);
+            float traitValue;
 
             if (currentGene.geneType == "binary"){
-                string traitValue = createBinaryTrait(currentGene.geneSequence);
+                traitValue = createBinaryTrait(currentGene.geneSequence);
                 traitDict.Add(label, traitValue);
                 this.numTraits++;
             }
             else if (currentGene.geneType == "int"){
-                string traitValue = createIntTrait(currentGene.geneSequence);
+                traitValue = createIntTrait(currentGene.geneSequence);
                 traitDict.Add(label, traitValue);
                 this.numTraits++;
             }
             else if (currentGene.geneType == "float"){
-                string traitValue = createFloatTrait(currentGene.geneSequence);
+                traitValue = createFloatTrait(currentGene.geneSequence);
                 traitDict.Add(label, traitValue);
                 this.numTraits++;
             }
@@ -63,21 +62,13 @@ public class Phenotype {
             traitLabelList.Add(label);
             traitIndexDict.Add(label, i);
             // not sure if the following two lines are ok C# syntax
-            string traitValue = thisLivingObject.genome.constantDict[label][0]; // the first value in the list of this string-list dict entry
-            string traitDisplayValue = thisLivingObject.genome.constantDict[label][1]; // the second value in the list of this string-list dict entry
+            float traitValue = thisLivingObject.genome.constantDict[label]; // the first value in the list of this string-list dict entry
             traitDict.Add(label, traitValue);
-            if (traitDisplayValue == "1"){
-                traitDisplayDict.Add(label, true);
-            }
-            else{
-                traitDisplayDict.Add(label, false);
-            }
-            
             this.numTraits++;
         }
     }
 
-    private string createBinaryTrait(BitArray geneSequence){
+    private float createBinaryTrait(BitArray geneSequence){
         // convert the binary bit string to an integer, ie 001101 = 13
         if (geneSequence.Length > 32)
             throw new ArgumentException("Argument length shall be at most 32 bits.");
@@ -85,33 +76,31 @@ public class Phenotype {
         int[] intValueArray = new int[1];
         geneSequence.CopyTo(intValueArray, 0);
         int intValue = intValueArray[0];
-        string stringValue = intValue.ToString();
-        return stringValue;
+        float floatValue = (float)intValue;
+        return floatValue;
     }
 
-    private string createIntTrait(BitArray geneSequence){
-        int intValue = 0;
+    private float createIntTrait(BitArray geneSequence){
+        float value = 0.0f;
         for (int i = 0; i < geneSequence.Length; i++)
         {
             if (geneSequence[i] == true){
-                intValue += 1;
+                value += 1.0f;
             }
         }
-        string stringValue = intValue.ToString();
-        return stringValue;
+        return value;
     }
 
-    private string createFloatTrait(BitArray geneSequence){
-        float floatValue = 0.0f;
+    private float createFloatTrait(BitArray geneSequence){
+        float value = 0.0f;
         for (int i = 0; i < geneSequence.Length; i++)
         {
             if (geneSequence[i] == true){
-                floatValue+= 1.0f;
+                value += 1.0f;
             }
         }
-        floatValue /= Convert.ToSingle(geneSequence.Length);
-        string stringValue = floatValue.ToString();
-        return stringValue;
+        value /= Convert.ToSingle(geneSequence.Length);
+        return value;
     }
 
     public string GetDisplayInfo() {
@@ -121,9 +110,7 @@ public class Phenotype {
             string outputString = i.ToString();
             string label = traitLabelList[i];
             outputString = outputString + " " + label;
-            outputString = outputString + " " + traitDict[label];
-            outputString = outputString + " Display=" + traitDisplayDict[label].ToString();
-            
+            outputString = outputString + " " + traitDict[label];            
             toReturn += outputString + "\n";
         }
 

@@ -14,7 +14,7 @@ public class HumanRNNAI : AI
     Dictionary<string, int> driveStateIndexDict;
     Dictionary<string, int> actionStateIndexDict;
     Dictionary<string, int> actionArgumentIndexDict;
-    Dictionary<string, string> traitDict;
+    Dictionary<string, float> traitDict;
 
     Animal.ActionChoiceStruct actionChoiceStruct;
     float[,] zh_r = new float[64,1024];
@@ -40,7 +40,7 @@ public class HumanRNNAI : AI
                        Dictionary<string, int> driveStateIndexDict,
                        Dictionary<string, int> actionStateIndexDict, 
                        Dictionary<string, int> actionArgumentIndexDict,
-                       Dictionary<string, string> traitDict) : base() {
+                       Dictionary<string, float> traitDict) : base() {
         this.bodyStateIndexDict = bodyStateIndexDict;
         this.driveStateIndexDict = driveStateIndexDict;
         this.actionStateIndexDict = actionStateIndexDict;
@@ -97,7 +97,7 @@ public class HumanRNNAI : AI
         }
     }
 
-    public Animal.ActionChoiceStruct ChooseAction(float[ , ] visualInput, bool[] bodyStateArray, bool[] actionStateArray, float[] driveStateArray, Dictionary<string, string> traitDict){
+    public Animal.ActionChoiceStruct ChooseAction(float[ , ] visualInput, bool[] bodyStateArray, bool[] actionStateArray, float[] driveStateArray, Dictionary<string, float> traitDict){
         
         // zh = zh_bias + (zh_r*visualInput[0,:]) + (zh_gzh*visualInput[1,:]) + (zh_b*visualInput[2,:]) + (zh_body*humanBodyState) + (zh_drive*humanDriveState);
         // h = sigmoid(zh);

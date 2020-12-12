@@ -13,7 +13,6 @@ public class Gene
     public bool mutable;
     public float specifiedMean;
     public float specifiedStdev;
-    public bool display;
 
     public string visible;
     public float mutationRate = 0.01f;
@@ -53,12 +52,10 @@ public class Gene
     }
 
     public void generateGene(string label, string geneType, string geneSize, 
-                                 string mutable, string specifiedMean, string specifiedStdev,
-                                 string visible){
+                                 string mutable, string specifiedMean, string specifiedStdev){
         this.label = label;
         this.geneType = geneType;
         this.geneSize = int.Parse(geneSize);
-        this.visible = visible;
         if (mutable == "immutable"){ // should be "mutable"?
             this.mutable = true;
         }

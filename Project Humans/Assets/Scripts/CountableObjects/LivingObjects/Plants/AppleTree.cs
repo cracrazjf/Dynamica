@@ -37,9 +37,9 @@ public class AppleTree : Plant
     
     public override void UpdatePlant(int updateCounter){
         this.IncreaseAge(1);
-        int growthRefreshRate = Int32.Parse(this.phenotype.traitDict["growth_refresh_rate"]);
-        int fruitRate = Int32.Parse(this.phenotype.traitDict["fruit_rate"]);
-        int reproductionAge = Int32.Parse(this.phenotype.traitDict["reproduction_age"]);
+        float growthRefreshRate = this.phenotype.traitDict["growth_refresh_rate"];
+        float fruitRate = this.phenotype.traitDict["fruit_rate"];
+        float reproductionAge = this.phenotype.traitDict["reproduction_age"];
         int age = this.GetAge();
         //Debug.Log("Update Apple Tree");
 
@@ -59,7 +59,7 @@ public class AppleTree : Plant
         Debug.Log("Create an Apple");
 
         // figure out where the apple should appear
-        float distance = float.Parse(this.phenotype.traitDict["fruit_drop_distance"]);
+        float distance = this.phenotype.traitDict["fruit_drop_distance"];
         Vector3 fruitDisplacement = new Vector3(Random.Range(-distance,distance),0,Random.Range(-distance,distance));                           
         Vector3 fruitLocation = this.gameObject.transform.position + fruitDisplacement;
 
@@ -69,11 +69,11 @@ public class AppleTree : Plant
 
         Dictionary<string, List<string>> propertyDict = new Dictionary<string, List<string>>(theWorld.constantInfoDict["apple"]);
 
-        float fruitSize = float.Parse(this.phenotype.traitDict["fruit_max_size"]) * float.Parse(this.phenotype.traitDict["fruit_size_proportion"]);
+        float fruitSize = this.phenotype.traitDict["fruit_max_size"] * this.phenotype.traitDict["fruit_size_proportion"];
         sizeInfo = new List<string>{fruitSize.ToString(), "1"};
         propertyDict.Add("Size", sizeInfo);
         
-        int poison = Int32.Parse(this.phenotype.traitDict["poison"]);
+        float poison = this.phenotype.traitDict["poison"];
         if (poison == 1){
             poisonInfo = new List<string>{"1", "1"};
             propertyDict.Add("poison", poisonInfo);

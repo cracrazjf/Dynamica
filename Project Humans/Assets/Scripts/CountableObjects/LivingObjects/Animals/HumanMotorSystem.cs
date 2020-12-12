@@ -167,7 +167,7 @@ public class HumanMotorSystem : MotorSystem
     }
 
     public override void TakeAction(Animal.ActionChoiceStruct actionChoiceStruct){
-        Debug.Log(actionChoiceStruct.actionChoiceArray== null);
+
         bool doingNothing = !actionChoiceStruct.actionChoiceArray.Any(x => x);
 
         if (doingNothing) {
@@ -259,7 +259,7 @@ public class HumanMotorSystem : MotorSystem
 
         bool doingNothing = !this.actionStateArray.Any(x => x);
         
-        float rotation = rotationAngle * float.Parse(thisHuman.phenotype.traitDict["max_rotation_speed"]) * Time.deltaTime;
+        float rotation = rotationAngle * thisHuman.phenotype.traitDict["max_rotation_speed"] * Time.deltaTime;
         //what works for take steps works here
         if (CheckActionLegality("rotating")) {
 
