@@ -39,7 +39,7 @@ public class MotorSystem
             bodyStateObstructorDict.Add(passedActionStateLableList[i], new List<string>());
         }
         numActionStates = i;
-        actionStateArray = new bool[this.thisAnimal.GetBody().GetNumBodyStates()];
+        actionStateArray = new bool[this.GetNumActionStates()];
     }
 
     public void InitActionArguments(){

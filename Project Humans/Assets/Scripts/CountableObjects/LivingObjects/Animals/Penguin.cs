@@ -21,6 +21,7 @@ public class Penguin : Animal
         penguinPrefab = Resources.Load("PenguinPrefab",typeof(GameObject)) as GameObject;
         this.gameObject = GameObject.Instantiate(penguinPrefab, startPosition, startRotation) as GameObject;
         this.gameObject.name = GetName();
+        SetDriveSystem(new DriveSystem(this));
 
         gameObject.SetActive(true);
         animator = this.gameObject.GetComponent<Animator>();
@@ -28,6 +29,6 @@ public class Penguin : Animal
     }
 
     public override void UpdateAnimal(){
-        GetDriveSystem().UpdateDrives();
+        this.GetDriveSystem().UpdateDrives();
     }
 }

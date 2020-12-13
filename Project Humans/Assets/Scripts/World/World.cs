@@ -62,8 +62,8 @@ public class World : MonoBehaviour
         maxPosition = worldSize / 2;
         minPosition = -worldSize / 2;
 
-        // CreateAnimals();
-        // CreatePlants();
+        CreateAnimals();
+        CreatePlants();
         CreateNonLivingObjects();
     }
 
@@ -204,14 +204,24 @@ public class World : MonoBehaviour
         }
     }
 
+    public void LateUpdateNonlivingObjects() {
+        for (int i = 0; i<nonlivingObjectList.Count; i++) {
+            nonlivingObjectList[i].NonlivingObjectLateUpdate();
+        }
+    }
+
     /// <summary>
     /// Update is called once per frame
     /// </summary>
     void Update()
     {
-        // UpdateAnimals();
-        // UpdatePlants();
-        // updateCounter++;
+        UpdateAnimals();
+        UpdatePlants();
+        updateCounter++;
+    }
+
+    void LateUpdate() {
+        LateUpdateNonlivingObjects();
     }
 
     /// <summary>

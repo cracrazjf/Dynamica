@@ -46,4 +46,7 @@ abstract public class NonlivingObject : CountableObject
     public float GetConstant(string label){
         return constantDict[label];
     }
+
+    public virtual void NonlivingObjectLateUpdate() {
+    }
 }

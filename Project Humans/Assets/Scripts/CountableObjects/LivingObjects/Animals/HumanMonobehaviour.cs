@@ -21,6 +21,7 @@ public class HumanMonobehaviour : MonoBehaviour
     void OnAnimatorIK()
     {
         if (this.thisHuman.animator){
+            //Debug.Log(this.thisHuman.GetMotorSystem().GetActionState(this.thisHuman.GetMotorSystem().getActionStateIndex("picking up")));
             if (this.thisHuman.GetMotorSystem().GetActionState(this.thisHuman.GetMotorSystem().getActionStateIndex("picking up"))) {
                 int index = this.thisHuman.GetMotorSystem().GetActionArgumentIndex("hand");
                 if (this.thisHuman.GetMotorSystem().GetActionArgumentArray()[index] == 0){

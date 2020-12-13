@@ -15,13 +15,17 @@ public class Apple : NonlivingObject
         applePrefab = Resources.Load("ApplePrefab",typeof(GameObject)) as GameObject;
 
         this.gameObject = GameObject.Instantiate(applePrefab, startPosition, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
-        float poison = this.GetConstant("poison");
-        if (poison == 1) {
-            this.gameObject.GetComponent<MeshRenderer> ().material.color = new Color(1,0,1,1);
-        }
+        
         
         this.gameObject.name = GetName();
 
         gameObject.SetActive(true);
+    }
+
+    public override void NonlivingObjectLateUpdate() {
+        float poison = this.GetConstant("poison");
+        if (poison == 1) {
+            this.gameObject.GetComponent<MeshRenderer> ().material.color = new Color(1,0,1,1);
+        }
     }
 }

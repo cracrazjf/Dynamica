@@ -63,7 +63,7 @@ public class AppleTree : Plant
         Vector3 fruitLocation = this.gameObject.transform.position + fruitDisplacement;
 
         int indexNumber = World.countableObjectCountDict["Apple"];
-        Apple newApple = new Apple(indexNumber, fruitLocation, World.nonlivingObjectInfoDict["apple"]);
+        Apple newApple = new Apple(indexNumber, fruitLocation, World.nonlivingObjectInfoDict["Apple"]);
 
         float size = this.phenotype.traitDict["fruit_max_size"] * this.phenotype.traitDict["fruit_size_proportion"];
         float poison = this.phenotype.traitDict["poison"];
