@@ -8,7 +8,7 @@ public class Water : NonlivingObject
 
     public GameObject waterPrefab;
 
-    public Water(int index, Nullable<Vector3> position, Dictionary<string,List<string>> propertyDict) : base("Water", index, position, propertyDict) {
+    public Water(int index, Nullable<Vector3> position, NonlivingObjectInfo passedNonlivingObjectInfo) : base("Water", index, position, passedNonlivingObjectInfo) {
 
         waterPrefab = Resources.Load("WaterPrefab",typeof(GameObject)) as GameObject;
 

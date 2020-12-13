@@ -62,33 +62,15 @@ public class AppleTree : Plant
         Vector3 fruitDisplacement = new Vector3(Random.Range(-distance,distance),0,Random.Range(-distance,distance));                           
         Vector3 fruitLocation = this.gameObject.transform.position + fruitDisplacement;
 
-        List<string> sizeInfo;
-        List<string> poisonInfo;
-        List<string> colorInfo;
-
-        Dictionary<string, List<string>> propertyDict = new Dictionary<string, List<string>>(theWorld.constantInfoDict["apple"]);
-
-        float fruitSize = this.phenotype.traitDict["fruit_max_size"] * this.phenotype.traitDict["fruit_size_proportion"];
-        sizeInfo = new List<string>{fruitSize.ToString(), "1"};
-        propertyDict.Add("Size", sizeInfo);
-        
-        float poison = this.phenotype.traitDict["poison"];
-        if (poison == 1){
-            poisonInfo = new List<string>{"1", "1"};
-            propertyDict.Add("poison", poisonInfo);
-            colorInfo = new List<string>{"purple", "1"};
-            propertyDict.Add("color", colorInfo);
-        }
-
-        else{
-            poisonInfo = new List<string>{"0", "1"};
-            propertyDict.Add("poison", poisonInfo);
-            colorInfo = new List<string>{"red", "1"};
-            propertyDict.Add("color", colorInfo);
-        }
-
         int indexNumber = World.countableObjectCountDict["Apple"];
-        Apple newApple = new Apple(indexNumber, fruitLocation, propertyDict);
+        Apple newApple = new Apple(indexNumber, fruitLocation, World.nonlivingObjectInfoDict["apple"]);
+
+        float size = this.phenotype.traitDict["fruit_max_size"] * this.phenotype.traitDict["fruit_size_proportion"];
+        float poison = this.phenotype.traitDict["poison"];
+    
+        newApple.AddConstant("size", size);
+        newApple.AddConstant("poison", poison);
+
         World.nonlivingObjectList.Add(newApple);
         World.nonlivingObjectDict[newApple.GetName()] = newApple;
         World.countableObjectCountDict["Apple"]++;

@@ -1,0 +1,51 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
+using UnityEngine;
+using System.Linq;
+
+
+public class LivingObjectInfo {
+    // this is the initial number that will be spawned
+    public string name;
+    public int startingN;
+    public int currentN;
+
+    public Genome genome;
+
+    public LivingObjectInfo(string passedSpeciesName, int passedStartingN) {
+        name = passedSpeciesName;
+        startingN = passedStartingN;
+        currentN = 0;
+
+        this.genome = new Genome();
+        ImportObjectInfo();
+    }
+
+    public void ImportObjectInfo(){
+
+        string line;
+        System.IO.StreamReader file;
+        
+        string filename = @"Assets/Scripts/config/"+ name.ToLower() + ".config";
+        file = new System.IO.StreamReader(filename);  
+
+        while((line = file.ReadLine()) != null)  
+        {  
+            string[] lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
+            string[] leftArray = lineInfo[0].Split(new[] { "." }, StringSplitOptions.None);
+            string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
+
+            if (leftArray[0] == "gene"){
+                genome.AddGeneToGenome(leftArray[1], rightArray);
+            }
+            else if (leftArray[0] == "constant"){
+                genome.AddConstantToGenome(leftArray[1], rightArray);
+            }
+        }  
+        
+        file.Close();
+        
+    }
+}

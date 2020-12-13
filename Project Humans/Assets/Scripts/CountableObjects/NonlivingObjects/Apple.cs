@@ -10,13 +10,13 @@ public class Apple : NonlivingObject
 {
     public GameObject applePrefab;
 
-
-    public Apple(int index, Nullable<Vector3> position, Dictionary<string,List<string>> propertyDict) : base("Apple", index, position, propertyDict) {
+    public Apple(int index, Nullable<Vector3> position, NonlivingObjectInfo passedNonlivingObjectInfo) : base("Apple", index, position, passedNonlivingObjectInfo) {
 
         applePrefab = Resources.Load("ApplePrefab",typeof(GameObject)) as GameObject;
 
         this.gameObject = GameObject.Instantiate(applePrefab, startPosition, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
-        if(this.propertyDict["color"][0] == "purple") {
+        float poison = this.GetConstant("poison");
+        if (poison == 1) {
             this.gameObject.GetComponent<MeshRenderer> ().material.color = new Color(1,0,1,1);
         }
         

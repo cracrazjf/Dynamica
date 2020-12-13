@@ -14,26 +14,14 @@ public class Gene
     public float specifiedMean;
     public float specifiedStdev;
 
-    public string visible;
-    public float mutationRate = 0.01f;
+    public float mutationRate = World.worldConfigDict["Mutation_Rate"];
 
-    void start() 
-    {
-
-
-    }
-
-    void update()
-    {
-
-
-    }
     //I am not sure if this is working, need test later;
     public Gene ShallowCopy() {
         return (Gene) this.MemberwiseClone();
     }
 
-    public void sexualReproduction(Gene fatherGene){
+    public void SexualReproduction(Gene fatherGene){
         // for each element in the gene sequence
         for (int i = 0; i < geneSize; i++){
             // randomly either keep the mother value, or switch to the father value
@@ -51,26 +39,32 @@ public class Gene
         }
     }
 
-    public void generateGene(string label, string geneType, string geneSize, 
-                                 string mutable, string specifiedMean, string specifiedStdev){
-        this.label = label;
-        this.geneType = geneType;
-        this.geneSize = int.Parse(geneSize);
-        if (mutable == "immutable"){ // should be "mutable"?
-            this.mutable = true;
+    public void SetImportedGeneInfo(string label, string[] geneInfo){
+
+        if (geneInfo.Length != 5){
+            string outputString = "ERROR: Gene " + label + "wrong number of arguments in config file";
+            Debug.Log(outputString);
         }
         else{
-            this.mutable = false;
+            label = label;
+            geneType = geneInfo[0];
+            geneSize = int.Parse(geneInfo[1]);
+            if (geneInfo[2] == "immutable"){
+                mutable = true;
+            }
+            else{
+                mutable = false;
+            }
+            specifiedMean = float.Parse(geneInfo[3]);
+            specifiedStdev = float.Parse(geneInfo[4]);
+            geneSequence = new BitArray(this.geneSize);
         }
-        this.specifiedMean = float.Parse(specifiedMean);
-        this.specifiedStdev = float.Parse(specifiedStdev);
+    }
 
-        // TODO we need to impliment this to create these bit-arrays to use specifiedMean and specifiedStdev
-        // use those two vars to generate a value from that distribution
-        // then convert that to the appropriate bit array
-        geneSequence = new BitArray(this.geneSize);
+    public void GenerateGeneSequence(){
+        
         for (int i = 0; i < this.geneSize; i++){
-            int newValue = Random.Range(0, 2); // changed (0,2) to (0,1) becasue range is inclusive
+            int newValue = Random.Range(0, 2);
             if (newValue == 0) {
                 geneSequence[i] = false;
             }

@@ -14,7 +14,7 @@ abstract public class LivingObject : CountableObject
     {
         this.genome = new Genome();
         this.genome.thisLivingObject = this;
-        this.genome.inheretGenome(motherGenome, fatherGenome);
+        this.genome.InheretGenome(motherGenome, fatherGenome);
         this.phenotype = new Phenotype(this);
 
         this.SetAge(0);

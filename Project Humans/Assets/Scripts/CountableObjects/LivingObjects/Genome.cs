@@ -10,22 +10,32 @@ public class Genome
 {
     public LivingObject thisLivingObject;
 
-    // this is the temp data structure that is used to read in data from the file
-    public Dictionary<string, List<string>> genomeInfoDict = new Dictionary<string, List<string>>();
-
     // this is where the genes go
     public int numGenes;
-    public List<string> geneLabelList = new List<string>();
-    public Dictionary<string, Gene> geneDict = new Dictionary<string, Gene>();
-    public Dictionary<string, string> geneIndexDict = new Dictionary<string, string>();
+    public List<string> geneLabelList;
+    public Dictionary<string, Gene> geneDict;
+    public Dictionary<string, int> geneIndexDict;
 
     // this is where the constants get stored from each species's config file
     public int numConstants;
-    public List<string> constantLabelList = new List<string>();
-    public Dictionary<string, float> constantDict = new Dictionary<string, float>();
-    public Dictionary<string, int> constantIndexDict= new Dictionary<string, int>();
+    public List<string> constantLabelList;
+    public Dictionary<string, float> constantDict;
+    public Dictionary<string, int> constantIndexDict;
 
-    public bool inheretGenome(Genome motherGenome, Genome fatherGenome)
+    public Genome(){
+        numGenes = 0;
+        geneLabelList = new List<string>();
+        geneDict = new Dictionary<string, Gene>();
+        geneIndexDict = new Dictionary<string, int>();
+
+    // this is where the constants get stored from each species's config file
+        numConstants = 0;
+        constantLabelList = new List<string>();
+        constantDict = new Dictionary<string, float>();
+        constantIndexDict= new Dictionary<string, int>();
+    }
+
+    public bool InheretGenome(Genome motherGenome, Genome fatherGenome)
     {
         bool success = true;
 
@@ -41,21 +51,23 @@ public class Genome
                     string geneLabel = motherGenome.geneLabelList[i];
                     Gene motherGene = motherGenome.geneDict[geneLabel];
                     Gene childGene = motherGene.ShallowCopy();//This might not be what we want.
-                    childGene.sexualReproduction(fatherGenome.geneDict[geneLabel]);
+                    childGene.SexualReproduction(fatherGenome.geneDict[geneLabel]);
                     geneLabelList.Add(geneLabel);
                     geneDict.Add(geneLabel, childGene);
-                    geneIndexDict.Add(geneLabel, i.ToString());
+                    geneIndexDict.Add(geneLabel, i);
    
                 }
                 else
                 {
                     success = false;
+                    string outputString = "Inheret Genome failed because parents' gene " + i.ToString() + " did not match";
+                    Debug.Log(outputString);
                 }
             }
             for (int i = 0; i < numConstants; i++) {
                 if (motherGenome.constantLabelList[i] == fatherGenome.constantLabelList[i]) {
                     string constantLabel = motherGenome.constantLabelList[i];
-                    var constantValue = motherGenome.constantDict[constantLabel];
+                    float constantValue = motherGenome.constantDict[constantLabel];
 
                     constantLabelList.Add(constantLabel);
                     constantDict.Add(constantLabel,constantValue);
@@ -65,62 +77,58 @@ public class Genome
                 else
                 {
                     success = false;
+                    string outputString = "Inheret Genome failed because parents' constant " + i.ToString() + " did not match";
+                    Debug.Log(outputString);
                 }
             }   
         }
         else
         {
             success = false;
+            string outputString = "Inheret Genome failed because parents' numGenes or numConstants were not same size";
+            Debug.Log(outputString);
         }
-
         return success;
     }
 
-    public void importSpeciesInfo(string species){
-        int counter = 0;  
-        string line;
-        System.IO.StreamReader file;
-        
-        string filename = @"Assets/Scripts/config/"+ species.ToLower() + ".config";
-        file = new System.IO.StreamReader(filename);  
-        
-        while((line = file.ReadLine()) != null)  
-        {  
-            string[] lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
-            string[] leftArray = lineInfo[0].Split(new[] { "." }, StringSplitOptions.None);
-            string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
-            if (leftArray[0] == "genome"){
-                geneLabelList.Add(leftArray[1]);
-                geneIndexDict.Add(leftArray[1], numGenes.ToString());
-                numGenes++;
+    public void CreateGenomeFromSpeciesTemplate(LivingObjectInfo passedLivingObjectInfo){
+        numGenes = 0;
+        numConstants = 0;
 
-                genomeInfoDict.Add(leftArray[1], rightArray.ToList());
-            }
-            else if (leftArray[0] == "constant"){
-                constantLabelList.Add(leftArray[1]);
-                constantDict.Add(leftArray[1], float.Parse(rightArray[0]));
-                constantIndexDict.Add(leftArray[1], numConstants);
-                numConstants++;
-                
-            }
-            counter++;  
-        }  
-        
-        file.Close();
-    }
-    
-    public void CreateGenome(string species)
-    {
-        importSpeciesInfo(species);
-        string outputString;
-
-        for (int i = 0; i < numGenes; i++){
-            Gene newGene = new Gene();
-            string label = geneLabelList[i];
-            List<string> geneInfo = genomeInfoDict[label];
-            newGene.generateGene(label, geneInfo[0], geneInfo[1], geneInfo[2], geneInfo[3], geneInfo[4]);
-            geneDict.Add(label, newGene);
+        for (int i = 0; i<passedLivingObjectInfo.genome.numGenes; i++){
+            string geneLabel = passedLivingObjectInfo.genome.geneLabelList[i];
+            geneLabelList.Add(geneLabel);
+            geneIndexDict.Add(geneLabel, numGenes);
+            numGenes++;
+            Gene newGene = passedLivingObjectInfo.genome.geneDict[geneLabel].ShallowCopy();
+            newGene.GenerateGeneSequence();
+            geneDict.Add(geneLabel, newGene);
+            
         }
+        // there are probably data structure copy operations that would do this more efficiently
+        for (int i = 0; i<passedLivingObjectInfo.genome.numConstants; i++){
+            constantLabelList.Add(passedLivingObjectInfo.genome.constantLabelList[i]);
+            constantDict.Add(passedLivingObjectInfo.genome.constantLabelList[i], passedLivingObjectInfo.genome.constantDict[passedLivingObjectInfo.genome.constantLabelList[i]]);
+            constantIndexDict.Add(passedLivingObjectInfo.genome.constantLabelList[i], numConstants);
+            numConstants++;
+        }
+    }
+
+    public void AddGeneToGenome(string label, string[] geneInfo)
+    {
+        Gene newGene = new Gene();
+        newGene.SetImportedGeneInfo(label, geneInfo);
+        geneLabelList.Add(label);
+        geneIndexDict.Add(label, numGenes);
+        geneDict.Add(label, newGene);
+        numGenes += 1;
+    }
+
+    public void AddConstantToGenome(string label, string[] constantInfo){
+        constantLabelList.Add(label);
+        constantDict.Add(label, float.Parse(constantInfo[0]));
+        constantIndexDict.Add(label, numConstants);
+        numConstants++;
     }
 
     public string GetConstantInfo() {

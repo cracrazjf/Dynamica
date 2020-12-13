@@ -21,10 +21,7 @@ using System;
         public Animal(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) 
         : base (objectType, index, position, motherGenome, fatherGenome)
         {
-            this.displayName = GetObjectType();
-            
-            
-                        
+            this.displayName = GetObjectType();             
         }
 
         public string GetDisplayName(){
