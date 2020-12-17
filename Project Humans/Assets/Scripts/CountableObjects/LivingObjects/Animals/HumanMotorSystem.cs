@@ -254,22 +254,23 @@ public class HumanMotorSystem : MotorSystem
     }
 
     public void Rotate(float rotationAngle){
-
+        Debug.Log(rotationAngle);
         bool doingNothing = !this.actionStateArray.Any(x => x);
         
         float rotation = rotationAngle * thisHuman.phenotype.traitDict["max_rotation_speed"] * Time.deltaTime;
         //what works for take steps works here
         if (CheckActionLegality("rotating")) {
-            this.thisHuman.gameObject.transform.Rotate(0,rotation,0);
-
-
-            this.thisHuman.animator.SetBool("rotate", true);
-            this.actionStateArray = new bool[this.numActionStates];
-            this.actionStateArray[this.actionStateIndexDict["rotating"]] = true;
-
-            if (rotateAngle == 0) {
+            if (rotationAngle == 0) {
                 this.thisHuman.animator.SetBool("rotate", false);
                 this.actionStateArray = new bool[this.numActionStates];
+                Debug.Log("turned off rotation");
+            }
+            else {
+                this.thisHuman.gameObject.transform.Rotate(0,rotation,0);
+                rotatedAngle += rotation;
+                this.thisHuman.animator.SetBool("rotate", true);
+                this.actionStateArray = new bool[this.numActionStates];
+                this.actionStateArray[this.actionStateIndexDict["rotating"]] = true;
             }
         }
     }

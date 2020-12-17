@@ -115,7 +115,7 @@ public class HumanSimpleAI2 : AI
                 }
             }
             else {
-                Rotate(1.0f);
+                
                 SearchForThing();
             }
         }
@@ -262,7 +262,7 @@ public class HumanSimpleAI2 : AI
     public bool CheckIfTargetReachable(GameObject target) {
         if (target != null) {
             var distance = Vector3.Distance(thisHuman.gameObject.transform.position, target.transform.position);
-            if (distance <=1 && ((HumanMotorSystem)thisHuman.GetMotorSystem()).velocity == 0) { // is there a way we can get rid of this velocity?
+            if (distance <=1 && !this.thisHuman.GetMotorSystem().GetActionState(actionStateIndexDict["taking steps"])) { // is there a way we can get rid of this velocity?
                 return true;
             }
             else {
@@ -273,12 +273,22 @@ public class HumanSimpleAI2 : AI
         
     }
 
+    public float CalculateRotationAngle(GameObject target) {
+        Vector3 targetDirection = target.transform.position - this.thisHuman.gameObject.transform.position;
+        float angle = Vector3.Angle(targetDirection, this.thisHuman.gameObject.transform.forward);
+        return angle;
+    }
     public void GoToObject(GameObject target) {
-        Debug.Log(target);
-        float maxStepDistance = traitDict["thirst_threshold"];
-
-        if (target != null) {
+        
+        float angleNeed = CalculateRotationAngle(target);
+        if (angleNeed >0) {
+            Rotate(1);
             
+        }
+        
+        Debug.Log("rotationAngleCaculated");
+        float maxStepDistance = traitDict["thirst_threshold"];
+        if (target != null) {
             var distance = Vector3.Distance(thisHuman.gameObject.transform.position,target.transform.position);
             if (distance > 0) {
                 if (distance > 1) {
@@ -302,26 +312,18 @@ public class HumanSimpleAI2 : AI
             }
         }
     }
-    float rotatedAngle;
-    bool restoreRotatedAngle = false;
-
-
     public void Rotate(float Angle) {
-        if (rotatedAngle >= 360) {
-            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]] = 0;
-        }
-        else {
-            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["rotating"]] = true;
-            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]] = Angle;
-            rotatedAngle += Angle * traitDict["max_rotation_speed"] *Time.deltaTime;
-            Debug.Log(rotatedAngle);
-        }
-        
-        
+
+        this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["rotating"]] = true;
+        this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]] = Angle;
     }
 
     public void SearchForThing(){
-        if (rotatedAngle >= 360) {
+        
+        if (this.thisHuman.GetMotorSystem().rotatedAngle >= 360) {
+            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["rotating"]] = true;
+            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]] = 0;
+            
             if (!newRandomPos) {
             randomPoint = new Vector3(Random.Range(thisHuman.gameObject.transform.position.x - Range, 
                                 thisHuman.gameObject.transform.position.x + Range), 0, 
@@ -335,6 +337,9 @@ public class HumanSimpleAI2 : AI
             if ((thisHuman.gameObject.transform.position - randomPoint).magnitude < 3) {
                 newRandomPos = false;
             }
+        }
+        else {
+            Rotate(1.0f);
         }
 
     }
