@@ -10,8 +10,8 @@ using System;
 public class Human : Animal
 {
     public HumanSimpleAI2 humanSimpleAI2;
-    public HumanRNNAI humanRNNAI;
-    public string activeAI = "humanSimpleAI2";
+    public AI activeAI;
+    public string activeAILabel = "RNNAI";
 
     /// <summary>
     /// Human constructor
@@ -37,12 +37,19 @@ public class Human : Animal
 
         SetSensorySystem(new HumanSensorySystem(this));
 
-        if (activeAI == "humanRNNAI"){
-            humanRNNAI = new HumanRNNAI(GetBody().GetBodyStateIndexDict(), 
+        if (activeAILabel == "RNNAI"){
+            activeAI = new RNNAI(GetBody().GetBodyStateIndexDict(), 
                                         GetDriveSystem().GetDriveStateIndexDict(), 
                                         GetMotorSystem().GetActionStateIndexDict(),
                                         GetMotorSystem().GetActionArgumentIndexDict(),
                                         GetPhenotype().traitDict);
+        }
+        else if (activeAILabel == "blankAI"){
+            activeAI = new AI(GetBody().GetBodyStateIndexDict(), 
+                            GetDriveSystem().GetDriveStateIndexDict(), 
+                            GetMotorSystem().GetActionStateIndexDict(),
+                            GetMotorSystem().GetActionArgumentIndexDict(),
+                            GetPhenotype().traitDict);
         }
         else{
             humanSimpleAI2 = new HumanSimpleAI2(this,
@@ -68,20 +75,21 @@ public class Human : Animal
         bool[] actionStateArray = GetMotorSystem().GetActionStateArray();
         float[] driveStateArray = GetDriveSystem().GetDriveStateArray();
         // these two ifs needs debug
-        if (activeAI == "humanRNNAI"){
-            actionChoiceStruct = humanRNNAI.ChooseAction(visualInputMatrix, bodyStateArray, actionStateArray, driveStateArray, GetPhenotype().traitDict);
-        }
-        else {
+        if (activeAILabel == "HumanSimpleAI"){
             actionChoiceStruct = humanSimpleAI2.ChooseAction(GetSensorySystem().GetVisualInput(), 
                                                             GetBody().GetBodyStateArray(),
                                                             GetMotorSystem().GetActionStateArray(),
                                                             GetDriveSystem().GetDriveStateArray(),
                                                             GetPhenotype().traitDict);
+
+            
+        }
+        else {
+            actionChoiceStruct = activeAI.ChooseAction(visualInputMatrix, bodyStateArray, actionStateArray, driveStateArray, GetPhenotype().traitDict);
         }
 
         GetMotorSystem().TakeAction(actionChoiceStruct);
-        //Debug.Log(actionChoiceStruct.actionChoiceArray[this.GetMotorSystem().getActionStateIndex("eating")]);
-        
+        IncreaseAge(1);
     }
 }
 

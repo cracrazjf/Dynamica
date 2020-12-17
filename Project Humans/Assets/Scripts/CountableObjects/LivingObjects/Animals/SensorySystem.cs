@@ -34,33 +34,39 @@ public class SensorySystem {
                 visualResolution = visualInputCamera.targetTexture.height;
             }
         }
+
+        UpdateVisualInput();
     }
 
-    public float [ , ] GetVisualInput()
+    public float [ , ] GetVisualInput(){
+        if (this.thisAnimal.age % this.thisAnimal.GetPhenotype().traitDict["visual_refresh_rate"] == 0){ // replace this with the visual refresh rate at some point
+            UpdateVisualInput();
+            //string outputString = visualInputArray.GetLength(0).ToString() + "," + visualInputArray.GetLength(1).ToString();
+            //Debug.Log(outputString);
+        }
+        return visualInputArray;
+    }
+
+    public float [ , ] UpdateVisualInput()
     {
         if (this.thisAnimal.visualInputCamera.gameObject.activeInHierarchy) {
-            if (Input.GetKeyDown(KeyCode.Space)){ // replace this with the visual refresh rate at some point
-                Texture2D visualInputTexture = new Texture2D(visualResolution, visualResolution, TextureFormat.RGB24, false);
+            
+            Texture2D visualInputTexture = new Texture2D(visualResolution, visualResolution, TextureFormat.RGB24, false);
 
-                this.thisAnimal.visualInputCamera.Render();
-                RenderTexture.active = this.thisAnimal.visualInputCamera.targetTexture;
-                visualInputTexture.ReadPixels(new Rect(0, 0, visualResolution, visualResolution), 0, 0);
+            this.thisAnimal.visualInputCamera.Render();
+            RenderTexture.active = this.thisAnimal.visualInputCamera.targetTexture;
+            visualInputTexture.ReadPixels(new Rect(0, 0, visualResolution, visualResolution), 0, 0);
 
-                Color[] colorArray = visualInputTexture.GetPixels();
-                
-                int resolutionSquared = visualResolution*visualResolution;
-                for (int i=0; i<resolutionSquared; i++){
-                    visualInputArray[0,i] = colorArray[i].r;
-                    visualInputArray[1,i] = colorArray[i].g;
-                    visualInputArray[2,i] = colorArray[i].b;
-                }
-
-                saveVisualImage(visualInputTexture);
-        
+            Color[] colorArray = visualInputTexture.GetPixels();
+            
+            int resolutionSquared = visualResolution*visualResolution;
+            for (int i=0; i<resolutionSquared; i++){
+                visualInputArray[0,i] = colorArray[i].r;
+                visualInputArray[1,i] = colorArray[i].g;
+                visualInputArray[2,i] = colorArray[i].b;
             }
-            else{
-                // return the previous visual state
-            }
+            //saveVisualImage(visualInputTexture);
+    
         }
         else{
             Debug.Log("Camera is off");

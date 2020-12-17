@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 
-public class HumanSimpleAI2 : AI
+public class HumanSimpleAI2
 {
     public Human thisHuman;
     Vector3 randomPoint;
