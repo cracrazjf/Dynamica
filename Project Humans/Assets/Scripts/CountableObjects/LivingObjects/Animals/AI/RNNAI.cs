@@ -17,7 +17,7 @@ public class RNNAI : AI
     float[] zh_bias;
     float[,] zh_bodyInput;
     float[,] zh_driveInput;
-    float[,] zh_actionStateInpute;
+    float[,] zh_actionStateInput;
     float[,] zh_actionArgumentInput;
     
     float[] zActionOutput_bias;
@@ -31,7 +31,7 @@ public class RNNAI : AI
     float[] zActionOutput;
     float[] actionOutput;
     float[] zActionArgumentOutput;
-    float[] ActionArgumentOutput;
+    float[] actionArgumentOutput;
 
     public RNNAI (Dictionary<string, int> bodyStateIndexDict,
                        Dictionary<string, int> driveStateIndexDict,
@@ -46,33 +46,33 @@ public class RNNAI : AI
 
     public void InitParameters(){
         parameterDict = new Dictionary<string, float>();
-        parameterDict.Add("H_Size") = 64;
-        parameterDict.Add("Weight_Init_Std") = 0.01;
+        parameterDict.Add("H_Size",64);
+        parameterDict.Add("Weight_Init_Std", 0.01f);
     }
 
     public void InitLayers(){
-        zh = new float[parameterDict["H1_Size"]];
-        h = new float[parameterDict["H1_Size"]];
+        zh = new float[(int) parameterDict["H_Size"]];
+        h = new float[(int) parameterDict["H_Size"]];
         zActionArgumentOutput = new float[numActionArguments];
         actionArgumentOutput = new float[numActionArguments];
         zActionOutput = new float[numActionStates];
         actionOutput = new float[numActionStates];
     }
 
-    public CreateRandomVector(int size){
-        randomVector = new float[size];
+    public float[] CreateRandomVector(int size){
+        float[] randomVector = new float[size];
         for (int i = 0; i<size; i++){
-            randomVector[i] = Random.Range(-parameterDict["weight_init_std"], parameterDict["weight_init_std"]);
+            randomVector[i] = Random.Range(-parameterDict["Weight_Init_Std"], parameterDict["Weight_Init_Std"]);
         }
         return randomVector;
 
     }
 
-    public CreateRandomMatrix(int numRows, int numColumns){
-        randomMatrix = new float[numRows, numColumns];
+    public float[,] CreateRandomMatrix(int numRows, int numColumns){
+        float[,] randomMatrix = new float[numRows, numColumns];
         for (int i = 0; i<numRows; i++){
             for (int j = 0; j<numColumns; j++){
-                randomVector[i,j] = Random.Range(-parameterDict["weight_init_std"], parameterDict["weight_init_std"]);
+                randomMatrix[i,j] = Random.Range(-parameterDict["Weight_Init_Std"], parameterDict["Weight_Init_Std"]);
             }
         }
         return randomMatrix;
@@ -80,21 +80,21 @@ public class RNNAI : AI
 
     public void InitWeights(){
 
-        int visualResolution = traitDict["visual_resolution"]*traitDict["visual_resolution"]);
-        zh_r = CreateRandomMatrix(parameterDict["H1_Size"], visualResolution);
-        zh_g = CreateRandomMatrix(parameterDict["H1_Size"], visualResolution);
-        zh_b = CreateRandomMatrix(parameterDict["H1_Size"], visualResolution);
+        int visualResolution = (int) traitDict["visual_resolution"]*(int) traitDict["visual_resolution"];
+        zh_r = CreateRandomMatrix((int) parameterDict["H_Size"], visualResolution);
+        zh_g = CreateRandomMatrix((int) parameterDict["H_Size"], visualResolution);
+        zh_b = CreateRandomMatrix((int) parameterDict["H_Size"], visualResolution);
   
-        zh_bias = CreateRandomVector(parameterDict["H1_Size"]);
-        zh_bodyInput = CreateRandomMatrix(parameterDict["H1_Size"], numBodyStates);
-        zh_driveInput = CreateRandomMatrix(parameterDict["H1_Size"], numDriveStates);
-        zh_actionStateInput = CreateRandomMatrix(parameterDict["H1_Size"], numActionStates);
-        zh_actionArgumentInput = CreateRandomMatrix(parameterDict["H1_Size"], numActionArguments);
+        zh_bias = CreateRandomVector((int) parameterDict["H_Size"]);
+        zh_bodyInput = CreateRandomMatrix((int) parameterDict["H_Size"], numBodyStates);
+        zh_driveInput = CreateRandomMatrix((int) parameterDict["H_Size"], numDriveStates);
+        zh_actionStateInput = CreateRandomMatrix((int) parameterDict["H_Size"], numActionStates);
+        zh_actionArgumentInput = CreateRandomMatrix((int) parameterDict["H_Size"], numActionArguments);
 
         zActionOutput_bias = CreateRandomVector(numActionStates);
-        zActionOutput_h = CreateRandomMatrix(numActionStates, parameterDict["H1_Size"]);
+        zActionOutput_h = CreateRandomMatrix(numActionStates, (int) parameterDict["H_Size"]);
         zActionArgumentOutput_bias = CreateRandomVector(numActionArguments);
-        zActionArgumentOutput_h = CreateRandomMatrix(numActionArguments, parameterDict["H1_Size"]);
+        zActionArgumentOutput_h = CreateRandomMatrix(numActionArguments, (int) parameterDict["H_Size"]);
 
     }
 
@@ -104,7 +104,7 @@ public class RNNAI : AI
                                                            float[] driveStateArray, 
                                                            Dictionary<string, float> traitDict){
 
-        int dotProduct = digits1.Zip(digits2, (d1, d2) => d1 * d2).Sum();
+        //int dotProduct = digits1.Zip(digits2, (d1, d2) => d1 * d2).Sum();
 
         // zh = zh_bias + (zh_r*visualInput[0,:]) + (zh_gzh*visualInput[1,:]) + (zh_b*visualInput[2,:]) + (zh_body*humanBodyState) + (zh_drive*humanDriveState);
         // h = sigmoid(zh);
