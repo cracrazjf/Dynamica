@@ -54,8 +54,10 @@
      <Compile Include="Assets\Scripts\CountableObjects\NonlivingObjects\Apple.cs" />
      <Compile Include="Assets\test\FPScontroller.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Plants\AppleTree.cs" />
+     <Compile Include="Assets\MovementController.cs" />
      <Compile Include="Assets\SurvivalAnimsetPro1\Scripts\IKControlLeft.cs" />
      <Compile Include="Assets\Scripts\MassObjects\Ground.cs" />
+     <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\AI\RNNAI2.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Genome.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\Wolf.cs" />
      <Compile Include="Assets\FastIK\Scripts\Sample\SampleProcedualAnimation.cs" />
@@ -92,7 +94,6 @@
      <Compile Include="Assets\Scripts\UI\PlantUI.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\LivingObjects\Animals\AI\HumanTestAI.cs" />
      <Compile Include="Assets\Scripts\CountableObjects\NonlivingObjects\NonlivingObjectInfo.cs" />
-     <Compile Include="Assets\MovementController.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\FastIK\Documentation.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
