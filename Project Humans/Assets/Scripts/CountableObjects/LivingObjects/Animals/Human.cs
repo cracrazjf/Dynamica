@@ -11,7 +11,7 @@ public class Human : Animal
 {
     public HumanSimpleAI2 humanSimpleAI2;
     public AI activeAI;
-    public string activeAILabel = "RNNAI";
+    public string activeAILabel = "HumanSimpleAI";
 
     /// <summary>
     /// Human constructor
@@ -89,6 +89,7 @@ public class Human : Animal
         }
 
         GetMotorSystem().TakeAction(actionChoiceStruct);
+        GetMotorSystem().EndAction(actionChoiceStruct);
         IncreaseAge(1);
     }
 }

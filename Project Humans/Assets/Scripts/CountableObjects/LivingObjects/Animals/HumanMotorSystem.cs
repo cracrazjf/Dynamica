@@ -107,29 +107,30 @@ public class HumanMotorSystem : MotorSystem
         }
         else if (this.thisHuman.animator.GetCurrentAnimatorStateInfo(0).IsName("Eat")) {
             if (this.thisHuman.animator.GetFloat("EatL/R") == 0) {
-                this.actionStateArray[actionStateIndexDict["eating with left hand"]] = true;
+                this.actionStateArray[actionStateIndexDict["eating"]] = true;
             }
             if (this.thisHuman.animator.GetFloat("EatL/R") == 1) {
-                this.actionStateArray[actionStateIndexDict["eating with right hand"]] = true;
+                this.actionStateArray[actionStateIndexDict["eating"]] = true;
             }
         }
         else if (this.thisHuman.animator.GetCurrentAnimatorStateInfo(0).IsName("PickUp")) {
             if (this.thisHuman.animator.GetFloat("PickupL/R") == 0) {
-                this.actionStateArray[actionStateIndexDict["picking up with left hand"]] = true;
+                this.actionStateArray[actionStateIndexDict["picking up"]] = true;
             }
             if (this.thisHuman.animator.GetFloat("PickupL/R") == 1) {
-                this.actionStateArray[actionStateIndexDict["picking up with right hand"]] = true;
+                this.actionStateArray[actionStateIndexDict["picking up"]] = true;
             }
         }
         else if (this.thisHuman.animator.GetCurrentAnimatorStateInfo(0).IsName("SetDown")) {
             if (this.thisHuman.animator.GetFloat("SetdownL/R") == 0) {
-                 this.actionStateArray[actionStateIndexDict["setting down with left hand"]] = true;
+                 this.actionStateArray[actionStateIndexDict["setting down"]] = true;
             }
             if (this.thisHuman.animator.GetFloat("SetdownL/R") == 1) {
-                 this.actionStateArray[actionStateIndexDict["setting down with right hand"]] = true;
+                 this.actionStateArray[actionStateIndexDict["setting down"]] = true;
             }
         }
     }
+    
 
     public override bool CheckActionLegality(string action){
         bool legal = false;
@@ -232,7 +233,17 @@ public class HumanMotorSystem : MotorSystem
                 }
             }
         }
-    }   
+    }
+    public override void EndAction(Animal.ActionChoiceStruct actionChoiceStruct) {
+        if (!actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]]){
+            this.thisHuman.animator.SetBool("takingSteps", false);
+            this.actionStateArray = new bool[this.numActionStates];;
+        }
+        if(!actionChoiceStruct.actionChoiceArray[actionStateIndexDict["rotating"]]) {
+            this.thisHuman.animator.SetBool("rotate", false);
+            this.actionStateArray = new bool[this.numActionStates];
+        }
+    }
 
     public void TakeSteps(float stepProportion) {
         // call check to see if legal
@@ -241,37 +252,28 @@ public class HumanMotorSystem : MotorSystem
             if (stepProportion != 0) {
                 var step = stepProportion * maxStepDistance;
                 thisHuman.gameObject.transform.Translate(Vector3.forward *step*Time.deltaTime);
-                this.thisHuman.animator.SetBool("moving", true);
-                this.thisHuman.animator.SetFloat("Velocity", 0);
+                this.thisHuman.animator.SetBool("takingSteps", true);
+                this.thisHuman.animator.SetFloat("speed", 0);// need to change according to the moving speed of human
                 this.actionStateArray = new bool[this.numActionStates];
                 this.actionStateArray[this.actionStateIndexDict["taking steps"]] = true;
             }
             else {
-                this.thisHuman.animator.SetBool("moving", false);
+                this.thisHuman.animator.SetBool("takingSteps", false);
                 this.actionStateArray = new bool[this.numActionStates];
             }
         }
     }
 
-    public void Rotate(float rotationAngle){
-        Debug.Log(rotationAngle);
-        bool doingNothing = !this.actionStateArray.Any(x => x);
-        
-        float rotation = rotationAngle * thisHuman.phenotype.traitDict["max_rotation_speed"] * Time.deltaTime;
-        //what works for take steps works here
-        if (CheckActionLegality("rotating")) {
-            if (rotationAngle == 0) {
-                this.thisHuman.animator.SetBool("rotate", false);
-                this.actionStateArray = new bool[this.numActionStates];
-                Debug.Log("turned off rotation");
+    public void Rotate(float rotatingSpeed){
+        if(CheckActionLegality("rotating")) {
+            if (rotatingSpeed != 0) {
+                this.thisHuman.gameObject.transform.Rotate(0,rotatingSpeed * Time.deltaTime,0);
+                this.thisHuman.animator.SetBool("rotate", true);
             }
             else {
-                this.thisHuman.gameObject.transform.Rotate(0,rotation,0);
-                rotatedAngle += rotation;
-                this.thisHuman.animator.SetBool("rotate", true);
-                this.actionStateArray = new bool[this.numActionStates];
-                this.actionStateArray[this.actionStateIndexDict["rotating"]] = true;
+                this.thisHuman.animator.SetBool("rotate", false);
             }
+            
         }
     }
 
@@ -280,7 +282,7 @@ public class HumanMotorSystem : MotorSystem
         //same
         if (CheckActionLegality("drinking")) {
 
-            this.thisHuman.animator.SetTrigger("Drink");
+            this.thisHuman.animator.SetTrigger("drink");
             // if you can drink while drinking, this cant be called here. should be once per completed drink
             // and it should be a call to a function in driveSystem, telling it what was drank
             this.thisHuman.GetDriveSystem().SetDriveState(this.thisHuman.GetDriveSystem().GetDriveStateIndex("thirst"), 0);
@@ -294,9 +296,8 @@ public class HumanMotorSystem : MotorSystem
         //same
         if (CheckActionLegality("sitting down")) {
 
-            this.thisHuman.animator.SetBool("sit", true);
-            this.thisHuman.animator.SetBool("keepsitting", true);
-            
+            this.thisHuman.animator.SetTrigger("sitDown");
+
             this.actionStateArray = new bool[this.numActionStates];
             this.actionStateArray[this.actionStateIndexDict["sitting down"]] = true;
 
@@ -310,8 +311,7 @@ public class HumanMotorSystem : MotorSystem
         //same
         if (CheckActionLegality("sitting up")) {
 
-            this.thisHuman.animator.SetBool("sleep", false);
-            this.thisHuman.animator.SetBool("keepsitting", true);
+            this.thisHuman.animator.SetTrigger("sitUp");
 
             this.actionStateArray = new bool[this.numActionStates];
             this.actionStateArray[this.actionStateIndexDict["sitting up"]] = true;
@@ -326,7 +326,7 @@ public class HumanMotorSystem : MotorSystem
         //same
         if (CheckActionLegality("standing up")) {
 
-            this.thisHuman.animator.SetBool("sit", false);
+            this.thisHuman.animator.SetTrigger("standUp");
 
             this.actionStateArray = new bool[this.numActionStates];
             this.actionStateArray[this.actionStateIndexDict["standing up"]] = true;
@@ -342,8 +342,7 @@ public class HumanMotorSystem : MotorSystem
         //same
         if (CheckActionLegality("laying down")) {
 
-            this.thisHuman.animator.SetBool("sit", true); // shouldnt this be false???
-            this.thisHuman.animator.SetBool("sleep", true);
+            this.thisHuman.animator.SetTrigger("layDown");
 
             this.actionStateArray = new bool[this.numActionStates];
             this.actionStateArray[this.actionStateIndexDict["laying down"]] = true;
@@ -402,9 +401,8 @@ public class HumanMotorSystem : MotorSystem
             }
 
             if (pickUpHand != -1){
-                this.thisHuman.animator.ResetTrigger("set");
-                this.thisHuman.animator.SetTrigger("pick");
-                this.thisHuman.animator.SetFloat("PickupL/R",pickUpHand);
+                this.thisHuman.animator.SetTrigger("pickUp");
+                this.thisHuman.animator.SetFloat("left/rightHand",pickUpHand);
                 
                 for(int i = 0; i < numObj; i++) {
                     if (!pickableObj[i].CompareTag("Human") && !pickableObj[i].CompareTag("ground")) {
@@ -412,20 +410,20 @@ public class HumanMotorSystem : MotorSystem
                         pickableObj[i].GetComponent<Rigidbody>().useGravity = false;
                         if (pickUpHand == 0){
                             pickableObj[i].transform.parent = ((HumanBody)this.thisHuman.GetBody()).leftHand.transform;
-                            this.thisHuman.animator.ResetTrigger("pick");
+                            this.thisHuman.animator.ResetTrigger("pickUp");
                             pickableObj[i].transform.localPosition = new Vector3(0.1311f, 0.0341f, 0.073f);
 
                             this.actionStateArray = new bool[this.numActionStates];
-                            this.actionStateArray[this.actionStateIndexDict["picking up with left hand"]] = true;
+                            this.actionStateArray[this.actionStateIndexDict["picking up"]] = true;
                             this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"), true);  
                         }
                         else{
                             pickableObj[i].transform.parent = ((HumanBody)this.thisHuman.GetBody()).rightHand.transform;
-                            this.thisHuman.animator.ResetTrigger("pick");
+                            this.thisHuman.animator.ResetTrigger("pickUp");
                             pickableObj[i].transform.localPosition = new Vector3(-0.1593f, -0.026f, -0.0665f);
 
                             this.actionStateArray = new bool[this.numActionStates];
-                            this.actionStateArray[this.actionStateIndexDict["picking up with right hand"]] = true;
+                            this.actionStateArray[this.actionStateIndexDict["picking up"]] = true;
                             this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand"), true);
                         }
                     }
@@ -452,16 +450,16 @@ public class HumanMotorSystem : MotorSystem
             if ((hand == 0) 
                 && (this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand")))) 
             {
-                this.thisHuman.animator.ResetTrigger("pick");
-                this.thisHuman.animator.SetTrigger("set");
-                this.thisHuman.animator.SetFloat("SetdownL/R",0);
+                //this.thisHuman.animator.ResetTrigger("pick");
+                this.thisHuman.animator.SetTrigger("setDown");
+                this.thisHuman.animator.SetFloat("left/rightHand",0);
                 if (((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).transform.position.y < 0.1) {
                     ((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
                     ((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).transform.parent = null;
                     if (((HumanBody)this.thisHuman.GetBody()).leftHand.childCount == 0) {
                         this.thisHuman.animator.ResetTrigger("set");
                         this.actionStateArray = new bool[this.numActionStates];
-                        this.actionStateArray[this.actionStateIndexDict["setting down with left hand"]] = true;
+                        this.actionStateArray[this.actionStateIndexDict["setting down"]] = true;
                         this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"), false);  
                     }
                 }
@@ -471,9 +469,9 @@ public class HumanMotorSystem : MotorSystem
                 && (this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand")))) 
             {
 
-                this.thisHuman.animator.ResetTrigger("pick");
+                //this.thisHuman.animator.ResetTrigger("pick");
                 this.thisHuman.animator.SetTrigger("set");
-                this.thisHuman.animator.SetFloat("Setdown/R",1);
+                this.thisHuman.animator.SetFloat("left/rightHand",1);
                 if (((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.position.y < 0.1) {
                     ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
                     ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.parent = null;
@@ -481,7 +479,7 @@ public class HumanMotorSystem : MotorSystem
                     {
                         this.thisHuman.animator.ResetTrigger("set");
                         this.actionStateArray = new bool[this.numActionStates];
-                        this.actionStateArray[this.actionStateIndexDict["setting down with right hand"]] = true;
+                        this.actionStateArray[this.actionStateIndexDict["setting down"]] = true;
                         this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand"), false);  
                     }
                 }
@@ -498,6 +496,7 @@ public class HumanMotorSystem : MotorSystem
     }
 
     public void Eat(float hand) {
+        Debug.Log((this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"))));
         bool success = false;
         bool doingNothing = !this.actionStateArray.Any(x => x);
         if (CheckActionLegality("eating")){
@@ -508,12 +507,12 @@ public class HumanMotorSystem : MotorSystem
             }
 
             else if ((hand == 1)
-                && (this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"))))
+                && (this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand"))))
             {
                 success = true;
             }
             else {
-                //Debug.Log("can't eat");
+                Debug.Log("can't eat");
             }
             
         }
@@ -523,16 +522,16 @@ public class HumanMotorSystem : MotorSystem
             // should probably be a call to drive system with what was eaten, and the code for how drive system should be updated should be located there
             
             this.thisHuman.animator.SetTrigger("eat");
-            this.thisHuman.animator.SetFloat("EatL/R", hand);
+            this.thisHuman.animator.SetFloat("left/rightHand", hand);
             this.actionStateArray = new bool[this.numActionStates];
             if (hand == 0){
-                UnityEngine.Object.Destroy(((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).gameObject, 5);                 
-                this.actionStateArray[this.actionStateIndexDict["eating with left hand"]] = true;
+                UnityEngine.Object.Destroy(((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).gameObject, 8);                 
+                this.actionStateArray[this.actionStateIndexDict["eating"]] = true;
                 this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"), false);  
             }
             else{
-                UnityEngine.Object.Destroy(((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).gameObject, 5);
-                this.actionStateArray[this.actionStateIndexDict["eating with right hand"]] = true;
+                UnityEngine.Object.Destroy(((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).gameObject, 8);
+                this.actionStateArray[this.actionStateIndexDict["eating"]] = true;
                 this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand"), false);  
             }
 

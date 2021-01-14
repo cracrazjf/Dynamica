@@ -12,6 +12,9 @@ public class HumanBody : Body {
     public Transform leftHand;
     public Transform rightHand;
 
+    public string objectTypeInLH = "None";
+    public string objectTypeInRH = "None";
+
     public HumanBody(Human human) : base(human) {
         
         this.thisHuman = human;
@@ -73,7 +76,13 @@ public class HumanBody : Body {
             this.SetBodyState(this.bodyStateIndexDict["standing"], true);
             this.SetBodyState(this.bodyStateIndexDict["sitting"], false);
         }
-
-        // checked to see if the hands had stuff in them
+        if(leftHand.childCount > 0) {
+            this.SetBodyState(this.bodyStateIndexDict["holding with left hand"], true);
+            objectTypeInLH = leftHand.GetChild(0).tag;
+        }
+        if(rightHand.childCount > 0) {
+            this.SetBodyState(this.bodyStateIndexDict["holding with right hand"], true);
+            objectTypeInRH = rightHand.GetChild(0).tag;
+        }
     }
 }

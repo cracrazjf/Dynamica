@@ -16,8 +16,6 @@ public class MotorSystem
     protected List<string> actionArgumentLabelList;
     protected Dictionary<string, int> actionArgumentIndexDict;
 
-    public float rotatedAngle;
-
     protected Dictionary<string, List<string>> actionRequirementDict = new Dictionary<string, List<string>>();
     protected Dictionary<string, List<string>> actionObstructorDict = new Dictionary<string, List<string>>();
     protected Dictionary<string, List<string>> bodyStateRequirementDict = new Dictionary<string, List<string>>();
@@ -60,6 +58,9 @@ public class MotorSystem
     }
 
     public virtual void TakeAction(Animal.ActionChoiceStruct actionChoiceStruct){
+        Debug.Log("No Actions Defined for this animal");
+    }
+    public virtual void EndAction(Animal.ActionChoiceStruct actionChoiceStruct){
         Debug.Log("No Actions Defined for this animal");
     }
 

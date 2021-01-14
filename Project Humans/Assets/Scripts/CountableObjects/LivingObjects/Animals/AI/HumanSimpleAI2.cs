@@ -13,10 +13,12 @@ public class HumanSimpleAI2
     string targetTag = "None";
     public Vector3 pickUpPosition = new Vector3();
     bool doingNothing;
+    bool rotated360 = false;
     bool newRandomPos = false;
+    bool IsFacingToObject = false;
+    float rotatedAngle = 0;
     string objectTypeInLH = "None";
     string objectTypeInRH = "None";
-    public float rotateAngle = 360; // what is this, and should it be in phenotype?
     public List<GameObject> targets = new List<GameObject>();
     public List<GameObject> objects_in_vision = new List<GameObject>();
 
@@ -57,14 +59,15 @@ public class HumanSimpleAI2
         this.actionChoiceStruct.actionChoiceArray = new bool[actionStateIndexDict.Count];
         this.actionChoiceStruct.actionArgumentArray = new float[actionArgumentIndexDict.Count];
         InFov(this.thisHuman.gameObject.transform, 45,10);
+        objectTypeInLH = ((HumanBody)this.thisHuman.GetBody()).objectTypeInLH;
+        objectTypeInRH = ((HumanBody)this.thisHuman.GetBody()).objectTypeInRH;
 
         bool doingNothing = !this.actionStateArray.Any(x => x);
 
         if (currentGoal == "None"){
             ChooseGoal();
         }
-
-        if (currentGoal == "Decrease Thirst"){
+        else if (currentGoal == "Decrease Thirst"){
             DecreaseThirst();
         }
         else if (currentGoal == "Decrease Sleepiness"){
@@ -72,9 +75,16 @@ public class HumanSimpleAI2
         }
         else if (currentGoal == "Decrease Hunger"){
             DecreaseHunger();
+            
+            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up"]] = true;
+            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 0;
+            if (objectTypeInLH == "Food"){
+                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eating"]] = true;
+                this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 0;
+            }
         }
         else if (currentGoal == "Decrease Fatigue"){
-            DecreaseHunger();
+            DecreaseFatigue();
         }
 
         return actionChoiceStruct;
@@ -97,7 +107,6 @@ public class HumanSimpleAI2
         if (driveStateArray[driveStateIndexDict["health"]] < traitDict["health_threshold"]) {
             currentGoal = "Increase Health";
         }
-        rotateAngle = 360; // and why is it being set here, wasnt it defined outside and passed in? does it change sometimes?
     }
 
     public void DecreaseThirst(){
@@ -111,11 +120,17 @@ public class HumanSimpleAI2
                     currentGoal = "None";
                 }
                 else {
-                    GoToObject(target);
+                    IsFacingTowardObejct(target.transform.position);
+                    if (IsFacingToObject) {
+                        GoToObject();
+                    }
+                    else {
+                        FacingTowardObejct(target.transform.position);
+                    }
+                    
                 }
             }
             else {
-                
                 SearchForThing();
             }
         }
@@ -133,9 +148,9 @@ public class HumanSimpleAI2
     }
 
     public void DecreaseHunger(){
-        if (bodyStateArray[bodyStateIndexDict["sitting"]]) {
+        if (bodyStateArray[bodyStateIndexDict["standing"]]) {
             if (objectTypeInLH == "Food"){
-                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eatting"]] = true;
+                this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eating"]] = true;
                 this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 0;
                 if (!bodyStateArray[bodyStateIndexDict["holding with left hand"]]) {
                     objectTypeInLH = "None";
@@ -145,7 +160,7 @@ public class HumanSimpleAI2
             }
             else{
                 if (objectTypeInRH == "Food"){
-                    this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eatting"]] = true;
+                    this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["eating"]] = true;
                     this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 1;
                     currentGoal = "None";
                     objectTypeInRH = "None";
@@ -162,7 +177,6 @@ public class HumanSimpleAI2
                             }
                             else{
                                 if (objectTypeInLH == "None") {
-                                    Debug.Log("here");
                                     pickUpPosition = target.transform.position;
                                     this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up"]] = true;
                                     this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 0;
@@ -181,17 +195,17 @@ public class HumanSimpleAI2
                             }
                         }
                         else {
-                            bool doingNothing = !actionStateArray.Any(x => x);
-                            if (doingNothing || actionStateArray[actionStateIndexDict["taking steps"]]) {
-                                // this needs to be be fixed so that target.transform is only modifying x and z, not y, correct?
-                                this.thisHuman.gameObject.transform.LookAt(target.transform);
-                                GoToObject(target);
+                            IsFacingTowardObejct(target.transform.position);
+                            if (IsFacingToObject) {
+                                GoToObject();
                             }
-                            
+                            else {
+                                FacingTowardObejct(target.transform.position);
+                            }
+                
                         }
                     }
                     else {
-                        Rotate(1.0f);
                         SearchForThing();
                     }
                 }
@@ -258,10 +272,9 @@ public class HumanSimpleAI2
 
     }
 
-    // this checks if reachable
-    public bool CheckIfTargetReachable(GameObject target) {
-        if (target != null) {
-            var distance = Vector3.Distance(thisHuman.gameObject.transform.position, target.transform.position);
+    public bool CheckIfTargetReachable(GameObject passedTarget) {
+        if (passedTarget != null) {
+            var distance = Vector3.Distance(thisHuman.gameObject.transform.position, passedTarget.transform.position);
             if (distance <=1 && !this.thisHuman.GetMotorSystem().GetActionState(actionStateIndexDict["taking steps"])) { // is there a way we can get rid of this velocity?
                 return true;
             }
@@ -270,60 +283,67 @@ public class HumanSimpleAI2
             }
         }
         return false;
-        
     }
 
-    public float CalculateRotationAngle(GameObject target) {
-        Vector3 targetDirection = target.transform.position - this.thisHuman.gameObject.transform.position;
+    public float CalculateRotationAngle(Vector3 passedPosition) {
+        Vector3 targetDirection = passedPosition - this.thisHuman.gameObject.transform.position;
         float angle = Vector3.Angle(targetDirection, this.thisHuman.gameObject.transform.forward);
         return angle;
     }
-    public void GoToObject(GameObject target) {
-        
-        float angleNeed = CalculateRotationAngle(target);
-        if (angleNeed >0) {
-            Rotate(1);
-            
+    public int CalculateRelativePosition(Vector3 passedPosition) {
+        Vector3 relativePosition = this.thisHuman.gameObject.transform.InverseTransformPoint(passedPosition);
+        if (relativePosition.x < 0) {
+            return -1;
         }
-        
-        Debug.Log("rotationAngleCaculated");
-        float maxStepDistance = traitDict["thirst_threshold"];
-        if (target != null) {
-            var distance = Vector3.Distance(thisHuman.gameObject.transform.position,target.transform.position);
-            if (distance > 0) {
-                if (distance > 1) {
-                    var stepRate = 1.0f;
-                    var step = stepRate * maxStepDistance;
-                    if (step >= distance) {
-                        var nextStep = distance;
-                        this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]] = true;
-                        this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["step rate"]] = nextStep / traitDict["max_step_distance"];
-
-                    }
-                    else {
-                        this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]] = true;
-                        this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["step rate"]] = 0.5f;
-                    }
-                }
-                else if (distance <= 1){
-                   this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]] = true;
-                   this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["step rate"]] = 0;
-                }
-            }
+        else if (relativePosition.x > 0) {
+            return 1;
+        }
+        else {
+            return 0;
         }
     }
-    public void Rotate(float Angle) {
+    public void IsFacingTowardObejct(Vector3 passedPosition) {
+        float angle = CalculateRotationAngle(passedPosition);
+        Debug.Log(angle);
+        if (angle < 2) {
+            angle = 0;
+        }
+        if(angle == 0){
+            IsFacingToObject = true;
+        }
+        else {
+            IsFacingToObject = false;
+        }
+    }
+    public void FacingTowardObejct(Vector3 passedPosition) {
+        if(CalculateRelativePosition(passedPosition) == -1) {
+            Rotate(-10.0f);
+        }
+        else{
+            Rotate(10.0f);
+        }
+    }
 
+    public void GoToObject() {
+        this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]] = true;
+        this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["step rate"]] = 1.0f;
+    }
+    public void Rotate(float anglePerSec) {
         this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["rotating"]] = true;
-        this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]] = Angle;
+        this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]] = anglePerSec;
+        rotatedAngle += anglePerSec * Time.deltaTime;
+    }
+    public void resetRotatedAngle(){
+        rotatedAngle = 0;
     }
 
     public void SearchForThing(){
-        
-        if (this.thisHuman.GetMotorSystem().rotatedAngle >= 360) {
-            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["rotating"]] = true;
-            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["rotation angle"]] = 0;
-            
+        if (rotatedAngle <= 360 && !rotated360) {
+            Rotate(30.0f);
+        }
+        else {
+            rotated360 = true;
+            resetRotatedAngle();
             if (!newRandomPos) {
             randomPoint = new Vector3(Random.Range(thisHuman.gameObject.transform.position.x - Range, 
                                 thisHuman.gameObject.transform.position.x + Range), 0, 
@@ -331,17 +351,17 @@ public class HumanSimpleAI2
                                 thisHuman.gameObject.transform.position.z + Range));
             newRandomPos = true;
             }
-            thisHuman.gameObject.transform.LookAt(randomPoint);
-            this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["taking steps"]] = true;
-            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["step rate"]] = 0.5f;
+            IsFacingTowardObejct(randomPoint);
+            if (IsFacingToObject) {
+                    GoToObject();
+            }
+            else {
+                FacingTowardObejct(randomPoint);
+            }
             if ((thisHuman.gameObject.transform.position - randomPoint).magnitude < 3) {
                 newRandomPos = false;
             }
         }
-        else {
-            Rotate(1.0f);
-        }
-
     }
     
     public void InFov(Transform checkingObject, float maxAngle, float maxRadius)
