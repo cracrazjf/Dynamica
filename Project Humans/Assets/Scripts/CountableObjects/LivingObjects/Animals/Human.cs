@@ -9,7 +9,7 @@ using System;
 
 public class Human : Animal
 {
-    public HumanSimpleAI2 humanSimpleAI2;
+    public HumanSimpleAI humanSimpleAI;
     public AI activeAI;
     public string activeAILabel = "HumanSimpleAI";
 
@@ -52,7 +52,7 @@ public class Human : Animal
                             GetPhenotype().traitDict);
         }
         else{
-            humanSimpleAI2 = new HumanSimpleAI2(this,
+            humanSimpleAI = new HumanSimpleAI(this,
                                                 GetBody().GetBodyStateIndexDict(), 
                                                 GetDriveSystem().GetDriveStateIndexDict(), 
                                                 GetMotorSystem().GetActionStateIndexDict(),
@@ -76,8 +76,7 @@ public class Human : Animal
         float[] driveStateArray = GetDriveSystem().GetDriveStateArray();
         // these two ifs needs debug
         if (activeAILabel == "HumanSimpleAI"){
-            actionChoiceStruct = humanSimpleAI2.ChooseAction(GetSensorySystem().GetVisualInput(), 
-                                                            GetBody().GetBodyStateArray(),
+            actionChoiceStruct = humanSimpleAI.ChooseAction(GetBody().GetBodyStateArray(),
                                                             GetMotorSystem().GetActionStateArray(),
                                                             GetDriveSystem().GetDriveStateArray(),
                                                             GetPhenotype().traitDict);
@@ -89,7 +88,6 @@ public class Human : Animal
         }
 
         GetMotorSystem().TakeAction(actionChoiceStruct);
-        GetMotorSystem().EndAction(actionChoiceStruct);
         IncreaseAge(1);
     }
 }

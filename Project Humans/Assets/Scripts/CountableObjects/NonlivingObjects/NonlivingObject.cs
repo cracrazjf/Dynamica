@@ -32,7 +32,7 @@ abstract public class NonlivingObject : CountableObject
     public void AddConstant(string label, float value){
 
         if (constantDict.ContainsKey(label)) {
-            Debug.Log("Key exists in constant dict, changing value");
+            //Debug.Log("Key exists in constant dict, changing value");
             constantDict[label] = value;
         }
         else{

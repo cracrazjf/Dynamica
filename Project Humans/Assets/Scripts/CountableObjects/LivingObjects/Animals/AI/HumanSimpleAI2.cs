@@ -10,9 +10,7 @@ public class HumanSimpleAI2
     Vector3 randomPoint;
     int Range = 10;
     string currentGoal = "None";
-    string targetTag = "None";
     public Vector3 pickUpPosition = new Vector3();
-    bool doingNothing;
     bool rotated360 = false;
     bool newRandomPos = false;
     bool IsFacingToObject = false;
@@ -27,8 +25,7 @@ public class HumanSimpleAI2
     Dictionary<string, int> actionStateIndexDict;
     Dictionary<string, int> actionArgumentIndexDict;
     Dictionary<string, float> traitDict;
-    
-    float[,] visualInputMatrix;
+  
     bool[] bodyStateArray;
     bool[] actionStateArray;
     float[] driveStateArray;
@@ -58,9 +55,10 @@ public class HumanSimpleAI2
         this.traitDict = passedTraitDict;
         this.actionChoiceStruct.actionChoiceArray = new bool[actionStateIndexDict.Count];
         this.actionChoiceStruct.actionArgumentArray = new float[actionArgumentIndexDict.Count];
-        InFov(this.thisHuman.gameObject.transform, 45,10);
+        InFov(thisHuman.gameObject.transform, 45,10);
         objectTypeInLH = ((HumanBody)this.thisHuman.GetBody()).objectTypeInLH;
         objectTypeInRH = ((HumanBody)this.thisHuman.GetBody()).objectTypeInRH;
+        
 
         bool doingNothing = !this.actionStateArray.Any(x => x);
 
@@ -110,9 +108,9 @@ public class HumanSimpleAI2
     }
 
     public void DecreaseThirst(){
-
         if (bodyStateArray[bodyStateIndexDict["standing"]]) {
             if (CheckIfTargetVisible("Water").Count > 0) {
+                Debug.Log("seeing a water");
                 List<GameObject> targets = CheckIfTargetVisible("Water");
                 GameObject target = CalculateClosestObject(targets);
                 if (CheckIfTargetReachable(target)) {
@@ -131,7 +129,7 @@ public class HumanSimpleAI2
                 }
             }
             else {
-                SearchForThing();
+                //SearchForThing();
             }
         }
         else {
@@ -170,6 +168,10 @@ public class HumanSimpleAI2
                         List<GameObject> targets = CheckIfTargetVisible("Food");
                         GameObject target = CalculateClosestObject(targets);
                         if (CheckIfTargetReachable(target)) {
+                            Vector3 relativePosition = this.thisHuman.gameObject.transform.InverseTransformPoint(target.transform.position);
+                            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand target x"]] = relativePosition.x;
+                            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand target y"]] = relativePosition.y;  
+                            this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand target z"]] = relativePosition.z;
                             if ((objectTypeInLH != "None") && (objectTypeInRH != "None")){
                                 this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["setting down"]] = true;
                                 this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 0;
@@ -177,7 +179,6 @@ public class HumanSimpleAI2
                             }
                             else{
                                 if (objectTypeInLH == "None") {
-                                    pickUpPosition = target.transform.position;
                                     this.actionChoiceStruct.actionChoiceArray[actionStateIndexDict["picking up"]] = true;
                                     this.actionChoiceStruct.actionArgumentArray[actionArgumentIndexDict["hand"]] = 0;
                                     if (bodyStateArray[bodyStateIndexDict["holding with left hand"]]){
@@ -275,7 +276,7 @@ public class HumanSimpleAI2
     public bool CheckIfTargetReachable(GameObject passedTarget) {
         if (passedTarget != null) {
             var distance = Vector3.Distance(thisHuman.gameObject.transform.position, passedTarget.transform.position);
-            if (distance <=1 && !this.thisHuman.GetMotorSystem().GetActionState(actionStateIndexDict["taking steps"])) { // is there a way we can get rid of this velocity?
+            if (distance <=0.5 && !this.thisHuman.GetMotorSystem().GetActionState(actionStateIndexDict["taking steps"])) { // is there a way we can get rid of this velocity?
                 return true;
             }
             else {
@@ -304,7 +305,6 @@ public class HumanSimpleAI2
     }
     public void IsFacingTowardObejct(Vector3 passedPosition) {
         float angle = CalculateRotationAngle(passedPosition);
-        Debug.Log(angle);
         if (angle < 2) {
             angle = 0;
         }
@@ -376,8 +376,6 @@ public class HumanSimpleAI2
             
             if (overlaps[i] != null)
             {
-                //Debug.Log(count);
-
                     Vector3 directionBetween = (overlaps[i].transform.position - checkingObject.position).normalized;
                     directionBetween.y *= 0;
 
@@ -390,10 +388,8 @@ public class HumanSimpleAI2
 
                     if (Physics.Raycast(ray, out hit, maxRadius))
                     {
-                        //Debug.Log("hit");
                         if (hit.transform == overlaps[i].transform)
                         {
-
                             if (!objects_in_vision.Contains(overlaps[i].gameObject) && overlaps[i].tag != "ground")
                             {
                                 objects_in_vision.Add(overlaps[i].gameObject);

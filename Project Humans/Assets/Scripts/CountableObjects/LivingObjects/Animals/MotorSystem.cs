@@ -60,7 +60,7 @@ public class MotorSystem
     public virtual void TakeAction(Animal.ActionChoiceStruct actionChoiceStruct){
         Debug.Log("No Actions Defined for this animal");
     }
-    public virtual void EndAction(Animal.ActionChoiceStruct actionChoiceStruct){
+    public virtual void EndAction(string actionLabel){
         Debug.Log("No Actions Defined for this animal");
     }
 
