@@ -23,35 +23,8 @@ public class MovementController : MonoBehaviour
 
     private void Update()
     {
-        Debug.DrawRay(transform.position,Vector3.forward *10, Color.green);
-        Debug.DrawRay(transform.position, transform.forward * 10, Color.red);
-        InFov(transform, 45, 10);
-        if (objects_in_vision.Count > 0)
-        {
-            GameObject target = objects_in_vision[0];
-            targetPosition = target.transform.position;
-            float distance = Vector3.Distance(transform.position, target.transform.position);
-            if (distance <= 1)
-            {
-                animator.SetTrigger("pickUp");
-                animator.SetFloat("left/rightHand", 0);
-            }
-            else
-            {
-                IsFacingTowardObejct(target.transform.position);
-                if (IsFacingToObject)
-                {
-                    Debug.Log("translating");
-                    rigidbody.MovePosition(transform.forward * 0.01f);
-                }
-                else
-                {
-                    FacingTowardObejct(target.transform.position);
-                }
-            }
-            
-        }
-       
+        transform.Translate(transform.forward * 0.01f, Space.World);
+        animator.SetBool("takingSteps", true);
     }
     void OnAnimatorIK()
     {

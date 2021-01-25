@@ -418,57 +418,63 @@ public class HumanMotorSystem : MotorSystem
         }
         
     }
-
-    public void SetDown(float hand){
-        bool doingNothing = !this.actionStateArray.Any(x => x);
-        if (CheckActionLegality("setting down"))  {
-            if ((hand == 0) 
-                && (this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand")))) 
+    public void SetDown(float hand)
+    {
+        if (CheckActionLegality("setting down"))
+        {
+            int setDownHand = -1;
+            if ((hand == 0) && (this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"))))
             {
-                //this.thisHuman.animator.ResetTrigger("pick");
+                setDownHand = 0;
+            }
+            else if ((hand == 1) && (this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand"))))
+            {
+                setDownHand = 1;
+            }
+            if (setDownHand != -1)
+            {
                 this.thisHuman.animator.SetTrigger("setDown");
-                this.thisHuman.animator.SetFloat("left/rightHand",0);
-                if (((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).transform.position.y < 0.1) {
-                    ((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
-                    ((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).transform.parent = null;
-                    if (((HumanBody)this.thisHuman.GetBody()).leftHand.childCount == 0) {
-                        this.thisHuman.animator.ResetTrigger("set");
-                        this.actionStateArray = new bool[this.numActionStates];
-                        this.actionStateArray[this.actionStateIndexDict["setting down"]] = true;
-                        this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"), false);  
-                    }
-                }
-            }
-                
-            else if ((hand == 1) 
-                && (this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand")))) 
-            {
-
-                //this.thisHuman.animator.ResetTrigger("pick");
-                this.thisHuman.animator.SetTrigger("set");
-                this.thisHuman.animator.SetFloat("left/rightHand",1);
-                if (((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.position.y < 0.1) {
-                    ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
-                    ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.parent = null;
-                    if (((HumanBody)this.thisHuman.GetBody()).rightHand.childCount == 0) 
+                this.thisHuman.animator.SetFloat("left/rightHand", setDownHand);
+                this.actionStateArray = new bool[this.numActionStates];
+                this.actionStateArray[this.actionStateIndexDict["setting down"]] = true;
+                if (setDownHand == 0)
+                {
+                    if (((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.position.y < 0.1)
                     {
-                        this.thisHuman.animator.ResetTrigger("set");
-                        this.actionStateArray = new bool[this.numActionStates];
-                        this.actionStateArray[this.actionStateIndexDict["setting down"]] = true;
-                        this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand"), false);  
+                        ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
+                        ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.parent = null;
+                        if (((HumanBody)this.thisHuman.GetBody()).rightHand.childCount == 0)
+                        {
+                            this.thisHuman.animator.ResetTrigger("setDown");
+                            this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"), false);
+                        }
+                    }
+                }
+                else
+                {
+                    if (((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.position.y < 0.1)
+                    {
+                        ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
+                        ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.parent = null;
+                        if (((HumanBody)this.thisHuman.GetBody()).rightHand.childCount == 0)
+                        {
+                            this.thisHuman.animator.ResetTrigger("setDown");
+                            this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand"), false);
+                        }
                     }
                 }
             }
-
-            else {
+            else
+            {
                 Debug.Log("Can't set down because doing something or nothing in the specified hand");
             }
         }
-        else {
-            Debug.Log("Can't set down because not standing");
+        else
+        {
+            Debug.Log("can't pick up because another action is happening");
         }
-
     }
+
     public void Eat(float hand)
     {
         if (CheckActionLegality("eating"))

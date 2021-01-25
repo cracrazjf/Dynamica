@@ -12,11 +12,10 @@ public class HumanMonobehaviour : MonoBehaviour
         {
             if (this.thisHuman.GetMotorSystem().GetActionState(this.thisHuman.GetMotorSystem().getActionStateIndex("picking up")))
             {
-                Debug.Log("here");
                 if (this.thisHuman.animator.GetFloat("left/rightHand") == 0 
                     && !this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand")))
                 {
-                    this.thisHuman.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0.5f);
+                    this.thisHuman.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, Mathf.MoveTowards(0, 1, 0.5f)) ;
                     this.thisHuman.animator.SetIKPosition(AvatarIKGoal.LeftHand, new Vector3
                         (this.thisHuman.getActionArgumentArray()[this.thisHuman.GetMotorSystem().GetActionArgumentIndex("hand target x")],
                         this.thisHuman.getActionArgumentArray()[this.thisHuman.GetMotorSystem().GetActionArgumentIndex("hand target y")],
@@ -25,7 +24,7 @@ public class HumanMonobehaviour : MonoBehaviour
                 else if (this.thisHuman.animator.GetFloat("left/rightHand") == 1 
                     && !this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand")))
                 {
-                    this.thisHuman.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0.5f);
+                    this.thisHuman.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, Mathf.MoveTowards(0, 1, 0.5f));
                     this.thisHuman.animator.SetIKPosition(AvatarIKGoal.RightHand, new Vector3
                         (this.thisHuman.getActionArgumentArray()[this.thisHuman.GetMotorSystem().GetActionArgumentIndex("hand target x")],
                         this.thisHuman.getActionArgumentArray()[this.thisHuman.GetMotorSystem().GetActionArgumentIndex("hand target y")],

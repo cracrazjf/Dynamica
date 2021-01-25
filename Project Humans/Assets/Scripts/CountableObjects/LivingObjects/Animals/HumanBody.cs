@@ -58,7 +58,8 @@ public class HumanBody : Body {
     }
     
     public override void UpdateBodyStates() {
-  
+        objectTypeInLH = "None";
+        objectTypeInRH = "None";
         this.bodyStateArray = (new bool[this.GetNumBodyStates()]);
         
         if (this.thisHuman.animator.GetCurrentAnimatorStateInfo(0).IsName("Laying Loop")) {
