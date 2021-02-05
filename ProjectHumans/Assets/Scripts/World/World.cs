@@ -15,6 +15,8 @@ public class World : MonoBehaviour
 
     /// <value> This dict keeps track of the total number of each kind of object that has been created</value>
     public static Dictionary<string, int> countableObjectCountDict = new Dictionary<string, int>();
+    // I think this may be creating a problem for new animals... ie penguin not in the dict and cannot call count for penguin 0  -julia
+
 
     /// <value> This dict keeps track of the Living Info objects</value>
     public static Dictionary<string, LivingObjectInfo> livingObjectInfoDict = new Dictionary<string, LivingObjectInfo>();
@@ -92,6 +94,7 @@ public class World : MonoBehaviour
                 fatherGenome.CreateGenomeFromSpeciesTemplate(livingObjectInfoDict[speciesType]);
 
                 // should be able to move lines 77-79 and 83-85 out of these if's, but it creates an error I dont understand
+                // re:above -- see comment on line 18 -julia
                 if (speciesType == "Human"){
                     newAnimal = new Human(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
@@ -118,6 +121,12 @@ public class World : MonoBehaviour
                 }                
                 else if (speciesType == "Deer"){
                     newAnimal = new Deer(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
+                    animalList.Add(newAnimal);
+                    animalDict[newAnimal.GetName()] = newAnimal;
+                    countableObjectCountDict[speciesType]++;
+                }
+                else if (speciesType == "Llama"){
+                    newAnimal = new Llama(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;

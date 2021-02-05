@@ -73,7 +73,9 @@ public class AnimalUI : MonoBehaviour
             panel.SetActive(true);
 
             selectedAnimal = World.GetAnimal(clicked.name);
-            DisplayDrives();
+            if(selectedAnimal != null) {
+                DisplayDrives();
+            }
         }
     }
 

@@ -61,9 +61,10 @@ public class PlantUI : MonoBehaviour
             Debug.Log ("Got a plant!");
 
             selectedPlant = World.GetPlant(clicked.name);
-            DisplayInfo();
+            if (selectedPlant != null) {
+                DisplayInfo();
+            }
         }
- 
     }
 
     public void TogglePanel() {
@@ -83,7 +84,7 @@ public class PlantUI : MonoBehaviour
 
     public void DisplayInfo(){
         panel.SetActive(true);
-        OGName.text = selectedPlant.GetName();
+        OGName.text = selectedPlant.GetName(); //breaks here... prefabs not being added to dict/given identitites -jc
     }
 
     public void ExitPanel() {
