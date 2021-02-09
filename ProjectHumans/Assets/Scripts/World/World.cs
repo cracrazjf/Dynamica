@@ -15,7 +15,6 @@ public class World : MonoBehaviour
 
     /// <value> This dict keeps track of the total number of each kind of object that has been created</value>
     public static Dictionary<string, int> countableObjectCountDict = new Dictionary<string, int>();
-    // I think this may be creating a problem for new animals... ie penguin not in the dict and cannot call count for penguin 0  -julia
 
 
     /// <value> This dict keeps track of the Living Info objects</value>
@@ -84,6 +83,8 @@ public class World : MonoBehaviour
         foreach(KeyValuePair<string, int> entry in startingAnimalCountsDict)
         {
             speciesType = entry.Key;
+            // super important; can't ++ a key that does not yet exist! -jc
+            countableObjectCountDict[speciesType] = 0;
             n = entry.Value;
 
             for (int i=0; i<n; i++){
@@ -93,8 +94,6 @@ public class World : MonoBehaviour
                 fatherGenome = new Genome();
                 fatherGenome.CreateGenomeFromSpeciesTemplate(livingObjectInfoDict[speciesType]);
 
-                // should be able to move lines 77-79 and 83-85 out of these if's, but it creates an error I dont understand
-                // re:above -- see comment on line 18 -julia
                 if (speciesType == "Human"){
                     newAnimal = new Human(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
                     animalList.Add(newAnimal);

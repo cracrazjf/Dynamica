@@ -88,8 +88,8 @@ public class MainCamera : MonoBehaviour
 
 
             if (toggleRotate) {
-                rotationX += Input.GetAxis("Mouse X") * cameraSensitivity * 10 * Time.deltaTime;
-                rotationY += Input.GetAxis("Mouse Y") * cameraSensitivity * 10 * Time.deltaTime;
+                rotationX += Input.GetAxis("Mouse X") * cameraSensitivity  * Time.deltaTime;
+                rotationY += Input.GetAxis("Mouse Y") * cameraSensitivity  * Time.deltaTime;
 
                 transform.localRotation = Quaternion.AngleAxis(rotationX, Vector3.up);
                 transform.localRotation *= Quaternion.AngleAxis(rotationY, Vector3.left);
@@ -103,8 +103,8 @@ public class MainCamera : MonoBehaviour
             var tempz = transform.position.z;
             transform.position = new Vector3(tempx, 1.55f, tempz);
 
-            rotationX += Input.GetAxis("Mouse X") * cameraSensitivity * Time.deltaTime;
-            rotationY += Input.GetAxis("Mouse Y") * cameraSensitivity * Time.deltaTime;
+            rotationX += Input.GetAxis("Mouse X") * cameraSensitivity/2 * Time.deltaTime;
+            rotationY += Input.GetAxis("Mouse Y") * cameraSensitivity/2 * Time.deltaTime;
 
             transform.localRotation = Quaternion.AngleAxis(rotationX, Vector3.up);
             transform.localRotation *= Quaternion.AngleAxis(rotationY, Vector3.left);

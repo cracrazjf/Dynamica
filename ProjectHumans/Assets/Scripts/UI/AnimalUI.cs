@@ -53,7 +53,7 @@ public class AnimalUI : MonoBehaviour
                 Vector3 haloPos = new Vector3 (hit.transform.position.x, 0.1f, hit.transform.position.z);
                 halo.transform.position = haloPos;
 
-               ReceiveAnimal(hit.transform.gameObject); 
+               ReceiveAnimal(hit.transform.root.gameObject); 
             }
         }
     }
@@ -103,7 +103,7 @@ public class AnimalUI : MonoBehaviour
 
         float[] to_display = new float[5];
         DriveSystem passed = selectedAnimal.GetDriveSystem();
-        float[] passedDrives = passed.GetDriveStateArray();
+        float[] passedDrives = passed.GetDriveStateArray(); //breaks here bc no drives lol - jc
 
         Debug.Log(passedDrives.ToString());
 
