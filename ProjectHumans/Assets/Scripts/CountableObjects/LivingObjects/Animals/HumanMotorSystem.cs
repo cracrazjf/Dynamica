@@ -325,7 +325,6 @@ public class HumanMotorSystem : MotorSystem
         if (CheckActionLegality("laying down")) {
             
             this.thisHuman.animator.SetTrigger("layDown");
-            Debug.Log("here");
 
             this.actionStateArray = new bool[this.numActionStates];
             this.actionStateArray[this.actionStateIndexDict["laying down"]] = true;

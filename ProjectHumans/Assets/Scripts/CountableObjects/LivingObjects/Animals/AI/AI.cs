@@ -106,7 +106,7 @@ public class AI
                                                            Dictionary<string, float> traitDict){
         
         if (outputDefinitionError == false){
-            Debug.Log("No Choose Action Function defined for this AI");
+            Debug.Log("No ChooseAction function defined for this AI");
             outputDefinitionError = true;
         }
         

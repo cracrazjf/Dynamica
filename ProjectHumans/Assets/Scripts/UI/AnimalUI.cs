@@ -21,7 +21,10 @@ public class AnimalUI : MonoBehaviour
     public Text sleep;
     public Text stamina;
     public Text health;
+
     public Text OGName;
+    public Text inputName;
+    public InputField panelNamer;
 
     bool showMutable = true;
 
@@ -53,7 +56,8 @@ public class AnimalUI : MonoBehaviour
                 Vector3 haloPos = new Vector3 (hit.transform.position.x, 0.1f, hit.transform.position.z);
                 halo.transform.position = haloPos;
 
-               ReceiveAnimal(hit.transform.root.gameObject); 
+                inputName.text = "";
+                ReceiveAnimal(hit.transform.root.gameObject); 
             }
         }
     }
@@ -102,10 +106,11 @@ public class AnimalUI : MonoBehaviour
     public void DisplayDrives(){
 
         float[] to_display = new float[5];
-        DriveSystem passed = selectedAnimal.GetDriveSystem();
-        float[] passedDrives = passed.GetDriveStateArray(); //breaks here bc no drives lol - jc
+        //Skipping for now because animals dont have drives
+        //DriveSystem passed = selectedAnimal.GetDriveSystem();
+        //float[] passedDrives = passed.GetDriveStateArray(); 
 
-        Debug.Log(passedDrives.ToString());
+        //Debug.Log(passedDrives.ToString());
 
         // hunger.text = passedDrives["hunger"].ToString();
         // thirst.text = passedDrives["thirst"].ToString();
@@ -114,6 +119,7 @@ public class AnimalUI : MonoBehaviour
         // health.text = passedDrives["health"].ToString();
 
         OGName.text = selectedAnimal.GetDisplayName();
+        inputName.text = "";
     }
 
     public void ExitPanel() {
@@ -132,7 +138,7 @@ public class AnimalUI : MonoBehaviour
         } else {
             toDisplay = displayGenome.GetConstantInfo();
         }
-        Debug.Log(toDisplay);
+        //Debug.Log(toDisplay);
         displayText.text = toDisplay;
     }
 
@@ -145,5 +151,10 @@ public class AnimalUI : MonoBehaviour
         } else {
             muteText.text = "Immutable";
         }
+    }
+
+    public void Rename() {
+        selectedAnimal.SetDisplayName(inputName.text);
+        panelNamer.text = "";
     }
 }

@@ -28,6 +28,10 @@ using System;
             return displayName;
         }
 
+        public void SetDisplayName(string named){
+            this.displayName = named;
+        }
+
         public virtual void UpdateAnimal(){
             Debug.Log("No update defined for this animal");
         }

@@ -55,7 +55,7 @@ public class HumanSimpleAI
         this.humanTransform = thisHuman.gameObject.transform;
         InFov(thisHuman.gameObject.transform, 45, 10);
         Debug.DrawRay(humanTransform.position, humanTransform.forward * 10, Color.red);
-        Debug.Log(currentGoal);
+        //Debug.Log(currentGoal);
         if (currentGoal == "None")
         {
             ChooseGoal();

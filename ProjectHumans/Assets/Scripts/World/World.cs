@@ -146,6 +146,8 @@ public class World : MonoBehaviour
         foreach(KeyValuePair<string, int> entry in startingPlantCountsDict)
         {
             speciesType = entry.Key;
+            // super important; can't ++ a key that does not yet exist! -jc
+            countableObjectCountDict[speciesType] = 0;
             n = entry.Value;
 
             for (int i=0; i<n; i++){

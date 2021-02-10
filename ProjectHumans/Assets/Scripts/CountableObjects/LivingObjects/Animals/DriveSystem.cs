@@ -9,7 +9,7 @@ public class DriveSystem
     public Animal thisAnimal;
 
     protected int numDriveStates;
-    protected float[] driveStateArray;
+    protected float[] driveStateArray = null;
     protected List<string> driveStateLabelList;
     protected Dictionary<string, int> driveStateIndexDict;
 
@@ -20,6 +20,7 @@ public class DriveSystem
         this.thisAnimal = animal;
     }
 
+    //why is this not automatically called in the constructor? where is this information declared if not here? -jc
     public void InitDriveStates(List<string> driveStateLabelList){
         driveStateIndexDict = new Dictionary <string, int>();
 

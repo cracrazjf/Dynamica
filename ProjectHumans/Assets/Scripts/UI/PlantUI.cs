@@ -17,6 +17,7 @@ public class PlantUI : MonoBehaviour
     public GameObject halo;
 
     public Text OGName;
+    public Text inputName;
 
     bool showMutable = true;
 
@@ -47,7 +48,7 @@ public class PlantUI : MonoBehaviour
                 Vector3 haloPos = new Vector3 (hit.transform.position.x, 0.1f, hit.transform.position.z);
                 halo.transform.position = haloPos;
 
-               ReceivePlant(hit.transform.gameObject); 
+               ReceivePlant(hit.transform.root.gameObject); 
             }
         }
 
@@ -63,6 +64,12 @@ public class PlantUI : MonoBehaviour
             selectedPlant = World.GetPlant(clicked.name);
             if (selectedPlant != null) {
                 DisplayInfo();
+            }
+
+            if(selectedPlant != null) {
+                if(Input.GetKeyDown(KeyCode.Return)) {
+                    selectedPlant.SetDisplayName(inputName.text);
+                }
             }
         }
     }

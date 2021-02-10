@@ -13,6 +13,7 @@ public class AppleTree : Plant
     public GameObject applePrefab;
     public Rigidbody rigidbody;
     public World theWorld;
+    public string displayName;
 
     public bool doingNothing = true;
     
@@ -74,18 +75,6 @@ public class AppleTree : Plant
         World.nonlivingObjectList.Add(newApple);
         World.nonlivingObjectDict[newApple.GetName()] = newApple;
         World.countableObjectCountDict["Apple"]++;
-    }
-
-    public void Grow(){
-        // this code should go in Plant.cs, not Apple Tree. 
-
-        // tree starts at scale of .1 in height (y) and width (x,z)
-        // it has a max_height and max_width stored in this.phenotype.traitDict["max_height"] and this.phenotype.traitDict["max_width"]
-        // every time grow is called, it should grow by its growth rate parameter (a float between 0 and 1)
-        //      towards its max height and width. So for example, if its scale vector3 starts at [.1, .1, .1]
-        //      if its max_height is 5 and its max_width is 4, and its this.phenotype.traitDict["growth_rate"] = .01
-        //      then its new height should be y += .01*(5-.1) = .149
-        //      its new width should be x,z += .01*(4-.1) = .139
     }
 }
 
