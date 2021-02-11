@@ -11,6 +11,9 @@ public class HumanBody : Body {
     List<string> bodyStateLabelList;
     public string objectTypeInLH = "None";
     public string objectTypeInRH = "None";
+    
+    Dictionary<string, GameObject> skeletonDict;
+
 
 
     public HumanBody(Human human) : base(human) {
@@ -46,8 +49,16 @@ public class HumanBody : Body {
             "sleeping"
         };
 
-        foreach(GameObject skeleton in GameObject.FindGameObjectsWithTag("Skeleton")) {
-            skeletonDict[skeleton.name] = skeleton;
+        Transform tagFinder = this.thisHuman.gameObject.GetComponent<Transform>();
+        skeletonDict = new Dictionary <string, GameObject>();
+        foreach(Transform unit in tagFinder) {
+            foreach(Transform skeleton in unit) {
+                if (skeleton.tag == "Skeleton") {
+                    Debug.Log(skeleton.gameObject);
+                    skeletonDict[skeleton.name] = skeleton.gameObject;
+                    
+                }
+            }
         }
         abdomenLength = skeletonDict["Abdomen"].transform.localScale.y;
     }

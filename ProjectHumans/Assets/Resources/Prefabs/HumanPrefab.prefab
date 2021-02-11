@@ -346,7 +346,7 @@ GameObject:
   - component: {fileID: 237289673932883809}
   m_Layer: 8
   m_Name: Torso
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1072,7 +1072,7 @@ GameObject:
   - component: {fileID: 237289674792911675}
   m_Layer: 8
   m_Name: Arm_R
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1313,7 +1313,7 @@ GameObject:
   - component: {fileID: 237289674953081056}
   m_Layer: 8
   m_Name: Leg_R
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2080,7 +2080,7 @@ GameObject:
   - component: {fileID: 237289675380103535}
   m_Layer: 8
   m_Name: Leg_L
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2115,7 +2115,7 @@ GameObject:
   - component: {fileID: 237289675420769910}
   m_Layer: 8
   m_Name: VisualInputCamera
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2184,7 +2184,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 237289675420769904}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &237289675464015850
 GameObject:
   m_ObjectHideFlags: 0
@@ -2291,7 +2291,7 @@ GameObject:
   - component: {fileID: 237289675588980700}
   m_Layer: 8
   m_Name: Arm_L
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2953,7 +2953,7 @@ GameObject:
   - component: {fileID: 237289675976606261}
   m_Layer: 8
   m_Name: Head
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

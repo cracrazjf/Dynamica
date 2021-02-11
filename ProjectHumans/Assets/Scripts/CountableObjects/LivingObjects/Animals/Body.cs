@@ -24,6 +24,7 @@ public class Body {
     }
 
     public void InitBodyStates(List<string> passedBodyStateLabelList){
+        bodyStateDict = new Dictionary<string, bool>();
         if (passedBodyStateLabelList != null){
             for (int i = 0; i < passedBodyStateLabelList.Count; i++) {
                 bodyStateDict[passedBodyStateLabelList[i]] = false;

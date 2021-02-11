@@ -53,12 +53,14 @@ public class HumanMotorSystem : MotorSystem
     }
 
     public override void InitActionStates() {
+        actionStateDict = new Dictionary<string, bool>();
         foreach (string item in actionStateLabelList) {
             actionStateDict[item] = false;
         }
     }
 
     public override void InitActionArguments() {
+        actionArgumentDict = new Dictionary<string, float>();
         foreach (string item in actionArgumentLabelList) {
             actionArgumentDict[item] = 0.0f;
         }
@@ -67,7 +69,7 @@ public class HumanMotorSystem : MotorSystem
 
     public override void InitActionRuleDicts(){
 
-        bodyStateRequirementDict["sitting down"].Add("standing");
+        /* bodyStateRequirementDict["sitting down"].Add("standing");
         bodyStateObstructorDict["sitting down"].Add("sleeping");
         
         bodyStateRequirementDict["sitting up"].Add("laying");
@@ -99,7 +101,7 @@ public class HumanMotorSystem : MotorSystem
         bodyStateRequirementDict["waking up"].Add("sleeping");
 
         bodyStateRequirementDict["falling asleep"].Add("laying");
-        bodyStateObstructorDict["falling asleep"].Add("sleeping");
+        bodyStateObstructorDict["falling asleep"].Add("sleeping"); */
     }
 
     public override void UpdateActionStates(){

@@ -49,6 +49,7 @@ public class Human : Animal
                                                 GetMotorSystem().GetActionStateDict(),
                                                 GetMotorSystem().GetActionArgumentDict(),
                                                 GetPhenotype().traitDict);
+            activeAI = humanSimpleAI;
         }
     }
     
