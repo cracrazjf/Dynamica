@@ -341,9 +341,6 @@ public class HumanMotorSystem : MotorSystem
         //same
         if (CheckActionLegality("falling asleep")) {
 
-            ((HumanBody)this.thisHuman.GetBody()).leftEye.localScale = new Vector3(1, 0.09f, 2);
-            ((HumanBody)this.thisHuman.GetBody()).rightEye.localScale = new Vector3(1, 0.09f, 2);
-
             this.actionStateArray = new bool[this.numActionStates];
             this.actionStateArray[this.actionStateIndexDict["falling asleep"]] = true;
             this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("sleeping"), true);  
@@ -355,8 +352,6 @@ public class HumanMotorSystem : MotorSystem
         bool doingNothing = !this.actionStateArray.Any(x => x);
         // same
         if (CheckActionLegality("waking up"))  {
-            ((HumanBody)this.thisHuman.GetBody()).leftEye.localScale = new Vector3(1, 1, 1);
-            ((HumanBody)this.thisHuman.GetBody()).rightEye.localScale = new Vector3(1, 1, 1);
                   
             this.actionStateArray = new bool[this.numActionStates];
             this.actionStateArray[this.actionStateIndexDict["waking up"]] = true;
@@ -375,11 +370,11 @@ public class HumanMotorSystem : MotorSystem
             int numObj = -1;
             if ((hand == 0) && (!this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand")))) {
                 pickUpHand = 0;
-                numObj = Physics.OverlapSphereNonAlloc(((HumanBody)this.thisHuman.GetBody()).leftHand.position,0.2f,pickableObj);
+                //numObj = Physics.OverlapSphereNonAlloc(((HumanBody)this.thisHuman.GetBody()).leftHand.position,0.2f,pickableObj);
             }
             else if ((hand == 1) && (!this.thisHuman.GetBody().GetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand")))){
                 pickUpHand = 1;
-                numObj = Physics.OverlapSphereNonAlloc(((HumanBody)this.thisHuman.GetBody()).rightHand.position,0.2f,pickableObj);
+                //numObj = Physics.OverlapSphereNonAlloc(((HumanBody)this.thisHuman.GetBody()).rightHand.position,0.2f,pickableObj);
             }
 
             if (pickUpHand != -1){
@@ -393,13 +388,13 @@ public class HumanMotorSystem : MotorSystem
                         pickableObj[i].GetComponent<Rigidbody>().isKinematic = true;
                         pickableObj[i].GetComponent<Rigidbody>().useGravity = false;
                         if (pickUpHand == 0){
-                            pickableObj[i].transform.parent = ((HumanBody)this.thisHuman.GetBody()).leftHand.transform;
+                            //pickableObj[i].transform.parent = ((HumanBody)this.thisHuman.GetBody()).leftHand.transform;
                             this.thisHuman.animator.ResetTrigger("pickUp");
                             pickableObj[i].transform.localPosition = new Vector3(0.1311f, 0.0341f, 0.073f);
                             this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"), true);  
                         }
                         else{
-                            pickableObj[i].transform.parent = ((HumanBody)this.thisHuman.GetBody()).rightHand.transform;
+                            //pickableObj[i].transform.parent = ((HumanBody)this.thisHuman.GetBody()).rightHand.transform;
                             this.thisHuman.animator.ResetTrigger("pickUp");
                             pickableObj[i].transform.localPosition = new Vector3(-0.1593f, -0.026f, -0.0665f);
                             this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand"), true);
@@ -437,7 +432,7 @@ public class HumanMotorSystem : MotorSystem
                 this.actionStateArray = new bool[this.numActionStates];
                 this.actionStateArray[this.actionStateIndexDict["setting down"]] = true;
                 if (setDownHand == 0)
-                {
+                { /*
                     if (((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.position.y < 0.1)
                     {
                         ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
@@ -447,20 +442,20 @@ public class HumanMotorSystem : MotorSystem
                             this.thisHuman.animator.ResetTrigger("setDown");
                             this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with left hand"), false);
                         }
-                    }
+                    } */
                 }
                 else
-                {
+                { /*
                     if (((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.position.y < 0.1)
                     {
-                        ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
-                        ((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.parent = null;
+                        //((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).GetComponent<Rigidbody>().isKinematic = false;
+                        //((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).transform.parent = null;
                         if (((HumanBody)this.thisHuman.GetBody()).rightHand.childCount == 0)
                         {
                             this.thisHuman.animator.ResetTrigger("setDown");
                             this.thisHuman.GetBody().SetBodyState(this.thisHuman.GetBody().GetBodyStateIndex("holding with right hand"), false);
                         }
-                    }
+                    } */
                 }
             }
             else
@@ -495,11 +490,11 @@ public class HumanMotorSystem : MotorSystem
                 this.actionStateArray[this.actionStateIndexDict["eating"]] = true;
                 if (handUsedToEat == 0)
                 {
-                    UnityEngine.Object.Destroy(((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).gameObject, 5);
+                    //UnityEngine.Object.Destroy(((HumanBody)this.thisHuman.GetBody()).leftHand.GetChild(0).gameObject, 5);
                 }
                 else
                 {
-                    UnityEngine.Object.Destroy(((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).gameObject, 5);
+                    //UnityEngine.Object.Destroy(((HumanBody)this.thisHuman.GetBody()).rightHand.GetChild(0).gameObject, 5);
                 }
             }
         }

@@ -10,6 +10,11 @@ public class Body {
     public GameObject humanPrefab;
     public Rigidbody rigidbody;
 
+    protected int numSkeletons;
+    protected bool[] skeletonStateArray;
+    protected List<GameObject> skeletonList;
+    protected Dictionary<string, int> skeletonIndexDict;
+
     protected int numBodyStates;
     protected bool[] bodyStateArray;
     protected List<string> bodyStateLabelList;
@@ -39,6 +44,10 @@ public class Body {
         Debug.Log("No update body states defined for this animal");
     }
 
+    public virtual void UpdateSkeletonStates()
+    {
+        Debug.Log("No update skeleton states defined for this animal");
+    }
     public void SetBodyState(int index, bool value) {
         bodyStateArray[index] = value;
     }
@@ -70,5 +79,40 @@ public class Body {
 
     public int GetBodyStateIndex(string label){
         return bodyStateIndexDict[label];
+    }
+
+    public int GetNumSkeleton()
+    {
+        return numSkeletons;
+    }
+
+    public List<GameObject> GetSkeletonList()
+    {
+        return skeletonList;
+    }
+
+    public bool[] GetSkeletonStateArray()
+    {
+        return skeletonStateArray;
+    }
+
+    public Dictionary<string, int> GetSkeletonIndexDict()
+    {
+        return skeletonIndexDict;
+    }
+
+    public GameObject GetSkeletonGameobject(int index)
+    {
+        return skeletonList[index];
+    }
+
+    public bool GetSkeletonState(int index)
+    {
+        return skeletonStateArray[index];
+    }
+
+    public int GetSkeletonIndex(string label)
+    {
+        return skeletonIndexDict[label];
     }
 }
