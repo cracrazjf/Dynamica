@@ -12,64 +12,46 @@ using System;
         private DriveSystem driveSystem;
         private MotorSystem motorSystem;
         private SensorySystem sensorySystem;
-        public struct ActionChoiceStruct {
-            public bool[] actionChoiceArray;
-            public float[] actionArgumentArray;
-        };
-        protected ActionChoiceStruct actionChoiceStruct;
         
         public Animal(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) 
-        : base (objectType, index, position, motherGenome, fatherGenome)
-        {
+        : base (objectType, index, position, motherGenome, fatherGenome) {
             this.displayName = GetObjectType();             
         }
 
-        public string GetDisplayName(){
+        public string GetDisplayName() {
             return displayName;
         }
 
-        public void SetDisplayName(string named){
+        public void SetDisplayName(string named) {
             this.displayName = named;
         }
 
-        public virtual void UpdateAnimal(){
+        public virtual void UpdateAnimal() {
             Debug.Log("No update defined for this animal");
         }
 
         // getters and setters for body, drive system, motor system, sensory system, and action choice class
-        public Body GetBody(){
+        public Body GetBody() {
             return body;
         }
 
-        public DriveSystem GetDriveSystem(){
+        public DriveSystem GetDriveSystem() {
             return driveSystem;
         }
 
-        public MotorSystem GetMotorSystem(){
+        public MotorSystem GetMotorSystem() {
             return motorSystem;
         }
 
-        public SensorySystem GetSensorySystem(){
+        public SensorySystem GetSensorySystem() {
             return sensorySystem;
         }
 
-        public ActionChoiceStruct GetActionChoiceStruct(){
-            return actionChoiceStruct;
-        }
-
-        public bool[] getActionChoiceArray(){
-            return actionChoiceStruct.actionChoiceArray;
-        }
-
-        public float[] getActionArgumentArray() {
-            return actionChoiceStruct.actionArgumentArray;
-        }
-
-        public void SetBody(Body passed){
+        public void SetBody(Body passed) {
             body = passed;
         }
 
-        public void SetDriveSystem(DriveSystem passed){
+        public void SetDriveSystem(DriveSystem passed) {
             driveSystem = passed;
         }
 
@@ -80,21 +62,4 @@ using System;
         public void SetSensorySystem(SensorySystem passed){
             sensorySystem = passed;
         }
-
-        public void SetActionChoiceStruct(ActionChoiceStruct passed){
-            actionChoiceStruct = passed;
-        }
-
-        public void SetActionChoiceArray(bool[] passed){
-            actionChoiceStruct.actionChoiceArray = passed;
-        }
-
-        public void SetActionArgumentArray(float[] passed){
-            actionChoiceStruct.actionArgumentArray = passed;
-        }
-
-        public void InitActionChoiceStruct() {
-
-        }
-
     }

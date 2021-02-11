@@ -23,40 +23,31 @@ public class Human : Animal
 
         SetBody(new HumanBody(this));
         GetBody().InitBodyStates(GetBody().GetBodyStateLabelList());
-        GetBody().SetBodyState(GetBody().GetBodyStateIndex("standing"), true);
+        GetBody().UpdateBodyStates();
         visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
         
         SetDriveSystem(new HumanDriveSystem(this));
         GetDriveSystem().InitDriveStates(GetDriveSystem().GetDriveStateLabelList());
-        GetDriveSystem().SetDriveState(GetDriveSystem().GetDriveStateIndex("health"), 1);
+        GetDriveSystem().SetDriveState("health", 1.0f);
 
         SetMotorSystem(new HumanMotorSystem(this));
-        GetMotorSystem().InitActionStates(GetMotorSystem().GetActionStateLabelList());
+        GetMotorSystem().InitActionStates();
         GetMotorSystem().InitActionRuleDicts();
         GetMotorSystem().InitActionArguments();
 
         SetSensorySystem(new HumanSensorySystem(this));
 
-        if (activeAILabel == "RNNAI"){
-            activeAI = new RNNAI(GetBody().GetBodyStateIndexDict(), 
-                                        GetDriveSystem().GetDriveStateIndexDict(), 
-                                        GetMotorSystem().GetActionStateIndexDict(),
-                                        GetMotorSystem().GetActionArgumentIndexDict(),
-                                        GetPhenotype().traitDict);
-        }
-        else if (activeAILabel == "blankAI"){
-            activeAI = new AI(GetBody().GetBodyStateIndexDict(), 
-                            GetDriveSystem().GetDriveStateIndexDict(), 
-                            GetMotorSystem().GetActionStateIndexDict(),
-                            GetMotorSystem().GetActionArgumentIndexDict(),
+        if (activeAILabel == "blankAI") {
+            activeAI = new AI(GetBody().GetBodyStateDict(), 
+                            GetDriveSystem().GetDriveStateDict(), 
+                            GetMotorSystem().GetActionStateDict(),
+                            GetMotorSystem().GetActionArgumentDict(),
                             GetPhenotype().traitDict);
-        }
-        else{
-            humanSimpleAI = new HumanSimpleAI(this,
-                                                GetBody().GetBodyStateIndexDict(), 
-                                                GetDriveSystem().GetDriveStateIndexDict(), 
-                                                GetMotorSystem().GetActionStateIndexDict(),
-                                                GetMotorSystem().GetActionArgumentIndexDict(),
+        } else {
+            humanSimpleAI = new HumanSimpleAI(this, GetBody().GetBodyStateDict(), 
+                                                GetDriveSystem().GetDriveStateDict(), 
+                                                GetMotorSystem().GetActionStateDict(),
+                                                GetMotorSystem().GetActionArgumentDict(),
                                                 GetPhenotype().traitDict);
         }
     }
@@ -66,28 +57,10 @@ public class Human : Animal
     }
 
     public override void UpdateAnimal(){
-
-        GetBody().UpdateBodyStates();
-        GetDriveSystem().UpdateDrives();
-        GetMotorSystem().UpdateActionStates();
         float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
-        bool[] bodyStateArray = GetBody().GetBodyStateArray();
-        bool[] actionStateArray = GetMotorSystem().GetActionStateArray();
-        float[] driveStateArray = GetDriveSystem().GetDriveStateArray();
-        // these two ifs needs debug
-        if (activeAILabel == "HumanSimpleAI"){
-            actionChoiceStruct = humanSimpleAI.ChooseAction(GetBody().GetBodyStateArray(),
-                                                            GetMotorSystem().GetActionStateArray(),
-                                                            GetDriveSystem().GetDriveStateArray(),
-                                                            GetPhenotype().traitDict);
+        activeAI.actionChoiceStruct = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().traitDict);
 
-            
-        }
-        else {
-            actionChoiceStruct = activeAI.ChooseAction(visualInputMatrix, bodyStateArray, actionStateArray, driveStateArray, GetPhenotype().traitDict);
-        }
-
-        GetMotorSystem().TakeAction(actionChoiceStruct);
+        GetMotorSystem().TakeAction(activeAI.actionChoiceStruct);
         IncreaseAge(1);
     }
 }

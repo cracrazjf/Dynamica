@@ -1,3 +1,5 @@
+/* 
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,7 +55,7 @@ public class RNNAI : AI
         bodyStateIndexDict[""]
 
     */
-
+/* 
     public RNNAI (Dictionary<string, int> bodyStateIndexDict,
                        Dictionary<string, int> driveStateIndexDict,
                        Dictionary<string, int> actionStateIndexDict, 
@@ -199,7 +201,7 @@ public class RNNAI : AI
         
         */
         //shape error
-
+/* 
         var temp1 = (np.dot(N_zh_r, np.transpose(N_visualInput["0,:"])));//should be dot products
         var temp2 = (np.dot(N_zh_g, np.transpose(N_visualInput["1,:"])));
         var temp3 = (np.dot(N_zh_b, np.transpose(N_visualInput["2,:"])));
@@ -260,7 +262,7 @@ public class RNNAI : AI
         */
         //maxIndex = the index associatied with the highest value in zAction
 
-
+/* 
     }
 
     public List<NDArray> CalculateCost(){
@@ -341,13 +343,9 @@ public class RNNAI : AI
        */
         //List<NDArray> test = new List<NDArray>();
         //return test;
-    }
+  /*   }
 
-    public override Animal.ActionChoiceStruct ChooseAction(float[ , ] visualInput, 
-                                                           bool[] bodyStateArray, 
-                                                           bool[] actionStateArray, 
-                                                           float[] driveStateArray, 
-                                                           Dictionary<string, float> traitDict){
+    public override AI.ActionChoiceStruct ChooseAction(float[ , ] visualInput, Dictionary<string, float> traitDict){
         //driveStateValues = driveStateArray; //needed to initialize driveStateValues, dont know if this is correct
         
         List<NDArray> costs = CalculateCost();
@@ -365,7 +363,7 @@ public class RNNAI : AI
                  maxIndex = i;
              }
          } */
-        int maxIndex = np.argmax(networkOutput[0]);
+        /* int maxIndex = np.argmax(networkOutput[0]);
 
         float[] networkOutputArr1 = (float[])networkOutput[1];
         this.actionChoiceStruct.actionChoiceArray[maxIndex] = true;
@@ -383,4 +381,4 @@ public class RNNAI : AI
 
 }
 
-    
+*/ 

@@ -6,15 +6,12 @@ using UnityEngine;
 public class MotorSystem 
 {
     public Animal thisAnimal;
+
     protected int numActionStates;
-    protected bool[] actionStateArray;
-    protected List<string> actionStateLabelList;
-    protected Dictionary<string, int> actionStateIndexDict;
+    protected Dictionary<string, bool> actionStateDict;
 
     protected int numActionArguments;
-    protected float[] actionArgumentArray;
-    protected List<string> actionArgumentLabelList;
-    protected Dictionary<string, int> actionArgumentIndexDict;
+    protected Dictionary<string, float> actionArgumentDict;
 
     protected Dictionary<string, List<string>> actionRequirementDict = new Dictionary<string, List<string>>();
     protected Dictionary<string, List<string>> actionObstructorDict = new Dictionary<string, List<string>>();
@@ -26,108 +23,48 @@ public class MotorSystem
         this.thisAnimal = passed;
     }
 
-    public void InitActionStates(List<string> passedActionStateLableList){
-
-        actionStateIndexDict = new Dictionary <string, int>();
-        int i;
-        for (i=0; i<passedActionStateLableList.Count; i++){
-            actionStateIndexDict.Add(passedActionStateLableList[i], i);
-            
-            actionRequirementDict.Add(passedActionStateLableList[i], new List<string>());
-            actionObstructorDict.Add(passedActionStateLableList[i], new List<string>());
-            bodyStateRequirementDict.Add(passedActionStateLableList[i], new List<string>());
-            bodyStateObstructorDict.Add(passedActionStateLableList[i], new List<string>());
-        }
-        numActionStates = i;
-        actionStateArray = new bool[this.GetNumActionStates()];
+    public virtual void InitActionRuleDicts() {
+        Debug.Log("No action rules for this animal");
     }
 
-    public void InitActionArguments(){
-        actionArgumentIndexDict = new Dictionary <string, int>();
-
-        int i;
-        for (i=0; i<actionArgumentLabelList.Count; i++){
-            actionArgumentIndexDict.Add(actionArgumentLabelList[i], i);
-        }
-        numActionArguments = i;
-        actionArgumentArray = new float[numActionArguments];
+    public virtual void InitActionStates() {
+        Debug.Log("No action rules for this animal");
     }
 
-    public virtual void InitActionRuleDicts(){
-        Debug.Log("No Action Rules for this animal");
+    public virtual void InitActionArguments() {
+        Debug.Log("No action rules for this animal");
     }
 
-    public virtual void TakeAction(Animal.ActionChoiceStruct actionChoiceStruct){
-        Debug.Log("No Actions Defined for this animal");
+
+    public virtual void TakeAction(AI.ActionChoiceStruct actionChoiceStruct) {
+        Debug.Log("No actions defined for this animal");
     }
-    public virtual void EndAction(string actionLabel){
-        Debug.Log("No Actions Defined for this animal");
+    public virtual void EndAction(string actionLabel) {
+        Debug.Log("No actions defined for this animal");
     }
 
-    public virtual void UpdateActionStates(){
-        Debug.Log("No Actions Defined for this animal");
+    public virtual void UpdateActionStates() {
+        Debug.Log("No actions defined for this animal");
     }
 
-    public virtual bool CheckActionLegality(string action){
-        Debug.Log("No Actions Defined for this animal");
+    public virtual bool CheckActionLegality(string action) {
+        Debug.Log("No actions defined for this animal");
         return false;
     }
 
-    public int GetNumActionStates(){
+    public int GetNumActionStates() {
         return numActionStates;
     }
 
-    public bool[] GetActionStateArray() {
-        return actionStateArray;
-    }
-
-    public bool GetActionState(int index) {
-        return actionStateArray[index];
-    }
-
-    public Dictionary<string, int> GetActionStateIndexDict() {
-        return actionStateIndexDict;
-    }
-
-    public int getActionStateIndex(string label){
-        return actionStateIndexDict[label];
-    }
-
-    public List<string> GetActionStateLabelList() {
-        return actionStateLabelList;
-    }
-
-    public string GetActionStateLabel(int index){
-        return actionStateLabelList[index];
+    public Dictionary<string, bool> GetActionStateDict() {
+        return actionStateDict;
     }
 
     public int GetNumActionArguments() {
         return numActionArguments;
     }
-
-    public float[] GetActionArgumentArray() {
-        return actionArgumentArray;
-    }
-
-    public float GetActionArgument(int index) {
-        return actionArgumentArray[index];
-    }
     
-    public Dictionary<string, int> GetActionArgumentIndexDict() {
-        return actionArgumentIndexDict;
+    public Dictionary<string, float> GetActionArgumentDict() {
+        return actionArgumentDict;
     }
-    
-    public int GetActionArgumentIndex(string label) {
-        return actionArgumentIndexDict[label];
-    }
-
-    public List<string> GetActionArgumentLabelList() {
-        return actionArgumentLabelList;
-    }
-
-    public string GetActionArgumentLabel(int index){
-        return actionArgumentLabelList[index];
-    }
-    
-
 }

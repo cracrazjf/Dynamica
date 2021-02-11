@@ -9,9 +9,8 @@ public class DriveSystem
     public Animal thisAnimal;
 
     protected int numDriveStates;
-    protected float[] driveStateArray = null;
     protected List<string> driveStateLabelList;
-    protected Dictionary<string, int> driveStateIndexDict;
+    protected Dictionary<string, float> driveStateDict;
 
     /// <summary>
     /// Drive constructor
@@ -20,52 +19,31 @@ public class DriveSystem
         this.thisAnimal = animal;
     }
 
-    //why is this not automatically called in the constructor? where is this information declared if not here? -jc
-    public void InitDriveStates(List<string> driveStateLabelList){
-        driveStateIndexDict = new Dictionary <string, int>();
-
-        int i;
-        for (i=0; i<driveStateLabelList.Count; i++){
-            driveStateIndexDict.Add(driveStateLabelList[i], i);
+    public void InitDriveStates(List<string> driveStateLabelList) {
+        driveStateDict = new Dictionary <string, float>();
+        foreach (string drive in driveStateLabelList) {
+            driveStateDict[drive] = 0;
         }
-        numDriveStates = i;
-        driveStateArray = new float[numDriveStates];
+        numDriveStates = driveStateDict.Count;
     }
 
-    public virtual void UpdateDrives(){
+    public virtual void UpdateDrives() {
         Debug.Log("No drive states defined for this animal");
     }
 
-
-    // getters for drive state data structures
-    public void SetDriveState(int index, float value){
-        driveStateArray[index] = value;
-    }
-    public int GetNumDriveStates(){
+    public int GetNumDriveStates() {
         return numDriveStates;
     }
 
-    public List<string> GetDriveStateLabelList(){
+    public List<string> GetDriveStateLabelList() {
         return driveStateLabelList;
     }
 
-    public float[] GetDriveStateArray(){
-        return driveStateArray;
+    public Dictionary<string, float> GetDriveStateDict() {
+        return driveStateDict;
     }
 
-    public Dictionary<string, int> GetDriveStateIndexDict(){
-        return driveStateIndexDict;
-    }
-
-    public string GetDriveStateLabel(int index){
-        return driveStateLabelList[index];
-    }
-
-    public float GetDriveState(int index){
-        return driveStateArray[index];
-    }
-
-    public int GetDriveStateIndex(string label){
-        return driveStateIndexDict[label];
+    public void SetDriveState(string label, float val) {
+        driveStateDict[label] = val;
     }
 }
