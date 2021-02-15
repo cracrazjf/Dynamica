@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-// test change
-
-// Missing a namespace;
 
 public class Human : Animal
 {
@@ -20,46 +17,35 @@ public class Human : Animal
             base("Human", index, position, motherGenome, fatherGenome) 
     {
         SetObjectType("Human");
-
+        
+        // All of these are getting passed empty lists right now, need to read in state arrays
         SetBody(new HumanBody(this));
-        GetBody().InitBodyStates(GetBody().GetBodyStateLabelList());
+        GetBody().InitStates(this.GetBody().GetStateLabels());
         GetBody().UpdateBodyStates();
         visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
         
         SetDriveSystem(new HumanDriveSystem(this));
-        GetDriveSystem().InitDriveStates(GetDriveSystem().GetDriveStateLabelList());
-        GetDriveSystem().SetDriveState("health", 1.0f);
+        GetDriveSystem().InitStates(this.GetDriveSystem().GetStateLabels());
+        GetDriveSystem().SetState("health", 1.0f);
 
         SetMotorSystem(new HumanMotorSystem(this));
-        GetMotorSystem().InitActionStates();
-        GetMotorSystem().InitActionRuleDicts();
-        GetMotorSystem().InitActionArguments();
+        GetMotorSystem().InitStates(this.GetMotorSystem().GetStateLabels());
+        GetMotorSystem().InitActionArguments(this.GetMotorSystem().GetArgLabels());
 
         SetSensorySystem(new HumanSensorySystem(this));
 
+
         if (activeAILabel == "blankAI") {
-            activeAI = new AI(GetBody().GetBodyStateDict(), 
-                            GetDriveSystem().GetDriveStateDict(), 
-                            GetMotorSystem().GetActionStateDict(),
-                            GetMotorSystem().GetActionArgumentDict(),
-                            GetPhenotype().traitDict);
+            activeAI = new AI(GetBody(), GetDriveSystem(), GetMotorSystem(), GetPhenotype());
         } else {
-            humanSimpleAI = new HumanSimpleAI(this, GetBody().GetBodyStateDict(), 
-                                                GetDriveSystem().GetDriveStateDict(), 
-                                                GetMotorSystem().GetActionStateDict(),
-                                                GetMotorSystem().GetActionArgumentDict(),
-                                                GetPhenotype().traitDict);
+            humanSimpleAI = new HumanSimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetPhenotype());
             activeAI = humanSimpleAI;
         }
-    }
-    
-    public void TestUpdate() {
-        
     }
 
     public override void UpdateAnimal(){
         float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
-        activeAI.actionChoiceStruct = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().traitDict);
+        activeAI.actionChoiceStruct = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().GetTraitDict());
 
         GetMotorSystem().TakeAction(activeAI.actionChoiceStruct);
         IncreaseAge(1);

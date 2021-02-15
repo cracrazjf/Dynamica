@@ -5,41 +5,59 @@ using UnityEngine;
 
 public class AI 
 {
+    // removed numStates counters, incrementing makes less sense than calling count when needed - JC
+
     public ActionChoiceStruct actionChoiceStruct;
 
-    protected int numBodyStates;
-    protected Dictionary<string, bool> bodyStateDict;
+    protected bool[] bodyStates;
     protected List<string> bodyStateLabelList;
-    
-    protected int numDriveStates;
-    protected Dictionary<string, float> driveStateDict;
+    protected Dictionary<string, int> bodyStateIndexDict;
+
+    protected float[] driveStates;
     protected List<string> driveStateLabelList;
+    protected Dictionary<string, int> driveStateIndexDict;
 
-    protected int numActionStates;
+    protected bool[] actionStates;
     protected List<string> actionStateLabelList;
-    protected Dictionary<string, bool> actionStateDict;
+    protected Dictionary<string, int> actionStateIndexDict;
     
-    protected int numActionArguments;
-    protected Dictionary<string, float> actionArgumentDict;
+    protected float[] actionArguments;
     protected List<string> actionArgumentLabelList;
+    protected Dictionary<string, int> actionArgumentIndexDict;
     
-
-    protected int numTraits;
+    protected float[] traits;
     protected List<string> traitLabelList;
-    protected Dictionary<string, float> traitDict;
+    protected Dictionary<string, int> traitIndexDict;
 
     bool outputDefinitionError = false;
 
-    public AI(Dictionary<string, bool> bodyStateDict, Dictionary<string, float> driveStateDict, Dictionary<string, bool> actionStateDict, 
-              Dictionary<string, float> actionArgumentDict, Dictionary<string, float> traitDict) {
-        this.bodyStateDict = bodyStateDict;
-        this.driveStateDict = driveStateDict;
-        this.actionStateDict = actionStateDict;
-        this.actionArgumentDict = actionArgumentDict;
-        this.traitDict = traitDict;
+
+    public AI(Body body, DriveSystem drives, MotorSystem motor, Phenotype phenotype) {
+
+        bodyStates = body.GetStates();
+        bodyStateLabelList = body.GetStateLabels();
+        bodyStateIndexDict = body.GetStateIndices();
+
+        driveStates = drives.GetStates();
+        driveStateLabelList = drives.GetStateLabels();
+        driveStateIndexDict = drives.GetStateIndices();
+
+        actionStates = motor.GetStates();
+        actionStateLabelList = motor.GetStateLabels();
+        actionStateIndexDict = motor.GetStateIndices();
+
+        actionArguments = motor.GetArgs();
+        actionArgumentLabelList = motor.GetArgLabels();
+        actionArgumentIndexDict = motor.GetArgIndices();
+
+        traits = phenotype.GetTraits();
+        traitLabelList = phenotype.GetTraitLabels();
+        traitIndexDict = phenotype.GetTraitIndices();
 
         InitActionChoiceStruct();
     }
+
+
 
     // Moved this here from Animal... Action choices are an AI thing, not inherent to life (a sponge is not considered to choose actions) - JC
     public struct ActionChoiceStruct {
@@ -49,8 +67,7 @@ public class AI
 
     public ActionChoiceStruct GetActionChoiceStruct() {
         return actionChoiceStruct;
-        }
-        
+    }
 
     public void InitActionChoiceStruct() {
         this.actionChoiceStruct = new ActionChoiceStruct();

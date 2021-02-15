@@ -11,7 +11,4 @@ public class HumanSensorySystem : SensorySystem {
     public HumanSensorySystem(Human human) : base(human) {
         this.thisHuman = human;
     }
-
-    
-
 }

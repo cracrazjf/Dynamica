@@ -22,9 +22,7 @@ public class HumanSimpleAI : AI
     bool generatedNewRandomPosition = false;
     Vector3 randomPosition;
 
-    public HumanSimpleAI(Human human, Dictionary<string, bool> bodyStateDict, Dictionary<string, float> driveStateDict, 
-                        Dictionary<string, bool> actionStateDict, Dictionary<string, float> actionArgumentDict, 
-                        Dictionary<string, float> traitDict) : base(bodyStateDict, driveStateDict, actionStateDict, actionArgumentDict, traitDict) {
+    public HumanSimpleAI(Human human, Body body, DriveSystem drives, MotorSystem motor, Phenotype traits) : base(body, drives, motor, traits) {
         this.thisHuman = human;
     }
 

@@ -7,13 +7,16 @@ public class HumanDriveSystem : DriveSystem {
 
     public Human thisHuman;
 
-    public List<string> humanDriveStateLabelList;
-    protected Dictionary<string, float> driveStateDict;
+    protected float[] states;
+    protected List<string> stateLabelList;
+    protected Dictionary<string, int> stateIndexDict;
+    protected Dictionary<string, float> stateDict;
 
     public HumanDriveSystem(Human human) : base(human) {
         this.thisHuman = human;
-        driveStateLabelList = new List<string>
-        {
+        this.stateLabelList = new List<string> {
+            // Originally driveStates, will be read-in eventually
+
             "hunger", 
             "thirst", 
             "sleepiness",
@@ -24,21 +27,24 @@ public class HumanDriveSystem : DriveSystem {
 
     public override void UpdateDrives()
     {
-        foreach (string label in driveStateLabelList) {
+        foreach (string label in stateLabelList) {
             string changeLabel = label + "_change";
-            
-            float changeValue = thisAnimal.phenotype.traitDict[changeLabel];
-            driveStateDict[label] += changeValue;
+            float changeValue = thisAnimal.phenotype.GetTraitDict()[changeLabel];
 
-            if (driveStateDict[label] < 0) { driveStateDict[label] = 0; }
-            else if (driveStateDict[label] > 1) { driveStateDict[label] = 1; }
+            // Ensure all drive states are in bounds
+            if (this.stateDict[label] < 0) { this.SetState(label, 0.0f); }
+            else if (this.stateDict[label] > 1) { this.SetState(label, 1.0f); }
         }
 
-        if (driveStateDict["hunger"] >= 1.0 ) {
-            driveStateDict["health"] -= thisAnimal.phenotype.traitDict["starvation_damage"];
+        // Hunger and thirst updates
+        float currentHealth = stateDict["health"];
+        if (stateDict["hunger"] >= 1.0 ) {
+            float toUpdate = currentHealth - thisAnimal.phenotype.GetTraitDict()["starvation_damage"];
+            this.SetState("health", toUpdate);
         }
-        if (driveStateDict["thirst"] >= 0.0) {
-            driveStateDict["health"] -= thisAnimal.phenotype.traitDict["dehydration_damage"];
+        if (stateDict["thirst"] >= 0.0) {
+            float toUpdate = currentHealth - thisAnimal.phenotype.GetTraitDict()["dehydration_damage"];
+            this.SetState("health", toUpdate);
         }    
     }
 }

@@ -13,59 +13,52 @@ public class Body {
     public string labelLH;
     public string labelRH;
 
-    protected int numSkeletons;
     protected Dictionary<string, GameObject> skeletonDict;
+    
+    protected bool[] states;
+    protected List<string> stateLabelList;
+    protected Dictionary<string, int> stateIndexDict;
+    protected Dictionary<string, bool> stateDict;
+    
+    public bool[] GetStates() { return states; }
+    public List<string> GetStateLabels() { return stateLabelList; }
+    public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
+    public Dictionary<string, bool> GetStateDict() { return stateDict; }
 
-    protected int numBodyStates;
-    protected Dictionary<string, bool> bodyStateDict;
 
     public Body(Animal animal) {
         this.thisAnimal = animal;
     }
 
-    public void InitBodyStates(List<string> passedBodyStateLabelList){
-        bodyStateDict = new Dictionary<string, bool>();
-        if (passedBodyStateLabelList != null){
-            for (int i = 0; i < passedBodyStateLabelList.Count; i++) {
-                bodyStateDict[passedBodyStateLabelList[i]] = false;
+    // DISCUSS
+    public void InitStates(List<string> passedStateLabelList){
+        states = new bool[passedStateLabelList.Count];
+        stateLabelList = passedStateLabelList;
+        stateIndexDict = new Dictionary<string, int>();
+        stateDict = new Dictionary<string, bool>();
+
+        if (passedStateLabelList != null){
+            for (int i = 0; i < passedStateLabelList.Count; i++) {
+                states[i] = false;
+                stateIndexDict[passedStateLabelList[i]] = i;
+                stateDict[passedStateLabelList[i]] = false;
             }
         }
-        else{
-            Debug.Log("No body states defined for this animal");
-        }
+        else { Debug.Log("No body states defined for this animal"); }
     }
 
-    public virtual List<string> GetBodyStateLabelList() {
-        return null;
+    // DISCUSS
+    public void SetState(string label, bool passed) {
+        stateDict[label] = passed;
+        int currentIndex = stateIndexDict[label];
+        states[currentIndex] = passed;
     }
 
-    public virtual void UpdateBodyStates() {
-        Debug.Log("No update body states defined for this animal");
-    }
+    public virtual void UpdateBodyStates() { Debug.Log("No update body states defined for this animal"); }
 
-    public virtual void UpdateSkeletonStates()
-    {
-        Debug.Log("No update skeleton states defined for this animal");
-    }
-
-    // getters for body state data structures
-    public int GetNumBodyStates() {
-        return numBodyStates;
-    }
-
-    public Dictionary<string, bool> GetBodyStateDict() {
-        return bodyStateDict;
-    }
-
-    public int GetNumSkeleton() {
-        return skeletonDict.Count;
-    }
+    public virtual void UpdateSkeletonStates() { Debug.Log("No update skeleton states defined for this animal"); }
 
     public Dictionary<string, GameObject> GetSkeletonDict() {
         return skeletonDict;
-    }
-
-    public void SetBodyState(string label, bool passed) {
-        bodyStateDict[label] = passed;
     }
 }

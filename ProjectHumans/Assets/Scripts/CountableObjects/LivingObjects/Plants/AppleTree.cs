@@ -38,9 +38,9 @@ public class AppleTree : Plant
     
     public override void UpdatePlant(int updateCounter){
         this.IncreaseAge(1);
-        float growthRefreshRate = this.phenotype.traitDict["growth_refresh_rate"];
-        float fruitRate = this.phenotype.traitDict["fruit_rate"];
-        float reproductionAge = this.phenotype.traitDict["reproduction_age"];
+        float growthRefreshRate = this.phenotype.GetTraitDict()["growth_refresh_rate"];
+        float fruitRate = this.phenotype.GetTraitDict()["fruit_rate"];
+        float reproductionAge = this.phenotype.GetTraitDict()["reproduction_age"];
         int age = this.GetAge();
         //Debug.Log("Update Apple Tree");
 
@@ -59,15 +59,15 @@ public class AppleTree : Plant
     public void CreateApple(){
 
         // figure out where the apple should appear
-        float distance = this.phenotype.traitDict["fruit_drop_distance"];
+        float distance = this.phenotype.GetTraitDict()["fruit_drop_distance"];
         Vector3 fruitDisplacement = new Vector3(Random.Range(-distance,distance),0,Random.Range(-distance,distance));                           
         Vector3 fruitLocation = this.gameObject.transform.position + fruitDisplacement;
 
         int indexNumber = World.countableObjectCountDict["Apple"];
         Apple newApple = new Apple(indexNumber, fruitLocation, World.nonlivingObjectInfoDict["Apple"]);
 
-        float size = this.phenotype.traitDict["fruit_max_size"] * this.phenotype.traitDict["fruit_size_proportion"];
-        float poison = this.phenotype.traitDict["poison"];
+        float size = this.phenotype.GetTraitDict()["fruit_max_size"] * this.phenotype.GetTraitDict()["fruit_size_proportion"];
+        float poison = this.phenotype.GetTraitDict()["poison"];
     
         newApple.AddConstant("size", size);
         newApple.AddConstant("poison", poison);
