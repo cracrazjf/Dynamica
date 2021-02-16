@@ -21,17 +21,18 @@ public class HumanBody : Body {
     public HumanBody(Human human) : base(human) {
         
         this.thisHuman = human;
+        Vector3 fixClip = new Vector3(0f, 2.0f, 0f);
 
         // Currently humans have no difference in model, but here we discriminate loaded model based on sex
         if (this.thisHuman.phenotype.GetTraitDict()["sex"] == 0) {   
             humanPrefab = Resources.Load("Prefabs/HumanPrefab",typeof(GameObject)) as GameObject;
-            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition, thisHuman.startRotation) as GameObject;
+            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition + fixClip, thisHuman.startRotation) as GameObject;
             this.thisHuman.gameObject.name = this.thisHuman.GetName();
 
              this.thisHuman.gameObject.SetActive(true);
         } else {
             humanPrefab = Resources.Load("Prefabs/HumanPrefab",typeof(GameObject)) as GameObject;
-            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition, thisHuman.startRotation) as GameObject;
+            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition + fixClip, thisHuman.startRotation) as GameObject;
             this.thisHuman.gameObject.name = this.thisHuman.GetName();
 
             this.thisHuman.gameObject.SetActive(true);

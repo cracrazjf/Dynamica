@@ -74,7 +74,7 @@ public class HumanMotorSystem : MotorSystem
     public void Rotate(float rotatingSpeed) {
         if (rotatingSpeed != 0) {
             this.SetState("rotating", true);
-            this.thisHuman.gameObject.transform.Rotate(0,rotatingSpeed,0 , Space.World);
+            this.thisHuman.gameObject.transform.Rotate(0, rotatingSpeed, 0, Space.World);
         }
     }
 

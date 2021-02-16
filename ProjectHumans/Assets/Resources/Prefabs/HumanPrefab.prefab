@@ -965,7 +965,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &237289674519335560
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -1650,7 +1650,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.5000002, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.000000099341065, y: -0.3749997, z: 0}
+  m_ConnectedAnchor: {x: -0.000000099341065, y: -0.37499982, z: 0}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 1
@@ -2437,7 +2437,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.5000024, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.08931646, y: -0.12051077, z: 0}
+  m_ConnectedAnchor: {x: 0.08931714, y: -0.12051062, z: 0}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 1
@@ -2853,7 +2853,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.5000002, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: -0.3749997, z: 0}
+  m_ConnectedAnchor: {x: 0, y: -0.37499982, z: 0}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 1
@@ -3053,7 +3053,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 3
+  m_CollisionDetection: 2
 --- !u!153 &237289675976606261
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3261,7 +3261,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &6450042954750629200
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3469,7 +3469,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &3719970357735477160
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3677,7 +3677,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &480443750474991711
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3885,7 +3885,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &5846970938526358465
 ConfigurableJoint:
   m_ObjectHideFlags: 0
