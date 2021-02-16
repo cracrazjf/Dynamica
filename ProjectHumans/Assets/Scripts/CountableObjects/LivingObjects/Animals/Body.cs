@@ -32,7 +32,7 @@ public class Body {
 
     // DISCUSS
     public void InitStates(List<string> passedStateLabelList){
-        states = new bool[passedStateLabelList.Count];
+        states = new bool[passedStateLabelList.Count]; // Breaks here A
         stateLabelList = passedStateLabelList;
         stateIndexDict = new Dictionary<string, int>();
         stateDict = new Dictionary<string, bool>();

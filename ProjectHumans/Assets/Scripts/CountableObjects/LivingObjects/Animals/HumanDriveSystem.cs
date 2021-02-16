@@ -23,6 +23,8 @@ public class HumanDriveSystem : DriveSystem {
             "fatigue",
             "health",
         };
+        this.InitStates(this.stateLabelList);
+        SetState("health", 1.0f);
     }
 
     public override void UpdateDrives()

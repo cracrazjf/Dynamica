@@ -49,6 +49,7 @@ public class HumanBody : Body {
             "holding with right hand",
             "sleeping"
         };
+        this.InitStates(this.stateLabelList);
 
         Transform tagFinder = this.thisHuman.gameObject.GetComponent<Transform>();
         skeletonDict = new Dictionary <string, GameObject>();

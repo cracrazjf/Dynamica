@@ -20,18 +20,11 @@ public class Human : Animal
         
         // All of these are getting passed empty lists right now, need to read in state arrays
         SetBody(new HumanBody(this));
-        GetBody().InitStates(this.GetBody().GetStateLabels());
         GetBody().UpdateBodyStates();
         visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
         
         SetDriveSystem(new HumanDriveSystem(this));
-        GetDriveSystem().InitStates(this.GetDriveSystem().GetStateLabels());
-        GetDriveSystem().SetState("health", 1.0f);
-
         SetMotorSystem(new HumanMotorSystem(this));
-        GetMotorSystem().InitStates(this.GetMotorSystem().GetStateLabels());
-        GetMotorSystem().InitActionArguments(this.GetMotorSystem().GetArgLabels());
-
         SetSensorySystem(new HumanSensorySystem(this));
 
 

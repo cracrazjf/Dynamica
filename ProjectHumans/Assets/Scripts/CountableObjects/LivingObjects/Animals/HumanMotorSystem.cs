@@ -40,6 +40,7 @@ public class HumanMotorSystem : MotorSystem
             "waking up",
             "falling asleep"
         };
+        this.InitStates(this.stateLabelList);
 
         this.argsLabelList = new List<string> {
             // Originally actionArguments, will be read-in eventually
@@ -52,6 +53,7 @@ public class HumanMotorSystem : MotorSystem
             "hand target y",
             "hand target z"
         };
+        this.InitActionArguments(this.argsLabelList);
     }
 
     // Is this perhaps evidence we need only body or motorSystem, but not both? Most of these functions should ideally be in AI...
