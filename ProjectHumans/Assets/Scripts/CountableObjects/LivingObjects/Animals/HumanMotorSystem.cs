@@ -6,11 +6,10 @@ using System.Linq;
 
 public class HumanMotorSystem : MotorSystem
 {
-    private Human thisHuman;
-    List<string> actionStateLabelList;
-    List<string> actionArgumentLabelList;
-    Transform transform;
+    private Human thisHuman;    float max_rotation_speed = 1;
+    float maxStepDistance = 2;
 
+    // Where is this object type created?
     JointDrive drive;
     public bool rotating = false;
 
@@ -18,7 +17,7 @@ public class HumanMotorSystem : MotorSystem
 
     public HumanMotorSystem(Human human) : base(human) {
         this.thisHuman = human;
-        actionStateLabelList = new List<string>
+        stateLabelList = new List<string>
         {
             "sitting down", 
             "sitting up", 
@@ -33,8 +32,9 @@ public class HumanMotorSystem : MotorSystem
             "waking up",
             "falling asleep"
         };
+        this.InitStates(stateLabelList);
 
-        actionArgumentLabelList = new List<string>
+        argsLabelList = new List<string>
         {        
             "movement velocity",
             "step rate",                          
@@ -44,20 +44,7 @@ public class HumanMotorSystem : MotorSystem
             "hand target y",
             "hand target z"
         };
-    }
-
-    public override void InitActionStates() {
-        actionChoiceDict = new Dictionary<string, bool>();
-        foreach (string item in actionStateLabelList) {
-            actionChoiceDict[item] = false;
-        }
-    }
-
-    public override void InitActionArguments() {
-        actionArgumentDict = new Dictionary<string, float>();
-        foreach (string item in actionArgumentLabelList) {
-            actionArgumentDict[item] = 0.0f;
-        }
+        this.InitActionArguments(argsLabelList);
     }
 
     public override void TakeAction(AI.ActionChoiceStruct actionChoiceStruct)
@@ -74,11 +61,7 @@ public class HumanMotorSystem : MotorSystem
         //LayDown();
     }
 
-    public override void InitActionRuleDicts(){
-    }
-
-    public override void UpdateActionStates(){
-    }
+    public override void UpdateActionStates(){}
 
     float t = 0.0f;
     float x = 0.5f;
@@ -109,36 +92,34 @@ public class HumanMotorSystem : MotorSystem
     }
 
     public void Drink() {
-        
-        this.thisHuman.GetDriveSystem().SetDriveState("thirst", 0);
-        this.actionChoiceDict["drinking"] = true;
-        
+        // This doesn't make sense to me... choice dict is something used by AI to communicate with motor, so why is it changed here?
+        //this.actionChoiceDict["drinking"] = true;
+
+        this.thisHuman.GetDriveSystem().SetState("thirst", 0);
     }
     
     public void SitDown(){
-        this.actionChoiceDict["sitting down"] = true;
+        // this.actionChoiceDict["sitting down"] = true;
+
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
-        if (!this.thisHuman.GetBody().GetBodyStateDict()["sitting"])
+        if (!this.thisHuman.GetBody().GetStateDict()["sitting"])
         {
             Vector3 dir = ((-bodyTransform.up - bodyTransform.forward) / 2).normalized;
             bodyTransform.Translate(dir * 2f * Time.deltaTime, Space.World);
         }
-        this.thisHuman.GetBody().SetBodyState("standing", false);
-        this.thisHuman.GetBody().SetBodyState("sitting", true);                     
+        this.thisHuman.GetBody().SetState("standing", false);
+        this.thisHuman.GetBody().SetState("sitting", true);                     
     }
 
     public void SitUp(){
+        // this.actionChoiceDict["sitting up"] = true;
 
-        this.actionChoiceDict["sitting up"] = true;
-        
-
-        this.thisHuman.GetBody().SetBodyState("laying", false);
-        this.thisHuman.GetBody().SetBodyState("sitting", true);          
+        this.thisHuman.GetBody().SetState("laying", false);
+        this.thisHuman.GetBody().SetState("sitting", true);          
     }
         
     public void StandUp(){
-
-        this.actionChoiceDict["standing up"] = true;
+        // this.actionChoiceDict["standing up"] = true;
 
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
         if (transform.position.y >= -2.0f)
@@ -163,37 +144,37 @@ public class HumanMotorSystem : MotorSystem
             transform.Translate(dir * 2 * Time.deltaTime, Space.World);
         }
 
-        this.thisHuman.GetBody().SetBodyState("sitting", false);
-        this.thisHuman.GetBody().SetBodyState("standing", true);  
+        this.thisHuman.GetBody().SetState("sitting", false);
+        this.thisHuman.GetBody().SetState("standing", true);  
        
     }
 
     public void LayDown(){
-        this.actionChoiceDict["laying down"] = true;
+        // this.actionChoiceDict["laying down"] = true;
+
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
 
-        if (this.thisHuman.GetBody().GetBodyStateDict()["sitting"])
+        if (this.thisHuman.GetBody().GetStateDict()["sitting"])
         {
             this.thisHuman.GetBody().GetSkeletonDict()["Body"].GetComponent<Rigidbody>().isKinematic = false;
-        }
-        else
-        {
+        } else {
             SitDown();
         }
 
-        this.thisHuman.GetBody().SetBodyState("sitting", false);
-        this.thisHuman.GetBody().SetBodyState("laying", true);  
+        this.thisHuman.GetBody().SetState("sitting", false);
+        this.thisHuman.GetBody().SetState("laying", true);  
     }
 
     public void Sleep(){
+        // this.actionChoiceDict["falling asleep"] = true;
 
-        this.actionChoiceDict["falling asleep"] = true;
-        this.thisHuman.GetBody().SetBodyState("sleeping", true);  
+        this.thisHuman.GetBody().SetState("sleeping", true);  
     }
     
     public void WakeUp(){
-        this.actionChoiceDict["waking up"] = true;
-        this.thisHuman.GetBody().SetBodyState("sleeping", false);  
+        //this.actionChoiceDict["waking up"] = true;
+
+        this.thisHuman.GetBody().SetState("sleeping", false);  
     }
     
     public void PickUp(float hand) {

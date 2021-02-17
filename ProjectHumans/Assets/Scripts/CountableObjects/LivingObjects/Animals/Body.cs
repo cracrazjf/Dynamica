@@ -14,6 +14,9 @@ public class Body {
     public string labelRH;
 
     protected Dictionary<string, GameObject> skeletonDict;
+    protected int numJoints;
+    protected Dictionary<string, ConfigurableJoint> jointDict;
+    public Dictionary<string, ConfigurableJoint> GetJointDict() { return jointDict; }
     
     protected bool[] states;
     protected List<string> stateLabelList;

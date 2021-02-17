@@ -6,6 +6,7 @@ using UnityEngine;
 public class MotorSystem 
 {
     public Animal thisAnimal;
+    protected Transform transform;
 
     protected bool[] states;
     protected List<string> stateLabelList;
