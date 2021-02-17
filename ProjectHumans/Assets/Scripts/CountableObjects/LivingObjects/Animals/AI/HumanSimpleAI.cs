@@ -7,13 +7,6 @@ public class HumanSimpleAI : AI
 {
     Human thisHuman;
     Transform humanTransform;
-    
-    Dictionary<string, bool> bodyStateDict;
-    Dictionary<string, float> driveStateDict;
-    Dictionary<string, bool> actionStateDict;
-    Dictionary<string, float> actionArgumentDict;
-    Dictionary<string, float> traitDict;
-    ActionChoiceStruct actionChoiceStruct;
 
     string currentGoal = "None";
     List<GameObject> inSight = new List<GameObject>();
@@ -23,12 +16,14 @@ public class HumanSimpleAI : AI
     Vector3 randomPosition;
 
     public HumanSimpleAI(Human human, Dictionary<string, bool> bodyStateDict, Dictionary<string, float> driveStateDict, 
-                        Dictionary<string, bool> actionStateDict, Dictionary<string, float> actionArgumentDict, 
-                        Dictionary<string, float> traitDict) : base(bodyStateDict, driveStateDict, actionStateDict, actionArgumentDict, traitDict) {
+                        Dictionary<string, bool> actionChoiceDict, Dictionary<string, float> actionArgumentDict, 
+                        Dictionary<string, float> traitDict) : base(bodyStateDict, driveStateDict, actionChoiceDict, actionArgumentDict, traitDict) {
         this.thisHuman = human;
+        actionChoiceStruct.actionArgumentDict = actionArgumentDict;
+        actionChoiceStruct.actionChoiceDict = actionChoiceDict;
     }
 
-    public AI.ActionChoiceStruct ChooseAction(Dictionary<string, float> passedTraitDict)
+    public override ActionChoiceStruct ChooseAction(float[,] visualInput, Dictionary<string, float> passedTraitDict)
     {
         this.traitDict = passedTraitDict;
 
@@ -36,12 +31,17 @@ public class HumanSimpleAI : AI
         InFov(thisHuman.gameObject.transform, 45, 10);
         Debug.DrawRay(humanTransform.position, humanTransform.forward * 10, Color.red);
         
-        if (currentGoal == "None") { ChooseGoal(); }
+        if (currentGoal == "None") { test(); }
         else if (currentGoal == "Decrease Thirst") { DecreaseThirst(); }
         else if (currentGoal == "Decrease Sleepiness") { DecreaseSleepiness(); }
         else if (currentGoal == "Decrease Hunger") { DecreaseHunger(); }
         else if (currentGoal == "Decrease Fatigue") { DecreaseFatigue(); }
         return actionChoiceStruct;
+    }
+    public void test()
+    {
+        //this.actionChoiceStruct.actionChoiceDict["taking steps"] = true;
+        //this.actionChoiceStruct.actionArgumentDict["step rate"] = 0.01f;
     }
     public void ChooseGoal()
     {
@@ -308,4 +308,5 @@ public class HumanSimpleAI : AI
             }
         }
     }
+
 }

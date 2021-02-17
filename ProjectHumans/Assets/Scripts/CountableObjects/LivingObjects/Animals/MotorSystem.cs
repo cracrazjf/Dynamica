@@ -7,8 +7,8 @@ public class MotorSystem
 {
     public Animal thisAnimal;
 
-    protected int numActionStates;
-    protected Dictionary<string, bool> actionStateDict;
+    protected int numActionChoice;
+    protected Dictionary<string, bool> actionChoiceDict;
 
     protected int numActionArguments;
     protected Dictionary<string, float> actionArgumentDict;
@@ -53,11 +53,11 @@ public class MotorSystem
     }
 
     public int GetNumActionStates() {
-        return numActionStates;
+        return numActionChoice;
     }
 
     public Dictionary<string, bool> GetActionStateDict() {
-        return actionStateDict;
+        return actionChoiceDict;
     }
 
     public int GetNumActionArguments() {

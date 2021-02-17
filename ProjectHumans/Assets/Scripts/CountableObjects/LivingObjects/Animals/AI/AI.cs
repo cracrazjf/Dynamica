@@ -37,8 +37,6 @@ public class AI
         this.actionStateDict = actionStateDict;
         this.actionArgumentDict = actionArgumentDict;
         this.traitDict = traitDict;
-
-        InitActionChoiceStruct();
     }
 
     // Moved this here from Animal... Action choices are an AI thing, not inherent to life (a sponge is not considered to choose actions) - JC
@@ -52,8 +50,10 @@ public class AI
         }
         
 
-    public void InitActionChoiceStruct() {
-        this.actionChoiceStruct = new ActionChoiceStruct();
+    public virtual void InitActionChoiceStruct() {
+        actionChoiceStruct = new ActionChoiceStruct();
+        actionChoiceStruct.actionChoiceDict = new Dictionary<string, bool>();
+        actionChoiceStruct.actionArgumentDict = new Dictionary<string, float>();
     }
 
     // Since ChooseAction is in here, it doesn't need all these values passed. AI already has the bodyState, actionState, etc. - JC

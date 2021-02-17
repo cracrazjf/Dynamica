@@ -19,6 +19,8 @@ public class Body {
     protected int numBodyStates;
     protected Dictionary<string, bool> bodyStateDict;
 
+    protected int numJoints;
+    protected Dictionary<string, ConfigurableJoint> JointDict;
     public Body(Animal animal) {
         this.thisAnimal = animal;
     }
@@ -58,11 +60,20 @@ public class Body {
     }
 
     public int GetNumSkeleton() {
-        return skeletonDict.Count;
+        return numSkeletons;
     }
 
     public Dictionary<string, GameObject> GetSkeletonDict() {
         return skeletonDict;
+    }
+    public int GetNumJoints()
+    {
+        return numJoints;
+    }
+
+    public Dictionary<string, ConfigurableJoint> GetJointDict()
+    {
+        return JointDict;
     }
 
     public void SetBodyState(string label, bool passed) {

@@ -60,7 +60,7 @@ public class Human : Animal
     public override void UpdateAnimal(){
         float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
         activeAI.actionChoiceStruct = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().traitDict);
-
+        GetBody().UpdateBodyStates();
         GetMotorSystem().TakeAction(activeAI.actionChoiceStruct);
         IncreaseAge(1);
     }

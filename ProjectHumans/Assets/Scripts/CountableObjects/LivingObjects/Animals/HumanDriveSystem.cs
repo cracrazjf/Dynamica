@@ -8,7 +8,6 @@ public class HumanDriveSystem : DriveSystem {
     public Human thisHuman;
 
     public List<string> humanDriveStateLabelList;
-    protected Dictionary<string, float> driveStateDict;
 
     public HumanDriveSystem(Human human) : base(human) {
         this.thisHuman = human;
