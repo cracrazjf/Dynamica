@@ -49,6 +49,11 @@ public class HumanMotorSystem : MotorSystem
 
     public override void TakeAction(AI.ActionChoiceStruct actionChoiceStruct)
     {
+        //https://stackoverflow.com/questions/4233536/c-sharp-store-functions-in-a-dictionary
+        //actionstates
+        //body states
+
+        //using passed dict to take the action (read only)
         transform = this.thisHuman.gameObject.transform;
         //if (actionChoiceStruct.actionChoiceDict["taking steps"])
         //{
@@ -61,24 +66,18 @@ public class HumanMotorSystem : MotorSystem
         //LayDown();
     }
 
-    public override void UpdateActionStates(){}
-
     float t = 0.0f;
     float x = 0.5f;
     public void TakeSteps(float stepProportion) {
-        if (stepProportion != 0)
-        {
+        if (stepProportion != 0) {
             this.thisHuman.gameObject.transform.Translate(this.thisHuman.gameObject.transform.forward * stepProportion * Time.deltaTime, Space.World);
         }
-        this.thisHuman.GetBody().GetJointDict()["Hip_L"].targetRotation = new Quaternion(Mathf.Lerp(-stepProportion, stepProportion, t), 0, 0, 1);
-        this.thisHuman.GetBody().GetJointDict()["Hip_R"].targetRotation = new Quaternion(Mathf.Lerp(stepProportion, -stepProportion, t), 0, 0, 1);
+        this.thisHuman.GetBody().GetJointDict()["Femur_L"].targetRotation = new Quaternion(Mathf.Lerp(-stepProportion, stepProportion, t), 0, 0, 1);
+        this.thisHuman.GetBody().GetJointDict()["Femur_R"].targetRotation = new Quaternion(Mathf.Lerp(stepProportion, -stepProportion, t), 0, 0, 1);
 
-        if (t > 1.0f)
-        {
+        if (t > 1.0f) {
             x = -0.5f;
-        }
-        else if (t <= 0)
-        {
+        } else if (t <= 0) {
             x = 0.5f;
         }
         t += x * Time.deltaTime;
@@ -86,7 +85,7 @@ public class HumanMotorSystem : MotorSystem
 
     public void Rotate(float rotatingSpeed) {
         if (rotatingSpeed != 0) {
-            this.thisHuman.gameObject.transform.Rotate(0,rotatingSpeed,0 , Space.World);
+            this.thisHuman.gameObject.transform.Rotate(0, rotatingSpeed, 0, Space.World);
             rotating = true;
         }
     }
@@ -98,12 +97,11 @@ public class HumanMotorSystem : MotorSystem
         this.thisHuman.GetDriveSystem().SetState("thirst", 0);
     }
     
-    public void SitDown(){
+    public void SitDown() {
         // this.actionChoiceDict["sitting down"] = true;
 
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
-        if (!this.thisHuman.GetBody().GetStateDict()["sitting"])
-        {
+        if (!this.thisHuman.GetBody().GetStateDict()["sitting"]) {
             Vector3 dir = ((-bodyTransform.up - bodyTransform.forward) / 2).normalized;
             bodyTransform.Translate(dir * 2f * Time.deltaTime, Space.World);
         }
@@ -136,9 +134,7 @@ public class HumanMotorSystem : MotorSystem
             {
                 bodyTransform.Translate(Vector3.up * 2 * Time.deltaTime, Space.World);
             }
-        }
-        else
-        {
+        } else {
             Vector3 dir = ((transform.up + transform.forward) / 2).normalized;
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(30, 0, 0), Time.deltaTime);
             transform.Translate(dir * 2 * Time.deltaTime, Space.World);
@@ -154,8 +150,7 @@ public class HumanMotorSystem : MotorSystem
 
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
 
-        if (this.thisHuman.GetBody().GetStateDict()["sitting"])
-        {
+        if (this.thisHuman.GetBody().GetStateDict()["sitting"]) {
             this.thisHuman.GetBody().GetSkeletonDict()["Body"].GetComponent<Rigidbody>().isKinematic = false;
         } else {
             SitDown();
@@ -177,9 +172,7 @@ public class HumanMotorSystem : MotorSystem
         this.thisHuman.GetBody().SetState("sleeping", false);  
     }
     
-    public void PickUp(float hand) {
-        
-    }
+    public void PickUp(float hand) {}
 
     public void SetDown(float hand) {}
 

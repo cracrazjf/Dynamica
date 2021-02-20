@@ -29,10 +29,12 @@ public class AI
     protected List<string> traitLabelList;
     protected Dictionary<string, int> traitIndexDict;
 
+    protected float [ , ] visualInput;
+
     bool outputDefinitionError = false;
 
 
-    public AI(Body body, DriveSystem drives, MotorSystem motor, Phenotype phenotype) {
+    public AI(Body body, DriveSystem drives, MotorSystem motor, SensorySystem senses, Phenotype phenotype) {
 
         bodyStates = body.GetStates();
         bodyStateLabelList = body.GetStateLabels();
@@ -53,6 +55,10 @@ public class AI
         traits = phenotype.GetTraits();
         traitLabelList = phenotype.GetTraitLabels();
         traitIndexDict = phenotype.GetTraitIndices();
+
+        visualInput = senses.GetVisualInput();
+
+        // add sensory?
 
         InitActionChoiceStruct();
     }

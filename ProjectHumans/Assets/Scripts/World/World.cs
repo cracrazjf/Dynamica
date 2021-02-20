@@ -232,7 +232,7 @@ public class World : MonoBehaviour
         paused = MainUI.GetPause();
 
         if(!paused) {
-            UpdateAnimals();
+            UpdateAnimals(); //breaks
             UpdatePlants();
             updateCounter++;
         }

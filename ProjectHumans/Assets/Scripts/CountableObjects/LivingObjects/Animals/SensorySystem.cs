@@ -47,7 +47,7 @@ public class SensorySystem {
         return visualInputArray;
     }
 
-    public float [ , ] UpdateVisualInput()
+    public void UpdateVisualInput()
     {
         if (this.thisAnimal.visualInputCamera.gameObject.activeInHierarchy) {
             
@@ -71,18 +71,15 @@ public class SensorySystem {
         else{
             Debug.Log("Camera is off");
         }
-        
-        return visualInputArray;
-    
     }
     
     void saveVisualImage(Texture2D visualInputTexture){
         byte[] bytes = visualInputTexture.EncodeToPNG();
-        string fileName = visualInputName();
+        string fileName = GetVisualInputName();
         System.IO.File.WriteAllBytes(fileName, bytes);
     }
 
-    string visualInputName() {
+    string GetVisualInputName() {
         return string.Format("{0}/VisualInputs/visualInput_{1}x{2}_{3}.png",
         Application.dataPath,
         visualResolution,

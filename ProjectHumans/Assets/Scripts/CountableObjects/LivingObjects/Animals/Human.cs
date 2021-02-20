@@ -29,14 +29,14 @@ public class Human : Animal
 
 
         if (activeAILabel == "blankAI") {
-            activeAI = new AI(GetBody(), GetDriveSystem(), GetMotorSystem(), GetPhenotype());
+            activeAI = new AI(GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
         } else {
-            humanSimpleAI = new HumanSimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetPhenotype());
+            humanSimpleAI = new HumanSimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
             activeAI = humanSimpleAI;
         }
     }
 
-    public override void UpdateAnimal(){
+    public override void UpdateAnimal() {
         float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
         activeAI.actionChoiceStruct = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().GetTraitDict());
 

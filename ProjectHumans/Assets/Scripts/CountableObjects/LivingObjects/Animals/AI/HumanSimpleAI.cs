@@ -22,7 +22,7 @@ public class HumanSimpleAI : AI
     bool generatedNewRandomPosition = false;
     Vector3 randomPosition;
 
-    public HumanSimpleAI(Human human, Body body, DriveSystem drives, MotorSystem motor, Phenotype traits) : base(body, drives, motor, traits) {
+    public HumanSimpleAI(Human human, Body body, DriveSystem drives, MotorSystem motor, SensorySystem senses, Phenotype traits) : base(body, drives, motor, senses, traits) {
         this.thisHuman = human;
     }
 
