@@ -35,7 +35,7 @@ abstract public class CountableObject
         }
         else {
             newStartPosition = new Vector3 (Random.Range(World.minPosition, World.maxPosition), 
-                                            5.0f, 
+                                            2.05f, 
                                             Random.Range(World.minPosition, World.maxPosition));
         }
         return newStartPosition;

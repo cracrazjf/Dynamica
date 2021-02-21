@@ -38,10 +38,20 @@ public class HumanSimpleAI : AI
         else if (currentGoal == "Decrease Fatigue") { DecreaseFatigue(); }
         return actionChoiceStruct;
     }
+    int counter = 0;
     public void test()
     {
-        //this.actionChoiceStruct.actionChoiceDict["taking steps"] = true;
-        //this.actionChoiceStruct.actionArgumentDict["step rate"] = 0.01f;
+        if (counter < 100)
+        {
+            this.actionChoiceStruct.actionChoiceDict["taking steps"] = true;
+            this.actionChoiceStruct.actionArgumentDict["step rate"] = 0.5f;
+        }
+        else
+        {
+            this.actionChoiceStruct.actionChoiceDict["sitting down"] = true;
+        }
+        counter++;
+
     }
     public void ChooseGoal()
     {

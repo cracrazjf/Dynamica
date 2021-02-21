@@ -43,7 +43,7 @@ public class MotorSystem
         Debug.Log("No actions defined for this animal");
     }
 
-    public virtual void UpdateActionStates() {
+    public virtual void UpdateSkeletonStates() {
         Debug.Log("No actions defined for this animal");
     }
 

@@ -18,7 +18,10 @@ public class HumanBody : Body {
     public HumanBody(Human human) : base(human) {
         
         this.thisHuman = human;
-
+        skeletonDict = new Dictionary<string, GameObject>();
+        skeletonStateDict = new Dictionary<string, bool>();
+        JointDict = new Dictionary<string, ConfigurableJoint>();
+        bodyStateDict = new Dictionary<string, bool>();
         if (this.thisHuman.phenotype.traitDict["sex"] == 0)
         {   
             humanPrefab = Resources.Load("Prefabs/HumanPrefab",typeof(GameObject)) as GameObject;
@@ -47,14 +50,18 @@ public class HumanBody : Body {
             "holding with right hand",
             "sleeping"
         };
-        skeletonDict = new Dictionary <string, GameObject>();
-        JointDict = new Dictionary<string, ConfigurableJoint>();
+        foreach (string bodyStateLable in bodyStateLabelList)
+        {
+            bodyStateDict.Add(bodyStateLable, false);
+        }
+        
         List<Transform> humanParts = new List<Transform>();
         foreach (Transform child in this.thisHuman.gameObject.transform)
         {
             foreach(Transform grandChild in child)
             {
                 skeletonDict.Add(grandChild.name, grandChild.gameObject);
+                skeletonStateDict.Add(grandChild.name, false);
                 if (grandChild.TryGetComponent(out ConfigurableJoint configurable))
                 {
                     JointDict.Add(grandChild.name, configurable);
@@ -62,10 +69,10 @@ public class HumanBody : Body {
             }
             
         }
-        foreach (KeyValuePair<string, ConfigurableJoint> x in JointDict)
-        {
-            Debug.Log(x);
-        }
+        //foreach (KeyValuePair<string, ConfigurableJoint> x in JointDict)
+        //{
+        //    Debug.Log(x);
+        //}
     }
 
     public override List<string> GetBodyStateLabelList() {
@@ -74,29 +81,23 @@ public class HumanBody : Body {
 
     public override void UpdateBodyStates() 
     {
-        
-        if(isStanding()) {
-            bodyStateDict["standing"] = true;
-        }
-        if(isSitting()) {
-            bodyStateDict["sitting"] = true;
-            Debug.Log(isSitting());
-        }
-        if (isLaying()) {
-            bodyStateDict["laying"] = true;
-        }
+        bodyStateDict["standing"] = isStanding();
+
+        bodyStateDict["sitting"] = isSitting();
+
+        bodyStateDict["laying"] = isLaying();
     }
     
     bool isSitting() {
         GameObject Body = skeletonDict["Body"];
         float bodyExtent = Body.GetComponent<Collider>().bounds.extents.y;
-        return Physics.Raycast(Body.transform.position, -Body.transform.up, bodyExtent + 0.2f);
+        return Physics.Raycast(Body.transform.position, -Body.transform.up, bodyExtent + 0.02f);
     }
 
     bool isLaying() {
         GameObject Body = skeletonDict["Body"];
         float bodyExtent = Body.GetComponent<Collider>().bounds.extents.y;
-        return Physics.Raycast(Body.transform.position, -Vector3.up, bodyExtent + 0.2f);
+        return Physics.Raycast(Body.transform.position, -Body.transform.forward, bodyExtent + 0.2f);
     }
 
     bool isStanding() {

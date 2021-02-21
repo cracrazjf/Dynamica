@@ -15,7 +15,7 @@ public class Body {
 
     protected int numSkeletons;
     protected Dictionary<string, GameObject> skeletonDict;
-
+    protected Dictionary<string, bool> skeletonStateDict;
     protected int numBodyStates;
     protected Dictionary<string, bool> bodyStateDict;
 
@@ -65,6 +65,10 @@ public class Body {
 
     public Dictionary<string, GameObject> GetSkeletonDict() {
         return skeletonDict;
+    }
+    public Dictionary<string, bool> GetSkeletonStateDict()
+    {
+        return skeletonStateDict;
     }
     public int GetNumJoints()
     {
