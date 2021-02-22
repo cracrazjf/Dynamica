@@ -6,18 +6,27 @@ using System.Linq;
 
 public class HumanMotorSystem : MotorSystem
 {
-    private Human thisHuman;    float max_rotation_speed = 1;
-    float maxStepDistance = 2;
+    private Human thisHuman;
+    List<string> actionStateLabelList;
+    List<string> actionArgumentLabelList;
+    Transform transform;
+    bool pickedUp = false;
+    
+    bool[] actionCalled = new bool[12];
+    bool[] illegalityArray = new bool[12];
 
-    // Where is this object type created?
     JointDrive drive;
     public bool rotating = false;
 
     public float velocity = 0;
 
+    public bool check = false;
+
+    Vector3 moveToPosition = new Vector3();
+
     public HumanMotorSystem(Human human) : base(human) {
         this.thisHuman = human;
-        stateLabelList = new List<string>
+        actionStateLabelList = new List<string>
         {
             "sitting down", 
             "sitting up", 
@@ -32,11 +41,9 @@ public class HumanMotorSystem : MotorSystem
             "waking up",
             "falling asleep"
         };
-        this.InitStates(stateLabelList);
 
-        argsLabelList = new List<string>
-        {        
-            "movement velocity",
+        actionArgumentLabelList = new List<string>
+        {
             "step rate",                          
             "rotation velocity",               
             "hand",
@@ -44,138 +51,370 @@ public class HumanMotorSystem : MotorSystem
             "hand target y",
             "hand target z"
         };
-        this.InitActionArguments(argsLabelList);
+        InitActionRuleDicts();
+    }
+
+    public override void InitActionStates() {
+        actionChoiceDict = new Dictionary<string, bool>();
+        foreach (string item in actionStateLabelList) {
+            actionChoiceDict[item] = false;
+        }
+    }
+
+    public override void InitActionArguments() {
+        actionArgumentDict = new Dictionary<string, float>();
+        foreach (string item in actionArgumentLabelList) {
+            actionArgumentDict[item] = 0.0f;
+        }
     }
 
     public override void TakeAction(AI.ActionChoiceStruct actionChoiceStruct)
     {
-        //https://stackoverflow.com/questions/4233536/c-sharp-store-functions-in-a-dictionary
-        //actionstates
-        //body states
-
-        //using passed dict to take the action (read only)
         transform = this.thisHuman.gameObject.transform;
+        actionCalled = new bool[12];
+        
+        //if (illegalityArray.Any(x => x == true))
+        //{
+        //    //LayDown();
+        //    Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
+        //    bodyTransform.GetComponent<Rigidbody>().isKinematic = false;
+        //}
+        //else
+        //{
+        //    if (actionChoiceStruct.actionChoiceDict["taking steps"])
+        //    {
+        //        if (actionChoiceStruct.actionArgumentDict["step rate"] != 0.0f)
+        //        {
+        //            float stepRate = actionChoiceStruct.actionArgumentDict["step rate"];
+        //            actionCalled[5] = true;
+        //            TakeSteps(stepRate);
+        //        }
+        //        else
+        //        {
+        //            Debug.Log("step rate not specified");
+        //        }
+        //    }
+        //    if (actionChoiceStruct.actionChoiceDict["sitting down"])
+        //    {
+        //        SitDown();
+        //    }
+        //}
+        
+
+
         //if (actionChoiceStruct.actionChoiceDict["taking steps"])
         //{
         //    TakeSteps(actionChoiceStruct.actionArgumentDict["step rate"]);
         //}
-
-        SitDown();
+        //if (!check)
+        //{
+        //    SitDown();
+        //    LayDown();
+        //}
+        //else
+        //{
+        //    SitUp();
+        //}
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    check = true;
+        //}
+        //SitDown();
         //StandUp();
-        TakeSteps(1);
+        //TakeSteps(0.5f);
         //LayDown();
+        //PickUp(0);
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    pickedUp = true;
+        //}
+        //Sleep();
+        Eat(0);
+    }
+
+    public override void InitActionRuleDicts(){
+        this.actionRequirementDict["taking steps"] = new List<string> { "Leg_R", "Leg_L" };
+        this.actionRequirementDict["sitting down"] = new List<string> { "Leg_R", "Leg_L" }; ;
+    }
+
+    public override void UpdateSkeletonStates(){
+        if(this.actionChoiceDict["taking steps"] == true)
+        {
+            this.thisHuman.GetBody().GetSkeletonStateDict()["Leg_R"] = true;
+            this.thisHuman.GetBody().GetSkeletonStateDict()["Leg_L"] = true;
+
+        }
+        if(this.actionChoiceDict["sitting down"] == true)
+        {
+            this.thisHuman.GetBody().GetSkeletonStateDict()["Leg_R"] = true;
+            this.thisHuman.GetBody().GetSkeletonStateDict()["Leg_L"] = true;
+        }
+    }
+
+    public override bool CheckActionLegality(string action)
+    {
+        bool legal = false;
+        List<bool> skeletonStateRequirementList = new List<bool>();
+        var results = actionCalled.Where((act, i) => i != actionStateLabelList.FindIndex(x => x == action)).ToArray();
+        if(results.Any(x => x == true)) {
+            foreach (string x in this.actionRequirementDict[action])
+            {
+                skeletonStateRequirementList.Add(this.thisHuman.GetBody().GetSkeletonStateDict()[x]);
+            }
+            if (skeletonStateRequirementList.All(x => x == true))
+            {
+                legal = true;
+            }
+            else
+            {
+                legal = false;
+            }
+        }
+        else if (results.All(x => x == false)) {
+            
+            legal = true;
+        }
+        
+        return legal;
+
     }
 
     float t = 0.0f;
     float x = 0.5f;
     public void TakeSteps(float stepProportion) {
-        if (stepProportion != 0) {
-            this.thisHuman.gameObject.transform.Translate(this.thisHuman.gameObject.transform.forward * stepProportion * Time.deltaTime, Space.World);
-        }
-        this.thisHuman.GetBody().GetJointDict()["Femur_L"].targetRotation = new Quaternion(Mathf.Lerp(-stepProportion, stepProportion, t), 0, 0, 1);
-        this.thisHuman.GetBody().GetJointDict()["Femur_R"].targetRotation = new Quaternion(Mathf.Lerp(stepProportion, -stepProportion, t), 0, 0, 1);
+        if(CheckActionLegality("taking steps"))
+        {
+            illegalityArray[5] = false;
+            this.actionChoiceDict["taking steps"] = true;
+            if (stepProportion != 0)
+            {
+                this.thisHuman.gameObject.transform.Translate(this.thisHuman.gameObject.transform.forward * stepProportion * Time.deltaTime, Space.World);
+            }
+            this.thisHuman.GetBody().GetJointDict()["Hip_L"].targetRotation = new Quaternion(Mathf.Lerp(-stepProportion, stepProportion, t), 0, 0, 1);
+            this.thisHuman.GetBody().GetJointDict()["Hip_R"].targetRotation = new Quaternion(Mathf.Lerp(stepProportion, -stepProportion, t), 0, 0, 1);
 
-        if (t > 1.0f) {
-            x = -0.5f;
-        } else if (t <= 0) {
-            x = 0.5f;
+            if (t > 1.0f)
+            {
+                x = -0.5f;
+            }
+            else if (t <= 0)
+            {
+                x = 0.5f;
+            }
+            t += x * Time.deltaTime;
         }
-        t += x * Time.deltaTime;
+        else
+        {
+            illegalityArray[5] = true;
+        }
+        
     }
 
     public void Rotate(float rotatingSpeed) {
         if (rotatingSpeed != 0) {
-            this.thisHuman.gameObject.transform.Rotate(0, rotatingSpeed, 0, Space.World);
+            this.thisHuman.gameObject.transform.Rotate(0,rotatingSpeed,0 , Space.World);
             rotating = true;
         }
     }
 
     public void Drink() {
-        // This doesn't make sense to me... choice dict is something used by AI to communicate with motor, so why is it changed here?
-        //this.actionChoiceDict["drinking"] = true;
-
-        this.thisHuman.GetDriveSystem().SetState("thirst", 0);
+        
+        this.thisHuman.GetDriveSystem().SetDriveState("thirst", 0);
+        this.actionChoiceDict["drinking"] = true;
+        
     }
     
-    public void SitDown() {
-        // this.actionChoiceDict["sitting down"] = true;
+    public void SitDown(){
+        if (CheckActionLegality("sitting down"))
+        {
+            illegalityArray[0] = false;
+            this.actionChoiceDict["sitting down"] = true;
 
-        Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
-        if (!this.thisHuman.GetBody().GetStateDict()["sitting"]) {
-            Vector3 dir = ((-bodyTransform.up - bodyTransform.forward) / 2).normalized;
-            bodyTransform.Translate(dir * 2f * Time.deltaTime, Space.World);
+            Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
+            if (!this.thisHuman.GetBody().GetBodyStateDict()["sitting"])
+            {
+                this.thisHuman.GetBody().GetJointDict()["Hip_L"].targetRotation = new Quaternion(0.5f, 0, 0, 1);
+                this.thisHuman.GetBody().GetJointDict()["Hip_R"].targetRotation = new Quaternion(0.5f, 0, 0, 1);
+                Vector3 dir = ((-bodyTransform.up - bodyTransform.forward) / 2).normalized;
+                bodyTransform.Translate(dir * 1f * Time.deltaTime, Space.World);
+            }
+            else
+            {
+                this.thisHuman.GetBody().GetJointDict()["Hip_L"].targetRotation = new Quaternion(0, 0, 0, 1);
+                this.thisHuman.GetBody().GetJointDict()["Hip_R"].targetRotation = new Quaternion(0, 0, 0, 1);
+            }
+
+            this.thisHuman.GetBody().SetBodyState("standing", false);
+            this.thisHuman.GetBody().SetBodyState("sitting", true);
         }
-        this.thisHuman.GetBody().SetState("standing", false);
-        this.thisHuman.GetBody().SetState("sitting", true);                     
+        else
+        {
+            illegalityArray[0] = true;
+            
+        }
     }
 
     public void SitUp(){
-        // this.actionChoiceDict["sitting up"] = true;
 
-        this.thisHuman.GetBody().SetState("laying", false);
-        this.thisHuman.GetBody().SetState("sitting", true);          
-    }
-        
-    public void StandUp(){
-        // this.actionChoiceDict["standing up"] = true;
-
+        this.actionChoiceDict["sitting up"] = true;
+        this.thisHuman.GetBody().GetSkeletonDict()["Body"].GetComponent<Rigidbody>().isKinematic = true;
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
-        if (transform.position.y >= -2.0f)
+        Vector3 humanPosition = this.thisHuman.gameObject.transform.position;
+        if (this.thisHuman.GetBody().GetBodyStateDict()["laying"])
         {
-            this.thisHuman.GetBody().GetJointDict()["Leg_L"].targetRotation = Quaternion.Euler(0, 0, 0);
-            this.thisHuman.GetBody().GetJointDict()["Leg_R"].targetRotation = Quaternion.Euler(0, 0, 0);
-            drive.positionDamper = 100;
-            drive.positionSpring = 100;
-            drive.maximumForce = 3.402823e+38f;
-            this.thisHuman.GetBody().GetJointDict()["Leg_L"].angularXDrive = drive;
-            this.thisHuman.GetBody().GetJointDict()["Leg_R"].angularXDrive = drive;
-            bodyTransform.localRotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime);
-            if (bodyTransform.localPosition.y < 0f)
-            {
-                bodyTransform.Translate(Vector3.up * 2 * Time.deltaTime, Space.World);
-            }
-        } else {
-            Vector3 dir = ((transform.up + transform.forward) / 2).normalized;
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(30, 0, 0), Time.deltaTime);
-            transform.Translate(dir * 2 * Time.deltaTime, Space.World);
+            moveToPosition = new Vector3(bodyTransform.position.x, humanPosition.y - 1.0f, bodyTransform.position.z);
         }
+        else if (bodyTransform.localPosition.y >= -1.9 || bodyTransform.localRotation.x >= 0)
+        {
+            if(bodyTransform.localRotation.x < 0)
+            {
+                bodyTransform.Rotate(Vector3.right * 30 * Time.deltaTime);
+            }
+            else
+            {
+                if(!this.thisHuman.GetBody().GetBodyStateDict()["sitting"])
+                {
+                    moveToPosition = new Vector3(bodyTransform.position.x, humanPosition.y - 1.2f, bodyTransform.position.z);
+                }
+            }
+        }
+        bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, moveToPosition, 1.0f * Time.deltaTime);
 
-        this.thisHuman.GetBody().SetState("sitting", false);
-        this.thisHuman.GetBody().SetState("standing", true);  
+        this.thisHuman.GetBody().SetBodyState("laying", false);
+        this.thisHuman.GetBody().SetBodyState("sitting", true);          
+    }
+
+    
+    public void StandUp(){
+
+        this.actionChoiceDict["standing up"] = true;
+        this.thisHuman.GetBody().GetSkeletonDict()["Body"].GetComponent<Rigidbody>().isKinematic = true;
+        Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
+        Vector3 humanPosition = this.thisHuman.gameObject.transform.position;
+        
+        if (this.thisHuman.GetBody().GetBodyStateDict()["sitting"])
+        {
+            moveToPosition = new Vector3(humanPosition.x, humanPosition.y + 0.2f, humanPosition.z);
+        }
+        else if (bodyTransform.position.y >= humanPosition.y + 0.2f)
+        {
+            moveToPosition = humanPosition;
+        }
+        bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, moveToPosition, 1.0f * Time.deltaTime);
+
+
+        this.thisHuman.GetBody().SetBodyState("sitting", false);
+        this.thisHuman.GetBody().SetBodyState("standing", true);  
        
     }
 
     public void LayDown(){
-        // this.actionChoiceDict["laying down"] = true;
-
+        this.actionChoiceDict["laying down"] = true;
+        this.thisHuman.GetBody().GetJointDict()["Hip_L"].targetRotation = new Quaternion(0, 0, 0, 1);
+        this.thisHuman.GetBody().GetJointDict()["Hip_R"].targetRotation = new Quaternion(0, 0, 0, 1);
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
 
-        if (this.thisHuman.GetBody().GetStateDict()["sitting"]) {
+        if (this.thisHuman.GetBody().GetBodyStateDict()["sitting"] || this.thisHuman.GetBody().GetBodyStateDict()["laying"])
+        {
             this.thisHuman.GetBody().GetSkeletonDict()["Body"].GetComponent<Rigidbody>().isKinematic = false;
-        } else {
+        }
+        else
+        {
             SitDown();
         }
 
-        this.thisHuman.GetBody().SetState("sitting", false);
-        this.thisHuman.GetBody().SetState("laying", true);  
+        this.thisHuman.GetBody().SetBodyState("sitting", false);
+        this.thisHuman.GetBody().SetBodyState("laying", true);  
     }
 
     public void Sleep(){
-        // this.actionChoiceDict["falling asleep"] = true;
 
-        this.thisHuman.GetBody().SetState("sleeping", true);  
+        this.thisHuman.GetBody().GetSkeletonDict()["Eye_L"].transform.localScale = new Vector3(0.25f, 0.025f, 0.25f);
+        this.thisHuman.GetBody().GetSkeletonDict()["Eye_R"].transform.localScale = new Vector3(0.25f, 0.025f, 0.25f);
+        this.actionChoiceDict["falling asleep"] = true;
+        this.thisHuman.GetBody().SetBodyState("sleeping", true);  
     }
     
     public void WakeUp(){
-        //this.actionChoiceDict["waking up"] = true;
-
-        this.thisHuman.GetBody().SetState("sleeping", false);  
+        this.thisHuman.GetBody().GetSkeletonDict()["Eye_L"].transform.localScale = new Vector3(0.25f, 0.1666667f, 0.25f);
+        this.thisHuman.GetBody().GetSkeletonDict()["Eye_R"].transform.localScale = new Vector3(0.25f, 0.1666667f, 0.25f);
+        this.actionChoiceDict["waking up"] = true;
+        this.thisHuman.GetBody().SetBodyState("sleeping", false);  
     }
     
-    public void PickUp(float hand) {}
+    public void PickUp(float hand) {
+        Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
+        Vector3 humanPosition = this.thisHuman.gameObject.transform.position;
+        if(!pickedUp)
+        {
+            this.thisHuman.GetBody().GetJointDict()["Hip_L"].targetRotation = new Quaternion(0.3f, 0, 0, 1);
+            this.thisHuman.GetBody().GetJointDict()["Hip_R"].targetRotation = new Quaternion(0.3f, 0, 0, 1);
+            if (bodyTransform.localPosition.y <= -1)
+            {
+                bodyTransform.localRotation = Quaternion.Euler(45, 0, 0);
+                if (bodyTransform.localEulerAngles.x >= 45)
+                {
+                    if (bodyTransform.localPosition.y <= -1.3f)
+                    {
+                        Debug.Log("here");
+                        if (hand == 0)
+                        {
+                            this.thisHuman.GetBody().GetJointDict()["Humerus_L"].targetRotation = new Quaternion(1.5f, 0, 0, 1);
+
+                        }
+                        else
+                        {
+                            this.thisHuman.GetBody().GetJointDict()["Humerus_R"].targetRotation = new Quaternion(1.5f, 0, 0, 1);
+                        }
+                    }
+                    else
+                    {
+                        bodyTransform.Translate(transform.forward * 2 * Time.deltaTime);
+                    }
+
+                }
+            }
+            else
+            {
+                moveToPosition = new Vector3(humanPosition.x, humanPosition.y - 0.8f, humanPosition.z);
+            }
+            bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, moveToPosition, 1.0f * Time.deltaTime);
+        }
+        else
+        {
+            if (hand == 0)
+            {
+                this.thisHuman.GetBody().GetJointDict()["Humerus_L"].targetRotation = new Quaternion(0, 0, 0, 1);
+
+            }
+            else
+            {
+                this.thisHuman.GetBody().GetJointDict()["Humerus_R"].targetRotation = new Quaternion(0, 0, 0, 1);
+            }
+            bodyTransform.localRotation = Quaternion.Euler(0, 0, 0);
+            moveToPosition = new Vector3(humanPosition.x, humanPosition.y, humanPosition.z);
+            bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, moveToPosition, 1.0f * Time.deltaTime);
+            this.thisHuman.GetBody().GetJointDict()["Hip_L"].targetRotation = new Quaternion(0, 0, 0, 1);
+            this.thisHuman.GetBody().GetJointDict()["Hip_R"].targetRotation = new Quaternion(0, 0, 0, 1);
+        }
+    }
 
     public void SetDown(float hand) {}
 
-    public void Eat(float hand) {}
+    public void Eat(float hand) {
+        if (hand == 0)
+        {
+            this.thisHuman.GetBody().GetJointDict()["Humerus_L"].targetRotation = new Quaternion(1.0f, 0, 0, 1);
+            this.thisHuman.GetBody().GetJointDict()["Radius_L"].angularXMotion = ConfigurableJointMotion.Free;
+            this.thisHuman.GetBody().GetJointDict()["Radius_L"].targetRotation = new Quaternion(2.0f, 0, 0, 1);
+
+        }
+        else
+        {
+            this.thisHuman.GetBody().GetJointDict()["Humerus_R"].targetRotation = new Quaternion(1.0f, 0, 0, 1);
+            this.thisHuman.GetBody().GetJointDict()["Radius_R"].angularXMotion = ConfigurableJointMotion.Free;
+            this.thisHuman.GetBody().GetJointDict()["Radius_R"].targetRotation = new Quaternion(2.0f, 0, 0, 1);
+        }
+    }
 }
 
