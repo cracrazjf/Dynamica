@@ -3313,7 +3313,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cb2897e9116d0545810ffd51ed24ec5, type: 3}
   m_Name: 
@@ -3336,7 +3336,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20757f8923728452d81209fec95e8af9, type: 3}
   m_Name: 
@@ -3378,7 +3378,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f75e0b6d6a34da419685ca48db9bd6b, type: 3}
   m_Name: 
@@ -3411,7 +3411,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d27bf24f7465c104da2e1c9d4439585b, type: 3}
   m_Name: 
@@ -6630,7 +6630,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1411839736}
   m_HandleRect: {fileID: 1411839735}
   m_Direction: 3
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 3
   m_OnValueChanged:

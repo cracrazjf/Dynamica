@@ -47,8 +47,6 @@ public class MainUI : MonoBehaviour
     /// </summary>
     void Update() { }
 
-    
-
     public void ToggleFF() {
         buttons = alwaysPanel.GetComponentsInChildren<Button>();
         Button usedButton = buttons[1];
