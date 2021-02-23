@@ -43,42 +43,31 @@ public class HumanBody : Body {
         skeletonDict = new Dictionary <string, GameObject>();
         jointDict = new Dictionary<string, ConfigurableJoint>();
         List<Transform> humanParts = new List<Transform>();
-        foreach (Transform child in this.thisHuman.gameObject.transform)
-        {
-            foreach(Transform grandChild in child)
-            {
+        foreach (Transform child in this.thisHuman.gameObject.transform) {
+            foreach(Transform grandChild in child) {
                 skeletonDict.Add(grandChild.name, grandChild.gameObject);
-                if (grandChild.TryGetComponent(out ConfigurableJoint configurable))
-                {
+                if (grandChild.TryGetComponent(out ConfigurableJoint configurable)) {
                     jointDict.Add(grandChild.name, configurable);
                 }
-            }
-            
+            }  
         }
-        foreach (KeyValuePair<string, ConfigurableJoint> x in jointDict)
-        {
-            Debug.Log(x);
-        }
+        foreach (KeyValuePair<string, ConfigurableJoint> joint in jointDict) { Debug.Log(joint); }
     }
 
     public override void UpdateBodyStates() {
-        CheckSitting();
-        CheckLaying();
+        SetState("sitting", CheckSitting());
+        SetState("laying", CheckSitting());
     }
     
-    void CheckSitting() {
+    bool CheckSitting() {
         GameObject Body = skeletonDict["Body"];
         float bodyExtent = Body.GetComponent<Collider>().bounds.extents.y;
-        bool toUpdate =  Physics.Raycast(Body.transform.position, -Body.transform.up, bodyExtent + 0.2f);
-
-        this.SetState("sitting", toUpdate);
+        return Physics.Raycast(Body.transform.position, -Body.transform.up, bodyExtent + 0.2f);
     }
 
-    void CheckLaying() {
+    bool CheckLaying() {
         GameObject Body = skeletonDict["Body"];
         float bodyExtent = Body.GetComponent<Collider>().bounds.extents.y;
-        bool toUpdate = Physics.Raycast(Body.transform.position, -Vector3.up, bodyExtent + 0.2f);
-
-        this.SetState("laying", toUpdate);
+        return Physics.Raycast(Body.transform.position, -Vector3.up, bodyExtent + 0.2f);
     }
 }

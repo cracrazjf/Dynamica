@@ -13,20 +13,23 @@ public class HumanSimpleAI : AI
     Dictionary<string, bool> actionStateDict;
     Dictionary<string, float> actionArgumentDict;
     Dictionary<string, float> traitDict;
-    ActionChoiceStruct actionChoiceStruct;
 
-    string currentGoal = "None";
+    List<string> decidedActions;
     List<GameObject> inSight = new List<GameObject>();
-    float rotatedAngle = 0;
+    string currentGoal = "None";
 
-    bool generatedNewRandomPosition = false;
-    Vector3 randomPosition;
+    float rotatedAngle = 0;
 
     public HumanSimpleAI(Human human, Body body, DriveSystem drives, MotorSystem motor, SensorySystem senses, Phenotype traits) : base(body, drives, motor, senses, traits) {
         this.thisHuman = human;
+        bodyStateDict = body.GetStateDict();
+        driveStateDict = drives.GetStateDict();
+        actionStateDict = motor.GetStateDict();
+        actionArgumentDict = motor.GetArgDict();
+        traitDict = traits.GetTraitDict();
     }
 
-    public AI.ActionChoiceStruct ChooseAction(Dictionary<string, float> passedTraitDict)
+    public List<string> ChooseAction(Dictionary<string, float> passedTraitDict)
     {
         this.traitDict = passedTraitDict;
 
@@ -34,25 +37,27 @@ public class HumanSimpleAI : AI
         InFov(thisHuman.gameObject.transform, 45, 10);
         Debug.DrawRay(humanTransform.position, humanTransform.forward * 10, Color.red);
         
-        if (currentGoal == "None") { ChooseGoal(); }
-        else if (currentGoal == "Decrease Thirst") { DecreaseThirst(); }
-        else if (currentGoal == "Decrease Sleepiness") { DecreaseSleepiness(); }
-        else if (currentGoal == "Decrease Hunger") { DecreaseHunger(); }
-        else if (currentGoal == "Decrease Fatigue") { DecreaseFatigue(); }
-        return actionChoiceStruct;
+        decidedActions = new List<string>();
+        if (currentGoal == "None") { 
+            ChooseGoal(); 
+        } else if (currentGoal == "Decrease thirst") { 
+            DecreaseThirst(); 
+        } else if (currentGoal == "Decrease sleepiness") { 
+            DecreaseSleepiness(); 
+        } else if (currentGoal == "Decrease hunger") { 
+            DecreaseHunger(); 
+        } else { DecreaseFatigue(); }
+        return decidedActions;
     }
-    public void ChooseGoal()
-    {
-        if (driveStateDict["thirst"] > traitDict["thirst_threshold"])
-        {   currentGoal = "Decrease Thirst";}
-        if (driveStateDict["hunger"] > traitDict["hunger_threshold"])
-        {   currentGoal = "Decrease Hunger";}
-        if (driveStateDict["sleepiness"] > traitDict["sleepiness_threshold"])
-        {   currentGoal = "Decrease Sleepiness";}
-        if (driveStateDict["fatigue"] > traitDict["fatigue_threshold"])
-        {   currentGoal = "Decrease Fatigue";}
-        if (driveStateDict["health"] < traitDict["health_threshold"])
-        {   currentGoal = "Increase Health";}
+    public void ChooseGoal() {
+        // this is a bit funky for health, but much faster
+        foreach (string drive in driveStateDict) {
+            string threshold = drive + "_threshold";
+            toSet = "";
+            if (driveStateDict[drive] > traitDict[threshold]) {
+                toSet = "Decrease " + drive;
+            }
+        }
     }
   
     public void DecreaseThirst() {
@@ -62,103 +67,88 @@ public class HumanSimpleAI : AI
                 GameObject target = CalculateNearestObject(GetTargetObjectList("Water"));
                 if (IsReachable(target)) {
                     this.thisHuman.GetMotorSystem().EndAction("taking steps");
-                    this.actionChoiceStruct.actionChoiceDict["drinking"] = true;
+                    decidedActions.Add("drinking");
                     currentGoal = "None";
                 } else if (IsFacing(target.transform.position)) {
                     this.thisHuman.GetMotorSystem().EndAction("rotating");
-                    this.actionChoiceStruct.actionChoiceDict["taking steps"] = true;
-                    this.actionChoiceStruct.actionArgumentDict["step rate"] = 0.01f;
+                    decidedActions.Add("taking steps");
+                    this.thisHuman.GetMotorSystem().SetArgs("step rate", 0.01f);
                 } else {
                     FacePosition(target.transform.position);
                 }
             } else {
                 SearchForObjects();
             }
-        } else {
-            if (bodyStateDict["sitting"]) {
-                this.actionChoiceStruct.actionChoiceDict["standing up"] = true;
-            }
-            if (bodyStateDict["laying"]) {
-                this.actionChoiceStruct.actionChoiceDict["sitting up"] = true;
-            }
-            if (bodyStateDict["sleeping"]) {
-                this.actionChoiceStruct.actionChoiceDict["waking up"] = true;
-            }
         }
     }
 
-    public void DecreaseHunger()
-    {
+    public void DecreaseHunger() {
         if (bodyStateDict["standing"]) {
             if (this.thisHuman.GetBody().labelLH == "Food") {
-                this.actionChoiceStruct.actionChoiceDict["eating"] = true;
-                this.actionChoiceStruct.actionArgumentDict["hand"] = 0;
-                if (!bodyStateDict["holding with left hand"]) {
-                    currentGoal = "None";
-                }
+                decidedActions.Add("eating");
+                this.thisHuman.GetMotorSystem().SetArgs("active hand", 0);
+                currentGoal = "None";
             } else if (this.thisHuman.GetBody().labelRH == "Food") {
-                this.actionChoiceStruct.actionChoiceDict["eating"] = true;
-                this.actionChoiceStruct.actionArgumentDict["hand"] = 1;
-                if (!bodyStateDict["holding with right hand"]) {
-                    currentGoal = "None";
-                }
+                decidedActions.Add("eating");
+                this.thisHuman.GetMotorSystem().SetArgs("active hand", 1);
+                currentGoal = "None";
             } else if (IsVisible("Food")) {
                 rotatedAngle = 0;
                 GameObject target = CalculateNearestObject(GetTargetObjectList("Food"));
                 if (IsReachable(target)) {
-                    this.actionChoiceStruct.actionArgumentDict["hand target x"] = target.transform.position.x;
-                    this.actionChoiceStruct.actionArgumentDict["hand target y"] = target.transform.position.y;
-                    this.actionChoiceStruct.actionArgumentDict["hand target z"] = target.transform.position.z;
+                    Vector3 targetPos = target.transform.position;
+                    thisHuman.GetMotorSystem().SetArgs("hand target x", targetPos.x);
+                    thisHuman.GetMotorSystem().SetArgs("hand target y", targetPos.y);
+                    thisHuman.GetMotorSystem().SetArgs("hand target x", targetPos.z);
                     this.thisHuman.GetMotorSystem().EndAction("taking steps");
 
                     if (bodyStateDict["holding with left hand"] && bodyStateDict["holding with right hand"]) {
                         //Both hands full
-                        this.actionChoiceStruct.actionChoiceDict["setting down"] = true;
-                        this.actionChoiceStruct.actionArgumentDict["hand"] = 0;
+                        decidedActions.Add("setting down");
                     } else if (!bodyStateDict["holding with left hand"]) {
                         //Grab with LH
-                        this.actionChoiceStruct.actionChoiceDict["picking up"] = true;
-                        this.actionChoiceStruct.actionArgumentDict["hand"] = 0;
+                        decidedActions.Add("picking up");
+                        this.thisHuman.GetMotorSystem().SetArgs("active hand", 0);
                     } else if (!bodyStateDict["holding with right hand"]) {
                         //Grab with RH
-                        this.actionChoiceStruct.actionChoiceDict["picking up"] = true;
-                        this.actionChoiceStruct.actionArgumentDict["hand"] = 1;
+                        decidedActions.Add("picking up");
+                        this.thisHuman.GetMotorSystem().SetArgs("active hand", 1);
                     }
 
                 } else if (IsFacing(target.transform.position)) {
                     this.thisHuman.GetMotorSystem().EndAction("rotating");
-                    this.actionChoiceStruct.actionChoiceDict["taking steps"] = true;
-                    this.actionChoiceStruct.actionArgumentDict["step rate"] = 0.01f;
+                    decidedActions.Add("taking steps");
+                    this.thisHuman.GetMotorSystem().SetArgs("step rate", 0.01f);
                 } else { 
                     FacePosition(target.transform.position); 
                 }
             } else {
                 SearchForObjects();
             }
-        } else if (bodyStateDict["sitting"] ){
-            this.actionChoiceStruct.actionChoiceDict["standing up"] = true;
+        } else if (bodyStateDict["sitting"]){
+            decidedActions.Add("standing up");
         } else if (bodyStateDict["laying"]) {
-            this.actionChoiceStruct.actionChoiceDict["sitting up"] = true;
+            decidedActions.Add("sitting up");
         } else if (bodyStateDict["sleeping"]) {
-            this.actionChoiceStruct.actionChoiceDict["waking up"] = true;
+            decidedActions.Add("waking up");
         }
     }
 
     public void DecreaseSleepiness() {
         if (bodyStateDict["laying"]) {
-            this.actionChoiceStruct.actionChoiceDict["falling asleep"] = true;
+            decidedActions.Add("falling asleep");
         } else if (bodyStateDict["sitting"]) {
-            this.actionChoiceStruct.actionChoiceDict["laying down"] = true;
+            decidedActions.Add("laying down");
         } else {
-            this.actionChoiceStruct.actionChoiceDict["sitting down"] = true;
+            decidedActions.Add("sitting down");
         }
     }
 
     public void DecreaseFatigue() {
         if (bodyStateDict["standing"]) {
-            this.actionChoiceStruct.actionChoiceDict["sitting down"] = true;
-        } else if (bodyStateDict["laying"]) {
-            this.actionChoiceStruct.actionChoiceDict["sitting up"] = true;
+            decidedActions.Add("sitting down");
+        } else if (bodyStateDict["sitting"]) {
+            decidedActions.Add("laying down");
         }
     }
 
@@ -190,7 +180,6 @@ public class HumanSimpleAI : AI
         } else {
             GameObject nearestObject = null;
             float largeNumber = Mathf.Infinity;
-
             for (int i =0; i < targetList.Count; i++) {
                 float distance = Vector3.Distance(humanTransform.position, targetList[i].transform.position);
 
@@ -222,50 +211,44 @@ public class HumanSimpleAI : AI
         Vector3 relativePosition = humanTransform.InverseTransformPoint(passedPosition);
         if (relativePosition.x < 0) {
             return -1;
-        } else if (relativePosition.x > 0) {
-            return 1;
+        } else if (relativePosition.x > 0) { 
+            return 1; 
             }
         return 0;
     }
 
     public bool IsFacing(Vector3 passedPosition) {
         float angle = CalculateRotationAngle(passedPosition);
-        if (angle <= 0.5f) { 
-            return true;
-            }
+        if (angle <= 0.5f) { return true; }
         return false;
     }
 
     public void FacePosition(Vector3 passedPosition) {
+        decidedActions.Add("rotating");
         if (CalculateRelativePosition(passedPosition) == -1) {
-            actionChoiceStruct.actionChoiceDict["rotating"] = true;
-            actionChoiceStruct.actionArgumentDict["rotation velocity"] = -0.05f;
+            this.thisHuman.GetMotorSystem().SetArgs("rotation velocity", -0.05f);
         } else {
-            actionChoiceStruct.actionChoiceDict["rotating"] = true;
-            actionChoiceStruct.actionArgumentDict["rotation velocity"] = 0.05f;
+           this.thisHuman.GetMotorSystem().SetArgs("rotation velocity", 0.05f);
         }
     }
 
     public void SearchForObjects() {
         if (rotatedAngle < 360) {
-            actionChoiceStruct.actionChoiceDict["rotating"] = true;
-            actionChoiceStruct.actionArgumentDict["rotation velocity"] = 1.0f;  
+            decidedActions.Add("rotating");
+            this.thisHuman.GetMotorSystem().SetArgs("rotation velocity", 1.0f);
             rotatedAngle += 2.0f;
-        } else if (!generatedNewRandomPosition) {
-            randomPosition = CreateRandomPosition(3.0f);
         }
-
+        Vector3 randomPosition = CreateRandomPosition(3.0f);
         FacePosition(randomPosition);
         if(IsFacing(CalculateNearestObject(GetTargetObjectList("Food")).transform.position)) {
             thisHuman.GetMotorSystem().EndAction("rotating");
-            actionChoiceStruct.actionChoiceDict["taking steps"] = true;
-            actionChoiceStruct.actionArgumentDict["step rate"] = 0.01f;
-            if ((thisHuman.gameObject.transform.position - randomPosition).magnitude < 1) {
-                generatedNewRandomPosition = false;
-            } else {
-                this.thisHuman.GetMotorSystem().EndAction("taking steps");
-                FacePosition(randomPosition);
-            }
+            decidedActions.Add("taking steps");
+            this.thisHuman.GetMotorSystem().SetArgs("step rate", 0.01f);
+            while ((thisHuman.gameObject.transform.position - randomPosition).magnitude < 1) {
+                randomPosition = CreateRandomPosition(3.0f);
+            } 
+            this.thisHuman.GetMotorSystem().EndAction("taking steps");
+            FacePosition(randomPosition);
         }
     }
 

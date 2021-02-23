@@ -14,7 +14,8 @@ public class Body {
     public string labelRH;
 
     protected Dictionary<string, GameObject> skeletonDict;
-    protected int numJoints;
+    public Dictionary<string, GameObject> GetSkeletonDict() { return skeletonDict; }
+
     protected Dictionary<string, ConfigurableJoint> jointDict;
     public Dictionary<string, ConfigurableJoint> GetJointDict() { return jointDict; }
     
@@ -33,7 +34,13 @@ public class Body {
         this.thisAnimal = animal;
     }
 
-    // DISCUSS
+    public void RotateJoint(string joint, Quaternion target) {
+        if (this.jointDict.ContainsKey(joint)) {
+            this.jointDict[joint].targetRotation = target;
+        }
+
+    }
+
     public void InitStates(List<string> passedStateLabelList) {
         states = new bool[passedStateLabelList.Count]; 
         stateLabelList = passedStateLabelList;
@@ -50,7 +57,6 @@ public class Body {
         else { Debug.Log("No body states defined for this animal"); }
     }
 
-    // DISCUSS
     public void SetState(string label, bool passed) {
         stateDict[label] = passed;
         int currentIndex = stateIndexDict[label];
@@ -61,7 +67,4 @@ public class Body {
 
     public virtual void UpdateSkeletonStates() { Debug.Log("No update skeleton states defined for this animal"); }
 
-    public Dictionary<string, GameObject> GetSkeletonDict() {
-        return skeletonDict;
-    }
 }

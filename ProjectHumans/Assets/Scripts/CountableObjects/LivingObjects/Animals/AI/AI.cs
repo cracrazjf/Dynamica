@@ -6,8 +6,7 @@ using UnityEngine;
 public class AI 
 {
     // removed numStates counters, incrementing makes less sense than calling count when needed - JC
-
-    public ActionChoiceStruct actionChoiceStruct;
+    protected List<string> decidedActions;
 
     protected bool[] bodyStates;
     protected List<string> bodyStateLabelList;
@@ -60,34 +59,17 @@ public class AI
 
         // add sensory?
 
-        InitActionChoiceStruct();
     }
 
-
-
-    // Moved this here from Animal... Action choices are an AI thing, not inherent to life (a sponge is not considered to choose actions) - JC
-    public struct ActionChoiceStruct {
-        public Dictionary<string, bool> actionChoiceDict;
-        public Dictionary<string, float> actionArgumentDict;
-    };
-
-    public ActionChoiceStruct GetActionChoiceStruct() {
-        return actionChoiceStruct;
-    }
-
-    public void InitActionChoiceStruct() {
-        this.actionChoiceStruct = new ActionChoiceStruct();
-    }
 
     // Since ChooseAction is in here, it doesn't need all these values passed. AI already has the bodyState, actionState, etc. - JC
-    public virtual ActionChoiceStruct ChooseAction (float[ , ] visualInput, Dictionary<string, float> traitDict){
+    public virtual string ChooseAction (float[ , ] visualInput, Dictionary<string, float> traitDict){
         
         if (outputDefinitionError == false){
             Debug.Log("No ChooseAction function defined for this AI");
             outputDefinitionError = true;
         }
         
-        return actionChoiceStruct;
+        return "sleep";
     }
-
 }

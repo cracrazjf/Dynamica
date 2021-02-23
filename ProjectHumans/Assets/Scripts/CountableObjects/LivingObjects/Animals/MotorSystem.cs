@@ -6,65 +6,84 @@ using UnityEngine;
 public class MotorSystem 
 {
     public Animal thisAnimal;
+    protected Transform transform;
 
-    protected int numActionChoice;
-    protected Dictionary<string, bool> actionChoiceDict;
+    protected bool[] states;
+    protected List<string> stateLabelList;
+    protected Dictionary<string, int> stateIndexDict;
+    protected Dictionary<string, bool> stateDict;
+    
+    public bool[] GetStates() { return states; }
+    public List<string> GetStateLabels() { return stateLabelList; }
+    public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
+    public Dictionary<string, bool> GetStateDict() { return stateDict; }
+    
+    protected float[] actionArgs;
+    protected List<string> argsLabelList;
+    protected Dictionary<string, int> argsIndexDict;
+    protected Dictionary<string, float> actionArgsDict;
 
-    protected int numActionArguments;
-    protected Dictionary<string, float> actionArgumentDict;
-
-    protected Dictionary<string, List<string>> actionRequirementDict = new Dictionary<string, List<string>>();
-    protected Dictionary<string, List<string>> actionObstructorDict = new Dictionary<string, List<string>>();
-    protected Dictionary<string, List<string>> bodyStateRequirementDict = new Dictionary<string, List<string>>();
-    protected Dictionary<string, List<string>> bodyStateObstructorDict = new Dictionary<string, List<string>>();
-
+    public float[] GetArgs() { return actionArgs; }
+    public List<string> GetArgLabels() { return argsLabelList; }
+    public Dictionary<string, int> GetArgIndices() { return argsIndexDict; }
+    public Dictionary<string, float> GetArgDict() { return actionArgsDict; }
 
     public MotorSystem(Animal passed) {
         this.thisAnimal = passed;
     }
 
-    public virtual void InitActionRuleDicts() {
-        Debug.Log("No action rules for this animal");
+    public void InitStates(List<string> passedStateLabelList) {
+        states = new bool[passedStateLabelList.Count];
+        stateLabelList = passedStateLabelList;
+        stateIndexDict = new Dictionary<string, int>();
+        stateDict = new Dictionary<string, bool>();
+
+        if (passedStateLabelList != null){
+            for (int i = 0; i < passedStateLabelList.Count; i++) {
+                states[i] = false;
+                stateIndexDict[passedStateLabelList[i]] = i;
+                stateDict[passedStateLabelList[i]] = false;
+            }
+        } else { Debug.Log("No actions passed to this animal"); }
     }
 
-    public virtual void InitActionStates() {
-        Debug.Log("No action rules for this animal");
+    public void SetState(string label, bool val) {
+        stateDict[label] = val;
+        int currentIndex = stateIndexDict[label];
+        states[currentIndex] = val;
     }
 
-    public virtual void InitActionArguments() {
-        Debug.Log("No action rules for this animal");
+    public void SetArgs(string label, float val) {
+        argsDict[label] = val;
+        int currentIndex = argsIndexDict[label];
+        args[currentIndex] = val;
     }
 
+    public void InitActionArguments(List<string> passedArgsLabels) {
+        actionArgs = new float[passedArgsLabels.Count];
+        argsLabelList = passedArgsLabels;
+        argsIndexDict = new Dictionary<string, int>();
+        actionArgsDict = new Dictionary<string, float>();
 
-    public virtual void TakeAction(AI.ActionChoiceStruct actionChoiceStruct) {
-        Debug.Log("No actions defined for this animal");
-    }
-    public virtual void EndAction(string actionLabel) {
-        Debug.Log("No actions defined for this animal");
+        if (passedArgsLabels != null){
+            for (int i = 0; i < passedArgsLabels.Count; i++) {
+                actionArgs[i] = 0.0f;
+                argsIndexDict[passedArgsLabels[i]] = i;
+                actionArgsDict[passedArgsLabels[i]] = 0.0f;
+            }
+        } else { Debug.Log("No args defined for this animal"); }
     }
 
-    public virtual void UpdateSkeletonStates() {
-        Debug.Log("No actions defined for this animal");
-    }
+    public virtual void TakeAction(string action) { Debug.Log("No actions defined for this animal"); }
+
+    public virtual void EndAction(string actionLabel) { Debug.Log("No actions to end for this animal"); }
+
+    public virtual void UpdateActionStates() { Debug.Log("No action updates defined for this animal"); }
+
+    public virtual void UpdateSkeletonStates() { Debug.Log("No actions defined for this animal"); }
 
     public virtual bool CheckActionLegality(string action) {
         Debug.Log("No actions defined for this animal");
         return false;
-    }
-
-    public int GetNumActionStates() {
-        return numActionChoice;
-    }
-
-    public Dictionary<string, bool> GetActionStateDict() {
-        return actionChoiceDict;
-    }
-
-    public int GetNumActionArguments() {
-        return numActionArguments;
-    }
-    
-    public Dictionary<string, float> GetActionArgumentDict() {
-        return actionArgumentDict;
     }
 }

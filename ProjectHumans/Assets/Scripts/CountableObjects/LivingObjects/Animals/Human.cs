@@ -38,9 +38,9 @@ public class Human : Animal
 
     public override void UpdateAnimal() {
         float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
-        activeAI.actionChoiceStruct = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().GetTraitDict());
+        string toSend = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().GetTraitDict());
 
-        GetMotorSystem().TakeAction(activeAI.actionChoiceStruct);
+        GetMotorSystem().TakeAction(toSend);
         IncreaseAge(1);
     }
 }
