@@ -38,7 +38,6 @@ public class Body {
         if (this.jointDict.ContainsKey(joint)) {
             this.jointDict[joint].targetRotation = target;
         }
-
     }
 
     public void InitStates(List<string> passedStateLabelList) {

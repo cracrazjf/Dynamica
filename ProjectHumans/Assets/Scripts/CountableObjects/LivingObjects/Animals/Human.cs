@@ -43,6 +43,13 @@ public class Human : Animal
         GetMotorSystem().TakeAction(toSend);
         IncreaseAge(1);
     }
+
+    public bool GetBodyState(string state) {
+        return this.GetBody().GetStateDict()[state];
+    }
+    public void ToggleBodyPart(string part, bool toggle) {
+        this.GetBody().GetSkeletonDict()[part].gameObject.SetActive(toggle);
+    }
 }
 
 

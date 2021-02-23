@@ -18,15 +18,15 @@ public class MotorSystem
     public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
     public Dictionary<string, bool> GetStateDict() { return stateDict; }
     
-    protected float[] actionArgs;
+    protected float[] args;
     protected List<string> argsLabelList;
     protected Dictionary<string, int> argsIndexDict;
-    protected Dictionary<string, float> actionArgsDict;
+    protected Dictionary<string, float> argsDict;
 
-    public float[] GetArgs() { return actionArgs; }
+    public float[] GetArgs() { return args; }
     public List<string> GetArgLabels() { return argsLabelList; }
     public Dictionary<string, int> GetArgIndices() { return argsIndexDict; }
-    public Dictionary<string, float> GetArgDict() { return actionArgsDict; }
+    public Dictionary<string, float> GetArgDict() { return argsDict; }
 
     public MotorSystem(Animal passed) {
         this.thisAnimal = passed;
@@ -60,16 +60,16 @@ public class MotorSystem
     }
 
     public void InitActionArguments(List<string> passedArgsLabels) {
-        actionArgs = new float[passedArgsLabels.Count];
+        args = new float[passedArgsLabels.Count];
         argsLabelList = passedArgsLabels;
         argsIndexDict = new Dictionary<string, int>();
-        actionArgsDict = new Dictionary<string, float>();
+        argsDict = new Dictionary<string, float>();
 
         if (passedArgsLabels != null){
             for (int i = 0; i < passedArgsLabels.Count; i++) {
-                actionArgs[i] = 0.0f;
+                args[i] = 0.0f;
                 argsIndexDict[passedArgsLabels[i]] = i;
-                actionArgsDict[passedArgsLabels[i]] = 0.0f;
+                argsDict[passedArgsLabels[i]] = 0.0f;
             }
         } else { Debug.Log("No args defined for this animal"); }
     }

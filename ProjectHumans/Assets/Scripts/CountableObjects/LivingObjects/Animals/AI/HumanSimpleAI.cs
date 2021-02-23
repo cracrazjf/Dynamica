@@ -50,14 +50,15 @@ public class HumanSimpleAI : AI
         return decidedActions;
     }
     public void ChooseGoal() {
+        string toSet = "";
         // this is a bit funky for health, but much faster
-        foreach (string drive in driveStateDict) {
+        foreach (string drive in driveStateDict.Keys) {
             string threshold = drive + "_threshold";
-            toSet = "";
             if (driveStateDict[drive] > traitDict[threshold]) {
                 toSet = "Decrease " + drive;
             }
         }
+        currentGoal = toSet;
     }
   
     public void DecreaseThirst() {
@@ -67,7 +68,7 @@ public class HumanSimpleAI : AI
                 GameObject target = CalculateNearestObject(GetTargetObjectList("Water"));
                 if (IsReachable(target)) {
                     this.thisHuman.GetMotorSystem().EndAction("taking steps");
-                    decidedActions.Add("drinking");
+                    decidedActions.Add("consuming");
                     currentGoal = "None";
                 } else if (IsFacing(target.transform.position)) {
                     this.thisHuman.GetMotorSystem().EndAction("rotating");
@@ -85,11 +86,11 @@ public class HumanSimpleAI : AI
     public void DecreaseHunger() {
         if (bodyStateDict["standing"]) {
             if (this.thisHuman.GetBody().labelLH == "Food") {
-                decidedActions.Add("eating");
+                decidedActions.Add("consuming");
                 this.thisHuman.GetMotorSystem().SetArgs("active hand", 0);
                 currentGoal = "None";
             } else if (this.thisHuman.GetBody().labelRH == "Food") {
-                decidedActions.Add("eating");
+                decidedActions.Add("consuming");
                 this.thisHuman.GetMotorSystem().SetArgs("active hand", 1);
                 currentGoal = "None";
             } else if (IsVisible("Food")) {
@@ -257,7 +258,6 @@ public class HumanSimpleAI : AI
                                 thisHuman.gameObject.transform.position.x + Range), 0,
                                 Random.Range(thisHuman.gameObject.transform.position.z - Range,
                                 thisHuman.gameObject.transform.position.z + Range));
-        generatedNewRandomPosition = true;
         return randomPosition;
     }
     
