@@ -5,84 +5,210 @@ using UnityEngine.UI;
 
 public class MainUI : MonoBehaviour
 {
-    private GameObject objectPanel;
+    // Movement content
+    private Vector3 startPosition = new Vector3(-1, 3, 0);
+    private Quaternion startRotation = new Quaternion(0, 90, 0, 0);
+
+    private float baseClimbSpeed = 4;
+    private float baseMoveSpeed = 10;
+    private float baseRotateSpeed = 100;
+    private float genericHop = 2;
+    private float eyeLevel = 2.55f;
+
+    private float climbAdjustment = 0f;
+    private float moveAdjustment = 0f;
+    private float rotateAdjustment = 0f;
+
+    private float xRotation = 0.0f;
+    private float yRotation = 0.0f;
+    private static float xTemp, yTemp, zTemp;
+
+    private bool toggleFlight = true;
+    private bool toggleRotate = false;
+
+    // Camera content
+    private bool thirdPerson = true;
+    private bool firstPerson = false;
+    private bool followingAnimal = false;
+    private Camera followedCam;
+
+    // UI content 
     private GameObject alwaysPanel;
-    private GameObject nonPanel;
-    private GameObject animalPanel;
-    private GameObject plantPanel;
-    private GameObject genomePanel;
-    private GameObject brainPanel;
-    private GameObject help;
-    private GameObject pause;
-    private Button[] buttons;
-    private bool show_help;
-    private static bool is_paused = false;
-    private bool is_FF = false;
+    private GameObject helpObj;
+    private GameObject pauseObj;
+
+    private bool isPaused = false;
+    private bool isFF = false;
+    private bool toggleHelp;
     
-
-    /// <summary>
-    /// Start is called before the first frame update and sets the starting camera position and angle
-    /// </summary>
     void Start() {
+        InitPanels();
+        transform.position = startPosition;
+        transform.rotation = startRotation;
+    }
+
+    // Called once a frame
+    void Update() {
+        CheckClick();
+        MovePlayer();
+    }
+
+    public void InitPanels() {
         alwaysPanel = GameObject.Find("AlwaysPanel");
-        help = GameObject.Find("InfoPanel");
-        pause = GameObject.Find("PauseText");
-        nonPanel = GameObject.Find("NonlivingPanel");
-        animalPanel = GameObject.Find("AnimalPanel");
-        genomePanel = GameObject.Find("GenomePanel");
-        plantPanel = GameObject.Find("PlantPanel");
-        brainPanel = GameObject.Find("BrainPanel");
-        help.SetActive(false);
-        pause.SetActive(false);
-        nonPanel.SetActive(false);
-        animalPanel.SetActive(false);
-        plantPanel.SetActive(false);
-        genomePanel.SetActive(false);
-        brainPanel.SetActive(false);
-
+        helpObj = GameObject.Find("InfoPanel");
+        pauseObj = GameObject.Find("PauseText");
+        
+        helpObj.SetActive(false);
+        pauseObj.SetActive(false);
     }
 
-    /// <summary>
-    /// Update is called once per frame and adjusts the camera position and angle from mouse input
-    /// </summary>
-    void Update() { }
+    private void MovePlayer() {
+        // Always called in case player goes under plane
+        ResolveAltitude();
+        if (followingAnimal) {
+            transform.position = followedCam.transform.position;
+            transform.rotation = followedCam.transform.rotation;
 
-    public void ToggleFF() {
-        buttons = alwaysPanel.GetComponentsInChildren<Button>();
-        Button usedButton = buttons[1];
-        is_FF= !is_FF;
-        if(is_FF) {
-            usedButton.GetComponentInChildren<Text>().text = ">";
-            
-        } else {
-            usedButton.GetComponentInChildren<Text>().text = "> >";
+        } else if (thirdPerson) { 
+            MoveNormally(baseMoveSpeed);
+            // Fly if legal
+            if (toggleFlight) { MoveAirborne(baseClimbSpeed); }
+            // Hold L Ctrl to rotate
+            if (Input.GetKeyDown(KeyCode.LeftControl)) { RotateCamera(baseRotateSpeed); } 
+
+        } else if (firstPerson) {
+            MoveNormally(baseMoveSpeed);
+            RotateCamera(baseRotateSpeed);
+        }
+        if (Input.GetKey(KeyCode.Escape)) { CheckReset(); }
+    }
+
+    public static void CenterObject(Transform passed) {
+        Debug.Log("Centering on object");
+        xTemp = passed.position.x;
+        yTemp = transform.position.y;
+        zTemp = passed.position.z;
+
+        transform.position = new Vector3(xTemp, yTemp, zTemp);
+    }
+
+    public static void EnterAnimalCam(Camera passed) {
+        followCam = passed.transform;
+        followingAnimal = true;
+    }
+
+    public void MoveNormally(float passedSpeed) {
+        // Vertical update
+        xTemp = transform.forward.x * passedSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
+        zTemp = transform.forward.z * passedSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
+        transform.position += new Vector3(xTemp, 0, zTemp);
+
+        // Horizontal update
+        xTemp = transform.right.x * passedSpeed * Input.GetAxis("Horizontal") * Time.deltaTime;
+        zTemp = transform.right.z * passedSpeed * Input.GetAxis("Horizontal") * Time.deltaTime;
+        transform.position += new Vector3(xTemp, 0, zTemp);
+    }
+
+    public void MoveAirborne(float passedSpeed) {
+        // Climb update
+        yTemp = 0f;
+        if (Input.GetKey(KeyCode.Space)) {
+            yTemp = transform.position.y * passedSpeed * Time.deltaTime;
+            transform.position += new Vector3(0, yTemp, 0);
+        }
+
+        // Descend update
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            if (transform.position.y > 1) {
+                yTemp = yTemp * passedSpeed * Time.deltaTime;
+                transform.position -= new Vector3(0, yTemp, 0);
+            }
         }
     }
 
-    public void TogglePause() {
-        buttons = alwaysPanel.GetComponentsInChildren<Button>();
-        Button usedButton = buttons[0];
-        is_paused = !is_paused;
-        if(is_paused) {
-            usedButton.GetComponentInChildren<Text>().text = ">";
-            usedButton.GetComponent<SpriteRenderer>().color = Color.green;
-            pause.SetActive(true);
-            
-        } else {
-            usedButton.GetComponentInChildren<Text>().text = "| |";
-            usedButton.GetComponent<SpriteRenderer>().color = Color.red;
-            pause.SetActive(false);
+    public void RotateCamera(float passedSpeed) {
+        xRotation += Input.GetAxis("Mouse X") * passedSpeed  * Time.deltaTime;
+        yRotation += Input.GetAxis("Mouse Y") * passedSpeed  * Time.deltaTime;
+
+        transform.localRotation = Quaternion.AngleAxis(xRotation, Vector3.up);
+        transform.localRotation *= Quaternion.AngleAxis(yRotation, Vector3.left);
+    }
+
+    public void ResolveAltitude() {
+        yTemp = transform.position.y;
+        // Checks for underground
+        if (yTemp < 0) { VerticalBump(yTemp * -1); }
+
+        // Checks for eye level
+        if (firstPerson && yTemp != eyeLevel) { VerticalBump(-yTemp + eyeLevel); }
+    }
+
+    public void VerticalBump(float height) {
+        transform.position += new Vector3(0, height, 0);
+    }
+
+    // Listens for clicks; if there's a click this function checks whether it hit something and ensures relevant info shows
+    public void CheckClick() {
+
+        if (Input.GetMouseButtonDown(0)) {
+            Debug.Log("Logged a click!");
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if(Physics.Raycast(ray, out hit)) {
+                // Gets the clicked object and identifies its type from the tag before waking up the relevant panel
+                GameObject countable = hit.transform.root.gameObject;
+                string objTag = countable.tag;
+
+                if (objTag == "Human" || objTag == "Animal") {
+                    AnimalUI.ReceiveAnimal(countable);
+                } else if (objTag == "Plant") {
+                    PlantUI.ReceivePlant(countable);
+                } else if (objTag == "Object") {
+                    NonLivingUI.ReceiveObject(countable);
+                }
+            }
         }
     }
 
-    public static bool GetPause() {
-        return is_paused;
+    // Followed by the escape key
+    public void CheckReset() {
+        if (firstPerson) {
+            ToggleView();
+            VerticalBump(genericHop);
+        } else if (followingAnimal) {
+            followingAnimal = false;
+            VerticalBump(genericHop);
+        } else { ToggleHelp(); }
+    }
+
+    // Toggles
+
+    // Flips from first to third person or vice versa
+    public void ToggleView() {
+        firstPerson = !firstPerson;
+        thirdPerson = !thirdPerson;
+        toggleFlight =! toggleFlight;
+    }
+
+    public void ToggleFF(Button usedButton) {
+        isFF= !isFF;
+        if (isFF) { usedButton.GetComponentInChildren<Text>().text = ">"; 
+        } else { usedButton.GetComponentInChildren<Text>().text = "> >"; }
+    }
+
+    public void TogglePause(Button usedButton) {
+        isPaused = !isPaused;
+        if (isPaused) { pauseObj.SetActive(true);
+        } else { pauseObj.SetActive(false); }
     }
 
     public void ToggleHelp() {
-        show_help = !show_help;
-        help.SetActive(show_help);
+        toggleHelp = !toggleHelp;
+        helpObj.SetActive(toggleHelp);
     }
 
+    // Getters and Setters
 
+    public bool GetPause() { return isPaused; }
 }

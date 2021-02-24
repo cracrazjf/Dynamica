@@ -1,166 +1,140 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿// using UnityEngine;
+// using System.Collections;
+// using System.Collections.Generic;
 
-public class MainCamera : MonoBehaviour
-{
-    // FEATURES
-    // WASD/Arrows:   Movement
-    // Space:         Climb
-    // Shift:         Drop
-    // G:             Toggle bird's eye view
-    public float cameraSensitivity = 100;
-    public float climbSpeed = 4;
-    public float normalMoveSpeed = 10;
-    private float rotationX = 0.0f;
-    private float rotationY = 0.0f;
+// public class MainCamera : MonoBehaviour
+// {
+//     private Vector3 startPosition = new Vector3(-1, 3, 0);
+//     private Vector3 startRotation = new Vector3(0, 90, 0);
 
-    private bool birdView = true;
-    private bool toggleRotate = false;
+//     private float baseClimbSpeed = 4;
+//     private float baseMoveSpeed = 10;
+//     private float baseRotateSpeed = 100;
+//     private float genericHop = 2;
+//     private float eyeLevel = 2.55f;
 
-    private static bool brainMode = false;
+//     private float climbAdjustment = 0f;
+//     private float moveAdjustment = 0f;
+//     private float rotateAdjustment = 0f;
 
-    private static Transform toSwitch;
-    private static bool resetPos = false;
-    private static bool switchCenter = false;
+//     private float xRotation = 0.0f;
+//     private float yRotation = 0.0f;
+//     private float xTemp, yTemp, zTemp;
 
+//     private bool toggleFlight = true;
+//     private bool toggleRotate = false;
 
-    /// <summary>
-    /// Start is called before the first frame update and sets the starting camera position and angle
-    /// </summary>
-    void Start() {
-        transform.position = new Vector3(-1, 3, 0);
-        transform.localEulerAngles = new Vector3(0, 90, 0);
-    }
+//     private bool thirdPerson = true;
+//     private bool firstPerson = false;
+//     private bool followingAnimal = false;
+//     private Camera followedCam;
 
-    /// <summary>
-    /// Update is called once per frame and adjusts the camera position and angle from mouse input
-    /// </summary>
-    void Update() {
+//     void Start() { transform = new Quaternion(startPosition, startRotation); }
 
+//     Called once a frame
+//     void Update() {
+//         // Always called in case player goes under plane
+//         ResolveClipping();
 
-        //check for clipping
-        var isolated_value_y = transform.position.y;
-        if(isolated_value_y < 0) {
-            transform.position += new Vector3(0, -1f * isolated_value_y, 0);
-        }
+//         if (followingAnimal) {
+//             transform = followedCam.transform;
 
+//         } else if (thirdPerson) { 
+//             MoveNormally(baseMoveSpeed);
 
-        //normal movement
-        if(!brainMode){
-            var isolated_value_x = transform.forward.x * normalMoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
-            var isolated_value_z = transform.forward.z * normalMoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
-            transform.position += new Vector3(isolated_value_x, 0, isolated_value_z);
-            isolated_value_x = transform.right.x * normalMoveSpeed * Input.GetAxis("Horizontal") * Time.deltaTime;
-            isolated_value_z = transform.right.z * normalMoveSpeed * Input.GetAxis("Horizontal") * Time.deltaTime;
-            transform.position += new Vector3(isolated_value_x, 0, isolated_value_z);
-        }
+//             // Fly if legal
+//             if (toggleFlight) { MoveAirborne(baseClimbSpeed); }
 
-        if(Input.GetKey(KeyCode.Escape)){
-            ToggleReset();
-        }
+//             // Hold L Ctrl to rotate
+//             if (Input.GetKeyDown(KeyCode.LeftControl)) { RotateCamera(baseRotateSpeed); } 
 
-        //flying
-        if(birdView){
-            if(resetPos){
-                ResetPos(switchCenter);
-            }
-
-            isolated_value_y = 0f;
-            if (Input.GetKey(KeyCode.Space))
-            {
-                isolated_value_y = transform.position.y * climbSpeed * Time.deltaTime;
-                transform.position += new Vector3(0, isolated_value_y, 0);
-            }
-
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                if (transform.position.y > 1) {
-                    isolated_value_y = transform.position.y * climbSpeed * Time.deltaTime;
-                    transform.position -= new Vector3(0, isolated_value_y, 0);
-                }
-            }
-
-            //hold L Ctrl to rotate in sky mode
-            if(Input.GetKeyDown(KeyCode.LeftControl)) {
-                toggleRotate = !toggleRotate;
-            }
-
-
-            if (toggleRotate) {
-                rotationX += Input.GetAxis("Mouse X") * cameraSensitivity  * Time.deltaTime;
-                rotationY += Input.GetAxis("Mouse Y") * cameraSensitivity  * Time.deltaTime;
-
-                transform.localRotation = Quaternion.AngleAxis(rotationX, Vector3.up);
-                transform.localRotation *= Quaternion.AngleAxis(rotationY, Vector3.left);
-            }
-        }
-
-        //walking
-        if (!birdView)
-        {
-            var tempx = transform.position.x;
-            var tempz = transform.position.z;
-            transform.position = new Vector3(tempx, 1.55f, tempz);
-
-            rotationX += Input.GetAxis("Mouse X") * cameraSensitivity/2 * Time.deltaTime;
-            rotationY += Input.GetAxis("Mouse Y") * cameraSensitivity/2 * Time.deltaTime;
-
-            transform.localRotation = Quaternion.AngleAxis(rotationX, Vector3.up);
-            transform.localRotation *= Quaternion.AngleAxis(rotationY, Vector3.left);
-        }
-    }
-
-    public void ToggleWalk() {
-        Debug.Log("Walk toggle");
-        birdView = !birdView;
-        toSwitch = transform;
-        resetPos = true;
-    }
-
-    public static void ToggleBrain() {
-        Debug.Log("Brain toggle");
-        brainMode = !brainMode;
+//         } else if (firstPerson) {
+//             MoveNormally(baseMoveSpeed);
+//             RotateCamera(baseRotateSpeed);
+//         }
         
-    }
+//         // Checks if reset is needed
+//         if (Input.GetKey(KeyCode.Escape)) { CheckReset(); }
+//     }
+    
+//     Flips from first to third person or vice versa
+//     public void ToggleView() {
+//         firstPerson = !firstPerson;
+//         thirdPerson = !thirdPerson;
+//         toggleFlight =! toggleFlight;
+//     }
 
-    public void ToggleReset() {
-        if(!birdView) {
-            resetPos = true;
-            toSwitch = transform;
-            ToggleWalk();
-        }
-    }
+//     public void CheckReset() {
+//         if (firstPerson) {
+//             ToggleView();
+//             VerticalBump(genericHop);
+//         } else if (followingAnimal) {
+//             followingAnimal = false;
+//             VerticalBump(genericHop);
+//         } else { MainUI.ToggleHelp(); }
+//     }
 
-    public static void CenterObject(Transform passed) {
-        Debug.Log("Centering on object");
-        toSwitch = passed;
-        resetPos = true;
-        switchCenter = true;
-    }
+//     public static void CenterObject(Transform passed) {
+//         Debug.Log("Centering on object");
+//         xTemp = passed.position.x;
+//         yTemp = transform.position.y;
+//         zTemp = passed.position.z;
 
-    public static void EnterAnimalCam(Camera passed) {
-        Debug.Log("Entering animal cam");
+//         transform.position = new Vector3(xTemp, yTemp, zTemp);
+//     }
 
-        
-        //ToggleBrain();
-        
-    }
+//     public static void EnterAnimalCam(Camera passed) {
+//         followCam = passed.transform;
+//         followingAnimal = true;
+//     }
 
-    public void ResetPos(bool isIndependent) {
-        if(isIndependent) {
-            var tempx = transform.position.x;
-            var tempz = transform.position.z;
-            transform.position = new Vector3(tempx, 3, tempz);
-            resetPos = false;
+//     public void MoveNormally(float passedSpeed) {
+//         // Vertical update
+//         xTemp = transform.forward.x * passedSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
+//         zTemp = transform.forward.z * passedSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
+//         transform.position += new Vector3(xTemp, 0, zTemp);
 
-        } else {
-            var tempx = toSwitch.position.x;
-            var tempz = toSwitch.position.z;
-            transform.position = new Vector3(tempx, 3, tempz);
+//         // Horizontal update
+//         xTemp = transform.right.x * passedSpeed * Input.GetAxis("Horizontal") * Time.deltaTime;
+//         zTemp = transform.right.z * passedSpeed * Input.GetAxis("Horizontal") * Time.deltaTime;
+//         transform.position += new Vector3(xTemp, 0, zTemp);
+//     }
 
-            resetPos = false;
-            isIndependent = true;
-        }
-    }
-}
+//     public void MoveAirborne(float passedSpeed) {
+//         // Climb update
+//         yTemp = 0f;
+//         if (Input.GetKey(KeyCode.Space)) {
+//             yTemp = transform.position.y * passedSpeed * Time.deltaTime;
+//             transform.position += new Vector3(0, yTemp, 0);
+//         }
+
+//         // Descend update
+//         if (Input.GetKey(KeyCode.LeftShift)) {
+//             if (transform.position.y > 1) {
+//                 yTemp = yTemp * passedSpeed * Time.deltaTime;
+//                 transform.position -= new Vector3(0, yTemp, 0);
+//             }
+//         }
+//     }
+
+//     public void RotateCamera(float passedSpeed) {
+//         xRotation += Input.GetAxis("Mouse X") * passedSpeed  * Time.deltaTime;
+//         yRotation += Input.GetAxis("Mouse Y") * passedSpeed  * Time.deltaTime;
+
+//         transform.localRotation = Quaternion.AngleAxis(xRotation, Vector3.up);
+//         transform.localRotation *= Quaternion.AngleAxis(yRotation, Vector3.left);
+//     }
+
+//     public void ResolveAltitude() {
+//         yTemp = transform.position.y;
+//         // Checks for underground
+//         if (yTemp < 0) { VerticalBump(yTemp * -1); }
+
+//         // Checks for eye level
+//         if (firstPerson && yTemp != eyeLevel) { VerticalBump(-yTemp + eyeLevel); }
+//     }
+
+//     public void VerticalBump(float height) {
+//         transform.position += new Vector3(0, height, 0);
+//     }
+// }

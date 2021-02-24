@@ -19,18 +19,11 @@ public class IntroUI : MonoBehaviour
     private static bool is_paused = false;
     private bool is_FF = false;
     
-
-    /// <summary>
-    /// Start is called before the first frame update and sets the starting camera position and angle
-    /// </summary>
     void Start() {
         help = GameObject.Find("InfoPanel");
         help.SetActive(false);
     }
-
-    /// <summary>
-    /// Update is called once per frame and adjusts the camera position and angle from mouse input
-    /// </summary>
+    
     void Update() { }
     public void ToggleHelp() {
         show_help = !show_help;

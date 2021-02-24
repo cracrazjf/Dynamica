@@ -4,108 +4,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AnimalUI : MonoBehaviour
-{
-    public Animal selectedAnimal = null;
+public class AnimalUI : PanelUI {
 
-    bool togglePanel = false;
-    bool toggleGenePanel = false;
-    GameObject panel;
-    GameObject genePanel;
-    GameObject mainCam;
-
-    public GameObject halo;
-
-    public Text hunger;
-    public Text thirst;
-    public Text sleep;
-    public Text stamina;
-    public Text health;
-
-    public Text OGName;
-    public Text inputName;
-    public InputField panelNamer;
-
-    bool showMutable = true;
-
-    public Text displayText;
-    public Text muteText;
-
-    Genome displayGenome;
-    Phenotype displayPhenotype;
-
-    private void Start()
-    {
-        mainCam = GameObject.Find("Main Camera");
-        panel = GameObject.Find("AnimalPanel");
-        genePanel = GameObject.Find("GenomePanel");
-    }
+    protected Text hunger;
+    protected Text thirst;
+    protected Text sleep;
+    protected Text stamina;
+    protected Text health;
+    protected Text displayText;
+    protected Animal selectedAnimal;
     
-    private void Update(){
-        if(toggleGenePanel) {
-            DisplayGenome();
-        }
-
-        if (Input.GetMouseButtonDown(0)) {
-            Debug.Log("Logged a click!");
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if(Physics.Raycast(ray, out hit)) {
-                halo.SetActive(true);
-                Vector3 haloPos = new Vector3 (hit.transform.position.x, 0.1f, hit.transform.position.z);
-                halo.transform.position = haloPos;
-
-                inputName.text = "";
-                ReceiveAnimal(hit.transform.root.gameObject); 
-            }
-        }
-    }
-
-    public void ReceiveAnimal(GameObject clicked) {
-        
-        if(clicked.tag == "Human") {
-            Debug.Log ("Got a human!");
-            panel.SetActive(true);
-
-            selectedAnimal = World.GetAnimal(clicked.name);
-            DisplayDrives();
-        }
-
-        if(clicked.tag == "Animal") {
-            Debug.Log ("He wants fish!");
-            panel.SetActive(true);
-
-            selectedAnimal = World.GetAnimal(clicked.name);
-            if(selectedAnimal != null) {
-                DisplayDrives();
-            }
-        }
-    }
-
-    public void TogglePanel() {
-        togglePanel = !togglePanel;
-        panel.SetActive(togglePanel);
-    }
-
-    public void ToggleGenePanel() {
-        toggleGenePanel = !toggleGenePanel;
-        genePanel.SetActive(toggleGenePanel);
-    }
-
-    public void PassAnimalTransform() {
-       Transform to_send =  selectedAnimal.gameObject.transform;
-       MainCamera.CenterObject(to_send);
+    public void ReceiveClicked(GameObject clicked) {
+        selectedAnimal = World.GetAnimal(clicked.name);
+        UpdatePanel();
     }
 
     public void PassAnimalCam() {
-       Camera to_send =  selectedAnimal.gameObject.GetComponent<Camera>();
-       MainCamera.EnterAnimalCam(to_send);
+       Camera toSend =  selectedAnimal.gameObject.GetComponent<Camera>();
+       MainUI.EnterAnimalCam(toSend);
     }
 
-    public void DisplayDrives(){
+    public void UpdatePanel(){
 
-        float[] to_display = new float[5];
+        float[] toDisplay = new float[5];
         //Skipping for now because animals dont have drives
         //DriveSystem passed = selectedAnimal.GetDriveSystem();
         //float[] passedDrives = passed.GetDriveStateArray(); 
@@ -117,44 +38,8 @@ public class AnimalUI : MonoBehaviour
         // sleep.text = passedDrives["sleepiness"].ToString();
         // stamina.text = passedDrives["fatigue"].ToString();
         // health.text = passedDrives["health"].ToString();
-
-        OGName.text = selectedAnimal.GetDisplayName();
-        inputName.text = "";
     }
 
-    public void ExitPanel() {
-        panel.SetActive(false);
-        halo.SetActive(false);
-    }
-
-    public void DisplayGenome(){
-        displayGenome = selectedAnimal.GetGenome();
-        displayPhenotype = selectedAnimal.GetPhenotype();
-
-        string toDisplay = "";
-
-        if(showMutable){
-            toDisplay = displayPhenotype.GetDisplayInfo();
-        } else {
-            toDisplay = displayGenome.GetConstantInfo();
-        }
-        //Debug.Log(toDisplay);
-        displayText.text = toDisplay;
-    }
-
-    public void ToggleMutable() {
-        showMutable = !showMutable;
-        DisplayGenome();
-
-        if(showMutable) {
-            muteText.text = "Mutable";
-        } else {
-            muteText.text = "Immutable";
-        }
-    }
-
-    public void Rename() {
-        selectedAnimal.SetDisplayName(inputName.text);
-        panelNamer.text = "";
-    }
+    public void InitPanel(){}
+    public void InitNamer(){}
 }

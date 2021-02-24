@@ -5,12 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Plant
-  - Water
   - Human
   - Ground
   - Animal
-  - Apple
   - Skeleton
+  - Button
+  - Object
   layers:
   - Default
   - TransparentFX
