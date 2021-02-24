@@ -11,7 +11,7 @@ public class HumanBody : Body {
     public HumanBody(Human human) : base(human) {
         
         this.thisHuman = human;
-        Vector3 fixDrop = new Vector3(0, 2f, 0);
+        Vector3 fixDrop = new Vector3(0, 3f, 0);
 
         if (this.thisHuman.phenotype.GetTraitDict()["sex"] == 0) {   
             humanPrefab = Resources.Load("Prefabs/HumanPrefab",typeof(GameObject)) as GameObject;
@@ -43,7 +43,6 @@ public class HumanBody : Body {
         limbDict = new Dictionary <string, GameObject>();
         skeletonDict = new Dictionary <string, GameObject>();
         jointDict = new Dictionary<string, ConfigurableJoint>();
-        List<Transform> humanParts = new List<Transform>();
 
         foreach (Transform child in this.thisHuman.gameObject.transform) {
             limbDict.Add(child.name, child.gameObject);
