@@ -12,6 +12,10 @@ public class Body {
 
     public string labelLH;
     public string labelRH;
+    protected GameObject abdomen;
+
+    protected Dictionary<string, GameObject> limbDict;
+    public Dictionary<string, GameObject> GetLimbDict() { return limbDict; }
 
     protected Dictionary<string, GameObject> skeletonDict;
     public Dictionary<string, GameObject> GetSkeletonDict() { return skeletonDict; }

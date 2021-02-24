@@ -40,10 +40,13 @@ public class HumanBody : Body {
         };
         this.InitStates(stateLabelList);
 
+        limbDict = new Dictionary <string, GameObject>();
         skeletonDict = new Dictionary <string, GameObject>();
         jointDict = new Dictionary<string, ConfigurableJoint>();
         List<Transform> humanParts = new List<Transform>();
+
         foreach (Transform child in this.thisHuman.gameObject.transform) {
+            limbDict.Add(child.name, child.gameObject);
             foreach(Transform grandChild in child) {
                 skeletonDict.Add(grandChild.name, grandChild.gameObject);
                 if (grandChild.TryGetComponent(out ConfigurableJoint configurable)) {
@@ -51,7 +54,7 @@ public class HumanBody : Body {
                 }
             }  
         }
-        foreach (KeyValuePair<string, ConfigurableJoint> joint in jointDict) { Debug.Log(joint); }
+        this.abdomen = skeletonDict["Abdomen"];
     }
 
     public override void UpdateBodyStates() {
@@ -60,14 +63,12 @@ public class HumanBody : Body {
     }
     
     bool CheckSitting() {
-        GameObject Body = skeletonDict["Body"];
-        float bodyExtent = Body.GetComponent<Collider>().bounds.extents.y;
-        return Physics.Raycast(Body.transform.position, -Body.transform.up, bodyExtent + 0.2f);
+        float bodyExtent = abdomen.GetComponent<Collider>().bounds.extents.y;
+        return Physics.Raycast(abdomen.transform.position, -abdomen.transform.up, bodyExtent + 0.2f);
     }
 
     bool CheckLaying() {
-        GameObject Body = skeletonDict["Body"];
-        float bodyExtent = Body.GetComponent<Collider>().bounds.extents.y;
-        return Physics.Raycast(Body.transform.position, -Vector3.up, bodyExtent + 0.2f);
+        float bodyExtent = abdomen.GetComponent<Collider>().bounds.extents.y;
+        return Physics.Raycast(abdomen.transform.position, -Vector3.up, bodyExtent + 0.2f);
     }
 }
