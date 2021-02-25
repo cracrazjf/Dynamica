@@ -34,7 +34,7 @@ public class HumanSimpleAI : AI
         InitGoalDict();
     }
 
-    public string ChooseAction(Dictionary<string, float> passedTraitDict)
+    public override string ChooseAction(float[ , ] visualInput, Dictionary<string, float> passedTraitDict)
     {
         this.traitDict = passedTraitDict;
 
@@ -43,21 +43,27 @@ public class HumanSimpleAI : AI
         Debug.DrawRay(humanTransform.position, humanTransform.forward * 10, Color.red);
         
         if (currentGoal == "None") { 
+            // Debug.Log("Choosing a goal ");
             decidedActions = new List<string>();
             ChooseGoal(); 
-        } else {
+        } 
+        if (currentGoal != "None") {
+            Debug.Log("Current goal is: "+ currentGoal);
             goalDict[currentGoal].DynamicInvoke();
+            return decidedActions[0];
         }
-        return decidedActions[0];
+        return "standing";
     }
+
     public void ChooseGoal() {
-        string toSet = "";
-        // this is a bit funky for health, but much faster
+        string toSet = "None";
         foreach (string drive in driveStateDict.Keys) {
             string threshold = drive + "_threshold";
-            if (driveStateDict[drive] > traitDict[threshold]) {
+            if (drive == "health"){
+                if (driveStateDict[drive] < traitDict[threshold]) { toSet = "Increase health"; }
+            } else if (driveStateDict[drive] > traitDict[threshold]) {
                 toSet = "Decrease " + drive;
-            }
+            } 
         }
         currentGoal = toSet;
     }
@@ -69,9 +75,11 @@ public class HumanSimpleAI : AI
         goalDict.Add("Decrease hunger", DecreaseHunger);
         goalDict.Add("Decrease sleepiness", DecreaseSleepiness);
         goalDict.Add("Decrease fatigue", DecreaseFatigue);
+        goalDict.Add("Increase health", IncreaseHealth);
     }
   
     public void DecreaseThirst() {
+        Debug.Log("Called DecreaseThirst");
         if (bodyStateDict["standing"]) {
             if (IsVisible("Water")) {
                 rotatedAngle = 0;
@@ -94,6 +102,7 @@ public class HumanSimpleAI : AI
     }
 
     public void DecreaseHunger() {
+        Debug.Log("Called DecreaseHunger");
         if (bodyStateDict["standing"]) {
             if (this.thisHuman.GetBody().labelLH == "Food") {
                 decidedActions.Add("consuming");
@@ -146,6 +155,7 @@ public class HumanSimpleAI : AI
     }
 
     public void DecreaseSleepiness() {
+        Debug.Log("Called DecreaseSleepiness");
         if (bodyStateDict["laying"]) {
             decidedActions.Add("falling asleep");
         } else if (bodyStateDict["sitting"]) {
@@ -156,6 +166,16 @@ public class HumanSimpleAI : AI
     }
 
     public void DecreaseFatigue() {
+        Debug.Log("Called DecreaseFatigue");
+        if (bodyStateDict["standing"]) {
+            decidedActions.Add("sitting down");
+        } else if (bodyStateDict["sitting"]) {
+            decidedActions.Add("laying down");
+        }
+    }
+
+    public void IncreaseHealth() {
+        Debug.Log("Called IncreaseHealth");
         if (bodyStateDict["standing"]) {
             decidedActions.Add("sitting down");
         } else if (bodyStateDict["sitting"]) {
