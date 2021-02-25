@@ -18,7 +18,7 @@ public class AnimalUI : MonoBehaviour {
     protected static GameObject passed;
 
     protected static bool needsUpdate;
-    protected bool togglePanel = false;
+    protected bool showPanel = false;
 
     public Button tempButton;
     protected Button closePanelButton;
@@ -41,8 +41,11 @@ public class AnimalUI : MonoBehaviour {
     }
     
     private void Update() {
-        if (needsUpdate) {togglePanel = true;}
-        if (togglePanel) { UpdatePanel(); }
+        if (needsUpdate) {
+            showPanel = true;
+            needsUpdate = false;
+        }
+        if (showPanel) { UpdatePanel(); }
     }
 
     public void InitXButton(){
@@ -114,6 +117,7 @@ public class AnimalUI : MonoBehaviour {
     public void ExitPanel() {
         panel.SetActive(false);
         halo.SetActive(false);
+        showPanel = false;
     }
 
     public void Rename() {

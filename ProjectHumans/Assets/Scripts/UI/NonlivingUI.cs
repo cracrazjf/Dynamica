@@ -11,7 +11,7 @@ public class NonlivingUI : MonoBehaviour {
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;
-    protected bool togglePanel = false;
+    protected bool showPanel = false;
 
     public Button tempButton;
     protected Button closePanelButton;
@@ -29,14 +29,11 @@ public class NonlivingUI : MonoBehaviour {
     }
     
     private void Update() {
-        if(needsUpdate) {
-            TogglePanel();
+        if (needsUpdate) {
+            showPanel = true;
             needsUpdate = false;
         }
-
-        if(togglePanel) {
-            UpdatePanel();
-        }
+        if (showPanel) { UpdatePanel(); }
     }
 
     public void InitXButton(){
@@ -75,15 +72,11 @@ public class NonlivingUI : MonoBehaviour {
         MainUI.CenterObject(passed.transform);
     }
 
-    public void TogglePanel() {
-        togglePanel = !togglePanel;
-        panel.SetActive(togglePanel);
-        UpdatePanel();
-    }
 
     public void ExitPanel() {
         panel.SetActive(false);
         halo.SetActive(false);
+        showPanel = false;
     }
 
     public void Rename() {

@@ -35,8 +35,9 @@ public class MainUI : MonoBehaviour
 
     // UI content 
     private GameObject alwaysPanel;
-    private GameObject helpObj;
+    private GameObject infoPanel;
     private GameObject pauseObj;
+    protected Button tempButton;
 
     private static bool isPaused = false;
     private bool isFF = false;
@@ -57,11 +58,36 @@ public class MainUI : MonoBehaviour
 
     public void InitPanels() {
         alwaysPanel = GameObject.Find("AlwaysPanel");
-        helpObj = GameObject.Find("InfoPanel");
+        infoPanel = GameObject.Find("InfoPanel");
         pauseObj = GameObject.Find("PauseText");
         
-        helpObj.SetActive(false);
+        infoPanel.SetActive(false);
         pauseObj.SetActive(false);
+    }
+
+    public void InitButtons() {
+        foreach (Transform child in alwaysPanel.transform) {
+            if (child.name == "PauseButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(TogglePause);
+            } else if (child.name == "FFButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ToggleFF);
+            } else if (child.name == "InfoButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ToggleHelp);
+            } else if (child.name == "WalkButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ToggleView);
+            }
+        }
+
+        foreach (Transform child in infoPanel.transform) {
+            if (child.name == "CloseInfoButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ToggleHelp);
+            } 
+        }
     }
 
     private void MovePlayer() {
@@ -83,7 +109,7 @@ public class MainUI : MonoBehaviour
             MoveNormally(baseMoveSpeed);
             RotateCamera(baseRotateSpeed);
         }
-        if (Input.GetKey(KeyCode.Escape)) { CheckReset(); }
+        if (Input.GetKeyDown(KeyCode.Escape)) { CheckReset(); }
     }
 
     public static void CenterObject(Transform passed) {
@@ -194,13 +220,11 @@ public class MainUI : MonoBehaviour
         toggleFlight =! toggleFlight;
     }
 
-    public void ToggleFF(Button usedButton) {
+    public void ToggleFF() {
         isFF= !isFF;
-        if (isFF) { usedButton.GetComponentInChildren<Text>().text = ">"; 
-        } else { usedButton.GetComponentInChildren<Text>().text = "> >"; }
     }
 
-    public void TogglePause(Button usedButton) {
+    public void TogglePause() {
         isPaused = !isPaused;
         if (isPaused) { pauseObj.SetActive(true);
         } else { pauseObj.SetActive(false); }
@@ -208,7 +232,7 @@ public class MainUI : MonoBehaviour
 
     public void ToggleHelp() {
         toggleHelp = !toggleHelp;
-        helpObj.SetActive(toggleHelp);
+        infoPanel.SetActive(toggleHelp);
     }
 
     public void ToggleRotate() {
