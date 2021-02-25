@@ -17,7 +17,7 @@ public class AnimalUI : MonoBehaviour {
     protected CountableObject selectedObject = null;
     protected static GameObject passed;
 
-    protected static bool needsUpdate = false;
+    protected static bool needsUpdate;
     protected bool togglePanel = false;
 
     public Button tempButton;
@@ -41,14 +41,8 @@ public class AnimalUI : MonoBehaviour {
     }
     
     private void Update() {
-        if(needsUpdate) {
-            TogglePanel();
-            needsUpdate = false;
-        }
-
-        if(togglePanel) {
-            UpdatePanel();
-        }
+        if (needsUpdate) {togglePanel = true;}
+        if (togglePanel) { UpdatePanel(); }
     }
 
     public void InitXButton(){
@@ -66,7 +60,10 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void UpdatePanel() {
+        panel.SetActive(true);
+        halo.SetActive(true);
         selectedAnimal = World.GetAnimal(passed.name);
+        halo.transform.position = selectedAnimal.gameObject.transform.position;
         float[] toDisplay = new float[5];
         //Skipping for now because animals dont have drives
         //DriveSystem passed = selectedAnimal.GetDriveSystem();
@@ -90,6 +87,7 @@ public class AnimalUI : MonoBehaviour {
 
     public void InitPanel() {
         panel = GameObject.Find("AnimalPanel");
+        halo = GameObject.Find("Halo");
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
@@ -111,12 +109,6 @@ public class AnimalUI : MonoBehaviour {
 
     public void PassCenter() {
         MainUI.CenterObject(passed.transform);
-    }
-
-    public void TogglePanel() {
-        togglePanel = !togglePanel;
-        panel.SetActive(togglePanel);
-        UpdatePanel();
     }
 
     public void ExitPanel() {

@@ -20,12 +20,12 @@ abstract public class CountableObject
     public GameObject gameObject;
     public Animator animator;
 
-    public CountableObject(string objectType, int index, Nullable<Vector3> position) {
+    public CountableObject(string objectType, int index) {
         SetObjectType(objectType);
         SetIndex(index);
         name = (objectType + " " + index.ToString());
 
-        startPosition = chooseStartPosition(position);
+        startPosition = chooseStartPosition(null);
         startRotation = chooseStartRotation();
     }
 
@@ -33,11 +33,8 @@ abstract public class CountableObject
         Vector3 newStartPosition = new Vector3();
         if (position != null) {
             newStartPosition = (Vector3)position;
-        }
-        else {
-            newStartPosition = new Vector3 (Random.Range(World.minPosition, World.maxPosition), 
-                                            0.0f, 
-                                            Random.Range(World.minPosition, World.maxPosition));
+        } else { 
+            newStartPosition = new Vector3 (Random.Range(World.minPosition, World.maxPosition), 0.0f, Random.Range(World.minPosition, World.maxPosition)); 
         }
         return newStartPosition;
     }

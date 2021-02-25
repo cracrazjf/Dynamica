@@ -13,6 +13,8 @@ public class Body {
     public string labelLH;
     public string labelRH;
     protected GameObject abdomen;
+    protected GameObject head;
+    protected float eyeLevel;
 
     protected Dictionary<string, GameObject> limbDict;
     public Dictionary<string, GameObject> GetLimbDict() { return limbDict; }
@@ -70,4 +72,13 @@ public class Body {
 
     public virtual void UpdateSkeletonStates() { Debug.Log("No update skeleton states defined for this animal"); }
 
+    public void ResolveAltitude() {
+        float yTemp = head.transform.position.y;
+        // Checks for underground
+        if (yTemp < 0) { VerticalBump(yTemp * -1 + eyeLevel); }
+    }
+
+    public void VerticalBump(float height) {
+        head.transform.position += new Vector3(0, height, 0);
+    }
 }

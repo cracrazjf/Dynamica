@@ -13,8 +13,8 @@ public class Human : Animal
     /// <summary>
     /// Human constructor
     /// </summary>
-    public Human(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome): 
-            base("Human", index, position, motherGenome, fatherGenome) 
+    public Human(int index, Genome motherGenome, Genome fatherGenome): 
+            base("Human", index, motherGenome, fatherGenome) 
     {
         SetObjectType("Human");
         
@@ -41,6 +41,7 @@ public class Human : Animal
         string toSend = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().GetTraitDict());
 
         GetMotorSystem().TakeAction(toSend);
+        GetBody().ResolveAltitude();
         IncreaseAge(1);
     }
 

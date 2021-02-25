@@ -95,37 +95,37 @@ public class World : MonoBehaviour
                 fatherGenome.CreateGenomeFromSpeciesTemplate(livingObjectInfoDict[speciesType]);
 
                 if (speciesType == "Human"){
-                    newAnimal = new Human(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
+                    newAnimal = new Human(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }
                 else if (speciesType == "Penguin"){
-                    newAnimal = new Penguin(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
+                    newAnimal = new Penguin(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }
                 else if (speciesType == "Wolf"){
-                    newAnimal = new Wolf(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
+                    newAnimal = new Wolf(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }
                 else if (speciesType == "Elephant"){
-                    newAnimal = new Elephant(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
+                    newAnimal = new Elephant(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }                
                 else if (speciesType == "Deer"){
-                    newAnimal = new Deer(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
+                    newAnimal = new Deer(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
                 }
                 else if (speciesType == "Llama"){
-                    newAnimal = new Llama(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome);
+                    newAnimal = new Llama(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
                     animalList.Add(newAnimal);
                     animalDict[newAnimal.GetName()] = newAnimal;
                     countableObjectCountDict[speciesType]++;
@@ -159,7 +159,7 @@ public class World : MonoBehaviour
 
                 // should be able to move lines 77-79 and 83-85 out of these if's, but it creates an error I dont understand
                 if (speciesType == "Apple_Tree"){
-                    newPlant = new AppleTree(countableObjectCountDict[speciesType], null, motherGenome, fatherGenome, this);
+                    newPlant = new AppleTree(countableObjectCountDict[speciesType], motherGenome, fatherGenome, this);
                     plantList.Add(newPlant);
                     plantDict[newPlant.GetName()] = newPlant;
                     countableObjectCountDict[speciesType]++;
@@ -184,7 +184,7 @@ public class World : MonoBehaviour
 
             for (int i=0; i<n; i++){
                 if (objectType == "Water"){
-                    newNonlivingObject = new Water(countableObjectCountDict[objectType], null, nonlivingObjectInfoDict[objectType]);
+                    newNonlivingObject = new Water(countableObjectCountDict[objectType], nonlivingObjectInfoDict[objectType]);
                     nonlivingObjectList.Add(newNonlivingObject);
                     nonlivingObjectDict[newNonlivingObject.GetName()] = newNonlivingObject;
                     countableObjectCountDict[objectType]++;

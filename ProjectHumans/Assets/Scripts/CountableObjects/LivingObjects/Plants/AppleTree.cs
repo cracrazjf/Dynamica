@@ -20,8 +20,8 @@ public class AppleTree : Plant
     /// <summary>
     /// AppleTree constructor
     /// </summary>
-    public AppleTree(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome, World theWorld): 
-            base("AppleTree", index, position, motherGenome, fatherGenome) {
+    public AppleTree(int index, Genome motherGenome, Genome fatherGenome, World theWorld): 
+            base("AppleTree", index, motherGenome, fatherGenome) {
 
         this.theWorld = theWorld;
         
@@ -64,7 +64,8 @@ public class AppleTree : Plant
         Vector3 fruitLocation = this.gameObject.transform.position + fruitDisplacement;
 
         int indexNumber = World.countableObjectCountDict["Apple"];
-        Apple newApple = new Apple(indexNumber, fruitLocation, World.nonlivingObjectInfoDict["Apple"]);
+        Apple newApple = new Apple(indexNumber, World.nonlivingObjectInfoDict["Apple"]);
+        newApple.startPosition = fruitLocation;
 
         float size = this.phenotype.GetTraitDict()["fruit_max_size"] * this.phenotype.GetTraitDict()["fruit_size_proportion"];
         float poison = this.phenotype.GetTraitDict()["poison"];

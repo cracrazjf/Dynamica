@@ -10,7 +10,7 @@ public class Apple : NonlivingObject
 {
     public GameObject applePrefab;
 
-    public Apple(int index, Nullable<Vector3> position, NonlivingObjectInfo passedNonlivingObjectInfo) : base("Apple", index, position, passedNonlivingObjectInfo) {
+    public Apple(int index, NonlivingObjectInfo passedNonlivingObjectInfo) : base("Apple", index, passedNonlivingObjectInfo) {
 
         applePrefab = Resources.Load("Prefabs/ApplePrefab",typeof(GameObject)) as GameObject;
 

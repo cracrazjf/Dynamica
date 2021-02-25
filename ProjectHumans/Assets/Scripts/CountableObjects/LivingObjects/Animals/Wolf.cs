@@ -17,8 +17,8 @@ public class Wolf : Animal
     /// <summary>
     /// Penguin constructor
     /// </summary>
-    public Wolf(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome): 
-            base("Wolf", index, position, motherGenome, fatherGenome) {
+    public Wolf(int index, Genome motherGenome, Genome fatherGenome): 
+            base("Wolf", index, motherGenome, fatherGenome) {
 
         wolfPrefab = Resources.Load("Prefabs/GreyWolfPrefab",typeof(GameObject)) as GameObject;
 

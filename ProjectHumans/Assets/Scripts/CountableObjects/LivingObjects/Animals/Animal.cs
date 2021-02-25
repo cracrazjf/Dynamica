@@ -12,8 +12,8 @@ using System;
         private MotorSystem motorSystem;
         private SensorySystem sensorySystem;
         
-        public Animal(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) 
-        : base (objectType, index, position, motherGenome, fatherGenome) {
+        public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome) 
+        : base (objectType, index, motherGenome, fatherGenome) {
             this.displayName = GetObjectType();             
         }
 

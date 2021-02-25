@@ -15,8 +15,8 @@ public class Penguin : Animal
     /// <summary>
     /// Penguin constructor
     /// </summary>
-    public Penguin(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome): 
-            base("Penguin", index, position, motherGenome, fatherGenome) {
+    public Penguin(int index, Genome motherGenome, Genome fatherGenome): 
+            base("Penguin", index, motherGenome, fatherGenome) {
 
         penguinPrefab = Resources.Load("Prefabs/PenguinPrefab",typeof(GameObject)) as GameObject;
         this.gameObject = GameObject.Instantiate(penguinPrefab, startPosition, startRotation) as GameObject;

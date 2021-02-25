@@ -13,23 +13,16 @@ public class HumanBody : Body {
         this.thisHuman = human;
         Vector3 fixDrop = new Vector3(0, 3f, 0);
 
-        if (this.thisHuman.phenotype.GetTraitDict()["sex"] == 0) {   
-            humanPrefab = Resources.Load("Prefabs/HumanPrefab",typeof(GameObject)) as GameObject;
-            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition + fixDrop, thisHuman.startRotation) as GameObject;
-            this.thisHuman.gameObject.name = this.thisHuman.GetName();
+        humanPrefab = Resources.Load("Prefabs/HumanPrefab",typeof(GameObject)) as GameObject;
+        this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition + fixDrop, thisHuman.startRotation) as GameObject;
+        this.thisHuman.gameObject.name = this.thisHuman.GetName();
 
-             this.thisHuman.gameObject.SetActive(true);
-        } else {
-            humanPrefab = Resources.Load("Prefabs/HumanPrefab",typeof(GameObject)) as GameObject;
-            this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition + fixDrop, thisHuman.startRotation) as GameObject;
-            this.thisHuman.gameObject.name = this.thisHuman.GetName();
-
-            this.thisHuman.gameObject.SetActive(true);
-        }
+        this.thisHuman.gameObject.SetActive(true);
+        
 
         rigidbody = this.thisHuman.gameObject.GetComponent<Rigidbody>();
 
-
+        // Read in eventually
         stateLabelList = new List<string> {
             "standing", 
             "sitting", 
@@ -54,6 +47,8 @@ public class HumanBody : Body {
             }  
         }
         this.abdomen = skeletonDict["Abdomen"];
+        this.head = skeletonDict["Head"];
+        this.eyeLevel = head.transform.position.y;
     }
 
     public override void UpdateBodyStates() {

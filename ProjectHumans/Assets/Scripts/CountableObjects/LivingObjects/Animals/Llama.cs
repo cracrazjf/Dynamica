@@ -15,8 +15,8 @@ public class Llama : Animal
     /// <summary>
     /// Llama constructor
     /// </summary>
-    public Llama(int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome): 
-            base("Llama", index, position, motherGenome, fatherGenome) {
+    public Llama(int index, Genome motherGenome, Genome fatherGenome): 
+            base("Llama", index, motherGenome, fatherGenome) {
 
         llamaPrefab = Resources.Load("Prefabs/LlamaPrefab",typeof(GameObject)) as GameObject;
 

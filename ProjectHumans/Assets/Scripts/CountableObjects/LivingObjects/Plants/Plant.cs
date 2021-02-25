@@ -8,8 +8,8 @@ public class Plant : LivingObject
     public string displayName;
     private Body body;
 
-    public Plant(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) : 
-        base (objectType, index, position, motherGenome, fatherGenome)
+    public Plant(string objectType, int index, Genome motherGenome, Genome fatherGenome) : 
+        base (objectType, index, motherGenome, fatherGenome)
     {
         this.displayName = GetObjectType();  
     }
