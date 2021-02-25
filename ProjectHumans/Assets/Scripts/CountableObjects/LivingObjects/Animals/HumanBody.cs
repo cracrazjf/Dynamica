@@ -56,13 +56,15 @@ public class HumanBody : Body {
         SetState("laying", CheckSitting());
     }
     
-    bool CheckSitting() {
+    public override bool CheckSitting() {
         float bodyExtent = abdomen.GetComponent<Collider>().bounds.extents.y;
         return Physics.Raycast(abdomen.transform.position, -abdomen.transform.up, bodyExtent + 0.2f);
     }
 
-    bool CheckLaying() {
+    public override bool CheckLaying() {
         float bodyExtent = abdomen.GetComponent<Collider>().bounds.extents.y;
         return Physics.Raycast(abdomen.transform.position, -Vector3.up, bodyExtent + 0.2f);
     }
+
+
 }

@@ -52,7 +52,7 @@ public class HumanSimpleAI : AI
             goalDict[currentGoal].DynamicInvoke();
             return decidedActions[0];
         }
-        return "standing";
+        return "standing up";
     }
 
     public void ChooseGoal() {

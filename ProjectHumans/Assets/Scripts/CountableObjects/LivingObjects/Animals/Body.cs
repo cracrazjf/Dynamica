@@ -81,4 +81,19 @@ public class Body {
     public void VerticalBump(float height) {
         head.transform.position += new Vector3(0, height, 0);
     }
+
+    public void TranslateSkeleton(string name, Vector3 vector) {
+        if (skeletonDict.ContainsKey(name)) {
+            GameObject currentPart = skeletonDict[name];
+            Vector3 currentPos = currentPart.transform.position;
+            currentPart.GetComponent<Rigidbody>().isKinematic = true;
+            Vector3 translatedPos = currentPos + vector;
+
+            currentPos = Vector3.MoveTowards(currentPos, translatedPos, 1.0f * Time.deltaTime);
+        }
+    }
+
+    public virtual bool CheckSitting() { return false; }
+    public virtual bool CheckLaying() {return false; }
+
 }

@@ -19,6 +19,7 @@ public class HumanMotorSystem : MotorSystem
     float rotatingSpeed = .01f;
     float hand = 0;
 
+
     Vector3 moveToPosition = new Vector3();
 
     public HumanMotorSystem(Human human) : base(human) {
@@ -50,7 +51,8 @@ public class HumanMotorSystem : MotorSystem
         this.InitActionDict();
     }
 
-    public void TakeAction(string action) {
+    public override void TakeAction(string action) {
+        Debug.Log("Got here");
         actionDict[action].DynamicInvoke();
     }
 
@@ -127,21 +129,18 @@ public class HumanMotorSystem : MotorSystem
 
     
     public void StandUp(){
+        Debug.Log("StandUp was called");
 
-        this.thisHuman.GetBody().GetSkeletonDict()["Body"].GetComponent<Rigidbody>().isKinematic = true;
-        Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
-        Vector3 humanPosition = this.thisHuman.gameObject.transform.position;
+        this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = true;
         
-        if (thisHuman.GetBodyState("sitting")) {
-            moveToPosition = new Vector3(humanPosition.x, humanPosition.y + 0.2f, humanPosition.z);
-        }  else if (bodyTransform.position.y >= humanPosition.y + 0.2f){
-            moveToPosition = humanPosition;
+        if (thisHuman.GetBody().CheckSitting()) {
+            thisHuman.GetBody().TranslateSkeleton("Abdomen", new Vector3(0, .75f, 0));
+        }  else if (thisHuman.GetBody().CheckLaying()) {
+            thisHuman.GetBody().TranslateSkeleton("Abdomen", new Vector3(0, 1.5f, 0));
         }
-        bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, moveToPosition, 1.0f * Time.deltaTime);
-
-
-        this.thisHuman.GetBody().SetState("sitting", false);
-        this.thisHuman.GetBody().SetState("standing", true);  
+        thisHuman.GetBody().SetState("laying", false);
+        thisHuman.GetBody().SetState("sitting", false);
+        thisHuman.GetBody().SetState("standing", true);  
     }
 
     public void LayDown() {

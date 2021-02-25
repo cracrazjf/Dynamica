@@ -37,13 +37,13 @@ public class Human : Animal
     }
 
     public override void UpdateAnimal() {
+        this.GetDriveSystem().UpdateDrives();
         float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
-
         string toSend = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().GetTraitDict());
-        Debug.Log(toSend);
-
-        GetMotorSystem().TakeAction(toSend);
+        
+        this.GetMotorSystem().TakeAction(toSend);
         GetBody().ResolveAltitude();
+
         IncreaseAge(1);
     }
 
