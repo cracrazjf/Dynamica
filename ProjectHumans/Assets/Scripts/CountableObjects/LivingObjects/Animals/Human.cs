@@ -38,7 +38,9 @@ public class Human : Animal
 
     public override void UpdateAnimal() {
         float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
+
         string toSend = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().GetTraitDict());
+        Debug.Log(toSend);
 
         GetMotorSystem().TakeAction(toSend);
         GetBody().ResolveAltitude();

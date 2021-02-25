@@ -15,6 +15,10 @@ public class HumanMotorSystem : MotorSystem
     public float velocity = 0;
     public bool check = false;
 
+    float stepProportion = .01f;
+    float rotatingSpeed = .01f;
+    float hand = 0;
+
     Vector3 moveToPosition = new Vector3();
 
     public HumanMotorSystem(Human human) : base(human) {
@@ -43,11 +47,32 @@ public class HumanMotorSystem : MotorSystem
             "hand target z"
         };
         this.InitActionArguments(argsLabelList);
+        this.InitActionDict();
+    }
+
+    public void TakeAction(string action) {
+        actionDict[action].DynamicInvoke();
+    }
+
+    public override void InitActionDict() {
+        actionDict = new Dictionary<string, Action>();
+
+        actionDict.Add("sitting down", SitDown);
+        actionDict.Add("sitting up", SitUp);
+        actionDict.Add("laying down", LayDown);
+        actionDict.Add("standing up", StandUp);
+        actionDict.Add("rotating", Rotate);
+        actionDict.Add("taking steps", TakeSteps);
+        actionDict.Add("picking up", PickUp);
+        actionDict.Add("setting down", SetDown);
+        actionDict.Add("consuming", Consume);
+        actionDict.Add("waking up", WakeUp);
+        actionDict.Add("falling asleep", Sleep);
     }
 
     float t = 0.0f;
     float x = 0.5f;
-    public void TakeSteps(float stepProportion) {
+    public void TakeSteps() {
         this.thisHuman.gameObject.transform.Translate(this.thisHuman.gameObject.transform.forward * stepProportion * Time.deltaTime, Space.World);
             
         thisHuman.GetBody().RotateJoint("Hip_L", new Quaternion(Mathf.Lerp(-stepProportion, stepProportion, t), 0, 0, 1));
@@ -59,7 +84,7 @@ public class HumanMotorSystem : MotorSystem
         t += x * Time.deltaTime;
     }
 
-    public void Rotate(float rotatingSpeed) {
+    public void Rotate() {
         this.thisHuman.gameObject.transform.Rotate(0, rotatingSpeed, 0, Space.World);
     }
 
@@ -147,7 +172,7 @@ public class HumanMotorSystem : MotorSystem
         this.thisHuman.GetBody().SetState("sleeping", false);  
     }
     
-    public void PickUp(float hand) {
+    public void PickUp() {
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
         Vector3 humanPosition = this.thisHuman.gameObject.transform.position;
         if(!pickedUp) {
@@ -184,9 +209,9 @@ public class HumanMotorSystem : MotorSystem
         }
     }
 
-    public void SetDown(float hand) {}
+    public void SetDown() {}
 
-    public void Consume (float hand) {
+    public void Consume () {
         if (hand == 0) {
             this.thisHuman.GetBody().GetJointDict()["Humerus_L"].targetRotation = new Quaternion(1.0f, 0, 0, 1);
             this.thisHuman.GetBody().GetJointDict()["Radius_L"].angularXMotion = ConfigurableJointMotion.Free;

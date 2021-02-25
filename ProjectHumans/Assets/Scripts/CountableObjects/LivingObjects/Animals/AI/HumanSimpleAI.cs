@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -13,10 +14,12 @@ public class HumanSimpleAI : AI
     Dictionary<string, bool> actionStateDict;
     Dictionary<string, float> actionArgumentDict;
     Dictionary<string, float> traitDict;
+    Dictionary<string, Action> goalDict;
 
     List<string> decidedActions;
     List<GameObject> inSight = new List<GameObject>();
     string currentGoal = "None";
+    protected bool goalOngoing = false;
 
     float rotatedAngle = 0;
 
@@ -27,9 +30,11 @@ public class HumanSimpleAI : AI
         actionStateDict = motor.GetStateDict();
         actionArgumentDict = motor.GetArgDict();
         traitDict = traits.GetTraitDict();
+
+        InitGoalDict();
     }
 
-    public List<string> ChooseAction(Dictionary<string, float> passedTraitDict)
+    public string ChooseAction(Dictionary<string, float> passedTraitDict)
     {
         this.traitDict = passedTraitDict;
 
@@ -37,17 +42,13 @@ public class HumanSimpleAI : AI
         InFov(thisHuman.gameObject.transform, 45, 10);
         Debug.DrawRay(humanTransform.position, humanTransform.forward * 10, Color.red);
         
-        decidedActions = new List<string>();
         if (currentGoal == "None") { 
+            decidedActions = new List<string>();
             ChooseGoal(); 
-        } else if (currentGoal == "Decrease thirst") { 
-            DecreaseThirst(); 
-        } else if (currentGoal == "Decrease sleepiness") { 
-            DecreaseSleepiness(); 
-        } else if (currentGoal == "Decrease hunger") { 
-            DecreaseHunger(); 
-        } else { DecreaseFatigue(); }
-        return decidedActions;
+        } else {
+            goalDict[currentGoal].DynamicInvoke();
+        }
+        return decidedActions[0];
     }
     public void ChooseGoal() {
         string toSet = "";
@@ -59,6 +60,15 @@ public class HumanSimpleAI : AI
             }
         }
         currentGoal = toSet;
+    }
+
+    public void InitGoalDict() {
+        goalDict = new Dictionary<string, Action>();
+
+        goalDict.Add("Decrease thirst", DecreaseThirst);
+        goalDict.Add("Decrease hunger", DecreaseHunger);
+        goalDict.Add("Decrease sleepiness", DecreaseSleepiness);
+        goalDict.Add("Decrease fatigue", DecreaseFatigue);
     }
   
     public void DecreaseThirst() {
@@ -254,9 +264,9 @@ public class HumanSimpleAI : AI
     }
 
     public Vector3 CreateRandomPosition(float Range) {
-        Vector3 randomPosition = new Vector3(Random.Range(thisHuman.gameObject.transform.position.x - Range,
+        Vector3 randomPosition = new Vector3(UnityEngine.Random.Range(thisHuman.gameObject.transform.position.x - Range,
                                 thisHuman.gameObject.transform.position.x + Range), 0,
-                                Random.Range(thisHuman.gameObject.transform.position.z - Range,
+                                UnityEngine.Random.Range(thisHuman.gameObject.transform.position.z - Range,
                                 thisHuman.gameObject.transform.position.z + Range));
         return randomPosition;
     }

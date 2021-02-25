@@ -28,6 +28,8 @@ public class MotorSystem
     public Dictionary<string, int> GetArgIndices() { return argsIndexDict; }
     public Dictionary<string, float> GetArgDict() { return argsDict; }
 
+    public Dictionary<string, Action> actionDict;
+
     public MotorSystem(Animal passed) {
         this.thisAnimal = passed;
     }
@@ -46,6 +48,8 @@ public class MotorSystem
             }
         } else { Debug.Log("No actions passed to this animal"); }
     }
+
+    public virtual void InitActionDict(){}
 
     public void SetState(string label, bool val) {
         stateDict[label] = val;
