@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class AnimalUI : PanelUI {
+public class AnimalUI : MonoBehaviour {
 
     protected Text hunger;
     protected Text thirst;
@@ -14,10 +14,51 @@ public class AnimalUI : PanelUI {
     protected Text health;
     protected Text displayText;
     protected Animal selectedAnimal;
+    protected CountableObject selectedObject = null;
+    protected static GameObject passed;
+
+    protected static bool needsUpdate = false;
+    protected bool togglePanel = false;
+
+    public Button tempButton;
+    protected Button closePanelButton;
+    protected GameObject panel;
+    protected GameObject mainCam;
+    protected GameObject halo;
+
+    protected Text originalName;
+    protected Text inputName;
+    protected InputField panelNamer;
+
 
     Button centerObjectButton;
     Button genomeButton;
     Button brainButton;
+
+    private void Start() {
+        InitPanel();
+        InitNamer();
+    }
+    
+    private void Update() {
+        if(needsUpdate) {
+            TogglePanel();
+            needsUpdate = false;
+        }
+
+        if(togglePanel) {
+            UpdatePanel();
+        }
+    }
+
+    public void InitXButton(){
+        foreach (Transform child in panel.transform) {
+            if (child.name == "ClosePanelButton") {
+                closePanelButton = child.gameObject.GetComponent<Button>();
+            } 
+            closePanelButton.onClick.AddListener(ExitPanel);
+        }
+    }
 
     public void PassAnimalCam() {
        Camera toSend =  selectedAnimal.gameObject.GetComponent<Camera>();
@@ -38,6 +79,13 @@ public class AnimalUI : PanelUI {
         // sleep.text = passedDrives["sleepiness"].ToString();
         // stamina.text = passedDrives["fatigue"].ToString();
         // health.text = passedDrives["health"].ToString();
+    }
+
+    public static void ReceiveClicked(GameObject clicked) {
+        // selectedObject = World.GetObject(clicked.name);
+        Debug.Log("Got an animal!");
+        passed = clicked;
+        needsUpdate = true;
     }
 
     public void InitPanel() {
@@ -63,5 +111,21 @@ public class AnimalUI : PanelUI {
 
     public void PassCenter() {
         MainUI.CenterObject(passed.transform);
+    }
+
+    public void TogglePanel() {
+        togglePanel = !togglePanel;
+        panel.SetActive(togglePanel);
+        UpdatePanel();
+    }
+
+    public void ExitPanel() {
+        panel.SetActive(false);
+        halo.SetActive(false);
+    }
+
+    public void Rename() {
+        selectedObject.SetDisplayName(inputName.text);
+        panelNamer.text = "";
     }
 }

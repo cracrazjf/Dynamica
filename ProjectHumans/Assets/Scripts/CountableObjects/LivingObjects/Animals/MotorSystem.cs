@@ -74,7 +74,7 @@ public class MotorSystem
         } else { Debug.Log("No args defined for this animal"); }
     }
 
-    public virtual void TakeAction(string action) { Debug.Log("No actions defined for this animal"); }
+    public virtual void TakeAction(string action) { }
 
     public virtual void EndAction(string actionLabel) { Debug.Log("No actions to end for this animal"); }
 

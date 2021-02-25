@@ -76,8 +76,9 @@ public class MainUI : MonoBehaviour
             // Fly if legal
             if (toggleFlight) { MoveAirborne(baseClimbSpeed); }
             // Hold L Ctrl to rotate
-            if (Input.GetKeyDown(KeyCode.LeftControl)) { RotateCamera(baseRotateSpeed); } 
-
+            if (Input.GetKeyDown(KeyCode.LeftControl)) { ToggleRotate(); } 
+            //Actually call the function
+            if(toggleRotate) { RotateCamera(baseRotateSpeed); }
         } else if (firstPerson) {
             MoveNormally(baseMoveSpeed);
             RotateCamera(baseRotateSpeed);
@@ -208,6 +209,10 @@ public class MainUI : MonoBehaviour
     public void ToggleHelp() {
         toggleHelp = !toggleHelp;
         helpObj.SetActive(toggleHelp);
+    }
+
+    public void ToggleRotate() {
+        toggleRotate = !toggleRotate;
     }
 
     // Getters and Setters
