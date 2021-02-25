@@ -47,12 +47,21 @@ public class AnimalUI : PanelUI {
         foreach (Transform child in panel.transform) {
             if (child.name == "CenterObjectButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(MainUI.CenterObject(passed.transform));
+                tempButton.onClick.AddListener(PassCenter);
             } else if (child.name == "GenoPanelButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(GenomeUI.ReceiveClicked(selectedAnimal.gameObject));
+                tempButton.onClick.AddListener(PassGenome);
             }
         }
     }
+
     public void InitNamer(){}
+
+    public void PassGenome() {
+        GenomeUI.ReceiveClicked(selectedAnimal.gameObject);
+    }
+
+    public void PassCenter() {
+        MainUI.CenterObject(passed.transform);
+    }
 }

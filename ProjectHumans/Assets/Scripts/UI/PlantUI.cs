@@ -20,12 +20,20 @@ public class PlantUI : PanelUI
         foreach (Transform child in panel.transform) {
             if (child.name == "CenterObjectButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(MainUI.CenterObject(passed.transform));
+                tempButton.onClick.AddListener(PassCenter);
             } else if (child.name == "GenoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(GenomeUI.ReceiveClicked(selectedPlant.gameObject));
+                tempButton.onClick.AddListener(PassGenome);
             }
         }
+    }
+
+    public void PassGenome() {
+        GenomeUI.ReceiveClicked(selectedPlant.gameObject);
+    }
+
+    public void PassCenter() {
+        MainUI.CenterObject(passed.transform);
     }
     
     public void InitNamer(){}
