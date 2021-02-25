@@ -8,6 +8,7 @@ using Random=UnityEngine.Random;
 
 abstract public class CountableObject
 {
+    public string displayName;
     private String objectType;
     private String name;
     private int index;
@@ -81,6 +82,14 @@ abstract public class CountableObject
 
     public int GetAge(){
         return this.age;
+    }
+
+    public string GetDisplayName() {
+        return displayName;
+    }
+
+    public void SetDisplayName(string named) {
+        this.displayName = named;
     }
 
     public void IncreaseAge(int amount){

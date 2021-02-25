@@ -7,13 +7,17 @@ using UnityEngine.UI;
 public class PanelUI : MonoBehaviour {
 
     protected CountableObject selectedObject = null;
+    protected static GameObject passed;
 
+    protected static bool needsUpdate = false;
     protected bool togglePanel = false;
+
+    public Button tempButton;
+    protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject mainCam;
     protected GameObject halo;
 
-    public string emptyString = "";
     protected Text originalName;
     protected Text inputName;
     protected InputField panelNamer;
@@ -31,7 +35,22 @@ public class PanelUI : MonoBehaviour {
     
     public virtual void InitPanel(){}
     public virtual void InitNamer(){}
-    public virtual void ReceiveClicked(GameObject clicked) {}
+
+    public void InitXButton(){
+        foreach (Transform child in panel.transform) {
+            if (child.name == "ClosePanelButton") {
+                closePanelButton = child.gameObject.GetComponent<Button>();
+            } 
+            closePanelButton.onClick.AddListener(ExitPanel);
+        }
+    }
+
+    public static void ReceiveClicked(GameObject clicked) {
+        // selectedObject = World.GetObject(clicked.name);
+        passed = clicked;
+        needsUpdate = true;
+    }
+    
     public virtual void UpdatePanel(){}
 
     public void TogglePanel() {

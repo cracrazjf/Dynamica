@@ -3,18 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class PlantUI : PanelUI
 {
     protected Plant selectedPlant = null;
 
-
-    public void ReceiveClicked(GameObject clicked) {
-        selectedPlant = World.GetPlant(clicked.name);
-        UpdatePanel();
+    public void UpdatePanel(){
+        selectedPlant = World.GetPlant(passed.name);
     }
 
-    public void UpdatePanel(){}
-    public void InitPanel(){}
+    public void InitPanel(){
+        panel = GameObject.Find("PlantPanel");
+        panel.SetActive(false);
+
+        foreach (Transform child in panel.transform) {
+            if (child.name == "CenterObjectButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(MainUI.CenterObject(passed.transform));
+            } else if (child.name == "GenoButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(GenomeUI.ReceiveClicked(selectedPlant.gameObject));
+            }
+        }
+    }
+    
     public void InitNamer(){}
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class GenomeUI : PanelUI {
 
@@ -14,16 +15,11 @@ public class GenomeUI : PanelUI {
     protected Phenotype displayPhenotype;
     protected Animal selectedAnimal;
 
-    public void ReceiveClicked(GameObject clicked) {
-        selectedAnimal = World.GetAnimal(clicked.name);
-        UpdatePanel();
-    }
-
     public void UpdatePanel(){
         string toDisplay = "";
         displayGenome = selectedAnimal.GetGenome();
         displayPhenotype = selectedAnimal.GetPhenotype();
-        displayText.text = emptyString;
+        displayText.text = toDisplay;
         
         if (showMutable) {
             toDisplay = displayPhenotype.GetDisplayInfo();
@@ -39,6 +35,9 @@ public class GenomeUI : PanelUI {
         if (showMutable) { muteText.text = "Mutable"; } 
     }
 
-    public void InitPanel(){}
+    public void InitPanel(){
+        panel = GameObject.Find("GenomePanel");
+        panel.SetActive(false);
+    }
     public void InitNamer(){}
 }

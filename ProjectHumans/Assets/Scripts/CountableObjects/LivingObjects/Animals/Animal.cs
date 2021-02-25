@@ -5,7 +5,6 @@ using System;
 
     abstract public class Animal : LivingObject
     {
-        public string displayName;
         public Camera visualInputCamera;
         
         private Body body;
@@ -16,14 +15,6 @@ using System;
         public Animal(string objectType, int index, Nullable<Vector3> position, Genome motherGenome, Genome fatherGenome) 
         : base (objectType, index, position, motherGenome, fatherGenome) {
             this.displayName = GetObjectType();             
-        }
-
-        public string GetDisplayName() {
-            return displayName;
-        }
-
-        public void SetDisplayName(string named) {
-            this.displayName = named;
         }
 
         public virtual void UpdateAnimal() {

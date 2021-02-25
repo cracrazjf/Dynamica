@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class AnimalUI : PanelUI {
 
@@ -13,19 +14,18 @@ public class AnimalUI : PanelUI {
     protected Text health;
     protected Text displayText;
     protected Animal selectedAnimal;
-    
-    public void ReceiveClicked(GameObject clicked) {
-        selectedAnimal = World.GetAnimal(clicked.name);
-        UpdatePanel();
-    }
+
+    Button centerObjectButton;
+    Button genomeButton;
+    Button brainButton;
 
     public void PassAnimalCam() {
        Camera toSend =  selectedAnimal.gameObject.GetComponent<Camera>();
        MainUI.EnterAnimalCam(toSend);
     }
 
-    public void UpdatePanel(){
-
+    public void UpdatePanel() {
+        selectedAnimal = World.GetAnimal(passed.name);
         float[] toDisplay = new float[5];
         //Skipping for now because animals dont have drives
         //DriveSystem passed = selectedAnimal.GetDriveSystem();
@@ -40,6 +40,19 @@ public class AnimalUI : PanelUI {
         // health.text = passedDrives["health"].ToString();
     }
 
-    public void InitPanel(){}
+    public void InitPanel() {
+        panel = GameObject.Find("AnimalPanel");
+        panel.SetActive(false);
+
+        foreach (Transform child in panel.transform) {
+            if (child.name == "CenterObjectButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(MainUI.CenterObject(passed.transform));
+            } else if (child.name == "GenoPanelButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(GenomeUI.ReceiveClicked(selectedAnimal.gameObject));
+            }
+        }
+    }
     public void InitNamer(){}
 }

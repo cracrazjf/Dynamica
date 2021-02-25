@@ -13,7 +13,7 @@ public class MainUI : MonoBehaviour
     private float baseMoveSpeed = 10;
     private float baseRotateSpeed = 100;
     private float genericHop = 2;
-    private float eyeLevel = 2.55f;
+    private static float eyeLevel = 2.55f;
 
     private float climbAdjustment = 0f;
     private float moveAdjustment = 0f;
@@ -29,15 +29,16 @@ public class MainUI : MonoBehaviour
     // Camera content
     private bool thirdPerson = true;
     private bool firstPerson = false;
-    private bool followingAnimal = false;
-    private Camera followedCam;
+    private static bool followingAnimal = false;
+    private static Camera followedCam;
+    private static GameObject mainCam;
 
     // UI content 
     private GameObject alwaysPanel;
     private GameObject helpObj;
     private GameObject pauseObj;
 
-    private bool isPaused = false;
+    private static bool isPaused = false;
     private bool isFF = false;
     private bool toggleHelp;
     
@@ -45,6 +46,7 @@ public class MainUI : MonoBehaviour
         InitPanels();
         transform.position = startPosition;
         transform.rotation = startRotation;
+        mainCam = GameObject.Find("Main Camera");
     }
 
     // Called once a frame
@@ -86,14 +88,14 @@ public class MainUI : MonoBehaviour
     public static void CenterObject(Transform passed) {
         Debug.Log("Centering on object");
         xTemp = passed.position.x;
-        yTemp = transform.position.y;
         zTemp = passed.position.z;
 
-        transform.position = new Vector3(xTemp, yTemp, zTemp);
+        //https://forum.unity.com/threads/moving-the-camera-to-center-an-object-in-the-screen.219813/
+        SetPosition(new Vector3(xTemp, eyeLevel, zTemp));
     }
 
     public static void EnterAnimalCam(Camera passed) {
-        followCam = passed.transform;
+        followedCam = passed;
         followingAnimal = true;
     }
 
@@ -161,11 +163,11 @@ public class MainUI : MonoBehaviour
                 string objTag = countable.tag;
 
                 if (objTag == "Human" || objTag == "Animal") {
-                    AnimalUI.ReceiveAnimal(countable);
+                    AnimalUI.ReceiveClicked(countable);
                 } else if (objTag == "Plant") {
-                    PlantUI.ReceivePlant(countable);
+                    PlantUI.ReceiveClicked(countable);
                 } else if (objTag == "Object") {
-                    NonLivingUI.ReceiveObject(countable);
+                    NonlivingUI.ReceiveClicked(countable);
                 }
             }
         }
@@ -210,5 +212,6 @@ public class MainUI : MonoBehaviour
 
     // Getters and Setters
 
-    public bool GetPause() { return isPaused; }
+    public static bool GetPause() { return isPaused; }
+    public static void SetPosition(Vector3 passedPos) {mainCam.transform.position = passedPos;}
 }
