@@ -7,20 +7,14 @@ using UnityEngine.Events;
 
 public class AnimalUI : MonoBehaviour {
 
-    protected Text hunger;
-    protected Text thirst;
-    protected Text sleep;
-    protected Text stamina;
-    protected Text health;
-    protected Text displayText;
-    protected Animal selectedAnimal;
-    protected CountableObject selectedObject = null;
+    protected Text[] stateText;
+    protected Animal selectedAnimal = null;
     protected static GameObject passed;
 
     protected static bool needsUpdate;
     protected bool showPanel = false;
 
-    public Button tempButton;
+    protected Button tempButton;
     protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject mainCam;
@@ -28,7 +22,7 @@ public class AnimalUI : MonoBehaviour {
 
     protected Text originalName;
     protected Text inputName;
-    protected InputField panelNamer;
+    protected Transform panelNamer;
 
 
     Button centerObjectButton;
@@ -66,19 +60,23 @@ public class AnimalUI : MonoBehaviour {
         panel.SetActive(true);
         halo.SetActive(true);
         selectedAnimal = World.GetAnimal(passed.name);
+        originalName.text = selectedAnimal.GetDisplayName();
         halo.transform.position = selectedAnimal.gameObject.transform.position;
-        float[] toDisplay = new float[5];
+
         //Skipping for now because animals dont have drives
-        //DriveSystem passed = selectedAnimal.GetDriveSystem();
-        //float[] passedDrives = passed.GetDriveStateArray(); 
+        float[] passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
 
-        //Debug.Log(passedDrives.ToString());
-
-        // hunger.text = passedDrives["hunger"].ToString();
-        // thirst.text = passedDrives["thirst"].ToString();
-        // sleep.text = passedDrives["sleepiness"].ToString();
-        // stamina.text = passedDrives["fatigue"].ToString();
-        // health.text = passedDrives["health"].ToString();
+        stateText = new Text[5];
+        for (int i = 0; i < 5; i++) {
+            string label = selectedAnimal.GetDriveSystem().GetStateLabels()[i];
+            string objectName = label + "Text";
+            stateText[i] = GameObject.Find(objectName).GetComponent<Text>();
+        }
+        for(int i = 0; i < 5; i++) {
+            float toDisplay = (passedDrives[i] * 100f);
+            Debug.Log(toDisplay);
+            stateText[i].text = ((int)toDisplay).ToString();
+        }
     }
 
     public static void ReceiveClicked(GameObject clicked) {
@@ -104,7 +102,21 @@ public class AnimalUI : MonoBehaviour {
         }
     }
 
-    public void InitNamer(){}
+    public void InitNamer() {
+        foreach (Transform child in panel.transform) {
+            if (child.name == "AnimalNamer") {
+                panelNamer = child;
+                break;
+            }
+        }
+        foreach (Transform child in panelNamer) {
+            if (child.name == "CurrentName") {
+                originalName = child.gameObject.GetComponent<Text>();
+            } else if (child.name == "InputName") {
+                inputName = child.gameObject.GetComponent<Text>();
+            }
+        }
+    }
 
     public void PassGenome() {
         GenomeUI.ReceiveClicked(selectedAnimal.gameObject);
@@ -121,7 +133,9 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void Rename() {
-        selectedObject.SetDisplayName(inputName.text);
-        panelNamer.text = "";
+        if (panelNamer.gameObject.TryGetComponent(out InputField activeInput)) {
+            selectedAnimal.SetDisplayName(activeInput.text);
+            activeInput.text = "";
+        }
     }
 }

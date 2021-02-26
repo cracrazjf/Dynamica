@@ -7,9 +7,9 @@ using UnityEngine.Events;
 
 public class GenomeUI : MonoBehaviour {
 
-    bool showMutable = true;
-    public Text displayText;
-    public Text muteText;
+    protected bool showMutable = true;
+    protected Text displayText;
+    protected Text muteText;
 
     protected Genome displayGenome;
     protected Phenotype displayPhenotype;
@@ -20,7 +20,7 @@ public class GenomeUI : MonoBehaviour {
     protected static bool needsUpdate = false;
     protected bool showPanel = false;
 
-    public Button tempButton;
+    protected Button tempButton;
     protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject mainCam;

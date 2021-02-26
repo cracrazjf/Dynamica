@@ -153,15 +153,15 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 275395903}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 963194233}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0, y: -0.45}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &275395905
@@ -510,13 +510,13 @@ GameObject:
   m_Component:
   - component: {fileID: 963194233}
   - component: {fileID: 963194227}
-  - component: {fileID: 963194234}
-  - component: {fileID: 963194226}
   - component: {fileID: 963194230}
+  - component: {fileID: 963194232}
+  - component: {fileID: 963194234}
+  - component: {fileID: 963194228}
+  - component: {fileID: 963194226}
   - component: {fileID: 963194235}
   - component: {fileID: 963194229}
-  - component: {fileID: 963194232}
-  - component: {fileID: 963194228}
   - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Main Camera
@@ -588,7 +588,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cb2897e9116d0545810ffd51ed24ec5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempButton: {fileID: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,7 +600,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2118f8fc90fcbe54bbd0dcc15a121e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempButton: {fileID: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -627,7 +625,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0caa6f7c2ec942489e3717c2202825b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempButton: {fileID: 0}
 --- !u!114 &963194232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -651,14 +648,14 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1202145818}
   - {fileID: 275395904}
+  - {fileID: 1202145818}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1, y: 1.202}
+  m_AnchoredPosition: {x: 1, y: 1}
   m_SizeDelta: {x: 800, y: 650}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &963194234
@@ -673,7 +670,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d27bf24f7465c104da2e1c9d4439585b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempButton: {fileID: 0}
 --- !u!114 &963194235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -686,9 +682,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cf8415b34edcae4ba6ed7c2e20a7391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayText: {fileID: 0}
-  muteText: {fileID: 0}
-  tempButton: {fileID: 0}
 --- !u!850595691 &1000927421
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -764,7 +757,7 @@ GameObject:
   - component: {fileID: 1202145819}
   - component: {fileID: 1202145822}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Panels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -790,7 +783,7 @@ RectTransform:
   - {fileID: 493366420}
   - {fileID: 6812876}
   m_Father: {fileID: 963194233}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -967,14 +960,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1202145818}
     m_Modifications:
+    - target: {fileID: 818983423284290133, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
+      propertyPath: m_Name
+      value: AnimalNamer
+      objectReference: {fileID: 0}
     - target: {fileID: 818983423284290135, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 963194228}
+    - target: {fileID: 818983423299344649, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
+      propertyPath: m_Name
+      value: fatigueText
+      objectReference: {fileID: 0}
+    - target: {fileID: 818983423375972990, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
+      propertyPath: m_Name
+      value: healthText
+      objectReference: {fileID: 0}
     - target: {fileID: 818983423467681039, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 963194228}
+    - target: {fileID: 818983423482106766, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
+      propertyPath: m_Name
+      value: sleepinessText
+      objectReference: {fileID: 0}
     - target: {fileID: 818983423686990185, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -983,6 +992,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 963194228}
+    - target: {fileID: 818983424375131127, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
+      propertyPath: m_Name
+      value: thirstText
+      objectReference: {fileID: 0}
     - target: {fileID: 818983424387231804, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
       propertyPath: m_Name
       value: AnimalPanel
@@ -1075,6 +1088,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 963194228}
+    - target: {fileID: 818983424740394506, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
+      propertyPath: m_Name
+      value: hungerText
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6c67c54b59e3374d86dcbb09ca91023, type: 3}
 --- !u!1001 &2103576577309850131
@@ -1594,6 +1611,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7387661784320379976, guid: cf771c6e236861c449d1f9a2590e99e4, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387661784320379976, guid: cf771c6e236861c449d1f9a2590e99e4, type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

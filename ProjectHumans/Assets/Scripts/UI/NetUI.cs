@@ -12,7 +12,7 @@ public class NetUI : MonoBehaviour {
     protected static bool needsUpdate = false;
     protected bool togglePanel = false;
 
-    public Button tempButton;
+    protected Button tempButton;
     protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject mainCam;

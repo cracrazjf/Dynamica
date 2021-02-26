@@ -13,7 +13,7 @@ public class NonlivingUI : MonoBehaviour {
     protected static bool needsUpdate = false;
     protected bool showPanel = false;
 
-    public Button tempButton;
+    protected Button tempButton;
     protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject mainCam;

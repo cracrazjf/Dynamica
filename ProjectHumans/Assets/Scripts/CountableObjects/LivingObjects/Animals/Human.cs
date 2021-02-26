@@ -14,8 +14,7 @@ public class Human : Animal
     /// Human constructor
     /// </summary>
     public Human(int index, Genome motherGenome, Genome fatherGenome): 
-            base("Human", index, motherGenome, fatherGenome) 
-    {
+            base("Human", index, motherGenome, fatherGenome) {
         SetObjectType("Human");
         
         // All of these are getting passed empty lists right now, need to read in state arrays

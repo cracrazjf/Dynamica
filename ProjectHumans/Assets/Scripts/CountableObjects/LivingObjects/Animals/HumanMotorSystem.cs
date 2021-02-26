@@ -52,7 +52,6 @@ public class HumanMotorSystem : MotorSystem
     }
 
     public override void TakeAction(string action) {
-        Debug.Log("Got here");
         actionDict[action].DynamicInvoke();
     }
 
@@ -129,7 +128,7 @@ public class HumanMotorSystem : MotorSystem
 
     
     public void StandUp(){
-        Debug.Log("StandUp was called");
+        //Debug.Log("StandUp was called");
 
         this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = true;
         

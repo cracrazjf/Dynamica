@@ -40,7 +40,7 @@ public class HumanSimpleAI : AI
 
         this.humanTransform = thisHuman.gameObject.transform;
         InFov(thisHuman.gameObject.transform, 45, 10);
-        Debug.DrawRay(humanTransform.position, humanTransform.forward * 10, Color.red);
+        Debug.DrawRay(humanTransform.position, humanTransform.forward * 10, Color.yellow);
         
         if (currentGoal == "None") { 
             // Debug.Log("Choosing a goal ");
@@ -79,7 +79,7 @@ public class HumanSimpleAI : AI
     }
   
     public void DecreaseThirst() {
-        Debug.Log("Called DecreaseThirst");
+        //Debug.Log("Called DecreaseThirst");
         if (bodyStateDict["standing"]) {
             if (IsVisible("Water")) {
                 rotatedAngle = 0;
@@ -102,7 +102,7 @@ public class HumanSimpleAI : AI
     }
 
     public void DecreaseHunger() {
-        Debug.Log("Called DecreaseHunger");
+        //Debug.Log("Called DecreaseHunger");
         if (bodyStateDict["standing"]) {
             if (this.thisHuman.GetBody().labelLH == "Food") {
                 decidedActions.Add("consuming");
@@ -155,7 +155,7 @@ public class HumanSimpleAI : AI
     }
 
     public void DecreaseSleepiness() {
-        Debug.Log("Called DecreaseSleepiness");
+        //Debug.Log("Called DecreaseSleepiness");
         if (bodyStateDict["laying"]) {
             decidedActions.Add("falling asleep");
         } else if (bodyStateDict["sitting"]) {
@@ -166,7 +166,7 @@ public class HumanSimpleAI : AI
     }
 
     public void DecreaseFatigue() {
-        Debug.Log("Called DecreaseFatigue");
+        //Debug.Log("Called DecreaseFatigue");
         if (bodyStateDict["standing"]) {
             decidedActions.Add("sitting down");
         } else if (bodyStateDict["sitting"]) {
@@ -175,7 +175,7 @@ public class HumanSimpleAI : AI
     }
 
     public void IncreaseHealth() {
-        Debug.Log("Called IncreaseHealth");
+        //Debug.Log("Called IncreaseHealth");
         if (bodyStateDict["standing"]) {
             decidedActions.Add("sitting down");
         } else if (bodyStateDict["sitting"]) {
