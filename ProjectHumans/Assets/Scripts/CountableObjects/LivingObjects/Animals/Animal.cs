@@ -11,7 +11,8 @@ using System;
         private DriveSystem driveSystem;
         private MotorSystem motorSystem;
         private SensorySystem sensorySystem;
-        
+        protected AI activeAI;
+
         public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome) 
         : base (objectType, index, motherGenome, fatherGenome) {
             this.displayName = GetObjectType();             
@@ -52,5 +53,9 @@ using System;
 
         public void SetSensorySystem(SensorySystem passed){
             sensorySystem = passed;
+        }
+
+        public string GetGoal() {
+            return this.activeAI.GetGoal();
         }
     }

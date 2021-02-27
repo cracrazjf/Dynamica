@@ -60,7 +60,7 @@ public class HumanSimpleAI : AI
         foreach (string drive in driveStateDict.Keys) {
             string threshold = drive + "_threshold";
             if (drive == "health"){
-                if (driveStateDict[drive] < traitDict[threshold]) { toSet = "Increase health"; }
+                // if (driveStateDict[drive] < traitDict[threshold]) { toSet = "Increase health"; }
             } else if (driveStateDict[drive] > traitDict[threshold]) {
                 toSet = "Decrease " + drive;
             } 
@@ -271,16 +271,17 @@ public class HumanSimpleAI : AI
         }
         Vector3 randomPosition = CreateRandomPosition(3.0f);
         FacePosition(randomPosition);
-        if(IsFacing(CalculateNearestObject(GetTargetObjectList("Food")).transform.position)) {
+        GameObject target = CalculateNearestObject(GetTargetObjectList("Object"));
+        if(target != null && IsFacing(target.transform.position)) {
             thisHuman.GetMotorSystem().EndAction("rotating");
             decidedActions.Add("taking steps");
             this.thisHuman.GetMotorSystem().SetArgs("step rate", 0.01f);
-            while ((thisHuman.gameObject.transform.position - randomPosition).magnitude < 1) {
-                randomPosition = CreateRandomPosition(3.0f);
-            } 
             this.thisHuman.GetMotorSystem().EndAction("taking steps");
-            FacePosition(randomPosition);
         }
+    }
+
+    public override string GetGoal() {
+        return currentGoal;
     }
 
     public Vector3 CreateRandomPosition(float Range) {

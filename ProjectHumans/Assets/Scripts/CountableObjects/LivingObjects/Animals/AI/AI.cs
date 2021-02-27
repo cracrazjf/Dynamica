@@ -56,9 +56,6 @@ public class AI
         traitIndexDict = phenotype.GetTraitIndices();
 
         visualInput = senses.GetVisualInput();
-
-        // add sensory?
-
     }
 
     // Since ChooseAction is in here, it doesn't need all these values passed. AI already has the bodyState, actionState, etc. - JC
@@ -70,5 +67,9 @@ public class AI
         }
         
         return "sleep";
+    }
+
+    public virtual string GetGoal() {
+        return "No goals";
     }
 }

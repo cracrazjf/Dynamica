@@ -28,6 +28,8 @@ public class HumanDriveSystem : DriveSystem {
             string changeLabel = label + "_change";
             float changeValue = thisAnimal.phenotype.GetTraitDict()[changeLabel];
 
+            float toUpdate = GetStateDict()[label] + changeValue;
+            SetState(label, toUpdate);
             // Ensure all drive states are in bounds
             if (this.stateDict[label] < 0) { this.SetState(label, 0.0f); }
             else if (this.stateDict[label] > 1) { this.SetState(label, 1.0f); }
@@ -39,7 +41,7 @@ public class HumanDriveSystem : DriveSystem {
             float toUpdate = currentHealth - thisAnimal.phenotype.GetTraitDict()["starvation_damage"];
             this.SetState("health", toUpdate);
         }
-        if (stateDict["thirst"] >= 0.0) {
+        if (stateDict["thirst"] >= 1.0) {
             float toUpdate = currentHealth - thisAnimal.phenotype.GetTraitDict()["dehydration_damage"];
             this.SetState("health", toUpdate);
         }    

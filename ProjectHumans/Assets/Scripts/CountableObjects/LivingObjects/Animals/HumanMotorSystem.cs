@@ -76,8 +76,8 @@ public class HumanMotorSystem : MotorSystem
     public void TakeSteps() {
         this.thisHuman.gameObject.transform.Translate(this.thisHuman.gameObject.transform.forward * stepProportion * Time.deltaTime, Space.World);
             
-        thisHuman.GetBody().RotateJoint("Hip_L", new Quaternion(Mathf.Lerp(-stepProportion, stepProportion, t), 0, 0, 1));
-        thisHuman.GetBody().RotateJoint("Hip_R", new Quaternion(Mathf.Lerp(stepProportion, -stepProportion, t), 0, 0, 1));
+        thisHuman.GetBody().RotateJoint("Femur_L", new Quaternion(Mathf.Lerp(-stepProportion, stepProportion, t), 0, 0, 1));
+        thisHuman.GetBody().RotateJoint("Femur_R", new Quaternion(Mathf.Lerp(stepProportion, -stepProportion, t), 0, 0, 1));
 
         if (t > 1.0f) {
              x = -0.5f;
@@ -130,13 +130,9 @@ public class HumanMotorSystem : MotorSystem
     public void StandUp(){
         //Debug.Log("StandUp was called");
 
-        this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = true;
-        
-        if (thisHuman.GetBody().CheckSitting()) {
-            thisHuman.GetBody().TranslateSkeleton("Abdomen", new Vector3(0, .75f, 0));
-        }  else if (thisHuman.GetBody().CheckLaying()) {
-            thisHuman.GetBody().TranslateSkeleton("Abdomen", new Vector3(0, 1.5f, 0));
-        }
+        Vector3 goalPosition = (thisHuman.GetBody().GetXZPosition() + new Vector3(0, thisHuman.GetBody().GetHeight(), 0));
+        thisHuman.GetBody().TranslateSkeletonTo("Abdomen", goalPosition);
+
         thisHuman.GetBody().SetState("laying", false);
         thisHuman.GetBody().SetState("sitting", false);
         thisHuman.GetBody().SetState("standing", true);  

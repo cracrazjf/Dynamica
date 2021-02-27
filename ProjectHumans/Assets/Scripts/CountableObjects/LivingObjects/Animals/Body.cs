@@ -7,14 +7,16 @@ public class Body {
 
     public Animal thisAnimal;
 
-    public GameObject humanPrefab;
     public Rigidbody rigidbody;
 
+    public Transform globalBody;
     public string labelLH;
     public string labelRH;
     protected GameObject abdomen;
     protected GameObject head;
     protected float eyeLevel;
+    protected float height;
+    protected float heightScale;
 
     protected Dictionary<string, GameObject> limbDict;
     public Dictionary<string, GameObject> GetLimbDict() { return limbDict; }
@@ -45,6 +47,11 @@ public class Body {
             this.jointDict[joint].targetRotation = target;
         }
     }
+    
+    public void InitHeight() {
+        heightScale = thisAnimal.GetPhenotype().GetTraitDict()["size"]; 
+        height = thisAnimal.GetPhenotype().GetTraitDict()["height"] * heightScale; 
+    }
 
     public void InitStates(List<string> passedStateLabelList) {
         states = new bool[passedStateLabelList.Count]; 
@@ -60,6 +67,8 @@ public class Body {
             }
         }
         else { Debug.Log("No body states defined for this animal"); }
+
+        InitHeight();
     }
 
     public void SetState(string label, bool passed) {
@@ -82,7 +91,8 @@ public class Body {
         head.transform.position += new Vector3(0, height, 0);
     }
 
-    public void TranslateSkeleton(string name, Vector3 vector) {
+    // Unused at the moment
+    public void TranslateSkeletonBy(string name, Vector3 vector) {
         if (skeletonDict.ContainsKey(name)) {
             GameObject currentPart = skeletonDict[name];
             Vector3 currentPos = currentPart.transform.position;
@@ -93,7 +103,23 @@ public class Body {
         }
     }
 
-    public virtual bool CheckSitting() { return false; }
-    public virtual bool CheckLaying() {return false; }
+    public void TranslateSkeletonTo(string name, Vector3 goalPos) {
+        Debug.Log("Tried to move");
+        if (skeletonDict.ContainsKey(name)) {
+            GameObject currentPart = skeletonDict[name];
+            Vector3 currentPos = currentPart.transform.position;
+            currentPart.GetComponent<Rigidbody>().isKinematic = true;
 
+            currentPos = Vector3.MoveTowards(currentPos, goalPos, 1.0f * Time.deltaTime);
+        }
+    }
+
+    public virtual bool CheckSitting() { return false; }
+    public virtual bool CheckLaying() { return false; }
+
+    public Vector3 GetXZPosition() {
+        return new Vector3(globalBody.position.x, 0f, globalBody.transform.position.z);
+    }
+
+    public float GetHeight() { return height; }
 }

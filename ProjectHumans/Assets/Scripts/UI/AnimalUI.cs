@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public class AnimalUI : MonoBehaviour {
 
     protected Text[] stateText;
+    protected Text goalText;
     protected Animal selectedAnimal = null;
     protected static GameObject passed;
 
@@ -36,10 +37,20 @@ public class AnimalUI : MonoBehaviour {
     
     private void Update() {
         if (needsUpdate) {
-            showPanel = true;
-            needsUpdate = false;
+            OnAwake();
         }
         if (showPanel) { UpdatePanel(); }
+    }
+
+    public void OnAwake() {
+        selectedAnimal = World.GetAnimal(passed.name);
+        originalName.text = selectedAnimal.GetDisplayName();
+
+        panel.SetActive(true);
+        halo.SetActive(true);
+
+        showPanel = true;
+        needsUpdate = false;
     }
 
     public void InitXButton(){
@@ -57,15 +68,12 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void UpdatePanel() {
-        panel.SetActive(true);
-        halo.SetActive(true);
-        selectedAnimal = World.GetAnimal(passed.name);
-        originalName.text = selectedAnimal.GetDisplayName();
-        halo.transform.position = selectedAnimal.gameObject.transform.position;
+        halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
 
         //Skipping for now because animals dont have drives
         float[] passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
 
+        goalText.text = selectedAnimal.GetGoal();
         stateText = new Text[5];
         for (int i = 0; i < 5; i++) {
             string label = selectedAnimal.GetDriveSystem().GetStateLabels()[i];
@@ -74,7 +82,7 @@ public class AnimalUI : MonoBehaviour {
         }
         for(int i = 0; i < 5; i++) {
             float toDisplay = (passedDrives[i] * 100f);
-            Debug.Log(toDisplay);
+            // Debug.Log(toDisplay);
             stateText[i].text = ((int)toDisplay).ToString();
         }
     }
@@ -83,6 +91,7 @@ public class AnimalUI : MonoBehaviour {
         // selectedObject = World.GetObject(clicked.name);
         Debug.Log("Got an animal!");
         passed = clicked;
+
         needsUpdate = true;
     }
 
@@ -92,13 +101,15 @@ public class AnimalUI : MonoBehaviour {
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
-            if (child.name == "CenterObjectButton") {
+            if (child.name == "GoalInfo") {
+                goalText = child.gameObject.GetComponentInChildren<Text>();
+            } else if (child.name == "CenterObjectButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassCenter);
             } else if (child.name == "GenoPanelButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassGenome);
-            }
+            } 
         }
     }
 

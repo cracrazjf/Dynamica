@@ -7,7 +7,6 @@ using System;
 public class Human : Animal
 {
     public HumanSimpleAI humanSimpleAI;
-    public AI activeAI;
     public string activeAILabel = "HumanSimpleAI";
 
     /// <summary>

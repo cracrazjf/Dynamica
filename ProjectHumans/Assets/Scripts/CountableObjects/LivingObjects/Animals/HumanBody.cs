@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class HumanBody : Body {
 
-    public Human thisHuman;
-    public float abdomenLength;
+    Human thisHuman;
+    float abdomenLength;
 
     public HumanBody(Human human) : base(human) {
         
         this.thisHuman = human;
-        Vector3 fixDrop = new Vector3(0, 3f, 0);
+        Vector3 fixDrop = new Vector3(0, 2.55f, 0);
 
-        humanPrefab = Resources.Load("Prefabs/HumanPrefab",typeof(GameObject)) as GameObject;
+        GameObject humanPrefab = Resources.Load("Prefabs/HumanPrefab",typeof(GameObject)) as GameObject;
         this.thisHuman.gameObject = GameObject.Instantiate(humanPrefab, thisHuman.startPosition + fixDrop, thisHuman.startRotation) as GameObject;
         this.thisHuman.gameObject.name = this.thisHuman.GetName();
 
@@ -37,7 +37,9 @@ public class HumanBody : Body {
         skeletonDict = new Dictionary <string, GameObject>();
         jointDict = new Dictionary<string, ConfigurableJoint>();
 
-        foreach (Transform child in this.thisHuman.gameObject.transform) {
+        foreach (Transform body in thisHuman.gameObject.transform) { globalBody = body; }
+
+        foreach (Transform child in globalBody) {
             limbDict.Add(child.name, child.gameObject);
             foreach(Transform grandChild in child) {
                 skeletonDict.Add(grandChild.name, grandChild.gameObject);
@@ -49,6 +51,7 @@ public class HumanBody : Body {
         this.abdomen = skeletonDict["Abdomen"];
         this.head = skeletonDict["Head"];
         this.eyeLevel = head.transform.position.y;
+        globalBody = thisAnimal.gameObject.transform;
     }
 
     public override void UpdateBodyStates() {
@@ -62,8 +65,7 @@ public class HumanBody : Body {
     }
 
     public override bool CheckLaying() {
-        float bodyExtent = abdomen.GetComponent<Collider>().bounds.extents.y;
-        return Physics.Raycast(abdomen.transform.position, -Vector3.up, bodyExtent + 0.2f);
+        return (abdomen.transform.position.y < 1f);
     }
 
 
