@@ -104,17 +104,16 @@ public class HumanSimpleAI : AI
     public void DecreaseHunger() {
         //Debug.Log("Called DecreaseHunger");
         if (bodyStateDict["standing"]) {
-            if (this.thisHuman.GetBody().labelLH == "Food") {
+            if (this.thisHuman.GetBody().labelLH == "Object") {
                 decidedActions.Add("consuming");
                 this.thisHuman.GetMotorSystem().SetArgs("active hand", 0);
                 currentGoal = "None";
-            } else if (this.thisHuman.GetBody().labelRH == "Food") {
+            } else if (this.thisHuman.GetBody().labelRH == "Object") {
                 decidedActions.Add("consuming");
                 this.thisHuman.GetMotorSystem().SetArgs("active hand", 1);
                 currentGoal = "None";
-            } else if (IsVisible("Food")) {
-                rotatedAngle = 0;
-                GameObject target = CalculateNearestObject(GetTargetObjectList("Food"));
+            } else if (IsVisible("Object")) {
+                GameObject target = CalculateNearestObject(GetTargetObjectList("Object"));
                 if (IsReachable(target)) {
                     Vector3 targetPos = target.transform.position;
                     thisHuman.GetMotorSystem().SetArgs("hand target x", targetPos.x);
@@ -269,8 +268,6 @@ public class HumanSimpleAI : AI
             this.thisHuman.GetMotorSystem().SetArgs("rotation velocity", 1.0f);
             rotatedAngle += 2.0f;
         }
-        Vector3 randomPosition = CreateRandomPosition(3.0f);
-        FacePosition(randomPosition);
         GameObject target = CalculateNearestObject(GetTargetObjectList("Object"));
         if(target != null && IsFacing(target.transform.position)) {
             thisHuman.GetMotorSystem().EndAction("rotating");

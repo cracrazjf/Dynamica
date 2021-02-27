@@ -12,7 +12,7 @@ public class Water : NonlivingObject
 
         waterPrefab = Resources.Load("Prefabs/WaterPrefab",typeof(GameObject)) as GameObject;
 
-        this.gameObject = GameObject.Instantiate(waterPrefab, startPosition, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
+        this.gameObject = GameObject.Instantiate(waterPrefab, startPosition, Quaternion.Euler(0f, 1f, 0f)) as GameObject;
         this.gameObject.name = GetName();
 
         gameObject.SetActive(true);

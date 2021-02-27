@@ -16,7 +16,7 @@ public class HumanMotorSystem : MotorSystem
     public bool check = false;
 
     float stepProportion = .01f;
-    float rotatingSpeed = .01f;
+    float rotatingSpeed = 2f;
     float hand = 0;
 
 
@@ -94,7 +94,7 @@ public class HumanMotorSystem : MotorSystem
     public void SitDown() {
         
         BendWaist(0.5f, 1f);
-
+         this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = false;
         // Vector3 dir = ((-bodyTransform.up - bodyTransform.forward) / 2).normalized;
         // bodyTransform.Translate(dir * 1f * Time.deltaTime, Space.World);
 
@@ -104,8 +104,8 @@ public class HumanMotorSystem : MotorSystem
 
     public void SitUp() {
 
-        this.thisHuman.GetBody().GetSkeletonDict()["Body"].GetComponent<Rigidbody>().isKinematic = true;
-        Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
+        this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = true;
+        Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].transform;
         Vector3 humanPosition = this.thisHuman.gameObject.transform.position;
 
         if (thisHuman.GetBodyState("laying")) {
@@ -142,7 +142,7 @@ public class HumanMotorSystem : MotorSystem
         BendWaist(0f, 0f);
 
         if (thisHuman.GetBodyState("sitting") || thisHuman.GetBodyState("laying")) {
-            this.thisHuman.GetBody().GetSkeletonDict()["Body"].GetComponent<Rigidbody>().isKinematic = false;
+            this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = false;
         } else {
             SitDown();
         }
