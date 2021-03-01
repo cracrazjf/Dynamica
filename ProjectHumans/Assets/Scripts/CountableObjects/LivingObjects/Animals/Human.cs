@@ -41,6 +41,7 @@ public class Human : Animal
         
         this.GetMotorSystem().TakeAction(toSend);
         GetBody().ResolveAltitude();
+        action = toSend;
 
         IncreaseAge(1);
     }

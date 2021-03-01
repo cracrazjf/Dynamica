@@ -36,9 +36,10 @@ public class HumanSimpleAI : AI
 
     public override string ChooseAction(float[ , ] visualInput, Dictionary<string, float> passedTraitDict)
     {
+        // Technically doesnt need to be called because of constructor
         this.traitDict = passedTraitDict;
-
         this.humanTransform = thisHuman.gameObject.transform;
+
         InFov(thisHuman.gameObject.transform, 45, 10);
         Debug.DrawRay(humanTransform.position, humanTransform.forward * 10, Color.yellow);
         
@@ -83,7 +84,7 @@ public class HumanSimpleAI : AI
         if (bodyStateDict["standing"]) {
             if (IsVisible("Water")) {
                 rotatedAngle = 0;
-                GameObject target = CalculateNearestObject(GetTargetObjectList("Water"));
+                GameObject target = CalculateNearestObject(GetSightedTargets("Object"));
                 if (IsReachable(target)) {
                     this.thisHuman.GetMotorSystem().EndAction("taking steps");
                     decidedActions.Add("consuming");
@@ -96,7 +97,7 @@ public class HumanSimpleAI : AI
                     FacePosition(target.transform.position);
                 }
             } else {
-                SearchForObjects();
+                SearchForObjects("Object");
             }
         }
     }
@@ -113,7 +114,7 @@ public class HumanSimpleAI : AI
                 this.thisHuman.GetMotorSystem().SetArgs("active hand", 1);
                 currentGoal = "None";
             } else if (IsVisible("Object")) {
-                GameObject target = CalculateNearestObject(GetTargetObjectList("Object"));
+                GameObject target = CalculateNearestObject(GetSightedTargets("Object"));
                 if (IsReachable(target)) {
                     Vector3 targetPos = target.transform.position;
                     thisHuman.GetMotorSystem().SetArgs("hand target x", targetPos.x);
@@ -142,7 +143,7 @@ public class HumanSimpleAI : AI
                     FacePosition(target.transform.position); 
                 }
             } else {
-                SearchForObjects();
+                SearchForObjects("Object");
             }
         } else if (bodyStateDict["sitting"]){
             decidedActions.Add("standing up");
@@ -193,7 +194,7 @@ public class HumanSimpleAI : AI
         return false;   
     }
 
-    public List<GameObject> GetTargetObjectList(string targetTag) {
+    public List<GameObject> GetSightedTargets(string targetTag) {
         List<GameObject> targetList = new List<GameObject>();
         foreach (GameObject x in inSight) {
             if (x.tag == targetTag) {
@@ -247,6 +248,7 @@ public class HumanSimpleAI : AI
         return 0;
     }
 
+    // Returns whether facing a position
     public bool IsFacing(Vector3 passedPosition) {
         float angle = CalculateRotationAngle(passedPosition);
         if (angle <= 0.5f) { return true; }
@@ -254,31 +256,60 @@ public class HumanSimpleAI : AI
     }
 
     public void FacePosition(Vector3 passedPosition) {
-        decidedActions.Add("rotating");
-        if (CalculateRelativePosition(passedPosition) == -1) {
+        
+        if(! IsFacing(passedPosition)) {
+            decidedActions.Add("rotating");
+
+            if (CalculateRelativePosition(passedPosition) == -1) {
             this.thisHuman.GetMotorSystem().SetArgs("rotation velocity", -0.05f);
-        } else {
-           this.thisHuman.GetMotorSystem().SetArgs("rotation velocity", 0.05f);
-        }
+
+            } else { this.thisHuman.GetMotorSystem().SetArgs("rotation velocity", 0.05f); }
+
+        } else { this.thisHuman.GetMotorSystem().EndAction("rotating"); }
     }
 
-    public void SearchForObjects() {
-        if (rotatedAngle < 360) {
-            decidedActions.Add("rotating");
-            this.thisHuman.GetMotorSystem().SetArgs("rotation velocity", 1.0f);
-            rotatedAngle += 2.0f;
-        }
-        GameObject target = CalculateNearestObject(GetTargetObjectList("Object"));
-        if(target != null && IsFacing(target.transform.position)) {
-            thisHuman.GetMotorSystem().EndAction("rotating");
-            decidedActions.Add("taking steps");
-            this.thisHuman.GetMotorSystem().SetArgs("step rate", 0.01f);
-            this.thisHuman.GetMotorSystem().EndAction("taking steps");
+    // Moves to a random position (reset???)
+    public void Explore() {
+        Vector3 randomPos = CreateRandomPosition(3.0f);
+        MoveToPos(randomPos);
+    }
+
+    public void SearchForObjects(string tag) {
+        List<GameObject> sightedTargets = GetSightedTargets(tag);
+
+        // While no useful objects are seen
+        if(sightedTargets.Count < 1) {
+            Debug.Log("No targets found");
+            if (rotatedAngle < 360) {
+                decidedActions.Add("rotating");
+                this.thisHuman.GetMotorSystem().SetArgs("rotation velocity", 1.0f);
+                rotatedAngle += 2.0f;
+            } else {
+                Explore();
+                rotatedAngle = 0;
+            }
+            this.thisHuman.GetMotorSystem().EndAction("rotating");
+            sightedTargets = GetSightedTargets(tag);
+        } else {
+            // Sighted an object, moving to it
+            Debug.Log("walking to sighted object");
+            Vector3 goalPos = (CalculateNearestObject(sightedTargets)).transform.position;
+            MoveToPos(goalPos);
         }
     }
 
     public override string GetGoal() {
         return currentGoal;
+    }
+
+    public void MoveToPos(Vector3 position) {
+        FacePosition(position);
+        decidedActions.Add("taking steps");
+        this.thisHuman.GetMotorSystem().SetArgs("step rate", 0.01f);
+
+        if ((thisHuman.gameObject.transform.position - position).magnitude < 1) { 
+            Debug.Log("walking to sighted object"); 
+        } else { this.thisHuman.GetMotorSystem().EndAction("taking steps"); }
     }
 
     public Vector3 CreateRandomPosition(float Range) {

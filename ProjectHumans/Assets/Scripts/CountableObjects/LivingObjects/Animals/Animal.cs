@@ -12,6 +12,7 @@ using System;
         private MotorSystem motorSystem;
         private SensorySystem sensorySystem;
         protected AI activeAI;
+        protected string action;
 
         public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome) 
         : base (objectType, index, motherGenome, fatherGenome) {
@@ -57,5 +58,9 @@ using System;
 
         public string GetGoal() {
             return this.activeAI.GetGoal();
+        }
+
+        public string GetAction() {
+            return this.GetAction();
         }
     }

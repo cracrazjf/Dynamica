@@ -73,7 +73,7 @@ public class AnimalUI : MonoBehaviour {
         //Skipping for now because animals dont have drives
         float[] passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
 
-        goalText.text = selectedAnimal.GetGoal();
+        goalText.text = selectedAnimal.GetAction();
         stateText = new Text[5];
         for (int i = 0; i < 5; i++) {
             string label = selectedAnimal.GetDriveSystem().GetStateLabels()[i];
