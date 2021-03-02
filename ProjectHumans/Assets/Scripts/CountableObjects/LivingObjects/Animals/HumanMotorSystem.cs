@@ -23,18 +23,19 @@ public class HumanMotorSystem : MotorSystem
     public HumanMotorSystem(Human human) : base(human) {
         this.thisHuman = human;
         stateLabelList = new List<string> {
-            "sitting down", 
-            "sitting up", // 2
-            "laying down",
-            "standing up", // 4
-            "rotating", 
-            "taking steps",
-            "picking up", 
-            "setting down", // 8
-            "consuming",
-            "waking up",
-            "falling asleep", // 11
-            "resting" // 12
+            "sitting down",// 0
+            "sitting up",  // 1
+            "laying down", // 2
+            "standing up", // 3
+            "rotating",    // 4
+            "taking steps",// 5
+            "picking up",  // 6
+            "setting down",// 7 
+            "consuming",   // 8
+            "waking up",   // 9
+            "sleeping",    // 10
+            "resting",     // 11
+            "looking"      // 12
         };
         this.InitStates(stateLabelList);
 
@@ -73,28 +74,13 @@ public class HumanMotorSystem : MotorSystem
         actionList.Add(Consume);
         actionList.Add(WakeUp);
         actionList.Add(Sleep);
-    }
+        actionList.Add(Rest);
+        actionList.Add(LookAt);
 
-    float t = 0.0f;
-    float x = 0.5f;
-    public void TakeSteps() {
-        this.thisHuman.gameObject.transform.Translate(this.thisHuman.gameObject.transform.forward * stepProportion * Time.deltaTime, Space.World);
-            
-        thisHuman.GetBody().RotateJoint("Femur_L", new Quaternion(Mathf.Lerp(-stepProportion, stepProportion, t), 0, 0, 1));
-        thisHuman.GetBody().RotateJoint("Femur_R", new Quaternion(Mathf.Lerp(stepProportion, -stepProportion, t), 0, 0, 1));
-
-        if (t > 1.0f) {
-             x = -0.5f;
-        } else { x = 0.5f; }
-        t += x * Time.deltaTime;
-    }
-
-    public void Rotate() {
-        this.thisHuman.gameObject.transform.Rotate(0, rotatingSpeed, 0, Space.World);
     }
     
     public void SitDown() {
-        
+        Debug.Log("SitDown was called");
         BendWaist(0.5f, 1f);
          this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = false;
         // Vector3 dir = ((-bodyTransform.up - bodyTransform.forward) / 2).normalized;
@@ -105,7 +91,7 @@ public class HumanMotorSystem : MotorSystem
     }
 
     public void SitUp() {
-
+        Debug.Log("SitUp was called");
         this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = true;
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Abdomen"].transform;
         Vector3 humanPosition = this.thisHuman.gameObject.transform.position;
@@ -128,19 +114,8 @@ public class HumanMotorSystem : MotorSystem
         this.thisHuman.GetBody().SetState("sitting", true);          
     }
 
-    
-    public void StandUp(){
-        //Debug.Log("StandUp was called");
-
-        Vector3 goalPosition = (thisHuman.GetBody().GetXZPosition() + new Vector3(0, thisHuman.GetBody().GetHeight(), 0));
-        thisHuman.GetBody().TranslateSkeletonTo("Abdomen", goalPosition);
-
-        thisHuman.GetBody().SetState("laying", false);
-        thisHuman.GetBody().SetState("sitting", false);
-        thisHuman.GetBody().SetState("standing", true);  
-    }
-
     public void LayDown() {
+        Debug.Log("Tried to lay down");
         BendWaist(0f, 0f);
 
         if (thisHuman.GetBodyState("sitting") || thisHuman.GetBodyState("laying")) {
@@ -152,65 +127,51 @@ public class HumanMotorSystem : MotorSystem
         this.thisHuman.GetBody().SetState("sitting", false);
         this.thisHuman.GetBody().SetState("laying", true);  
     }
-
-    public void Sleep(){
-
-        thisHuman.ToggleBodyPart("Eye_L", false);
-        thisHuman.ToggleBodyPart("Eye_R", false);
-
-        this.thisHuman.GetBody().SetState("sleeping", true);  
-    }
     
-    public void WakeUp(){
-        thisHuman.ToggleBodyPart("Eye_L", true);
-        thisHuman.ToggleBodyPart("Eye_R", true);
-        
-        this.thisHuman.GetBody().SetState("sleeping", false);  
+    public void StandUp(){
+        Debug.Log("StandUp was called");
+
+        Vector3 goalPosition = (thisHuman.GetBody().GetXZPosition() + new Vector3(0, thisHuman.GetBody().GetHeight(), 0));
+        thisHuman.GetBody().TranslateSkeletonTo("Abdomen", goalPosition);
+
+        thisHuman.GetBody().SetState("laying", false);
+        thisHuman.GetBody().SetState("sitting", false);
+        thisHuman.GetBody().SetState("standing", true);  
     }
+
+    public void Rotate() {
+        this.thisHuman.gameObject.transform.Rotate(0, rotatingSpeed, 0, Space.World);
+    }
+
     
+    public void TakeSteps() {
+        float t = 0.0f;
+        float x = 0.5f;
+
+        this.thisHuman.gameObject.transform.Translate(this.thisHuman.gameObject.transform.forward * stepProportion * Time.deltaTime, Space.World);
+            
+        thisHuman.GetBody().RotateJoint("Femur_L", new Quaternion(Mathf.Lerp(-stepProportion, stepProportion, t), 0, 0, 1));
+        thisHuman.GetBody().RotateJoint("Femur_R", new Quaternion(Mathf.Lerp(stepProportion, -stepProportion, t), 0, 0, 1));
+
+        if (t > 1.0f) {
+             x = -0.5f;
+        } else { x = 0.5f; }
+        t += x * Time.deltaTime;
+    }
+
     public void PickUp() {
+        Debug.Log("Tried to pick something up");
         Transform bodyTransform = this.thisHuman.GetBody().GetSkeletonDict()["Body"].transform;
         Vector3 humanPosition = this.thisHuman.gameObject.transform.position;
         
         BendWaist(0.3f, 1f);
 
         Vector3 heldPos = thisAnimal.GetBody().GetHolderCoords(argsDict["held position"]);
-
-
-        // if (bodyTransform.localPosition.y <= -1) {
-        //     bodyTransform.localRotation = Quaternion.Euler(45, 0, 0);
-        //         if (bodyTransform.localEulerAngles.x >= 45) {
-        //             if (bodyTransform.localPosition.y <= -1.3f) {
-        //                 if (hand == 0) {
-        //                     thisHuman.GetBody().RotateJoint("Humerus_L", new Quaternion(1.5f, 0, 0, 1));
-
-        //                 } else {
-        //                     thisHuman.GetBody().RotateJoint("Humerus_R", new Quaternion(1.5f, 0, 0, 1));
-        //                 }
-        //             } else {
-        //                 bodyTransform.Translate(transform.forward * 2 * Time.deltaTime);
-        //             }
-        //         }
-        //     } else {
-        //         moveToPosition = new Vector3(humanPosition.x, humanPosition.y - 0.8f, humanPosition.z);
-        //     }
-        //     bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, moveToPosition, 1.0f * Time.deltaTime);
-        // } else {
-        //     if (hand == 0) {
-        //         thisHuman.GetBody().RotateJoint("Humerus_L", new Quaternion(0, 0, 0, 1));
-
-        //     } else {
-        //         thisHuman.GetBody().RotateJoint("Humerus_R", new Quaternion(0, 0, 0, 1));
-        //     }
-        //     bodyTransform.localRotation = Quaternion.Euler(0, 0, 0);
-        //     moveToPosition = new Vector3(humanPosition.x, humanPosition.y, humanPosition.z);
-        //     bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, moveToPosition, 1.0f * Time.deltaTime);
-        //     BendWaist(0f, 0f);
-        // }
     }
 
     public void SetDown() {}
 
+    
     public void Consume () {
         Vector3 heldPos = thisHuman.GetBody().GetHolderCoords(argsDict["held position"]);
 
@@ -226,6 +187,25 @@ public class HumanMotorSystem : MotorSystem
         }
         // Stat buffs and destroy the comsumed object
     }
+
+    public void WakeUp(){
+        thisHuman.ToggleBodyPart("Eye_L", true);
+        thisHuman.ToggleBodyPart("Eye_R", true);
+        
+        this.thisHuman.GetBody().SetState("sleeping", false);  
+    }
+
+    public void Sleep(){
+        thisHuman.ToggleBodyPart("Eye_L", false);
+        thisHuman.ToggleBodyPart("Eye_R", false);
+
+        this.thisHuman.GetBody().SetState("sleeping", true);  
+    }
+    
+    public void Rest() {}
+
+    public void LookAt() {}
+
 
     public void BendKnees(float degree) {}
 

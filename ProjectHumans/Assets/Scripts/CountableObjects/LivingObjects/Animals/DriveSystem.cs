@@ -24,6 +24,18 @@ public class DriveSystem
     /// </summary>
     public DriveSystem(Animal animal) {
         this.thisAnimal = animal;
+
+        this.stateLabelList = new List<string> {
+            // Originally driveStates, will be read-in eventually
+
+            "hunger", 
+            "thirst", 
+            "sleepiness",
+            "fatigue",
+            "health",
+        };
+        this.InitStates(this.stateLabelList);
+        SetState("health", 1.0f);
     }
 
     // DISCUSS
@@ -49,5 +61,27 @@ public class DriveSystem
         states[currentIndex] = val;
     }
 
-    public virtual void UpdateDrives() { Debug.Log("No drives defined for this animal"); }
+    public void UpdateDrives() { 
+        foreach (string label in stateLabelList) {
+            string changeLabel = label + "_change";
+            float changeValue = thisAnimal.phenotype.GetTraitDict()[changeLabel];
+
+            float toUpdate = GetStateDict()[label] + changeValue;
+            SetState(label, toUpdate);
+            // Ensure all drive states are in bounds
+            if (this.stateDict[label] < 0) { this.SetState(label, 0.0f); }
+            else if (this.stateDict[label] > 1) { this.SetState(label, 1.0f); }
+        }
+
+        // Hunger and thirst updates
+        float currentHealth = stateDict["health"];
+        if (stateDict["hunger"] >= 1.0 ) {
+            float toUpdate = currentHealth - thisAnimal.phenotype.GetTraitDict()["starvation_damage"];
+            this.SetState("health", toUpdate);
+        }
+        if (stateDict["thirst"] >= 1.0) {
+            float toUpdate = currentHealth - thisAnimal.phenotype.GetTraitDict()["dehydration_damage"];
+            this.SetState("health", toUpdate);
+        }    
+    } 
 }

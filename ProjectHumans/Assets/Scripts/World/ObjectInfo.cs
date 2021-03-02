@@ -6,18 +6,17 @@ using UnityEngine;
 using System.Linq;
 
 
-public class LivingObjectInfo {
+public class ObjectInfo {
     // this is the initial number that will be spawned
     public string name;
     public int startingN;
-    public int currentN;
-
+    public bool living;
     public Genome genome;
 
-    public LivingObjectInfo(string passedSpeciesName, int passedStartingN) {
+    public ObjectInfo(string passedSpeciesName, int passedStartingN, bool lively) {
         name = passedSpeciesName;
         startingN = passedStartingN;
-        currentN = 0;
+        living = lively;
 
         this.genome = new Genome();
         ImportObjectInfo();
@@ -37,15 +36,12 @@ public class LivingObjectInfo {
             string[] leftArray = lineInfo[0].Split(new[] { "." }, StringSplitOptions.None);
             string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
 
-            if (leftArray[0] == "gene"){
-                genome.AddGeneToGenome(leftArray[1], rightArray);
-            }
-            else if (leftArray[0] == "constant"){
+            if (living) {
+                if (leftArray[0] == "gene") { genome.AddGeneToGenome(leftArray[1], rightArray); }
+            } else if (leftArray[0] == "constant") {
                 genome.AddConstantToGenome(leftArray[1], rightArray);
             }
         }  
-        
         file.Close();
-        
     }
 }

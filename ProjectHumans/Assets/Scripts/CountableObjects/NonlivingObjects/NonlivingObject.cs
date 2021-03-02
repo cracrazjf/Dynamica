@@ -13,7 +13,7 @@ abstract public class NonlivingObject : CountableObject
     public Dictionary<string, int> constantIndexDict;
     public Dictionary<string, float> constantDict;
 
-    public NonlivingObject(string objectType, int index, NonlivingObjectInfo passedNonlivingObjectInfo) : 
+    public NonlivingObject(string objectType, int index, ObjectInfo passedNonlivingObjectInfo) : 
             base (objectType, index) 
     {
         // this could possibly be made more efficient with data structure copying methods

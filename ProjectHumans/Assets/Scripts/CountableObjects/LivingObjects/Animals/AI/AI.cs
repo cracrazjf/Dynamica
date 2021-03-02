@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class AI 
 {
-    // removed numStates counters, incrementing makes less sense than calling count when needed - JC
-    protected List<string> decidedActions;
+    protected Animal thisAnimal;
+    protected int[] decidedActions;
 
     protected bool[] bodyStates;
     protected List<string> bodyStateLabelList;
@@ -69,7 +69,7 @@ public class AI
         return null;
     }
 
-    public virtual string GetGoal() {
-        return "No goals";
+    public string GetAction() {
+        return "In progress!";
     }
 }

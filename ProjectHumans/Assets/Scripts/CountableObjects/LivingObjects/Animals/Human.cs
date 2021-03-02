@@ -21,9 +21,9 @@ public class Human : Animal
         GetBody().UpdateBodyStates();
         visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
         
-        SetDriveSystem(new HumanDriveSystem(this));
+        SetDriveSystem(new DriveSystem(this));
         SetMotorSystem(new HumanMotorSystem(this));
-        SetSensorySystem(new HumanSensorySystem(this));
+        SetSensorySystem(new SensorySystem(this));
 
 
         if (activeAILabel == "blankAI") {

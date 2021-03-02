@@ -56,11 +56,7 @@ using System;
             sensorySystem = passed;
         }
 
-        public string GetGoal() {
-            return this.activeAI.GetGoal();
-        }
-
         public string GetAction() {
-            return this.GetAction();
+            return this.activeAI.GetAction();
         }
     }

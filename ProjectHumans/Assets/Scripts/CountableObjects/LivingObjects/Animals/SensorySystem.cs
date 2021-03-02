@@ -20,10 +20,9 @@ public class SensorySystem {
         InitVisualInput();
     }
 
-    public void InitVisualInput(){
+    public void InitVisualInput() {
         visualInputArray = new float[3, visualResolution * visualResolution];
 
-        // what does this do?
         if (visualInputCamera != null) {
             if (visualInputCamera.targetTexture == null) {
                 visualInputCamera.targetTexture = new RenderTexture(visualResolution, visualResolution, 24);
@@ -38,7 +37,7 @@ public class SensorySystem {
         UpdateVisualInput();
     }
 
-    public float [ , ] GetVisualInput(){
+    public float [ , ] GetVisualInput() {
         if (this.thisAnimal.age % this.thisAnimal.GetPhenotype().GetTraitDict()["visual_refresh_rate"] == 0){ // replace this with the visual refresh rate at some point
             UpdateVisualInput();
             //string outputString = visualInputArray.GetLength(0).ToString() + "," + visualInputArray.GetLength(1).ToString();
@@ -47,8 +46,7 @@ public class SensorySystem {
         return visualInputArray;
     }
 
-    public void UpdateVisualInput()
-    {
+    public void UpdateVisualInput() {
         if (this.thisAnimal.visualInputCamera.gameObject.activeInHierarchy) {
             
             Texture2D visualInputTexture = new Texture2D(visualResolution, visualResolution, TextureFormat.RGB24, false);
@@ -67,19 +65,18 @@ public class SensorySystem {
             }
             //saveVisualImage(visualInputTexture);
     
-        }
-        else{
+        } else {
             Debug.Log("Camera is off");
         }
     }
     
-    void saveVisualImage(Texture2D visualInputTexture){
+    void SaveVisualImage(Texture2D visualInputTexture){
         byte[] bytes = visualInputTexture.EncodeToPNG();
-        string fileName = GetVisualInputName();
+        string fileName = GetImageName();
         System.IO.File.WriteAllBytes(fileName, bytes);
     }
 
-    string GetVisualInputName() {
+    string GetImageName() {
         return string.Format("{0}/VisualInputs/visualInput_{1}x{2}_{3}.png",
         Application.dataPath,
         visualResolution,
@@ -147,8 +144,6 @@ public class SensorySystem {
     //     oNewTex.Apply();
     //     Debug.Log("visualInput taken");
     //     return oNewTex;
-        
-
     // }
 
 }

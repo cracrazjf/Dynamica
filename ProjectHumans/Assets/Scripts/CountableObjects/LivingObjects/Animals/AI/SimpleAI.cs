@@ -5,14 +5,7 @@ using UnityEngine;
 using System.Linq;
 
 public class SimpleAI : AI {
-    Animal thisAnimal;
     Transform animalTransform;
-
-    bool[] actionStates;
-    List<string> actionStateLabelList;
-
-    float[] actionArguments;
-    List<string> actionArgumentLabelList;
 
     Dictionary<string, bool> bodyStateDict;
     Dictionary<string, float> driveStateDict;
@@ -23,7 +16,8 @@ public class SimpleAI : AI {
     List<GameObject> inSight;
     string currentGoal = "None";
 
-    public SimpleAI(Animal animal, Body body, DriveSystem drives, MotorSystem motor, SensorySystem senses, Phenotype traits) : base(body, drives, motor, senses, traits) {
+    public SimpleAI(Animal animal, Body body, DriveSystem drives, MotorSystem motor, SensorySystem senses, Phenotype traits) : 
+                    base(body, drives, motor, senses, traits) {
         thisAnimal = animal;
         bodyStateDict = body.GetStateDict();
 
@@ -77,38 +71,7 @@ public class SimpleAI : AI {
         goalDict.Add("None", Explore);
     }
 
-    public void Consume() {
-        // Check for both hands (or positions of potential holding)
-        List<GameObject> heldItems = thisAnimal.GetBody().GetHoldings();
-        for (int i = 0; i < heldItems.Count; i++) {
-            if (checkEdible(heldItems[i])) {
-                decidedActions[9] = 1;
-                this.thisAnimal.GetMotorSystem().SetArgs("held position", i);
-            }
-        }
-
-        if (decidedActions[9] != 1) {
-            AcquireObject("Object");
-        } else { SearchForObjects("Object"); }
-    }
-
-    // Seeks out an object of the passed tag
-    public void AcquireObject(string tag) {
-        GameObject target = CalculateNearestObject(GetSightedTargets(tag));
-        if (target != null) {
-            if (IsReachable(target)) {
-                SetTargetArgs(target.transform.position);
-                decidedActions[7] = 1;
-            } else { MoveToPos(target.transform.position); }
-        } else { SearchForObjects("Object"); }
-    }
-
-    // Handles these parameters 
-    public void SetTargetArgs(Vector3 targetPos) {
-            thisAnimal.GetMotorSystem().SetArgs("target x", targetPos.x);
-            thisAnimal.GetMotorSystem().SetArgs("target y", targetPos.y);
-            thisAnimal.GetMotorSystem().SetArgs("target x", targetPos.z);
-    }
+    // Action functions
 
     // Sets laying down to true;
     public void DecreaseSleepiness() {
@@ -125,9 +88,19 @@ public class SimpleAI : AI {
         decidedActions[12] = 1;
     }
 
-    // Determines whether the item in question should be eaten
-    public bool checkEdible(GameObject questioned) {
-        return true;
+    public void Consume() {
+        // Check for both hands (or positions of potential holding)
+        List<GameObject> heldItems = thisAnimal.GetBody().GetHoldings();
+        for (int i = 0; i < heldItems.Count; i++) {
+            if (IsEdible(heldItems[i])) {
+                decidedActions[9] = 1;
+                this.thisAnimal.GetMotorSystem().SetArgs("held position", i);
+            }
+        }
+
+        if (decidedActions[9] != 1) {
+            AcquireObject("Object");
+        } else { SearchForObjects("Object"); }
     }
 
     // Makes human stand if not already
@@ -136,7 +109,87 @@ public class SimpleAI : AI {
         else { decidedActions[4] = 1; }
     }
 
-    // Returns all objects inFOV of the passed tag
+    // Moves to a random position (reset???)
+    public void Explore() {
+        Vector3 randomPos = GetRandomPosition(3.0f);
+        MoveToPos(randomPos);
+    }
+
+    // Seeks out an object of the passed tag
+    public void AcquireObject(string tag) {
+        GameObject target = GetNearestObject(GetSightedTargets(tag));
+        if (target != null) {
+            if (IsReachable(target)) {
+                SetTargetArgs(target.transform.position);
+                decidedActions[7] = 1;
+            } else { MoveToPos(target.transform.position); }
+        } else { SearchForObjects("Object"); }
+    }
+
+    public void SearchForObjects(string tag) {
+        List<GameObject> sightedTargets = GetSightedTargets(tag);
+        // While no useful objects are seen... changed to if else loops indefinitely
+        if (sightedTargets.Count < 1) {
+            Debug.Log("No targets found");
+            for(int i = 0; i < 180; i++) {
+                decidedActions[5] = 1;
+                thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 1.0f);
+                sightedTargets = GetSightedTargets(tag);
+            }
+            Explore();
+        } 
+        // Sighted an object, moving to it
+        Debug.Log("Investigating something");
+        Vector3 goalPos = (GetNearestObject(sightedTargets)).transform.position;
+        MoveToPos(goalPos);
+    }
+
+    // Moves to passed position
+    public void MoveToPos(Vector3 position) {
+        EnsureStanding();
+        FacePosition(position);
+        thisAnimal.GetMotorSystem().SetArgs("step rate", 0.01f);
+
+        if ((animalTransform.position - position).magnitude > 1) { 
+            Debug.Log("Walking to and fro"); 
+            decidedActions[6] = 1;
+        }
+    }
+
+    // Faces the passed position
+    public void FacePosition(Vector3 targetPos) {
+        if(!IsFacing(targetPos)) {
+            decidedActions[5] = 1;
+            if (GetRelativePosition(targetPos) == -1) {
+            thisAnimal.GetMotorSystem().SetArgs("rotation velocity", -0.05f);
+            } else { thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 0.05f); }
+        }
+    }
+
+    // Helper functions
+
+    // Returns whether facing a position
+    public bool IsFacing(Vector3 targetPos) {
+        float angle = Vector3.Angle(targetPos - animalTransform.position, animalTransform.forward);
+        if (angle <= 0.5f) { return true; }
+        return false;
+    }
+
+    // Determines whether an object can be grabbed from current position
+    public bool IsReachable(GameObject target){
+        float distance = Vector3.Distance(animalTransform.position, target.transform.position);
+        if (distance < 1) {
+            return true; 
+        }
+        return false;
+    }
+
+    // Determines whether the item in question should be eaten
+    public bool IsEdible(GameObject item) {
+        return true;
+    }
+
+     // Returns all objects inFOV of the passed tag
     public List<GameObject> GetSightedTargets(string targetTag) {
         List<GameObject> targetList = new List<GameObject>();
         foreach (GameObject x in inSight) {
@@ -148,7 +201,7 @@ public class SimpleAI : AI {
     }
 
     // Returns the nearest object to the human or null if none exists
-    public GameObject CalculateNearestObject(List<GameObject> targetList) {
+    public GameObject GetNearestObject(List<GameObject> targetList) {
         GameObject nearestObject = thisAnimal.gameObject;
         if (targetList.Count > 0) {
             nearestObject = targetList[0];
@@ -165,87 +218,31 @@ public class SimpleAI : AI {
         return nearestObject;  
     }
 
-    // Determines whether an object can be grabbed from current position
-    public bool IsReachable(GameObject target){
-        float distance = Vector3.Distance(animalTransform.position, target.transform.position);
-        if (distance < 1) {
-            return true; 
-        }
-        return false;
-    }
-
     // Determines whether to rotate in a pos or negative direction
-    public int CalculateRelativePosition(Vector3 passedPosition) {
-        Vector3 relativePosition = animalTransform.InverseTransformPoint(passedPosition);
+    public int GetRelativePosition(Vector3 targetPos) {
+        Vector3 relativePosition = animalTransform.InverseTransformPoint(targetPos);
         if (relativePosition.x < 0) {
             return -1;
         } else if (relativePosition.x > 0) { return 1; }
         return 0;
     }
 
-    // Returns whether facing a position
-    public bool IsFacing(Vector3 passedPos) {
-        float angle = Vector3.Angle(passedPos - animalTransform.position, animalTransform.forward);
-        if (angle <= 0.5f) { return true; }
-        return false;
-    }
-
-    // Faces the passed position
-    public void FacePosition(Vector3 passedPosition) {
-        if(!IsFacing(passedPosition)) {
-            decidedActions[5] = 1;
-            if (CalculateRelativePosition(passedPosition) == -1) {
-            thisAnimal.GetMotorSystem().SetArgs("rotation velocity", -0.05f);
-            } else { thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 0.05f); }
-        }
-    }
-
-    // Moves to a random position (reset???)
-    public void Explore() {
-        Vector3 randomPos = CreateRandomPosition(3.0f);
-        MoveToPos(randomPos);
-    }
-
-    public void SearchForObjects(string tag) {
-        List<GameObject> sightedTargets = GetSightedTargets(tag);
-
-        // While no useful objects are seen... changed to if else loops indefinitely
-        if (sightedTargets.Count < 1) {
-            Debug.Log("No targets found");
-            for(int i = 0; i < 180; i++) {
-                decidedActions[5] = 1;
-                thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 1.0f);
-                sightedTargets = GetSightedTargets(tag);
-            }
-            Explore();
-        } 
-        // Sighted an object, moving to it
-        Debug.Log("walking to sighted object");
-        Vector3 goalPos = (CalculateNearestObject(sightedTargets)).transform.position;
-        MoveToPos(goalPos);
-    }
-
-    // Moves to passed position
-    public void MoveToPos(Vector3 position) {
-        EnsureStanding();
-        FacePosition(position);
-        thisAnimal.GetMotorSystem().SetArgs("step rate", 0.01f);
-
-        if ((animalTransform.position - position).magnitude > 1) { 
-            Debug.Log("walking to sighted object"); 
-            decidedActions[6] = 1;
-        }
-    }
-
-    public Vector3 CreateRandomPosition(float Range) {
+    public Vector3 GetRandomPosition(float Range) {
         float xPos = animalTransform.position.x;
         float zPos = animalTransform.position.z;
         Vector3 toReturn = new Vector3(UnityEngine.Random.Range(xPos - Range, xPos + Range), thisAnimal.GetBody().GetHeight(), 
                                         UnityEngine.Random.Range(zPos - Range, zPos + Range));
         return toReturn;
     }
+
+    // Handles these parameters 
+    public void SetTargetArgs(Vector3 targetPos) {
+            thisAnimal.GetMotorSystem().SetArgs("target x", targetPos.x);
+            thisAnimal.GetMotorSystem().SetArgs("target y", targetPos.y);
+            thisAnimal.GetMotorSystem().SetArgs("target x", targetPos.z);
+    }
     
-    // 
+    // Called when AI has to see
     public void UpdateFOV(Transform checkingObject, float maxAngle, float maxRadius) {
         Collider[] overlaps = new Collider[60];
         int count = Physics.OverlapSphereNonAlloc(checkingObject.position, maxRadius, overlaps);
