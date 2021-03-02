@@ -74,6 +74,7 @@ public class SimpleAI : AI {
         goalDict.Add("Decrease sleepiness", DecreaseSleepiness);
         goalDict.Add("Decrease fatigue", DecreaseFatigue);
         goalDict.Add("Increase health", IncreaseHealth);
+        goalDict.Add("None", Explore);
     }
 
     public void Consume() {
@@ -104,9 +105,9 @@ public class SimpleAI : AI {
 
     // Handles these parameters 
     public void SetTargetArgs(Vector3 targetPos) {
-            thisAnimal.GetMotorSystem().SetArgs("hand target x", targetPos.x);
-            thisAnimal.GetMotorSystem().SetArgs("hand target y", targetPos.y);
-            thisAnimal.GetMotorSystem().SetArgs("hand target x", targetPos.z);
+            thisAnimal.GetMotorSystem().SetArgs("target x", targetPos.x);
+            thisAnimal.GetMotorSystem().SetArgs("target y", targetPos.y);
+            thisAnimal.GetMotorSystem().SetArgs("target x", targetPos.z);
     }
 
     // Sets laying down to true;
@@ -148,7 +149,7 @@ public class SimpleAI : AI {
 
     // Returns the nearest object to the human or null if none exists
     public GameObject CalculateNearestObject(List<GameObject> targetList) {
-        GameObject nearestObject = null;
+        GameObject nearestObject = thisAnimal.gameObject;
         if (targetList.Count > 0) {
             nearestObject = targetList[0];
             float nearestDis = Vector3.Distance(animalTransform.position, nearestObject.transform.position);
@@ -208,8 +209,8 @@ public class SimpleAI : AI {
     public void SearchForObjects(string tag) {
         List<GameObject> sightedTargets = GetSightedTargets(tag);
 
-        // While no useful objects are seen
-        while (sightedTargets.Count < 1) {
+        // While no useful objects are seen... changed to if else loops indefinitely
+        if (sightedTargets.Count < 1) {
             Debug.Log("No targets found");
             for(int i = 0; i < 180; i++) {
                 decidedActions[5] = 1;

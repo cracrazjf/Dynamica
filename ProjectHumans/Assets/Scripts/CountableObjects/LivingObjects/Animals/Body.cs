@@ -54,6 +54,12 @@ public class Body {
         height = thisAnimal.GetPhenotype().GetTraitDict()["height"] * heightScale; 
     }
 
+    public void InitHolders() {
+        holdings = new List<GameObject>();
+        holderCoords = new List<Vector3>();
+    }
+
+    // Initializes state information but also calls standard height and holder info
     public void InitStates(List<string> passedStateLabelList) {
         states = new bool[passedStateLabelList.Count]; 
         stateLabelList = passedStateLabelList;
@@ -70,6 +76,7 @@ public class Body {
         else { Debug.Log("No body states defined for this animal"); }
 
         InitHeight();
+        InitHolders();
     }
 
     public void SetState(string label, bool passed) {
