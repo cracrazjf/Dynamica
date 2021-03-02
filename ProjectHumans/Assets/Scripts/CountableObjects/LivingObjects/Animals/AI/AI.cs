@@ -59,14 +59,14 @@ public class AI
     }
 
     // Since ChooseAction is in here, it doesn't need all these values passed. AI already has the bodyState, actionState, etc. - JC
-    public virtual string ChooseAction (float[ , ] visualInput, Dictionary<string, float> traitDict){
+    public virtual int[] ChooseAction (float[ , ] visualInput){
         
         if (outputDefinitionError == false){
             Debug.Log("No ChooseAction function defined for this AI");
             outputDefinitionError = true;
         }
         
-        return "sleep";
+        return null;
     }
 
     public virtual string GetGoal() {

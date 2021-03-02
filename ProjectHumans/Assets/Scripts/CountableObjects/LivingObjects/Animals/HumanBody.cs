@@ -27,8 +27,7 @@ public class HumanBody : Body {
             "standing", 
             "sitting", 
             "laying",
-            "holding with left hand",
-            "holding with right hand",
+            "holding item",
             "sleeping"
         };
         this.InitStates(stateLabelList);

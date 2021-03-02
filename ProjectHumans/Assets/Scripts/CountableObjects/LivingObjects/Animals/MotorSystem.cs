@@ -28,7 +28,7 @@ public class MotorSystem
     public Dictionary<string, int> GetArgIndices() { return argsIndexDict; }
     public Dictionary<string, float> GetArgDict() { return argsDict; }
 
-    public Dictionary<string, Action> actionDict;
+    public List<Action> actionList;
 
     public MotorSystem(Animal passed) {
         this.thisAnimal = passed;
@@ -78,7 +78,7 @@ public class MotorSystem
         } else { Debug.Log("No args defined for this animal"); }
     }
 
-    public virtual void TakeAction(string action) { }
+    public virtual void TakeAction(int[] toDo) { }
 
     public virtual void EndAction(string actionLabel) { Debug.Log("No actions to end for this animal"); }
 

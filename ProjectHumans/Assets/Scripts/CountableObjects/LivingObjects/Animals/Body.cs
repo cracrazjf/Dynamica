@@ -10,8 +10,6 @@ public class Body {
     public Rigidbody rigidbody;
 
     public Transform globalBody;
-    public string labelLH;
-    public string labelRH;
     protected GameObject abdomen;
     protected GameObject head;
     protected float eyeLevel;
@@ -37,6 +35,9 @@ public class Body {
     public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
     public Dictionary<string, bool> GetStateDict() { return stateDict; }
 
+    protected List<Vector3> holderCoords;
+    protected List<GameObject> holdings;
+    public List<GameObject> GetHoldings() { return holdings; }
 
     public Body(Animal animal) {
         this.thisAnimal = animal;
@@ -122,4 +123,12 @@ public class Body {
     }
 
     public float GetHeight() { return height; }
+
+    public Vector3 GetHolderCoords(float index) {
+        if (holderCoords.Count > index) { return holderCoords[(int) index]; }
+
+        Debug.Log("Not a valid held item position");
+        return new Vector3(0, 0, 0);
+    }
+    
 }

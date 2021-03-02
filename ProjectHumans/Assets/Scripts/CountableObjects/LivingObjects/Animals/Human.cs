@@ -6,8 +6,8 @@ using System;
 
 public class Human : Animal
 {
-    public HumanSimpleAI humanSimpleAI;
-    public string activeAILabel = "HumanSimpleAI";
+    public SimpleAI humanSimpleAI;
+    public string activeAILabel = "SimpleAI";
 
     /// <summary>
     /// Human constructor
@@ -29,7 +29,7 @@ public class Human : Animal
         if (activeAILabel == "blankAI") {
             activeAI = new AI(GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
         } else {
-            humanSimpleAI = new HumanSimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
+            humanSimpleAI = new SimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
             activeAI = humanSimpleAI;
         }
     }
@@ -37,11 +37,11 @@ public class Human : Animal
     public override void UpdateAnimal() {
         this.GetDriveSystem().UpdateDrives();
         float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
-        string toSend = activeAI.ChooseAction(visualInputMatrix, GetPhenotype().GetTraitDict());
+        int[] toSend = activeAI.ChooseAction(visualInputMatrix);
         
         this.GetMotorSystem().TakeAction(toSend);
         GetBody().ResolveAltitude();
-        action = toSend;
+        action = "In progress!";
 
         IncreaseAge(1);
     }
