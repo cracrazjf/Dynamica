@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Plant : LivingObject
+public class Plant : Entity
 {
     public string displayName;
     private Body body;

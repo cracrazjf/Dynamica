@@ -6,8 +6,7 @@ using UnityEngine;
 using System.Linq;
 
 
-public class Genome 
-{
+public class Genome {
     public LivingObject thisLivingObject;
 
     // this is where the genes go
@@ -22,32 +21,44 @@ public class Genome
     public Dictionary<string, float> constantDict;
     public Dictionary<string, int> constantIndexDict;
 
-    public Genome(){
+    public Genome(Genome motherGenome, Genome fatherGenome) {
         numGenes = 0;
         geneLabelList = new List<string>();
         geneDict = new Dictionary<string, Gene>();
         geneIndexDict = new Dictionary<string, int>();
 
-    // this is where the constants get stored from each species's config file
         numConstants = 0;
         constantLabelList = new List<string>();
         constantDict = new Dictionary<string, float>();
         constantIndexDict= new Dictionary<string, int>();
+
+        InheretGenome(motherGenome, fatherGenome);
     }
 
-    public bool InheretGenome(Genome motherGenome, Genome fatherGenome)
-    {
+    public Genome(Genome motherGenome) {
+        numGenes = 0;
+        geneLabelList = new List<string>();
+        geneDict = new Dictionary<string, Gene>();
+        geneIndexDict = new Dictionary<string, int>();
+
+        numConstants = 0;
+        constantLabelList = new List<string>();
+        constantDict = new Dictionary<string, float>();
+        constantIndexDict= new Dictionary<string, int>();
+
+        InheretGenome(motherGenome);
+    }
+
+
+    public bool InheretGenome(Genome motherGenome, Genome fatherGenome) {
         bool success = true;
 
-        if (motherGenome.numGenes == fatherGenome.numGenes && motherGenome.numConstants == fatherGenome.numConstants)
-        {
+        if (motherGenome.numGenes == fatherGenome.numGenes && motherGenome.numConstants == fatherGenome.numConstants) {
             numConstants = motherGenome.numConstants;
             numGenes = motherGenome.numGenes;
 
-            for (int i = 0; i < numGenes; i++)
-            {
-                if (motherGenome.geneLabelList[i] == fatherGenome.geneLabelList[i])
-                {
+            for (int i = 0; i < numGenes; i++) {
+                if (motherGenome.geneLabelList[i] == fatherGenome.geneLabelList[i]) {
                     string geneLabel = motherGenome.geneLabelList[i];
                     Gene motherGene = motherGenome.geneDict[geneLabel];
                     Gene childGene = motherGene.ShallowCopy();//This might not be what we want.
@@ -56,14 +67,13 @@ public class Genome
                     geneDict.Add(geneLabel, childGene);
                     geneIndexDict.Add(geneLabel, i);
    
-                }
-                else
-                {
+                } else {
                     success = false;
                     string outputString = "Inheret Genome failed because parents' gene " + i.ToString() + " did not match";
                     Debug.Log(outputString);
                 }
             }
+
             for (int i = 0; i < numConstants; i++) {
                 if (motherGenome.constantLabelList[i] == fatherGenome.constantLabelList[i]) {
                     string constantLabel = motherGenome.constantLabelList[i];
@@ -73,17 +83,13 @@ public class Genome
                     constantDict.Add(constantLabel,constantValue);
                     constantIndexDict.Add(constantLabel,numConstants);
                         
-                }
-                else
-                {
+                } else {
                     success = false;
                     string outputString = "Inheret Genome failed because parents' constant " + i.ToString() + " did not match";
                     Debug.Log(outputString);
                 }
             }   
-        }
-        else
-        {
+        } else {
             success = false;
             string outputString = "Inheret Genome failed because parents' numGenes or numConstants were not same size";
             Debug.Log(outputString);
@@ -91,7 +97,35 @@ public class Genome
         return success;
     }
 
-    public void CreateGenomeFromSpeciesTemplate(LivingObjectInfo passedLivingObjectInfo){
+    // This method is for fission and does not call SexualReproduction... no mutation occurs for this reason
+    public bool InheretGenome(Genome motherGenome) {
+        bool success = true;
+
+        numConstants = motherGenome.numConstants;
+        numGenes = motherGenome.numGenes;
+
+        for (int i = 0; i < numGenes; i++) {
+            string geneLabel = motherGenome.geneLabelList[i];
+            Gene motherGene = motherGenome.geneDict[geneLabel];
+            Gene childGene = motherGene.ShallowCopy();//This might not be what we want.
+            
+            geneLabelList.Add(geneLabel);
+            geneDict.Add(geneLabel, childGene);
+            geneIndexDict.Add(geneLabel, i);
+        }
+
+        for (int i = 0; i < numConstants; i++) {
+            string constantLabel = motherGenome.constantLabelList[i];
+            float constantValue = motherGenome.constantDict[constantLabel];
+
+            constantLabelList.Add(constantLabel);
+            constantDict.Add(constantLabel,constantValue);
+            constantIndexDict.Add(constantLabel,numConstants); 
+        }   
+        return success;
+    }
+
+    public void InitGenomeFromSpeciesTemplate(ObjectInfo passedLivingObjectInfo){
         numGenes = 0;
         numConstants = 0;
 
@@ -114,8 +148,7 @@ public class Genome
         }
     }
 
-    public void AddGeneToGenome(string label, string[] geneInfo)
-    {
+    public void AddGeneToGenome(string label, string[] geneInfo) {
         Gene newGene = new Gene();
         newGene.SetImportedGeneInfo(label, geneInfo);
         geneLabelList.Add(label);
@@ -124,7 +157,7 @@ public class Genome
         numGenes += 1;
     }
 
-    public void AddConstantToGenome(string label, string[] constantInfo){
+    public void AddConstantToGenome(string label, string[] constantInfo) {
         constantLabelList.Add(label);
         constantDict.Add(label, float.Parse(constantInfo[0]));
         constantIndexDict.Add(label, numConstants);
@@ -142,8 +175,6 @@ public class Genome
             
             toReturn += outputString + "\n";
         }
-
         return toReturn;
     }
-
 }

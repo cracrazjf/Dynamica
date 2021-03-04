@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Phenotype {
     //holding the reference of Animal
-    public LivingObject thisLivingObject;
+    public CountableObject thisLivingObject;
 
     protected float[] traits;
     protected List<string> traitLabelList = new List<string>();
@@ -18,15 +18,15 @@ public class Phenotype {
     public Dictionary<string, float> GetTraitDict() { return traitDict; }
     
 
-    public Phenotype(LivingObject livingObject) {
+    public Phenotype(CountableObject livingObject) {
         this.thisLivingObject = livingObject;
         
-        createGeneTraits();
-        createConstantTraits();
+        CreateGeneTraits();
+        CreateConstantTraits();
     }
 
     // Add all genes in the genome gene dictionary to traits
-    private void createGeneTraits(){
+    private void CreateGeneTraits(){
         for (int i = 0; i < thisLivingObject.genome.numGenes; i++){
             string label = thisLivingObject.genome.geneLabelList[i];
             Gene currentGene = thisLivingObject.genome.geneDict[label];
@@ -36,13 +36,13 @@ public class Phenotype {
             traitIndexDict.Add(label, traitLabelList.Count);
 
             if (currentGene.geneType == "binary"){
-                traitValue = createBinaryTrait(currentGene.geneSequence);
+                traitValue = CreateBinaryTrait(currentGene.geneSequence);
                 traitDict.Add(label, traitValue);
             } else if (currentGene.geneType == "int"){
-                traitValue = createIntTrait(currentGene.geneSequence);
+                traitValue = CreateIntTrait(currentGene.geneSequence);
                 traitDict.Add(label, traitValue);
             } else if (currentGene.geneType == "float"){
-                traitValue = createFloatTrait(currentGene.geneSequence);
+                traitValue = CreateFloatTrait(currentGene.geneSequence);
                 traitDict.Add(label, traitValue);
             } else {
                 // if we got here, it was because someone had an incorrect gene type in a config file
@@ -52,7 +52,7 @@ public class Phenotype {
     }
 
     // Add all genes in the genome constant gene dictionary to traits
-    private void createConstantTraits() {
+    private void CreateConstantTraits() {
         for (int i = 0; i < thisLivingObject.genome.numConstants; i++) {
             string label = thisLivingObject.genome.constantLabelList[i];
             traitLabelList.Add(label);
@@ -63,7 +63,7 @@ public class Phenotype {
         }
     }
 
-    private float createBinaryTrait(BitArray geneSequence) {
+    private float CreateBinaryTrait(BitArray geneSequence) {
         // convert the binary bit string to an integer, ie 001101 = 13
         if (geneSequence.Length > 32)
             throw new ArgumentException("Argument length shall be at most 32 bits.");
@@ -76,7 +76,7 @@ public class Phenotype {
         return floatValue;
     }
 
-    private float createIntTrait(BitArray geneSequence) {
+    private float CreateIntTrait(BitArray geneSequence) {
         float value = 0.0f;
         for (int i = 0; i < geneSequence.Length; i++) {
             if (geneSequence[i] == true) {
@@ -109,6 +109,12 @@ public class Phenotype {
             toReturn += outputString + "\n";
         }
         return toReturn;
+    }
+
+    public void SetTrait(string label, float passed) {
+        traitDict[label] = passed;
+        int currentIndex = traitIndexDict[label];
+        traits[currentIndex] = passed;
     }
 
     private void Start(){}

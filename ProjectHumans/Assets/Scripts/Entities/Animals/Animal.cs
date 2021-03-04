@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-    abstract public class Animal : LivingObject
+    abstract public class Animal : Entity
     {
         public Camera visualInputCamera;
         

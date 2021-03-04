@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Gene 
-{
+public class Gene {
+    
     public string label;
     public string geneType;
     public int geneSize;
@@ -40,21 +40,18 @@ public class Gene
     }
 
     public void SetImportedGeneInfo(string label, string[] geneInfo){
-
         if (geneInfo.Length != 5){
             string outputString = "ERROR: Gene " + label + "wrong number of arguments in config file";
             Debug.Log(outputString);
-        }
-        else{
+        } else {
             label = label;
             geneType = geneInfo[0];
             geneSize = int.Parse(geneInfo[1]);
-            if (geneInfo[2] == "immutable"){
+
+            if (geneInfo[2] == "immutable") {
                 mutable = true;
-            }
-            else{
-                mutable = false;
-            }
+            } else { mutable = false; }
+
             specifiedMean = float.Parse(geneInfo[3]);
             specifiedStdev = float.Parse(geneInfo[4]);
             geneSequence = new BitArray(this.geneSize);
@@ -62,15 +59,11 @@ public class Gene
     }
 
     public void GenerateGeneSequence(){
-        
         for (int i = 0; i < this.geneSize; i++){
             int newValue = Random.Range(0, 2);
             if (newValue == 0) {
                 geneSequence[i] = false;
-            }
-            else{
-                geneSequence[i] = true;
-            }
+            } else { geneSequence[i] = true; }
         }
     }
 }

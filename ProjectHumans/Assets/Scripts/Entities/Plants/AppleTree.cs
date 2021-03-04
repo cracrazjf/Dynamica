@@ -64,14 +64,17 @@ public class AppleTree : Plant
         Vector3 fruitLocation = this.gameObject.transform.position + fruitDisplacement;
 
         int indexNumber = World.countableObjectCountDict["Apple"];
-        Apple newApple = new Apple(indexNumber, World.nonlivingObjectInfoDict["Apple"]);
+        Genome falseGenome = new Genome();
+        falseGenome.InitGenomeFromSpeciesTemplate(World.objectInfoDict["Apple"]);
+
+        Apple newApple = new Apple(indexNumber, falseGenome);
         newApple.startPosition = fruitLocation;
 
         float size = this.phenotype.GetTraitDict()["fruit_max_size"] * this.phenotype.GetTraitDict()["fruit_size_proportion"];
         float poison = this.phenotype.GetTraitDict()["poison"];
     
-        newApple.AddConstant("size", size);
-        newApple.AddConstant("poison", poison);
+        newApple.phenotype.SetTrait("size", size);
+        newApple.phenotype.SetTrait("poison", poison);
 
         World.nonlivingObjectList.Add(newApple);
         World.nonlivingObjectDict[newApple.GetName()] = newApple;

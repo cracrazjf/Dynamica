@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Configuration;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 
 
 public class World : MonoBehaviour {
@@ -43,8 +44,11 @@ public class World : MonoBehaviour {
     public static float maxPosition;
     public static float minPosition;
 
-    int updateCounter;
+    public Dictionary<string, AI> allAIDict;
+    public Dictionary<string, Body> allBodyDict;
+    public Dictionary<string, MotorSystem> allMotorDict;
 
+    int updateCounter;
 
     void Start() {
         updateCounter = 0;
@@ -57,21 +61,18 @@ public class World : MonoBehaviour {
         minPosition = -worldSize / 2;
 
         CreateEntities();
-        CreateAnimals();
-        CreatePlants();
-        CreateNonLivingObjects();
     }
 
     void CreateEntities() {
         foreach(KeyValuePair<string, int> entry in startingCountsDict) {
-            speciesType = entry.Key;
+            string  speciesType = entry.Key;
             countableObjectCountDict[speciesType] = 0;
-            numEntities = entry.Value;
+            int numEntities = entry.Value;
 
             for (int i = 0; i < numEntities; i++) {
-                if (animalNames.Exists(speciesType)) {
+                if (animalNames.Contains(speciesType)) {
                     AddAnimal(speciesType);
-                } else if(plantNames.Exists(speciesType)) {
+                } else if(plantNames.Contains(speciesType)) {
                     AddPlant(speciesType);
                 } else { AddObject(speciesType); }
             }
@@ -80,40 +81,39 @@ public class World : MonoBehaviour {
 
     void AddAnimal(string speciesType) {
         motherGenome = new Genome();
-        motherGenome.CreateGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
+        motherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
         fatherGenome = new Genome();
-        fatherGenome.CreateGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
+        fatherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
 
         int val = (countableObjectCountDict[speciesType]);
-        Class<?> classy = Class.forName(speciesType);
-        Constructor<?> cons = classy.getConstructor(String.class);
-        Animal newAnimal = cons.newInstance(val, motherGenome, fatherGenome);
+        Animal newAnimal = new Animal(val, motherGenome, fatherGenome);;
+
         animalDict[newAnimal.GetName()] = newAnimal;
         countableObjectCountDict[speciesType]++;
     }
 
     void AddPlant(string speciesType) {
         motherGenome = new Genome();
-        motherGenome.CreateGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
+        motherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
         fatherGenome = new Genome();
-        fatherGenome.CreateGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
+        fatherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
 
         int val = (countableObjectCountDict[speciesType]);
-        Class<?> classy = Class.forName(speciesType);
-        Constructor<?> cons = classy.getConstructor(String.class);
-        plant newPlant = cons.newInstance(val, motherGenome, fatherGenome);
+        Plant newPlant = new Plant(val, motherGenome, fatherGenome);
+
         plantDict[newPlant.GetName()] = newPlant;
         countableObjectCountDict[speciesType]++;
     }
 
-    void AddObject(string type) {
-        int val = (countableObjectCountDict[type]);
+    void AddObject(string objectType) {
         ObjectInfo toSend = objectInfoDict[objectType];
+        falseGenome = new Genome();
+        falseGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[type]);
 
-        Class<?> classy = Class.forName(type);
-        Constructor<?> cons = classy.getConstructor(String.class);
-        NonlivingObject newObj = cons.newInstance(val, toSend);
-        nonlivingObjectDict[newObj.GetName()] = newObjt;
+        int val = (countableObjectCountDict[type]);
+        NonlivingObject newObj = new NonlivingObject(val, falseGenome);
+
+        nonlivingObjectDict[newObj.GetName()] = newObj;
         countableObjectCountDict[type]++;
     }
 

@@ -6,11 +6,10 @@ using System.IO;
 using UnityEngine;
 using Random=UnityEngine.Random;
 
-public class Apple : NonlivingObject
-{
+public class Apple : Item {
     public GameObject applePrefab;
 
-    public Apple(int index, NonlivingObjectInfo passedNonlivingObjectInfo) : base("Apple", index, passedNonlivingObjectInfo) {
+    public Apple(int index, Genome passedInfo) : base("Apple", index, passedInfo) {
 
         applePrefab = Resources.Load("Prefabs/ApplePrefab",typeof(GameObject)) as GameObject;
 
@@ -22,8 +21,8 @@ public class Apple : NonlivingObject
         gameObject.SetActive(true);
     }
 
-    public override void NonlivingObjectLateUpdate() {
-        float poison = this.GetConstant("poison");
+    public override void NonlivingObjectUpdate() {
+        float poison = this.GetPhenotype().GetTraitDict()["poison"];
         if (poison == 1) {
             this.gameObject.GetComponent<MeshRenderer> ().material.color = new Color(1,0,1,1);
         }

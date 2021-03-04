@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Water : NonlivingObject
-{
+public class Water : Item {
 
     public GameObject waterPrefab;
 
-    public Water(int index, NonlivingObjectInfo passedNonlivingObjectInfo) : base("Water", index, passedNonlivingObjectInfo) {
+    public Water(int index, Genome passedInfo) : base("Water", index, passedInfo) {
 
         waterPrefab = Resources.Load("Prefabs/WaterPrefab",typeof(GameObject)) as GameObject;
 
