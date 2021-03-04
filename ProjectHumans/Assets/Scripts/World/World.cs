@@ -13,10 +13,12 @@ public class World : MonoBehaviour {
     public bool paused = false;
 
     /// This dict keeps track of the total number of each kind of object that has been created
-    public static Dictionary<string, int> countableObjectCountDict = new Dictionary<string, int>();
+    public static Dictionary<string, int> EntityCountDict = new Dictionary<string, int>();
     public Dictionary<string, int> startingCountsDict = new Dictionary<string, int>();
+    public Dictionary<string, GameObject> prefabsDict = new Dictionary<string, GameObject>();
     public List<string> animalNames = new List<string>();
     public List<string> plantNames = new List<string>();
+    public List<string> itemNames = new List<string>();
 
     public static Dictionary<string, ObjectInfo> objectInfoDict = new Dictionary<string, ObjectInfo>();
     public static Dictionary<string, float> worldConfigDict = new Dictionary<string, float>();
@@ -28,12 +30,10 @@ public class World : MonoBehaviour {
     /// These dicts keep track of GameObjects
     public static Dictionary<string, Animal> animalDict = new Dictionary<string, Animal>();
     public static Dictionary<string, Plant> plantDict = new Dictionary<string, Plant>();
-    public static Dictionary<string, NonlivingObject> nonlivingObjectDict = new Dictionary<string, NonlivingObject>();
+    public static Dictionary<string, Item> itemDict = new Dictionary<string, Item>();
     
     /// These lists keep track of entities needing an update each epoch
-    public static List<Animal> animalList = new List<Animal>();
-    public static List<Plant> plantList = new List<Plant>();
-    public static List<NonlivingObject> nonlivingObjectList = new List<NonlivingObject>();
+    public static List<Entity> entityList = new List<Item>();
 
     /// These genome variables are used to instantiate every living thing that is created
     public Genome motherGenome;
@@ -65,170 +65,90 @@ public class World : MonoBehaviour {
 
     void CreateEntities() {
         foreach(KeyValuePair<string, int> entry in startingCountsDict) {
-            string  speciesType = entry.Key;
-            countableObjectCountDict[speciesType] = 0;
+            string speciesType = entry.Key;
+            entityCountDict[speciesType] = 0;
             int numEntities = entry.Value;
 
             for (int i = 0; i < numEntities; i++) {
-                if (animalNames.Contains(speciesType)) {
-                    AddAnimal(speciesType);
-                } else if(plantNames.Contains(speciesType)) {
-                    AddPlant(speciesType);
-                } else { AddObject(speciesType); }
+                AddEntity(speciesType, null);
             }
         }
     }
 
-    void AddAnimal(string speciesType) {
+    public void AddEntity(string speciesType, Transform spawn) {
         motherGenome = new Genome();
         motherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
-        fatherGenome = new Genome();
-        fatherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
 
-        int val = (countableObjectCountDict[speciesType]);
-        Animal newAnimal = new Animal(val, motherGenome, fatherGenome);;
+        if (spawn == null) { spawn = new Transform(CreateRandomPosition(), CreateRandomRotation()); }
 
+        int val = (entityCountDict[speciesType]);
+        if (itemList.Contain(speciesType)) {
+            InitItem(val, speciesType, motherGenome, spawn);
+        } else {
+            fatherGenome = new Genome();
+            fatherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
+
+            if (plantList.Contain(speciesType)) {
+            InitPlant(val, speciesType, motherGenome, fatherGenome, spawn);
+            } else { InitAnimal(val, speciesType, motherGenome, fatherGenome, spawn); }
+        } 
+    }
+
+    public void InitAnimal(int val, string speciesType, Genome mother, Genome father, Transform spawn ) {
+        Entity newAnimal = new Animal(speciesType, val, mother, father, spawn);
         animalDict[newAnimal.GetName()] = newAnimal;
-        countableObjectCountDict[speciesType]++;
+        entityList.Add(newAnimal);
+        entityCountDict[speciesType]++;
     }
 
-    void AddPlant(string speciesType) {
-        motherGenome = new Genome();
-        motherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
-        fatherGenome = new Genome();
-        fatherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
-
-        int val = (countableObjectCountDict[speciesType]);
-        Plant newPlant = new Plant(val, motherGenome, fatherGenome);
-
+    public void InitPlant(int val, string speciesType, Genome mother, Genome father, Transform spawn) {
+        Entity newPlant = new Plant(speciesType, val, mother, father, spawn);
         plantDict[newPlant.GetName()] = newPlant;
-        countableObjectCountDict[speciesType]++;
+        entityList.Add(newPlant);
+        entityCountDict[speciesType]++;
     }
 
-    void AddObject(string objectType) {
-        ObjectInfo toSend = objectInfoDict[objectType];
-        falseGenome = new Genome();
-        falseGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[type]);
-
-        int val = (countableObjectCountDict[type]);
-        NonlivingObject newObj = new NonlivingObject(val, falseGenome);
-
-        nonlivingObjectDict[newObj.GetName()] = newObj;
-        countableObjectCountDict[type]++;
+    public void InitItem(int val, string speciesType, Genome mother, Transform spawn) {
+        Entity newObj = new Item(speciesType, val, mother, spawn);
+        itemDict[newObj.GetName()] = newObj;
+        entityList.Add(newObj);
+        entityCountDict[speciesType]++;
     }
 
-    // void CreateAnimals() {
-
-    //     string speciesType;
-    //     int numEntities;
-    //     Animal newAnimal;
-
-    //     foreach(KeyValuePair<string, int> entry in startingAnimalCountsDict)
-    //     {
-    //         speciesType = entry.Key;
-    //         countableObjectCountDict[speciesType] = 0;
-    //         numEntities = entry.Value;
-
-    //         for (int i = 0; i < numEntities; i++){
-    //             // create the pseudo-random parent genomes. this doesnt actually make the mother female and father male...
-    //             motherGenome = new Genome();
-    //             motherGenome.CreateGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
-    //             fatherGenome = new Genome();
-    //             fatherGenome.CreateGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
-
-    //             if (speciesType == "Human"){
-    //                 newAnimal = new Human(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
-    //                 animalList.Add(newAnimal);
-    //                 animalDict[newAnimal.GetName()] = newAnimal;
-    //                 countableObjectCountDict[speciesType]++;
-    //             } else if (speciesType == "Llama"){
-    //                 newAnimal = new Llama(countableObjectCountDict[speciesType], motherGenome, fatherGenome);
-    //                 animalList.Add(newAnimal);
-    //                 animalDict[newAnimal.GetName()] = newAnimal;
-    //                 countableObjectCountDict[speciesType]++;
-    //             }
-    //         }
-    //     }
-    // }
-
-    // void CreatePlants() {
-    //     string speciesType;
-    //     int numEntities;
-    //     Plant newPlant;
-
-    //     foreach(KeyValuePair<string, int> entry in startingPlantCountsDict)
-    //     {
-    //         speciesType = entry.Key;
-    //         // super important; can't ++ a key that does not yet exist! -jc
-    //         countableObjectCountDict[speciesType] = 0;
-    //         numEntities = entry.Value;
-
-    //         for (int i = 0; i < numEntities; i++){
-    //             // create the pseudo-random parent genomes
-    //             motherGenome = new Genome();
-    //             motherGenome.CreateGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
-    //             fatherGenome = new Genome();
-    //             fatherGenome.CreateGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
-
-    //             // should be able to move lines 77-79 and 83-85 out of these if's, but it creates an error I dont understand
-    //             if (speciesType == "Apple_Tree"){
-    //                 newPlant = new AppleTree(countableObjectCountDict[speciesType], motherGenome, fatherGenome, this);
-    //                 plantList.Add(newPlant);
-    //                 plantDict[newPlant.GetName()] = newPlant;
-    //                 countableObjectCountDict[speciesType]++;
-    //             }
-    //         }
-    //     }
-    // }
-
-    // void CreateNonLivingObjects() {
-    //     NonlivingObject newNonlivingObject;
-    //     string objectType;
-    //     int numEntities;
+    public Body InitBody(Entity passed, Transform spawn) {
+        Body toReturn;
+        string species = passed.GetObjectType();
         
-    //     foreach(KeyValuePair<string, int> entry in startingNonLivingObjectCountsDict){
-    //         objectType = entry.Key;
-    //         numEntities = entry.Value;
-
-    //         for (int i=0; i < numEntities; i++){
-    //             if (objectType == "Water"){
-    //                 newNonlivingObject = new Water(countableObjectCountDict[objectType], nonlivingObjectInfoDict[objectType]);
-    //                 nonlivingObjectList.Add(newNonlivingObject);
-
-    //                 nonlivingObjectDict[newNonlivingObject.GetName()] = newNonlivingObject;
-    //                 countableObjectCountDict[objectType]++;
-    //             }
-    //         }
-    //     }
-    // }
-
-    public static Animal GetAnimal(string name) {
-        return animalDict[name];
-    }
-
-    public static NonlivingObject GetObject(string name) {
-        return nonlivingObjectDict[name];
-    }
-
-    public static Plant GetPlant(string name) {
-        return plantDict[name];
-    }
-
-    public void UpdateAnimals() {
-        for(int i= 0; i < animalList.Count; i++) {
-            animalList[i].UpdateAnimal();
-        }
-    }
-    
-    public void UpdatePlants() {
-        for(int i= 0; i < plantList.Count; i++) {
-            plantList[i].UpdatePlant(updateCounter); // I take issue with this but other priorities exist
+        if(animalNames.Contains(species)) {
+            toReturn = new PrimateBody((Animal) passed, spawn);
+            toReturn.InitGameObject(prefabsDict[species]);
+            return toReturn;
+        } else {
+            toReturn = new Body(passed, spawn);
+            toReturn.InitGameObject(prefabsDict[species]);
+            return toReturn;
         }
     }
 
-    public void UpdateNonlivings() {
-        for (int i = 0; i < nonlivingObjectList.Count; i++) {
-            nonlivingObjectList[i].NonlivingObjectUpdate();
+    public MotorSystem InitAnimalMotor(Animal passed) {
+        return new PrimateMotorSystem(passed);
+    }
+
+    void LoadPrefabs() {
+        prefabsDict.Add("Human", Resources.Load("Prefabs/HumanPrefab", typeof(GameObject)) as GameObject);
+        prefabsDict.Add("Llama", Resources.Load("Prefabs/LlamaPrefab", typeof(GameObject)) as GameObject);
+        prefabsDict.Add("Apple", Resources.Load("Prefabs/ApplePrefab", typeof(GameObject)) as GameObject);
+        prefabsDict.Add("Human", Resources.Load("Prefabs/WaterPrefab", typeof(GameObject)) as GameObject);
+        prefabsDict.Add("Tree", Resources.Load("Prefabs/TreeRoundPrefab", typeof(GameObject)) as GameObject);
+    }
+
+    public static Animal GetAnimal(string name) { return animalDict[name]; }
+    public static Item GetItem(string name) { return itemDict[name]; }
+    public static Plant GetPlant(string name) { return plantDict[name]; }
+
+    public void UpdateEntities() {
+        foreach(Entity entity in entityList) {
+            entity.UpdateEntity();
         }
     }
 
@@ -236,9 +156,7 @@ public class World : MonoBehaviour {
         paused = MainUI.GetPause();
 
         if(!paused) {
-            UpdateAnimals(); 
-            UpdatePlants();
-            UpdateNonLivings();
+            UpdateEntities();
             updateCounter++;
         }
     }
@@ -279,5 +197,18 @@ public class World : MonoBehaviour {
             ObjectInfo newObjectInfo = new ObjectInfo(entry.Key, entry.Value, false);
             objectInfoDict.Add(entry.Key, newObjectInfo);
         }
+    }
+
+    public Vector3 CreateRandomPosition() {
+        float xRan = Random.Range(World.minPosition, World.maxPosition);
+        float zRan = Random.Range(World.minPosition, World.maxPosition);
+        Vector3 newStartPosition = new Vector3 (xRan, 0.5f, zRan); 
+
+        return newStartPosition;
+    }
+
+    public Quaternion CreateRandomRotation(){
+        var startRotation = Quaternion.Euler(0.0f, Random.Range(World.minPosition,World.maxPosition), 0.0f);
+        return startRotation;
     }
 }

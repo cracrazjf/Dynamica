@@ -15,7 +15,7 @@ public class SensorySystem {
     public SensorySystem(Animal animal) {
         this.thisAnimal = animal;
         visualInputCamera = this.thisAnimal.gameObject.GetComponentInChildren<Camera>();
-        visualResolution = (int)this.thisAnimal.phenotype.GetTraitDict()["visual_resolution"];
+        visualResolution = (int)this.thisAnimal.GetPhenotype().GetTraitDict()["visual_resolution"];
     
         InitVisualInput();
     }
@@ -38,7 +38,7 @@ public class SensorySystem {
     }
 
     public float [ , ] GetVisualInput() {
-        if (this.thisAnimal.age % this.thisAnimal.GetPhenotype().GetTraitDict()["visual_refresh_rate"] == 0){ // replace this with the visual refresh rate at some point
+        if (this.thisAnimal.GetAge() % this.thisAnimal.GetPhenotype().GetTraitDict()["visual_refresh_rate"] == 0){ // replace this with the visual refresh rate at some point
             UpdateVisualInput();
             //string outputString = visualInputArray.GetLength(0).ToString() + "," + visualInputArray.GetLength(1).ToString();
             //Debug.Log(outputString);

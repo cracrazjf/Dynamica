@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MotorSystem 
+public abstract class MotorSystem 
 {
-    public Animal thisAnimal;
-    protected Transform transform;
+    protected Animal thisAnimal;
+    protected AnimalBody thisBody;
+    protected Transform globalTransform;
 
     protected bool[] states;
     protected List<string> stateLabelList;
@@ -31,25 +32,39 @@ public class MotorSystem
     public List<Action> actionList;
 
     public MotorSystem(Animal passed) {
-        this.thisAnimal = passed;
+        thisAnimal = passed;
+        thisBody = thisAnimal.GetBody();
+        globalTransform = thisBody.globalPos;
+
+        stateLabelList = new List<string> {
+            "sitting down",// 0
+            "sitting up",  // 1
+            "laying down", // 2
+            "standing up", // 3
+            "rotating",    // 4
+            "taking steps",// 5
+            "picking up",  // 6
+            "setting down",// 7 
+            "consuming",   // 8
+            "waking up",   // 9
+            "sleeping",    // 10
+            "resting",     // 11
+            "looking"      // 12
+        };
+        this.InitStates(stateLabelList);
+
+        argsLabelList = new List<string> {
+            "step rate",                          
+            "rotation velocity",               
+            "held position",
+            "target x",
+            "target y",
+            "target z"
+        };
+
+        this.InitActionArguments(argsLabelList);
+        this.InitActionDict();
     }
-
-    public void InitStates(List<string> passedStateLabelList) {
-        states = new bool[passedStateLabelList.Count];
-        stateLabelList = passedStateLabelList;
-        stateIndexDict = new Dictionary<string, int>();
-        stateDict = new Dictionary<string, bool>();
-
-        if (passedStateLabelList != null){
-            for (int i = 0; i < passedStateLabelList.Count; i++) {
-                states[i] = false;
-                stateIndexDict[passedStateLabelList[i]] = i;
-                stateDict[passedStateLabelList[i]] = false;
-            }
-        } else { Debug.Log("No actions passed to this animal"); }
-    }
-
-    public virtual void InitActionDict(){}
 
     public void SetState(string label, bool val) {
         stateDict[label] = val;
@@ -63,7 +78,30 @@ public class MotorSystem
         args[currentIndex] = val;
     }
 
-    public void InitActionArguments(List<string> passedArgsLabels) {
+    public void TakeAction(int[] toDoList) {
+        for(int i = 0; i < toDoList.Length; i++) {
+            if (i == 1) {
+                actionList[i].DynamicInvoke();
+            } 
+        }
+    }
+
+    void InitStates(List<string> passedList) {
+        states = new bool[passedList.Count];
+        stateLabelList = passedList;
+        stateIndexDict = new Dictionary<string, int>();
+        stateDict = new Dictionary<string, bool>();
+
+        if (passedList != null){
+            for (int i = 0; i < passedList.Count; i++) {
+                states[i] = false;
+                stateIndexDict[passedList[i]] = i;
+                stateDict[passedList[i]] = false;
+            }
+        } else { Debug.Log("No actions passed to this animal"); }
+    }
+
+    void InitActionArguments(List<string> passedArgsLabels) {
         args = new float[passedArgsLabels.Count];
         argsLabelList = passedArgsLabels;
         argsIndexDict = new Dictionary<string, int>();
@@ -77,17 +115,35 @@ public class MotorSystem
             }
         } else { Debug.Log("No args defined for this animal"); }
     }
+    void InitActionDict() {
+        actionList = new List<Action>();
 
-    public virtual void TakeAction(int[] toDo) { }
-
-    public virtual void EndAction(string actionLabel) { Debug.Log("No actions to end for this animal"); }
-
-    public virtual void UpdateActionStates() { Debug.Log("No action updates defined for this animal"); }
-
-    public virtual void UpdateSkeletonStates() { Debug.Log("No actions defined for this animal"); }
-
-    public virtual bool CheckActionLegality(string action) {
-        Debug.Log("No actions defined for this animal");
-        return false;
+        actionList.Add(SitDown);
+        actionList.Add(SitUp);
+        actionList.Add(LayDown);
+        actionList.Add(StandUp);
+        actionList.Add(Rotate);
+        actionList.Add(TakeSteps);
+        actionList.Add(PickUp);
+        actionList.Add(SetDown);
+        actionList.Add(Consume);
+        actionList.Add(WakeUp);
+        actionList.Add(Sleep);
+        actionList.Add(Rest);
+        actionList.Add(LookAt);
     }
+
+    public abstract void SitDown();
+    public abstract void SitUp();
+    public abstract void LayDown();
+    public abstract void StandUp();
+    public abstract void Rotate();
+    public abstract void TakeSteps();
+    public abstract void PickUp();
+    public abstract void SetDown();
+    public abstract void Consume ();
+    public abstract void WakeUp();
+    public abstract void Sleep();
+    public abstract void Rest();
+    public abstract void LookAt();
 }

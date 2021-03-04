@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class NetUI : MonoBehaviour {
 
-    protected CountableObject selectedObject = null;
+    protected Entity selectedObject = null;
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;

@@ -8,7 +8,6 @@ using UnityEngine.Events;
 public class PlantUI : MonoBehaviour {
 
     protected Plant selectedPlant = null;
-    protected CountableObject selectedObject = null;
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;
@@ -67,7 +66,6 @@ public class PlantUI : MonoBehaviour {
     }
 
     public static void ReceiveClicked(GameObject clicked) {
-        // selectedObject = World.GetObject(clicked.name);
         Debug.Log("Got a plant!");
         passed = clicked;
         needsUpdate = true;
@@ -90,7 +88,7 @@ public class PlantUI : MonoBehaviour {
     }
 
     public void Rename() {
-        selectedObject.SetDisplayName(inputName.text);
+        selectedPlant.SetDisplayName(inputName.text);
         panelNamer.text = "";
     }
 }

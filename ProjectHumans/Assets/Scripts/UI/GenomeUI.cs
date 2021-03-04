@@ -14,7 +14,7 @@ public class GenomeUI : MonoBehaviour {
     protected Genome displayGenome;
     protected Phenotype displayPhenotype;
     protected Animal selectedAnimal;
-    protected CountableObject selectedObject = null;
+    protected Entity selectedObject = null;
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;

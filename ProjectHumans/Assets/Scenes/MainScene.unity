@@ -1321,10 +1321,10 @@ GameObject:
   - component: {fileID: 963194232}
   - component: {fileID: 963194234}
   - component: {fileID: 963194228}
-  - component: {fileID: 963194226}
+  - component: {fileID: 963194231}
   - component: {fileID: 963194235}
   - component: {fileID: 963194229}
-  - component: {fileID: 963194231}
+  - component: {fileID: 963194226}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3791,7 +3791,7 @@ PrefabInstance:
     - target: {fileID: 6052846155246898037, guid: 231f814fc9fad0444b2e27977e43f703, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 963194231}
+      objectReference: {fileID: 0}
     - target: {fileID: 6052846156078979217, guid: 231f814fc9fad0444b2e27977e43f703, type: 3}
       propertyPath: m_Name
       value: NonlivingPanel
@@ -3883,7 +3883,7 @@ PrefabInstance:
     - target: {fileID: 6052846156202118876, guid: 231f814fc9fad0444b2e27977e43f703, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 963194231}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 231f814fc9fad0444b2e27977e43f703, type: 3}
 --- !u!1 &6358843419493224293

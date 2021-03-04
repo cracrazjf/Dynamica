@@ -8,7 +8,7 @@ using Random=UnityEngine.Random;
 
 abstract public class Entity {
 
-    private string displayName;
+    public string displayName;
     public string GetDisplayName() { return displayName; }
     public void SetDisplayName(string named) { displayName = named; }
 
@@ -34,50 +34,37 @@ abstract public class Entity {
     public Phenotype GetPhenotype() { return phenotype; }
     
     // Body variables
-    public GameObject gameObject;
-    public Animator animator;
-    public Vector3 startPosition;
-    public Quaternion startRotation;
+    protected GameObject gameObject;
 
     // Sexual reproduction constructor
-    public Entity(string objectType, int index, Genome motherGenome, Genome fatherGenome) {
-        SetObjectType(objectType);
-        SetIndex(index);
+    public Entity(string objType, int id, Genome motherGenome, Genome fatherGenome, Transform spawn) {
+        objectType = objType;
+        index = id;
         name = (objectType + " " + index.ToString());
+        displayName = name;
 
-        startPosition = chooseStartPosition(null);
-        startRotation = chooseStartRotation();
-
-        genome = new Genome(this, motherGenome, fatherGenome);
+        genome = new Genome(motherGenome, fatherGenome);
         phenotype = new Phenotype(this);
+
+        body = World.InitBody(objectType);
     }
 
     // Asexual reproduction constructor
-    public Entity(string objectType, int index, Genome motherGenome) {
-        SetObjectType(objectType);
-        SetIndex(index);
+    public Entity(string objType, int id, Genome motherGenome, Transform spawn) {
+        objectType = objType;
+        index = id;
         name = (objectType + " " + index.ToString());
+        displayName = name;
 
-        startPosition = ChooseStartPosition(null);
-        startRotation = ChooseStartRotation();
-
-        this.genome = new Genome(this, motherGenome);
+        genome = new Genome(motherGenome);
         phenotype = new Phenotype(this);
     }
 
-    public Vector3 ChooseStartPosition(Nullable<Vector3> position){
-        Vector3 newStartPosition = new Vector3();
-        if (position != null) {
-            newStartPosition = (Vector3)position;
-        } else { 
-            newStartPosition = new Vector3 (Random.Range(World.minPosition, World.maxPosition), 0.5f, Random.Range(World.minPosition, World.maxPosition)); 
-        }
-        return newStartPosition;
+    public virtual void UpdateEntity() {
+        Debug.Log("No update defined for this entity");
     }
 
-    public Quaternion ChooseStartRotation(){
-        
-        var startRotation = Quaternion.Euler(0.0f, Random.Range(World.minPosition,World.maxPosition), 0.0f);
-        return startRotation;
+    public virtual void InitBody() {
+        Debug.Log("This entity is not of this realm");
     }
 }

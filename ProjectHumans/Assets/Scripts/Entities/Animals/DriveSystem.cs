@@ -6,7 +6,8 @@ using UnityEngine;
 public class DriveSystem
 {
     /// <value>Holds a reference to the Animal the system is associated with</value>
-    public Animal thisAnimal;
+    protected Animal thisAnimal;
+    protected Dictionary<string, float> thisTraitDict;
 
     protected float[] states;
     protected List<string> stateLabelList;
@@ -38,20 +39,21 @@ public class DriveSystem
         SetState("health", 1.0f);
     }
 
-    // DISCUSS
-    public void InitStates(List<string> passedStateLabelList){
-        states = new float[passedStateLabelList.Count];
-        stateLabelList = passedStateLabelList;
+   void InitStates(List<string> passedList) {
+        thisTraitDict = thisAnimal.GetPhenotype().GetTraitDict();
+
+        states = new float[passedList.Count];
+        stateLabelList = passedList;
         stateIndexDict = new Dictionary<string, int>();
         stateDict = new Dictionary<string, float>();
 
-        if (passedStateLabelList != null){
-            for (int i = 0; i < passedStateLabelList.Count; i++) {
-                states[i] = 0.0f;
-                stateIndexDict[passedStateLabelList[i]] = i;
-                stateDict[passedStateLabelList[i]] = 0.0f;
+        if (passedList != null){
+            for (int i = 0; i < passedList.Count; i++) {
+                states[i] = false;
+                stateIndexDict[passedList[i]] = i;
+                stateDict[passedList[i]] = false;
             }
-        } else { Debug.Log("No drives passed to this animal"); }
+        } else { Debug.Log("No actions passed to this animal"); }
     }
 
     // DISCUSS
@@ -64,7 +66,7 @@ public class DriveSystem
     public void UpdateDrives() { 
         foreach (string label in stateLabelList) {
             string changeLabel = label + "_change";
-            float changeValue = thisAnimal.phenotype.GetTraitDict()[changeLabel];
+            float changeValue = thisTraitDict[changeLabel];
 
             float toUpdate = GetStateDict()[label] + changeValue;
             SetState(label, toUpdate);
@@ -76,11 +78,11 @@ public class DriveSystem
         // Hunger and thirst updates
         float currentHealth = stateDict["health"];
         if (stateDict["hunger"] >= 1.0 ) {
-            float toUpdate = currentHealth - thisAnimal.phenotype.GetTraitDict()["starvation_damage"];
+            float toUpdate = currentHealth - thisTraitDict["starvation_damage"];
             this.SetState("health", toUpdate);
         }
         if (stateDict["thirst"] >= 1.0) {
-            float toUpdate = currentHealth - thisAnimal.phenotype.GetTraitDict()["dehydration_damage"];
+            float toUpdate = currentHealth - thisTraitDict["dehydration_damage"];
             this.SetState("health", toUpdate);
         }    
     } 

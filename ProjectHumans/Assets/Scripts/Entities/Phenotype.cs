@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class Phenotype {
     //holding the reference of Animal
-    public CountableObject thisLivingObject;
+    protected Entity thisEntity;
+    protected Genome thisGenome;
 
     protected float[] traits;
     protected List<string> traitLabelList = new List<string>();
@@ -18,8 +19,9 @@ public class Phenotype {
     public Dictionary<string, float> GetTraitDict() { return traitDict; }
     
 
-    public Phenotype(CountableObject livingObject) {
-        this.thisLivingObject = livingObject;
+    public Phenotype(Entity passedObject) {
+        thisEntity = passedObject;
+        thisGenome = passedObject.GetGenome();
         
         CreateGeneTraits();
         CreateConstantTraits();
@@ -27,9 +29,9 @@ public class Phenotype {
 
     // Add all genes in the genome gene dictionary to traits
     private void CreateGeneTraits(){
-        for (int i = 0; i < thisLivingObject.genome.numGenes; i++){
-            string label = thisLivingObject.genome.geneLabelList[i];
-            Gene currentGene = thisLivingObject.genome.geneDict[label];
+        for (int i = 0; i < thisGenome.numGenes; i++){
+            string label = thisGenome.geneLabelList[i];
+            Gene currentGene = thisGenome.geneDict[label];
             float traitValue;
 
             traitLabelList.Add(label);
@@ -53,12 +55,12 @@ public class Phenotype {
 
     // Add all genes in the genome constant gene dictionary to traits
     private void CreateConstantTraits() {
-        for (int i = 0; i < thisLivingObject.genome.numConstants; i++) {
-            string label = thisLivingObject.genome.constantLabelList[i];
+        for (int i = 0; i < thisGenome.numConstants; i++) {
+            string label = thisGenome.constantLabelList[i];
             traitLabelList.Add(label);
             traitIndexDict.Add(label, i);
 
-            float traitValue = thisLivingObject.genome.constantDict[label]; // the first value in the list of this string-list dict entry
+            float traitValue = thisGenome.constantDict[label]; // the first value in the list of this string-list dict entry
             traitDict.Add(label, traitValue);
         }
     }
@@ -86,7 +88,7 @@ public class Phenotype {
         return value;
     }
 
-    private float createFloatTrait(BitArray geneSequence) {
+    private float CreateFloatTrait(BitArray geneSequence) {
         float value = 0.0f;
         for (int i = 0; i < geneSequence.Length; i++) {
             if (geneSequence[i] == true){

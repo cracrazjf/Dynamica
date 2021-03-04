@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class NonlivingUI : MonoBehaviour {
 
-    protected CountableObject selectedObject = null;
+    protected Item selectedObject = null;
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;

@@ -3,27 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Plant : Entity
-{
-    public string displayName;
-    private Body body;
+public class Plant : Entity {
 
-    public Plant(string objectType, int index, Genome motherGenome, Genome fatherGenome) : 
-        base (objectType, index, motherGenome, fatherGenome)
-    {
-        this.displayName = GetObjectType();  
+    public Plant(string objectType, int index, Genome motherGenome, Genome fatherGenome, Transform spawn) 
+    : base (objectType, index, motherGenome, fatherGenome, spawn) {
+
+        body = World.InitBody(objectType);
     }
 
-    public string GetDisplayName() {
-        return displayName;
-    }
+    public override void UpdateEntity() {
+        
+        float growthRefreshRate = this.phenotype.GetTraitDict()["growth_refresh_rate"];
+        float fruitRate = this.phenotype.GetTraitDict()["fruit_rate"];
+        float reproductionAge = this.phenotype.GetTraitDict()["reproduction_age"];
 
-    public void SetDisplayName(string named){
-        this.displayName = named;
-    }
+        if (age % growthRefreshRate == 0) { Grow(); }
+        if ((age >= reproductionAge) && (age % fruitRate == 0)) { CreateFruit(); }
 
-    public virtual void UpdatePlant(int updateCounter) {
-            Debug.Log("No update defined for this plant");
+        IncreaseAge(1);
     }
 
     public void Grow(){
@@ -36,4 +33,14 @@ public class Plant : Entity
         //      its new width should be x,z += .01*(4-.1) = .139
     }
 
+    public void CreateFruit() {
+        // Figure out where the apple should appear
+        float distance = this.phenotype.GetTraitDict()["fruit_drop_distance"];
+        string fruitType = this.phenotype.GetTraitDict()["fruit_type"];
+
+        Vector3 fruitDisplacement = new Vector3(Random.Range(-distance,distance),0,Random.Range(-distance,distance));                           
+        Vector3 fruitLocation = this.gameObject.transform.position + fruitDisplacement;
+
+        World.AddEntity("Apple", fruitLocation);
+    }
 }

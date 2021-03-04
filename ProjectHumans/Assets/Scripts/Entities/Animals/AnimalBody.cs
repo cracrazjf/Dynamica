@@ -3,18 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Body {
+public class AnimalBody : Body {
 
-    public Animal thisAnimal;
-
-    public Rigidbody rigidbody;
-
-    public Transform globalBody;
+    protected Animal thisAnimal;
     protected GameObject abdomen;
     protected GameObject head;
     protected float eyeLevel;
-    protected float height;
-    protected float heightScale;
 
     protected Dictionary<string, GameObject> limbDict;
     public Dictionary<string, GameObject> GetLimbDict() { return limbDict; }
@@ -39,19 +33,13 @@ public class Body {
     protected List<GameObject> holdings;
     public List<GameObject> GetHoldings() { return holdings; }
 
-    public Body(Animal animal) {
-        this.thisAnimal = animal;
-    }
-
-    public void RotateJoint(string joint, Quaternion target) {
-        if (this.jointDict.ContainsKey(joint)) {
-            this.jointDict[joint].targetRotation = target;
-        }
-    }
-    
-    public void InitHeight() {
-        heightScale = thisAnimal.GetPhenotype().GetTraitDict()["size"]; 
-        height = thisAnimal.GetPhenotype().GetTraitDict()["height"] * heightScale; 
+    public AnimalBody(Animal animal, Transform position) : base((Entity) animal, position) {
+        stateLabelList = new List<string> {
+            "standing", 
+            "sitting", 
+            "laying",
+        };
+        InitStates(stateLabelList);
     }
 
     public void InitHolders() {
@@ -59,23 +47,40 @@ public class Body {
         holderCoords = new List<Vector3>();
     }
 
+    public void InitBodyDicts() {
+        limbDict = new Dictionary <string, GameObject>();
+        skeletonDict = new Dictionary <string, GameObject>();
+        jointDict = new Dictionary<string, ConfigurableJoint>();
+
+        foreach (Transform child in globalPos) {
+            limbDict.Add(child.name, child.gameObject);
+            foreach(Transform grandChild in child) {
+                skeletonDict.Add(grandChild.name, grandChild.gameObject);
+                if (grandChild.TryGetComponent(out ConfigurableJoint configurable)) {
+                    jointDict.Add(grandChild.name, configurable);
+                }
+            }  
+        }
+        abdomen = skeletonDict["Abdomen"];
+        head = skeletonDict["Head"];
+        eyeLevel = head.transform.position.y;
+    }
+
     // Initializes state information but also calls standard height and holder info
-    public void InitStates(List<string> passedStateLabelList) {
-        states = new bool[passedStateLabelList.Count]; 
-        stateLabelList = passedStateLabelList;
+    public void InitStates(List<string> passedList) {
+        states = new bool[passedList.Count];
+        stateLabelList = passedList;
         stateIndexDict = new Dictionary<string, int>();
         stateDict = new Dictionary<string, bool>();
 
-        if (passedStateLabelList != null){
-            for (int i = 0; i < passedStateLabelList.Count; i++) {
+        if (passedList != null){
+            for (int i = 0; i < passedList.Count; i++) {
                 states[i] = false;
-                stateIndexDict[passedStateLabelList[i]] = i;
-                stateDict[passedStateLabelList[i]] = false;
+                stateIndexDict[passedList[i]] = i;
+                stateDict[passedList[i]] = false;
             }
-        }
-        else { Debug.Log("No body states defined for this animal"); }
+        } else { Debug.Log("No body states passed to this animal"); }
 
-        InitHeight();
         InitHolders();
     }
 
@@ -89,14 +94,10 @@ public class Body {
 
     public virtual void UpdateSkeletonStates() { Debug.Log("No update skeleton states defined for this animal"); }
 
-    public void ResolveAltitude() {
-        float yTemp = head.transform.position.y;
-        // Checks for underground
-        if (yTemp < 0) { VerticalBump(yTemp * -1 + eyeLevel); }
-    }
-
-    public void VerticalBump(float height) {
-        head.transform.position += new Vector3(0, height, 0);
+    public void RotateJoint(string joint, Quaternion target) {
+        if (this.jointDict.ContainsKey(joint)) {
+            this.jointDict[joint].targetRotation = target;
+        }
     }
 
     // Unused at the moment
@@ -121,15 +122,6 @@ public class Body {
             currentPos = Vector3.MoveTowards(currentPos, goalPos, 1.0f * Time.deltaTime);
         }
     }
-
-    public virtual bool CheckSitting() { return false; }
-    public virtual bool CheckLaying() { return false; }
-
-    public Vector3 GetXZPosition() {
-        return new Vector3(globalBody.position.x, 0f, globalBody.transform.position.z);
-    }
-
-    public float GetHeight() { return height; }
 
     public Vector3 GetHolderCoords(float index) {
         if (holderCoords.Count > index) { return holderCoords[(int) index]; }

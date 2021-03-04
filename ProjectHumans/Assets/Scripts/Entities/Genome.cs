@@ -7,7 +7,6 @@ using System.Linq;
 
 
 public class Genome {
-    public LivingObject thisLivingObject;
 
     // this is where the genes go
     public int numGenes;
