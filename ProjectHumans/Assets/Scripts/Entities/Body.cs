@@ -21,6 +21,7 @@ public class Body {
     public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
     public Dictionary<string, bool> GetStateDict() { return stateDict; }
     public GameObject GetGameObject() { return gameObject; }
+    public void SetGameObject(GameObject toSet) { this.gameObject = toSet; }
 
     public Transform globalPos;
 
@@ -28,15 +29,18 @@ public class Body {
         thisEntity = passed;
 
         InitHeight();
+        InitGameObject(position);
     }
 
-    public virtual void InitGameObject(GameObject loadedPrefab) {
-        gameObject = GameObject.Instantiate(loadedPrefab, globalPos.position, globalPos.rotation) as GameObject;
-        gameObject.name = thisEntity.GetName();
+    public virtual void InitGameObject(Vector3 pos) {
+        string filePath = "Prefabs/" + thisEntity.GetObjectType() + "Prefab";
+        GameObject loadedPrefab = Resources.Load(filePath, typeof(GameObject)) as GameObject;
+        this.gameObject = (GameObject.Instantiate(loadedPrefab, pos, World.CreateRandomRotation()) as GameObject);
+        this.gameObject.name = thisEntity.GetName();
 
-        rigidbody = gameObject.GetComponent<Rigidbody>();
-        globalPos = gameObject.transform;
-        gameObject.SetActive(true);
+        rigidbody = GetGameObject().GetComponent<Rigidbody>();
+        globalPos = GetGameObject().transform;
+        this.gameObject.SetActive(true);
     }
     
     public void InitHeight() {

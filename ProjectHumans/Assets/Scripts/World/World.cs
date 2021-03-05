@@ -15,7 +15,6 @@ public class World : MonoBehaviour {
     /// This dict keeps track of the total number of each kind of object that has been created
     public static Dictionary<string, int> entityCountDict = new Dictionary<string, int>();
     public Dictionary<string, int> startingCountsDict = new Dictionary<string, int>();
-    public static Dictionary<string, GameObject> prefabsDict = new Dictionary<string, GameObject>();
     public static List<string> animalNames = new List<string>();
     public static List<string> plantNames = new List<string>();
     public static List<string> itemNames = new List<string>();
@@ -120,14 +119,13 @@ public class World : MonoBehaviour {
     public static Body InitBody(Entity passed, Vector3 spawn) {
         Body toReturn;
         string species = passed.GetObjectType();
+        Debug.Log(species);
         
         if(animalNames.Contains(species)) {
             toReturn = new PrimateBody((Animal) passed, spawn);
-            toReturn.InitGameObject(prefabsDict[species]);
             return toReturn;
         } else {
             toReturn = new Body(passed, spawn);
-            toReturn.InitGameObject(prefabsDict[species]);
             return toReturn;
         }
     }
@@ -136,13 +134,6 @@ public class World : MonoBehaviour {
         return new PrimateMotorSystem(passed);
     }
 
-    void LoadPrefabs() {
-        prefabsDict.Add("Human", Resources.Load("Prefabs/HumanPrefab", typeof(GameObject)) as GameObject);
-        prefabsDict.Add("Llama", Resources.Load("Prefabs/LlamaPrefab", typeof(GameObject)) as GameObject);
-        prefabsDict.Add("Apple", Resources.Load("Prefabs/ApplePrefab", typeof(GameObject)) as GameObject);
-        prefabsDict.Add("Human", Resources.Load("Prefabs/WaterPrefab", typeof(GameObject)) as GameObject);
-        prefabsDict.Add("Tree", Resources.Load("Prefabs/TreeRoundPrefab", typeof(GameObject)) as GameObject);
-    }
 
     public static Animal GetAnimal(string name) { return animalDict[name]; }
     public static Item GetItem(string name) { return itemDict[name]; }
