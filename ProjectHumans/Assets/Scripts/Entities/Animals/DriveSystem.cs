@@ -28,7 +28,6 @@ public class DriveSystem
 
         this.stateLabelList = new List<string> {
             // Originally driveStates, will be read-in eventually
-
             "hunger", 
             "thirst", 
             "sleepiness",
@@ -49,9 +48,9 @@ public class DriveSystem
 
         if (passedList != null){
             for (int i = 0; i < passedList.Count; i++) {
-                states[i] = false;
+                states[i] = thisTraitDict[(stateLabelList[i] + "_value")];
                 stateIndexDict[passedList[i]] = i;
-                stateDict[passedList[i]] = false;
+                stateDict[passedList[i]] = states[i];
             }
         } else { Debug.Log("No actions passed to this animal"); }
     }

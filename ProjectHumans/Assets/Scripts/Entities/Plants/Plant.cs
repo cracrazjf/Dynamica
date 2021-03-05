@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Random=UnityEngine.Random;
 
 public class Plant : Entity {
 
-    public Plant(string objectType, int index, Genome motherGenome, Genome fatherGenome, Transform spawn) 
+    public Plant(string objectType, int index, Genome motherGenome, Genome fatherGenome, Vector3 spawn) 
     : base (objectType, index, motherGenome, fatherGenome, spawn) {
 
-        body = World.InitBody(objectType);
+        body = World.InitBody(this, spawn);
     }
 
     public override void UpdateEntity() {
@@ -35,12 +36,12 @@ public class Plant : Entity {
 
     public void CreateFruit() {
         // Figure out where the apple should appear
-        float distance = this.phenotype.GetTraitDict()["fruit_drop_distance"];
-        string fruitType = this.phenotype.GetTraitDict()["fruit_type"];
+        float distance = GetPhenotype().GetTraitDict()["fruit_drop_distance"];
+        string fruitType = GetGenome().GetQualDict()["fruit_type"];
 
         Vector3 fruitDisplacement = new Vector3(Random.Range(-distance,distance),0,Random.Range(-distance,distance));                           
-        Vector3 fruitLocation = this.gameObject.transform.position + fruitDisplacement;
+        Vector3 fruitLocation = GetBody().globalPos.position + fruitDisplacement;
 
-        World.AddEntity("Apple", fruitLocation);
+        World.AddEntity(fruitType, fruitLocation);
     }
 }

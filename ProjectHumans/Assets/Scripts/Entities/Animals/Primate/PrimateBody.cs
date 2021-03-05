@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PrimateBody : AnimalBody {
 
-    public PrimateBody(Animal animal, Transform position) : base(animal, position) {
+    public PrimateBody(Animal animal, Vector3 position) : base(animal, position) {
     }
 
     public override void UpdateBodyStates() {

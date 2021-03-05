@@ -18,26 +18,17 @@ public class AnimalBody : Body {
 
     protected Dictionary<string, ConfigurableJoint> jointDict;
     public Dictionary<string, ConfigurableJoint> GetJointDict() { return jointDict; }
-    
-    protected bool[] states;
-    protected List<string> stateLabelList;
-    protected Dictionary<string, int> stateIndexDict;
-    protected Dictionary<string, bool> stateDict;
-    
-    public bool[] GetStates() { return states; }
-    public List<string> GetStateLabels() { return stateLabelList; }
-    public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
-    public Dictionary<string, bool> GetStateDict() { return stateDict; }
 
     protected List<Vector3> holderCoords;
     protected List<GameObject> holdings;
     public List<GameObject> GetHoldings() { return holdings; }
 
-    public AnimalBody(Animal animal, Transform position) : base((Entity) animal, position) {
+    public AnimalBody(Animal animal, Vector3 position) : base((Entity) animal, position) {
         stateLabelList = new List<string> {
             "standing", 
             "sitting", 
             "laying",
+            "alive"
         };
         InitStates(stateLabelList);
     }

@@ -36,7 +36,7 @@ public class SimpleAI : AI {
     public override int[] ChooseAction(float[ , ] visualInput) {
         decidedActions = new int[actionStates.Length];
 
-        animalTransform = thisAnimal.gameObject.transform;
+        animalTransform = thisAnimal.GetGameObject().transform;
         UpdateFOV(animalTransform, 45, 10);
 
         Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);
@@ -202,7 +202,7 @@ public class SimpleAI : AI {
 
     // Returns the nearest object to the human or null if none exists
     public GameObject GetNearestObject(List<GameObject> targetList) {
-        GameObject nearestObject = thisAnimal.gameObject;
+        GameObject nearestObject = thisAnimal.GetGameObject();
         if (targetList.Count > 0) {
             nearestObject = targetList[0];
             float nearestDis = Vector3.Distance(animalTransform.position, nearestObject.transform.position);

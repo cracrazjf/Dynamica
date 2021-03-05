@@ -10,13 +10,11 @@ public class ObjectInfo {
     // this is the initial number that will be spawned
     public string name;
     public int startingN;
-    public bool living;
     public Genome genome;
 
-    public ObjectInfo(string passedSpeciesName, int passedStartingN, bool lively) {
+    public ObjectInfo(string passedSpeciesName, int passedStartingN) {
         name = passedSpeciesName;
         startingN = passedStartingN;
-        living = lively;
 
         this.genome = new Genome();
         ImportObjectInfo();
@@ -36,10 +34,12 @@ public class ObjectInfo {
             string[] leftArray = lineInfo[0].Split(new[] { "." }, StringSplitOptions.None);
             string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
 
-            if (living) {
-                if (leftArray[0] == "gene") { genome.AddGeneToGenome(leftArray[1], rightArray); }
+            
+            if (leftArray[0] == "gene") { genome.AddGeneToGenome(leftArray[1], rightArray); 
             } else if (leftArray[0] == "constant") {
                 genome.AddConstantToGenome(leftArray[1], rightArray);
+            } else if (leftArray[0] == "quality") {
+                genome.AddQualToGenome(leftArray[1], rightArray);
             }
         }  
         file.Close();

@@ -12,32 +12,36 @@ abstract public class Entity {
     public string GetDisplayName() { return displayName; }
     public void SetDisplayName(string named) { displayName = named; }
 
-    private String objectType;
+    protected string objectType;
     public string GetObjectType() { return objectType;}
 
-    private String name;
-    public String GetName() { return name; }
+    protected string name;
+    public string GetName() { return name; }
     public void SetName(String passed) { name = passed; }
 
-    private int index;
+    protected int index;
     public int GetIndex() { return index; }
     public void SetIndex(int passed) { index = passed; }
 
-    private int age;
+    protected int age;
     public int GetAge(){ return this.age; }
     public void IncreaseAge(int amount){ this.age += amount; }
 
-    private Genome genome;
+    protected Genome genome;
     public Genome GetGenome() { return genome; }
 
-    private Phenotype phenotype;
+    protected Phenotype phenotype;
     public Phenotype GetPhenotype() { return phenotype; }
     
     // Body variables
     protected GameObject gameObject;
+    protected Body body;
+
+    public GameObject GetGameObject() { return gameObject; }
+    public Body GetBody() { return body; }
 
     // Sexual reproduction constructor
-    public Entity(string objType, int id, Genome motherGenome, Genome fatherGenome, Transform spawn) {
+    public Entity(string objType, int id, Genome motherGenome, Genome fatherGenome, Vector3 spawn) {
         objectType = objType;
         index = id;
         name = (objectType + " " + index.ToString());
@@ -46,11 +50,11 @@ abstract public class Entity {
         genome = new Genome(motherGenome, fatherGenome);
         phenotype = new Phenotype(this);
 
-        body = World.InitBody(objectType);
+        body = World.InitBody(this, spawn);
     }
 
     // Asexual reproduction constructor
-    public Entity(string objType, int id, Genome motherGenome, Transform spawn) {
+    public Entity(string objType, int id, Genome motherGenome, Vector3 spawn) {
         objectType = objType;
         index = id;
         name = (objectType + " " + index.ToString());
@@ -58,6 +62,8 @@ abstract public class Entity {
 
         genome = new Genome(motherGenome);
         phenotype = new Phenotype(this);
+
+        body = World.InitBody(this, spawn);
     }
 
     public virtual void UpdateEntity() {

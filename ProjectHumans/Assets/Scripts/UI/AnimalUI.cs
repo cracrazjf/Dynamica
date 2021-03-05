@@ -63,7 +63,7 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void PassAnimalCam() {
-       Camera toSend =  selectedAnimal.gameObject.GetComponent<Camera>();
+       Camera toSend =  selectedAnimal.GetGameObject().GetComponent<Camera>();
        MainUI.EnterAnimalCam(toSend);
     }
 
@@ -130,7 +130,7 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void PassGenome() {
-        GenomeUI.ReceiveClicked(selectedAnimal.gameObject);
+        GenomeUI.ReceiveClicked(selectedAnimal.GetGameObject());
     }
 
     public void PassCenter() {

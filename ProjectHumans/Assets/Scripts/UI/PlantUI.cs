@@ -72,7 +72,7 @@ public class PlantUI : MonoBehaviour {
     }
 
     public void PassGenome() {
-        GenomeUI.ReceiveClicked(selectedPlant.gameObject);
+        GenomeUI.ReceiveClicked(selectedPlant.GetGameObject());
     }
 
     public void PassCenter() {

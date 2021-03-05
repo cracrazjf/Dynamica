@@ -20,6 +20,11 @@ public class Genome {
     public Dictionary<string, float> constantDict;
     public Dictionary<string, int> constantIndexDict;
 
+    // some random qualitative traits
+    public int numQuals;
+    public Dictionary<string, string> qualDict;
+    public Dictionary<string, string> GetQualDict() { return qualDict; }
+
     public Genome(Genome motherGenome, Genome fatherGenome) {
         numGenes = 0;
         geneLabelList = new List<string>();
@@ -30,6 +35,9 @@ public class Genome {
         constantLabelList = new List<string>();
         constantDict = new Dictionary<string, float>();
         constantIndexDict= new Dictionary<string, int>();
+
+        numQuals = 0;
+        qualDict = new Dictionary<string, string>();
 
         InheretGenome(motherGenome, fatherGenome);
     }
@@ -45,7 +53,25 @@ public class Genome {
         constantDict = new Dictionary<string, float>();
         constantIndexDict= new Dictionary<string, int>();
 
+        numQuals = 0;
+        qualDict = new Dictionary<string, string>();
+
         InheretGenome(motherGenome);
+    }
+
+    public Genome() {
+        numGenes = 0;
+        geneLabelList = new List<string>();
+        geneDict = new Dictionary<string, Gene>();
+        geneIndexDict = new Dictionary<string, int>();
+
+        numConstants = 0;
+        constantLabelList = new List<string>();
+        constantDict = new Dictionary<string, float>();
+        constantIndexDict= new Dictionary<string, int>();
+
+        numQuals = 0;
+        qualDict = new Dictionary<string, string>();
     }
 
 
@@ -55,6 +81,8 @@ public class Genome {
         if (motherGenome.numGenes == fatherGenome.numGenes && motherGenome.numConstants == fatherGenome.numConstants) {
             numConstants = motherGenome.numConstants;
             numGenes = motherGenome.numGenes;
+            numQuals = motherGenome.numQuals;
+            qualDict = motherGenome.qualDict;
 
             for (int i = 0; i < numGenes; i++) {
                 if (motherGenome.geneLabelList[i] == fatherGenome.geneLabelList[i]) {
@@ -87,7 +115,8 @@ public class Genome {
                     string outputString = "Inheret Genome failed because parents' constant " + i.ToString() + " did not match";
                     Debug.Log(outputString);
                 }
-            }   
+            }
+
         } else {
             success = false;
             string outputString = "Inheret Genome failed because parents' numGenes or numConstants were not same size";
@@ -102,6 +131,8 @@ public class Genome {
 
         numConstants = motherGenome.numConstants;
         numGenes = motherGenome.numGenes;
+        numQuals = motherGenome.numQuals;
+        qualDict = motherGenome.qualDict;
 
         for (int i = 0; i < numGenes; i++) {
             string geneLabel = motherGenome.geneLabelList[i];
@@ -124,27 +155,30 @@ public class Genome {
         return success;
     }
 
-    public void InitGenomeFromSpeciesTemplate(ObjectInfo passedLivingObjectInfo){
+    public void InitGenomeFromSpeciesTemplate(ObjectInfo passedInfo){
         numGenes = 0;
         numConstants = 0;
 
-        for (int i = 0; i<passedLivingObjectInfo.genome.numGenes; i++){
-            string geneLabel = passedLivingObjectInfo.genome.geneLabelList[i];
+        for (int i = 0; i<passedInfo.genome.numGenes; i++){
+            string geneLabel = passedInfo.genome.geneLabelList[i];
             geneLabelList.Add(geneLabel);
             geneIndexDict.Add(geneLabel, numGenes);
             numGenes++;
-            Gene newGene = passedLivingObjectInfo.genome.geneDict[geneLabel].ShallowCopy();
+            Gene newGene = passedInfo.genome.geneDict[geneLabel].ShallowCopy();
             newGene.GenerateGeneSequence();
             geneDict.Add(geneLabel, newGene);
             
         }
         // there are probably data structure copy operations that would do this more efficiently
-        for (int i = 0; i<passedLivingObjectInfo.genome.numConstants; i++){
-            constantLabelList.Add(passedLivingObjectInfo.genome.constantLabelList[i]);
-            constantDict.Add(passedLivingObjectInfo.genome.constantLabelList[i], passedLivingObjectInfo.genome.constantDict[passedLivingObjectInfo.genome.constantLabelList[i]]);
-            constantIndexDict.Add(passedLivingObjectInfo.genome.constantLabelList[i], numConstants);
+        for (int i = 0; i<passedInfo.genome.numConstants; i++){
+            constantLabelList.Add(passedInfo.genome.constantLabelList[i]);
+            constantDict.Add(passedInfo.genome.constantLabelList[i], passedInfo.genome.constantDict[passedInfo.genome.constantLabelList[i]]);
+            constantIndexDict.Add(passedInfo.genome.constantLabelList[i], numConstants);
             numConstants++;
         }
+
+        numQuals = passedInfo.genome.numQuals;
+        qualDict = passedInfo.genome.qualDict;
     }
 
     public void AddGeneToGenome(string label, string[] geneInfo) {
@@ -161,6 +195,11 @@ public class Genome {
         constantDict.Add(label, float.Parse(constantInfo[0]));
         constantIndexDict.Add(label, numConstants);
         numConstants++;
+    }
+    
+    public void AddQualToGenome(string label, string[] qualInfo) {
+        qualDict.Add(label, qualInfo[0]);
+        numQuals++;
     }
 
     public string GetConstantInfo() {

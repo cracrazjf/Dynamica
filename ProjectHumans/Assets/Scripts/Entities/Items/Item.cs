@@ -6,13 +6,13 @@ using System.IO;
 using UnityEngine;
 
 
-abstract public class Item : Entity {
-    public Item(string objectType, int index, Genome motherGenome, Transform spawn) : 
+public class Item : Entity {
+    public Item(string objectType, int index, Genome motherGenome, Vector3 spawn) : 
             base (objectType, index, motherGenome, spawn) {}
 
 
     public override void UpdateEntity() {
-        if (this.objectType == "Apple") {
+        if (this.GetObjectType() == "Apple") {
             float poison = this.GetPhenotype().GetTraitDict()["poison"];
             if (poison == 1) {
                 this.gameObject.GetComponent<MeshRenderer> ().material.color = new Color(1,0,1,1);

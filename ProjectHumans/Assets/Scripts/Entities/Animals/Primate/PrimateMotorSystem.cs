@@ -12,10 +12,9 @@ public class PrimateMotorSystem : MotorSystem {
     
     public override void SitDown() {
         Debug.Log("SitDown was called");
+        thisBody.GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = true;
         BendWaist(0.5f, 1f);
-         thisBody.GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = false;
-        // Vector3 dir = ((-bodyTransform.up - bodyTransform.forward) / 2).normalized;
-        // bodyTransform.Translate(dir * 1f * Time.deltaTime, Space.World);
+        BendKnees(0.5f);
 
         thisBody.SetState("standing", false);
         thisBody.SetState("sitting", true);
@@ -24,22 +23,8 @@ public class PrimateMotorSystem : MotorSystem {
     public override void SitUp() {
         Debug.Log("SitUp was called");
         thisBody.GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = true;
-        Transform bodyTransform = thisBody.GetSkeletonDict()["Abdomen"].transform;
-        Vector3 humanPosition = thisAnimal.gameObject.transform.position;
-
-        if (thisAnimal.GetBodyState("laying")) {
-            moveToPosition = new Vector3(bodyTransform.position.x, humanPosition.y - 1.0f, bodyTransform.position.z);
-
-        } else if (bodyTransform.localPosition.y >= -1.9 || bodyTransform.localRotation.x >= 0) {
-
-            if(bodyTransform.localRotation.x < 0) {
-                bodyTransform.Rotate(Vector3.right * 30 * Time.deltaTime);
-
-            } else if(!thisAnimal.GetBodyState("sitting")) {
-                moveToPosition = new Vector3(bodyTransform.position.x, humanPosition.y - 1.2f, bodyTransform.position.z);
-            }
-        }
-        bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, moveToPosition, 1.0f * Time.deltaTime);
+        BendWaist(-0.5f, 1f);
+        BendKnees(-0.5f);
 
         thisBody.SetState("laying", false);
         thisBody.SetState("sitting", true);          
@@ -54,7 +39,6 @@ public class PrimateMotorSystem : MotorSystem {
         } else {
             SitDown();
         }
-
         thisBody.SetState("sitting", false);
         thisBody.SetState("laying", true);  
     }
@@ -71,18 +55,24 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     public override void Rotate() {
-        thisAnimal.gameObject.transform.Rotate(0, rotatingSpeed, 0, Space.World);
+        float rotatingSpeed = argsDict["rotation velocity"];
+        globalTransform.Rotate(0, rotatingSpeed, 0, Space.World);
     }
 
     
     public override void TakeSteps() {
-        thisAnimal.gameObject.transform.Translate(thisAnimal.gameObject.transform.forward * stepProportion * Time.deltaTime, Space.World);
+        float stepProportion = argsDict["step rate"];
+        globalTransform.Translate(globalTransform.forward * stepProportion * Time.deltaTime, Space.World);
     }
 
     public override void PickUp() {
         Debug.Log("Tried to pick something up");
-        
-        BendWaist(0.3f, 1f);
+
+        if (argsDict["target y"] > thisBody.globalPos.position.y) {
+            // Reach up
+        } else {
+            //Reach down
+        }
 
         Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
     }
@@ -97,8 +87,8 @@ public class PrimateMotorSystem : MotorSystem {
         Debug.Log("Tried to eat something");
         Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
 
-        if (heldPos.x > thisBody.GetXZPosition().x) {
-            //Reach up
+        if (heldPos.y > thisBody.globalPos.position.y) {
+            // Reach up
         } else {
             //Reach down
         }
@@ -131,7 +121,11 @@ public class PrimateMotorSystem : MotorSystem {
         Debug.Log("Something caught my eye");
     }
 
-    public void BendKnees(float degree) {}
+    public void BendKnees(float degree) {
+        Quaternion toSend = new Quaternion(degree, 0, 0, 0);
+        thisBody.RotateJoint("Tibia_L", toSend);
+        thisBody.RotateJoint("Tibia_R", toSend);
+    }
 
     public void BendWaist(float degree, float z) {
         Quaternion toSend = new Quaternion(degree, 0, 0, z);

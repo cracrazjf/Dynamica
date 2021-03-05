@@ -6,19 +6,19 @@ using UnityEngine.UI;
 using System.Configuration;
 using System.Linq;
 using System.IO;
-using System.Reflection;
+using Random=UnityEngine.Random;
 
 
 public class World : MonoBehaviour {
     public bool paused = false;
 
     /// This dict keeps track of the total number of each kind of object that has been created
-    public static Dictionary<string, int> EntityCountDict = new Dictionary<string, int>();
+    public static Dictionary<string, int> entityCountDict = new Dictionary<string, int>();
     public Dictionary<string, int> startingCountsDict = new Dictionary<string, int>();
-    public Dictionary<string, GameObject> prefabsDict = new Dictionary<string, GameObject>();
-    public List<string> animalNames = new List<string>();
-    public List<string> plantNames = new List<string>();
-    public List<string> itemNames = new List<string>();
+    public static Dictionary<string, GameObject> prefabsDict = new Dictionary<string, GameObject>();
+    public static List<string> animalNames = new List<string>();
+    public static List<string> plantNames = new List<string>();
+    public static List<string> itemNames = new List<string>();
 
     public static Dictionary<string, ObjectInfo> objectInfoDict = new Dictionary<string, ObjectInfo>();
     public static Dictionary<string, float> worldConfigDict = new Dictionary<string, float>();
@@ -33,11 +33,11 @@ public class World : MonoBehaviour {
     public static Dictionary<string, Item> itemDict = new Dictionary<string, Item>();
     
     /// These lists keep track of entities needing an update each epoch
-    public static List<Entity> entityList = new List<Item>();
+    public static List<Entity> entityList = new List<Entity>();
 
     /// These genome variables are used to instantiate every living thing that is created
-    public Genome motherGenome;
-    public Genome fatherGenome;
+    public static Genome motherGenome = new Genome();
+    public static Genome fatherGenome = new Genome();
 
     /// <value>Setting initial world properties</value>
     public static float worldSize;
@@ -75,47 +75,49 @@ public class World : MonoBehaviour {
         }
     }
 
-    public void AddEntity(string speciesType, Transform spawn) {
-        motherGenome = new Genome();
+    public static void AddEntity(string speciesType, Nullable<Vector3> passedSpawn) {
+        Vector3 spawn;
         motherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
 
-        if (spawn == null) { spawn = new Transform(CreateRandomPosition(), CreateRandomRotation()); }
+        if (!passedSpawn.HasValue) { 
+            spawn = CreateRandomPosition();
+        } else { spawn = (Vector3) passedSpawn; }
 
         int val = (entityCountDict[speciesType]);
-        if (itemList.Contain(speciesType)) {
+        if (itemNames.Contains(speciesType)) {
             InitItem(val, speciesType, motherGenome, spawn);
         } else {
             fatherGenome = new Genome();
             fatherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
 
-            if (plantList.Contain(speciesType)) {
+            if (plantNames.Contains(speciesType)) {
             InitPlant(val, speciesType, motherGenome, fatherGenome, spawn);
             } else { InitAnimal(val, speciesType, motherGenome, fatherGenome, spawn); }
         } 
     }
 
-    public void InitAnimal(int val, string speciesType, Genome mother, Genome father, Transform spawn ) {
-        Entity newAnimal = new Animal(speciesType, val, mother, father, spawn);
+    public static void InitAnimal(int val, string speciesType, Genome mother, Genome father, Vector3 spawn ) {
+        Animal newAnimal = new Animal(speciesType, val, mother, father, spawn);
         animalDict[newAnimal.GetName()] = newAnimal;
         entityList.Add(newAnimal);
         entityCountDict[speciesType]++;
     }
 
-    public void InitPlant(int val, string speciesType, Genome mother, Genome father, Transform spawn) {
-        Entity newPlant = new Plant(speciesType, val, mother, father, spawn);
+    public static void InitPlant(int val, string speciesType, Genome mother, Genome father, Vector3 spawn) {
+        Plant newPlant = new Plant(speciesType, val, mother, father, spawn);
         plantDict[newPlant.GetName()] = newPlant;
         entityList.Add(newPlant);
         entityCountDict[speciesType]++;
     }
 
-    public void InitItem(int val, string speciesType, Genome mother, Transform spawn) {
-        Entity newObj = new Item(speciesType, val, mother, spawn);
+    public static void InitItem(int val, string speciesType, Genome mother, Vector3 spawn) {
+        Item newObj = new Item(speciesType, val, mother, spawn);
         itemDict[newObj.GetName()] = newObj;
         entityList.Add(newObj);
         entityCountDict[speciesType]++;
     }
 
-    public Body InitBody(Entity passed, Transform spawn) {
+    public static Body InitBody(Entity passed, Vector3 spawn) {
         Body toReturn;
         string species = passed.GetObjectType();
         
@@ -130,7 +132,7 @@ public class World : MonoBehaviour {
         }
     }
 
-    public MotorSystem InitAnimalMotor(Animal passed) {
+    public static MotorSystem InitAnimalMotor(Animal passed) {
         return new PrimateMotorSystem(passed);
     }
 
@@ -182,7 +184,7 @@ public class World : MonoBehaviour {
                     if  (lineInfo[0] == "Animal") {animalNames.Add(lineInfo[1]);} 
                     if  (lineInfo[0] == "Plant") {plantNames.Add(lineInfo[1]);} 
                     startingCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
-                    countableObjectCountDict.Add(lineInfo[1], 0);
+                    entityCountDict.Add(lineInfo[1], 0);
                 }
             }
         }
@@ -190,16 +192,12 @@ public class World : MonoBehaviour {
 
     void CreateObjectInfoInstances() {
         foreach(KeyValuePair<string, int> entry in startingCountsDict) {
-            if(animalNames.Exists(entry.Key) || (plantNames.Exists(entry.Key))) {
-                ObjectInfo newObjectInfo = new ObjectInfo(entry.Key, entry.Value, true);
-                objectInfoDict.Add(entry.Key, newObjectInfo);
-            }
-            ObjectInfo newObjectInfo = new ObjectInfo(entry.Key, entry.Value, false);
+            ObjectInfo newObjectInfo = new ObjectInfo(entry.Key, entry.Value);
             objectInfoDict.Add(entry.Key, newObjectInfo);
         }
     }
 
-    public Vector3 CreateRandomPosition() {
+    public static Vector3 CreateRandomPosition() {
         float xRan = Random.Range(World.minPosition, World.maxPosition);
         float zRan = Random.Range(World.minPosition, World.maxPosition);
         Vector3 newStartPosition = new Vector3 (xRan, 0.5f, zRan); 
@@ -207,7 +205,7 @@ public class World : MonoBehaviour {
         return newStartPosition;
     }
 
-    public Quaternion CreateRandomRotation(){
+    public static Quaternion CreateRandomRotation(){
         var startRotation = Quaternion.Euler(0.0f, Random.Range(World.minPosition,World.maxPosition), 0.0f);
         return startRotation;
     }

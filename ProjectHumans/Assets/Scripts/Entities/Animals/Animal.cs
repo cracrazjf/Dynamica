@@ -7,17 +7,19 @@ using System;
 
         public Camera visualInputCamera;
         
-        private AnimalBody animalBody;
-        private DriveSystem driveSystem;
-        private MotorSystem motorSystem;
-        private SensorySystem sensorySystem;
+        private static AnimalBody animalBody;
+        private static DriveSystem driveSystem;
+        private static MotorSystem motorSystem;
+        private static SensorySystem sensorySystem;
         protected AI activeAI;
         protected string action;
 
-        public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome, Transform spawn) 
+        public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome, Vector3 spawn) 
         : base (objectType, index, motherGenome, fatherGenome, spawn) {
 
-            animalBody = (AnimalBody) World.InitBody(this);
+            animalBody = (AnimalBody) World.InitBody(this, spawn);
+            body = animalBody;
+
             motorSystem = World.InitAnimalMotor(this);
             
             visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
@@ -34,7 +36,6 @@ using System;
             int[] toSend = activeAI.ChooseAction(visualInputMatrix);
         
             this.GetMotorSystem().TakeAction(toSend);
-            GetBody().ResolveAltitude();
             action = "In progress!";
 
             IncreaseAge(1);
@@ -45,7 +46,7 @@ using System;
         }
     
         // getters and setters for body, drive system, motor system, sensory system, and action choice class
-        public AnimalBody GetBody() { return (AnimalBody) body; }
+        public AnimalBody GetBody() { return animalBody; }
 
         public bool GetBodyState(string state) { return this.GetBody().GetStateDict()[state]; }
 

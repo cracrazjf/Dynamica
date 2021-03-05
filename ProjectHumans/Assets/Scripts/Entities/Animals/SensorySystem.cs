@@ -14,7 +14,7 @@ public class SensorySystem {
 
     public SensorySystem(Animal animal) {
         this.thisAnimal = animal;
-        visualInputCamera = this.thisAnimal.gameObject.GetComponentInChildren<Camera>();
+        visualInputCamera = thisAnimal.GetBody().GetGameObject().GetComponentInChildren<Camera>();
         visualResolution = (int)this.thisAnimal.GetPhenotype().GetTraitDict()["visual_resolution"];
     
         InitVisualInput();

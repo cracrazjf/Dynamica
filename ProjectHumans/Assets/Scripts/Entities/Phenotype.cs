@@ -12,13 +12,13 @@ public class Phenotype {
     protected List<string> traitLabelList = new List<string>();
     protected Dictionary<string, int> traitIndexDict = new Dictionary<string, int>();
     protected Dictionary<string, float> traitDict = new Dictionary<string, float>();
+    protected Dictionary<string, string> qualDict = new Dictionary<string, string>();
 
     public float[] GetTraits() { return traits; }
     public List<string> GetTraitLabels() { return traitLabelList; }
     public Dictionary<string, int> GetTraitIndices() { return traitIndexDict; }
     public Dictionary<string, float> GetTraitDict() { return traitDict; }
     
-
     public Phenotype(Entity passedObject) {
         thisEntity = passedObject;
         thisGenome = passedObject.GetGenome();

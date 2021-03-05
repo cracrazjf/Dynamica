@@ -11,20 +11,31 @@ public class Body {
     protected Rigidbody rigidbody;
     protected GameObject gameObject;
 
+    protected bool[] states;
+    protected List<string> stateLabelList;
+    protected Dictionary<string, int> stateIndexDict;
+    protected Dictionary<string, bool> stateDict;
+    
+    public bool[] GetStates() { return states; }
+    public List<string> GetStateLabels() { return stateLabelList; }
+    public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
+    public Dictionary<string, bool> GetStateDict() { return stateDict; }
+    public GameObject GetGameObject() { return gameObject; }
+
     public Transform globalPos;
 
-    public Body(Entity passed, Transform position) {
+    public Body(Entity passed, Vector3 position) {
         thisEntity = passed;
-        globalPos = position;
 
         InitHeight();
     }
 
     public virtual void InitGameObject(GameObject loadedPrefab) {
         gameObject = GameObject.Instantiate(loadedPrefab, globalPos.position, globalPos.rotation) as GameObject;
-        gameObject.name = GetName();
+        gameObject.name = thisEntity.GetName();
 
         rigidbody = gameObject.GetComponent<Rigidbody>();
+        globalPos = gameObject.transform;
         gameObject.SetActive(true);
     }
     
@@ -40,6 +51,6 @@ public class Body {
     }
 
     public void VerticalBump(float height) {
-        head.transform.position += new Vector3(0, height, 0);
+        globalPos.position += new Vector3(0, height, 0);
     }
 }
