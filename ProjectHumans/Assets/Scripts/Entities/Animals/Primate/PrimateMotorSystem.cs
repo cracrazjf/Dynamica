@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 
 public class PrimateMotorSystem : MotorSystem {
-    
+
     public PrimateMotorSystem(Animal animal) : base(animal) {
         Debug.Log("An ape was born!");
     }

@@ -76,6 +76,7 @@ public class World : MonoBehaviour {
         Genome motherGenome = new Genome();
         motherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
 
+        Debug.Log("Spawning a " + speciesType );
         if (!passedSpawn.HasValue) { 
             spawn = CreateRandomPosition();
         } else { spawn = (Vector3) passedSpawn; }
@@ -94,6 +95,7 @@ public class World : MonoBehaviour {
     }
 
     public static void InitAnimal(int val, string speciesType, Genome mother, Genome father, Vector3 spawn ) {
+        // Debug.Log("making an animal in world");
         Animal newAnimal = new Animal(speciesType, val, mother, father, spawn);
         animalDict[newAnimal.GetName()] = newAnimal;
         entityList.Add(newAnimal);
@@ -101,6 +103,7 @@ public class World : MonoBehaviour {
     }
 
     public static void InitPlant(int val, string speciesType, Genome mother, Genome father, Vector3 spawn) {
+        // Debug.Log("making an plant in world");
         Plant newPlant = new Plant(speciesType, val, mother, father, spawn);
         plantDict[newPlant.GetName()] = newPlant;
         entityList.Add(newPlant);
@@ -108,6 +111,7 @@ public class World : MonoBehaviour {
     }
 
     public static void InitItem(int val, string speciesType, Genome mother, Vector3 spawn) {
+        // Debug.Log("making an item in world");
         Item newObj = new Item(speciesType, val, mother, spawn);
         itemDict[newObj.GetName()] = newObj;
         entityList.Add(newObj);
@@ -153,6 +157,7 @@ public class World : MonoBehaviour {
                 } else {
                     if  (lineInfo[0] == "Animal") {animalNames.Add(lineInfo[1]);} 
                     if  (lineInfo[0] == "Plant") {plantNames.Add(lineInfo[1]);} 
+                    if  (lineInfo[0] == "Item") {itemNames.Add(lineInfo[1]);} 
                     startingCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
                     entityCountDict.Add(lineInfo[1], 0);
                 }
@@ -178,5 +183,12 @@ public class World : MonoBehaviour {
     public static Quaternion CreateRandomRotation(){
         var startRotation = Quaternion.Euler(0.0f, Random.Range(World.minPosition,World.maxPosition), 0.0f);
         return startRotation;
+    }
+
+    public static void PrintStates(Dictionary<string, object> thisStateDict) {
+        Debug.Log("START");
+        foreach(KeyValuePair<string, object> entry in thisStateDict) {
+            Debug.Log(entry.Key + " " + entry.Value);
+        }
     }
 }

@@ -32,7 +32,8 @@ public abstract class MotorSystem
 
     public MotorSystem(Animal passed) {
         thisAnimal = passed;
-        thisBody = thisAnimal.GetBody();
+        Debug.Log("set the body");
+        this.thisBody = thisAnimal.GetBody();
 
         stateLabelList = new List<string> {
             "sitting down",// 0

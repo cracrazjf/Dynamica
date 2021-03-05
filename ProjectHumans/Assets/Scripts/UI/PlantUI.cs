@@ -23,7 +23,6 @@ public class PlantUI : MonoBehaviour {
     protected Text inputName;
     protected InputField panelNamer;
 
-
     private void Start() {
         InitPanel();
         InitNamer();

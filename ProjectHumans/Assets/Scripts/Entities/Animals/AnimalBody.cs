@@ -31,6 +31,8 @@ public class AnimalBody : Body {
             "alive"
         };
         InitStates(stateLabelList);
+        InitBodyDicts();
+        InitHolders();
     }
 
     public void InitHolders() {
@@ -44,9 +46,17 @@ public class AnimalBody : Body {
         jointDict = new Dictionary<string, ConfigurableJoint>();
 
         foreach (Transform child in globalPos) {
+            if(child.name == "Body") {
+                globalPos = child;
+            }
+        }
+
+        foreach (Transform child in globalPos) {
             limbDict.Add(child.name, child.gameObject);
+            Debug.Log("limb " + child.name);
             foreach(Transform grandChild in child) {
                 skeletonDict.Add(grandChild.name, grandChild.gameObject);
+                Debug.Log("bone " + child.name);
                 if (grandChild.TryGetComponent(out ConfigurableJoint configurable)) {
                     jointDict.Add(grandChild.name, configurable);
                 }
@@ -71,8 +81,6 @@ public class AnimalBody : Body {
                 stateDict[passedList[i]] = false;
             }
         } else { Debug.Log("No body states passed to this animal"); }
-
-        InitHolders();
     }
 
     public void SetState(string label, bool passed) {
