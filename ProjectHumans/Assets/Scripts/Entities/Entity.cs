@@ -12,8 +12,8 @@ abstract public class Entity {
     public string GetDisplayName() { return displayName; }
     public void SetDisplayName(string named) { displayName = named; }
 
-    protected string objectType;
-    public string GetObjectType() { return objectType;}
+    protected string species;
+    public string GetSpecies() { return species;}
 
     protected string name;
     public string GetName() { return name; }
@@ -38,32 +38,29 @@ abstract public class Entity {
     protected Body body;
 
     public GameObject GetGameObject() { return gameObject; }
+    public void SetGameObject(GameObject passed) { this.gameObject = passed; }
     public Body GetBody() { return body; }
 
     // Sexual reproduction constructor
     public Entity(string objType, int id, Genome motherGenome, Genome fatherGenome, Vector3 spawn) {
-        objectType = objType;
+        species = objType;
         index = id;
-        name = (objectType + " " + index.ToString());
+        name = (species + " " + index.ToString());
         displayName = name;
 
         genome = new Genome(motherGenome, fatherGenome);
         phenotype = new Phenotype(this);
-
-        body = World.InitBody(this, spawn);
     }
 
     // Asexual reproduction constructor
     public Entity(string objType, int id, Genome motherGenome, Vector3 spawn) {
-        objectType = objType;
+        species = objType;
         index = id;
-        name = (objectType + " " + index.ToString());
+        name = (species + " " + index.ToString());
         displayName = name;
 
         genome = new Genome(motherGenome);
         phenotype = new Phenotype(this);
-
-        body = World.InitBody(this, spawn);
     }
 
     public virtual void UpdateEntity() {

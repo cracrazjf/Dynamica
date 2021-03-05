@@ -16,13 +16,12 @@ using System;
 
         public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome, Vector3 spawn) 
         : base (objectType, index, motherGenome, fatherGenome, spawn) {
-
-            animalBody = (AnimalBody) World.InitBody(this, spawn);
-            body = animalBody;
-
-            motorSystem = World.InitAnimalMotor(this);
             
-            visualInputCamera = this.gameObject.GetComponentInChildren<Camera>();
+            animalBody = new PrimateBody(this, spawn);
+            body = animalBody;
+            motorSystem = new PrimateMotorSystem(this);
+            
+            visualInputCamera = animalBody.GetGameObject().GetComponentInChildren<Camera>();
         
             driveSystem = new DriveSystem(this);
             sensorySystem = new SensorySystem(this);

@@ -36,7 +36,7 @@ public class SimpleAI : AI {
     public override int[] ChooseAction(float[ , ] visualInput) {
         decidedActions = new int[actionStates.Length];
 
-        animalTransform = thisAnimal.GetGameObject().transform;
+        animalTransform = thisAnimal.GetBody().GetGameObject().transform;
         UpdateFOV(animalTransform, 45, 10);
 
         Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);

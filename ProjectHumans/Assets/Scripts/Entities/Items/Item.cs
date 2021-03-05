@@ -7,12 +7,14 @@ using UnityEngine;
 
 
 public class Item : Entity {
-    public Item(string objectType, int index, Genome motherGenome, Vector3 spawn) : 
-            base (objectType, index, motherGenome, spawn) {}
+    public Item(string objectType, int index, Genome motherGenome, Vector3 spawn) 
+    : base (objectType, index, motherGenome, spawn) {
+        body = new Body(this, spawn);
+    }
 
 
     public override void UpdateEntity() {
-        if (this.GetObjectType() == "Apple") {
+        if (this.GetSpecies() == "Apple") {
             float poison = this.GetPhenotype().GetTraitDict()["poison"];
             if (poison == 1) {
                 this.gameObject.GetComponent<MeshRenderer> ().material.color = new Color(1,0,1,1);

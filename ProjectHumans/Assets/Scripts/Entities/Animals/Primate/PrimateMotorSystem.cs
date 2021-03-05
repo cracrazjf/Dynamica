@@ -56,13 +56,13 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void Rotate() {
         float rotatingSpeed = argsDict["rotation velocity"];
-        globalTransform.Rotate(0, rotatingSpeed, 0, Space.World);
+        thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
     }
 
     
     public override void TakeSteps() {
         float stepProportion = argsDict["step rate"];
-        globalTransform.Translate(globalTransform.forward * stepProportion * Time.deltaTime, Space.World);
+        thisBody.globalPos.Translate(thisBody.globalPos.forward * stepProportion * Time.deltaTime, Space.World);
     }
 
     public override void PickUp() {

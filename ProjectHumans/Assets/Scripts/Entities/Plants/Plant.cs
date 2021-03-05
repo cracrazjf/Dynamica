@@ -8,8 +8,7 @@ public class Plant : Entity {
 
     public Plant(string objectType, int index, Genome motherGenome, Genome fatherGenome, Vector3 spawn) 
     : base (objectType, index, motherGenome, fatherGenome, spawn) {
-
-        body = World.InitBody(this, spawn);
+        body = new Body(this, spawn);
     }
 
     public override void UpdateEntity() {

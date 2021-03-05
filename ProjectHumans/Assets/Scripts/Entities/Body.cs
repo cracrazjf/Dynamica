@@ -30,16 +30,18 @@ public class Body {
 
         InitHeight();
         InitGameObject(position);
+        passed.SetGameObject(this.gameObject);
     }
 
     public virtual void InitGameObject(Vector3 pos) {
-        string filePath = "Prefabs/" + thisEntity.GetObjectType() + "Prefab";
+        string filePath = "Prefabs/" + thisEntity.GetSpecies() + "Prefab";
         GameObject loadedPrefab = Resources.Load(filePath, typeof(GameObject)) as GameObject;
         this.gameObject = (GameObject.Instantiate(loadedPrefab, pos, World.CreateRandomRotation()) as GameObject);
         this.gameObject.name = thisEntity.GetName();
 
         rigidbody = GetGameObject().GetComponent<Rigidbody>();
-        globalPos = GetGameObject().transform;
+        globalPos = this.gameObject.transform;
+        this.VerticalBump(thisEntity.GetPhenotype().GetTraitDict()["displacement"]);
         this.gameObject.SetActive(true);
     }
     

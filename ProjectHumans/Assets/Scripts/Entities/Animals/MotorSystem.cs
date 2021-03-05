@@ -7,7 +7,6 @@ public abstract class MotorSystem
 {
     protected Animal thisAnimal;
     protected AnimalBody thisBody;
-    protected Transform globalTransform;
 
     protected bool[] states;
     protected List<string> stateLabelList;
@@ -34,7 +33,6 @@ public abstract class MotorSystem
     public MotorSystem(Animal passed) {
         thisAnimal = passed;
         thisBody = thisAnimal.GetBody();
-        globalTransform = thisBody.globalPos;
 
         stateLabelList = new List<string> {
             "sitting down",// 0

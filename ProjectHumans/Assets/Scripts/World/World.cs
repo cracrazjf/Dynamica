@@ -34,9 +34,6 @@ public class World : MonoBehaviour {
     /// These lists keep track of entities needing an update each epoch
     public static List<Entity> entityList = new List<Entity>();
 
-    /// These genome variables are used to instantiate every living thing that is created
-    public static Genome motherGenome = new Genome();
-    public static Genome fatherGenome = new Genome();
 
     /// <value>Setting initial world properties</value>
     public static float worldSize;
@@ -76,6 +73,7 @@ public class World : MonoBehaviour {
 
     public static void AddEntity(string speciesType, Nullable<Vector3> passedSpawn) {
         Vector3 spawn;
+        Genome motherGenome = new Genome();
         motherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
 
         if (!passedSpawn.HasValue) { 
@@ -86,7 +84,7 @@ public class World : MonoBehaviour {
         if (itemNames.Contains(speciesType)) {
             InitItem(val, speciesType, motherGenome, spawn);
         } else {
-            fatherGenome = new Genome();
+            Genome fatherGenome = new Genome();
             fatherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
 
             if (plantNames.Contains(speciesType)) {
@@ -115,25 +113,6 @@ public class World : MonoBehaviour {
         entityList.Add(newObj);
         entityCountDict[speciesType]++;
     }
-
-    public static Body InitBody(Entity passed, Vector3 spawn) {
-        Body toReturn;
-        string species = passed.GetObjectType();
-        Debug.Log(species);
-        
-        if(animalNames.Contains(species)) {
-            toReturn = new PrimateBody((Animal) passed, spawn);
-            return toReturn;
-        } else {
-            toReturn = new Body(passed, spawn);
-            return toReturn;
-        }
-    }
-
-    public static MotorSystem InitAnimalMotor(Animal passed) {
-        return new PrimateMotorSystem(passed);
-    }
-
 
     public static Animal GetAnimal(string name) { return animalDict[name]; }
     public static Item GetItem(string name) { return itemDict[name]; }
