@@ -48,7 +48,7 @@ public class DriveSystem
 
         if (passedList != null){
             for (int i = 0; i < passedList.Count; i++) {
-                Debug.Log(stateLabelList[i]);
+                // Debug.Log(stateLabelList[i]);
                 states[i] = thisTraitDict[(stateLabelList[i] + "_value")];
                 stateIndexDict[passedList[i]] = i;
                 stateDict[passedList[i]] = states[i];

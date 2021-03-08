@@ -67,19 +67,24 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void PickUp() {
         Debug.Log("Tried to pick something up");
+        Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
 
-        if (argsDict["target y"] > thisBody.globalPos.position.y) {
+        if (argsDict["target y"] > heldPos.y) {
             // Reach up
         } else {
             //Reach down
         }
-
-        Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
+        GameObject holder = thisBody.GetHolder((int) argsDict["held position"]);
+        FixItem(holder);
     }
 
     public override void SetDown() {
         Debug.Log("Tried to set something down");
         Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
+
+        //movement
+
+        thisBody.RemoveObject((int)argsDict["held position"]);
     }
 
     
@@ -92,7 +97,7 @@ public class PrimateMotorSystem : MotorSystem {
         } else {
             //Reach down
         }
-        // Stat buffs and destroy the comsumed object
+        thisBody.EatObject((int) argsDict["held position"]);
     }
 
     public override void WakeUp() {
@@ -109,6 +114,7 @@ public class PrimateMotorSystem : MotorSystem {
 
         thisAnimal.ToggleBodyPart("Eye_L", false);
         thisAnimal.ToggleBodyPart("Eye_R", false);
+        Collapse();
 
         thisBody.SetState("sleeping", true);  
     }
@@ -121,16 +127,34 @@ public class PrimateMotorSystem : MotorSystem {
         Debug.Log("Something caught my eye");
     }
 
-    public void BendKnees(float degree) {
+    private void BendKnees(float degree) {
         Quaternion toSend = new Quaternion(degree, 0, 0, 0);
         thisBody.RotateJoint("Tibia_L", toSend);
         thisBody.RotateJoint("Tibia_R", toSend);
     }
 
-    public void BendWaist(float degree, float z) {
+    private void BendWaist(float degree, float z) {
         Quaternion toSend = new Quaternion(degree, 0, 0, z);
         thisBody.RotateJoint("Hip_L", toSend);
         thisBody.RotateJoint("Hip_R", toSend);
+    }
+
+    private void Collapse() {
+        thisBody.ToggleKinematic("Abdomen");
+    }
+
+    private void FixItem(GameObject holder) {
+        Vector3 forCollider = new Vector3 (argsDict["target x"], argsDict["target y"], argsDict["target z"]);
+        Collider[] hitColliders = Physics.OverlapSphere(forCollider, .025f);
+        Rigidbody toConnect = holder.GetComponent<Rigidbody>();
+        
+        foreach(var hit in hitColliders) {
+            if(!thisBody.GetSkeletonDict().ContainsKey(hit.gameObject.name)) {
+                
+                FixedJoint newJoint = hit.gameObject.AddComponent<FixedJoint>() as FixedJoint;
+                newJoint.connectedBody = toConnect;
+            }
+        }
     }
 }
 

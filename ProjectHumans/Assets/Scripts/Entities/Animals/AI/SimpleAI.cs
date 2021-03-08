@@ -6,15 +6,17 @@ using System.Linq;
 
 public class SimpleAI : AI {
     Transform animalTransform;
-
+    List<GameObject> inSight;
+    string currentGoal = "None";
+    static Vector3 blankPos = new Vector3(0,0,0);
+    Vector3 randomPos = blankPos;
+    
     Dictionary<string, bool> bodyStateDict;
     Dictionary<string, float> driveStateDict;
     Dictionary<string, float> traitDict;
     Dictionary<string, Action> goalDict;
 
-    int[] decidedActions;
-    List<GameObject> inSight;
-    string currentGoal = "None";
+   
 
     public SimpleAI(Animal animal, Body body, DriveSystem drives, MotorSystem motor, SensorySystem senses, Phenotype traits) : 
                     base(body, drives, motor, senses, traits) {
@@ -111,7 +113,9 @@ public class SimpleAI : AI {
 
     // Moves to a random position (reset???)
     public void Explore() {
-        Vector3 randomPos = GetRandomPosition(3.0f);
+        if(randomPos == blankPos) {
+             randomPos = GetRandomPosition(3.0f);
+        }
         MoveToPos(randomPos);
     }
 
@@ -153,6 +157,8 @@ public class SimpleAI : AI {
         if ((animalTransform.position - position).magnitude > 1) { 
             Debug.Log("Walking to and fro"); 
             decidedActions[6] = 1;
+        } else {
+            randomPos = blankPos;
         }
     }
 

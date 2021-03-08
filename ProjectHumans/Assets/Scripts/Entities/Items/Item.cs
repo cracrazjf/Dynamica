@@ -12,7 +12,6 @@ public class Item : Entity {
         body = new Body(this, spawn);
     }
 
-
     public override void UpdateEntity() {
         if (this.GetSpecies() == "Apple") {
             float poison = this.GetPhenotype().GetTraitDict()["poison"];

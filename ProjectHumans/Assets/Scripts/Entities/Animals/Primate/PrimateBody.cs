@@ -12,6 +12,13 @@ public class PrimateBody : AnimalBody {
         SetState("sitting", CheckSitting());
         SetState("laying", CheckSitting());
     }
+
+    public override void InitHolders() {
+        holdings = new List<GameObject>();
+        holders = new List<GameObject>();
+        holders.Add(skeletonDict["Hand_R"]);
+        holders.Add(skeletonDict["Hand_L"]);
+    }
     
     bool CheckSitting() {
         float bodyExtent = abdomen.GetComponent<Collider>().bounds.extents.y;

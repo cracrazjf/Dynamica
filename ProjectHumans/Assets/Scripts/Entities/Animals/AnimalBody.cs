@@ -19,9 +19,10 @@ public class AnimalBody : Body {
     protected Dictionary<string, ConfigurableJoint> jointDict;
     public Dictionary<string, ConfigurableJoint> GetJointDict() { return jointDict; }
 
-    protected List<Vector3> holderCoords;
+    protected List<GameObject> holders;
     protected List<GameObject> holdings;
     public List<GameObject> GetHoldings() { return holdings; }
+    public GameObject GetHolder(int i) { return holders[i]; }
 
     public AnimalBody(Animal animal, Vector3 position) : base((Entity) animal, position) {
         stateLabelList = new List<string> {
@@ -35,9 +36,9 @@ public class AnimalBody : Body {
         InitHolders();
     }
 
-    public void InitHolders() {
+    public virtual void InitHolders() {
         holdings = new List<GameObject>();
-        holderCoords = new List<Vector3>();
+        holders = new List<GameObject>();
     }
 
     public void InitBodyDicts() {
@@ -53,10 +54,8 @@ public class AnimalBody : Body {
 
         foreach (Transform child in globalPos) {
             limbDict.Add(child.name, child.gameObject);
-            Debug.Log("limb " + child.name);
             foreach(Transform grandChild in child) {
                 skeletonDict.Add(grandChild.name, grandChild.gameObject);
-                Debug.Log("bone " + child.name);
                 if (grandChild.TryGetComponent(out ConfigurableJoint configurable)) {
                     jointDict.Add(grandChild.name, configurable);
                 }
@@ -122,11 +121,36 @@ public class AnimalBody : Body {
         }
     }
 
-    public Vector3 GetHolderCoords(float index) {
-        if (holderCoords.Count > index) { return holderCoords[(int) index]; }
+    public Vector3 GetHolderCoords(float passedIndex) {
+        int index = (int) passedIndex;
+        if (holders.Count > index) { return holders[(int) index].transform.position; }
 
         Debug.Log("Not a valid held item position");
         return new Vector3(0, 0, 0);
     }
-    
+
+    public void AddHoldings(GameObject toAdd, int heldIndex) { 
+        holdings[heldIndex] = toAdd;
+    }
+
+    public void ToggleKinematic(string name) {
+        if (name != null) {
+            if (skeletonDict.ContainsKey(name)) {
+                GameObject currentPart = skeletonDict[name];
+                currentPart.GetComponent<Rigidbody>().isKinematic = !(currentPart.GetComponent<Rigidbody>().isKinematic);
+            }
+        }
+    }
+
+    public void EatObject(int heldIndex) {
+        GameObject toEat = holdings[heldIndex];
+        World.RemoveEntity(toEat.name);
+        //eating stuff
+        holdings.RemoveAt(heldIndex);
+    }
+
+    public void RemoveObject(int heldIndex) {
+        World.DestroyComponent(holdings[heldIndex].GetComponent<FixedJoint>());
+        holdings.RemoveAt(heldIndex);
+    }
 }

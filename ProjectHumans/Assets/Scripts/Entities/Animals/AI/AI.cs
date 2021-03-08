@@ -7,6 +7,7 @@ public class AI
 {
     protected Animal thisAnimal;
     protected int[] decidedActions;
+    protected float [ , ] visualInput;
 
     protected bool[] bodyStates;
     protected List<string> bodyStateLabelList;
@@ -28,7 +29,7 @@ public class AI
     protected List<string> traitLabelList;
     protected Dictionary<string, int> traitIndexDict;
 
-    protected float [ , ] visualInput;
+    
 
     bool outputDefinitionError = false;
 

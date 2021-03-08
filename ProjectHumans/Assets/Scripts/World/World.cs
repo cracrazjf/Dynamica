@@ -71,6 +71,10 @@ public class World : MonoBehaviour {
         }
     }
 
+    public static void DestroyComponent(Component passed) {
+        Destroy(passed);
+    }
+
     public static void AddEntity(string speciesType, Nullable<Vector3> passedSpawn) {
         Vector3 spawn;
         Genome motherGenome = new Genome();
@@ -92,6 +96,15 @@ public class World : MonoBehaviour {
             InitPlant(val, speciesType, motherGenome, fatherGenome, spawn);
             } else { InitAnimal(val, speciesType, motherGenome, fatherGenome, spawn); }
         } 
+    }
+
+    public static void RemoveEntity(string name) {
+        for (int i = 0; i < entityList.Count; i++) {
+            if (entityList[i].GetName() == name) {
+                Destroy(entityList[i].GetGameObject());
+                entityList.RemoveAt(i);
+            }
+        }
     }
 
     public static void InitAnimal(int val, string speciesType, Genome mother, Genome father, Vector3 spawn ) {

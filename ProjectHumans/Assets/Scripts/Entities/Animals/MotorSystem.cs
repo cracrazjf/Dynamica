@@ -7,6 +7,7 @@ public abstract class MotorSystem
 {
     protected Animal thisAnimal;
     protected AnimalBody thisBody;
+    protected List<Action> actionList;
 
     protected bool[] states;
     protected List<string> stateLabelList;
@@ -28,11 +29,9 @@ public abstract class MotorSystem
     public Dictionary<string, int> GetArgIndices() { return argsIndexDict; }
     public Dictionary<string, float> GetArgDict() { return argsDict; }
 
-    public List<Action> actionList;
 
     public MotorSystem(Animal passed) {
         thisAnimal = passed;
-        Debug.Log("set the body");
         this.thisBody = thisAnimal.GetBody();
 
         stateLabelList = new List<string> {
