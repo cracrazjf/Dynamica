@@ -78,7 +78,8 @@ public abstract class MotorSystem
 
     public void TakeAction(int[] toDoList) {
         for(int i = 0; i < toDoList.Length; i++) {
-            if (i == 1) {
+            // switched from i == 1... my bad
+            if (toDoList[i] == 1) {
                 actionList[i].DynamicInvoke();
             } 
         }
@@ -112,6 +113,7 @@ public abstract class MotorSystem
                 argsDict[passedArgsLabels[i]] = 0.0f;
             }
         } else { Debug.Log("No args defined for this animal"); }
+        SetArgs("step rate", thisAnimal.GetPhenotype().GetTrait("step_distance"));
     }
     void InitActionDict() {
         actionList = new List<Action>();

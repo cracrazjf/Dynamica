@@ -77,17 +77,17 @@ public class SimpleAI : AI {
 
     // Sets laying down to true;
     public void DecreaseSleepiness() {
-        decidedActions[3] = 1;
+        decidedActions[2] = 1;
     }
 
     // Sets resting to true
     public void DecreaseFatigue() {
-        decidedActions[12] = 1;
+        decidedActions[11] = 1;
     }
 
     // Sets resting to true
     public void IncreaseHealth() {
-        decidedActions[12] = 1;
+        decidedActions[11] = 1;
     }
 
     public void Consume() {
@@ -95,57 +95,63 @@ public class SimpleAI : AI {
         List<GameObject> heldItems = thisAnimal.GetBody().GetHoldings();
         for (int i = 0; i < heldItems.Count; i++) {
             if (IsEdible(heldItems[i])) {
-                decidedActions[9] = 1;
+                decidedActions[8] = 1;
                 this.thisAnimal.GetMotorSystem().SetArgs("held position", i);
             }
         }
 
-        if (decidedActions[9] != 1) {
+        if (decidedActions[8] != 1) {
             AcquireObject("Object");
-        } else { SearchForObjects("Object"); }
+        }
     }
 
     // Makes human stand if not already
     public void EnsureStanding() {
         if (bodyStateDict["standing"]) {}
-        else { decidedActions[4] = 1; }
+        else { decidedActions[3] = 1; }
     }
 
     // Moves to a random position (reset???)
     public void Explore() {
+        Debug.Log("Exploring");
         if(randomPos == blankPos) {
-             randomPos = GetRandomPosition(3.0f);
+            randomPos = GetRandomPosition(3.0f);
+            Debug.Log("New pos is " + randomPos);
         }
         MoveToPos(randomPos);
     }
 
     // Seeks out an object of the passed tag
     public void AcquireObject(string tag) {
+        Debug.Log("Acquiring an object");
         GameObject target = GetNearestObject(GetSightedTargets(tag));
         if (target != null) {
+            Debug.Log("Targeting a " + target.name);
             if (IsReachable(target)) {
                 SetTargetArgs(target.transform.position);
-                decidedActions[7] = 1;
+                decidedActions[6] = 1;
             } else { MoveToPos(target.transform.position); }
         } else { SearchForObjects("Object"); }
     }
 
     public void SearchForObjects(string tag) {
+        Debug.Log("Searching for an object");
         List<GameObject> sightedTargets = GetSightedTargets(tag);
         // While no useful objects are seen... changed to if else loops indefinitely
         if (sightedTargets.Count < 1) {
             Debug.Log("No targets found");
             for(int i = 0; i < 180; i++) {
-                decidedActions[5] = 1;
+                decidedActions[4] = 1;
                 thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 1.0f);
                 sightedTargets = GetSightedTargets(tag);
             }
             Explore();
-        } 
-        // Sighted an object, moving to it
-        Debug.Log("Investigating something");
-        Vector3 goalPos = (GetNearestObject(sightedTargets)).transform.position;
-        MoveToPos(goalPos);
+        } else {
+            // Sighted an object, moving to it
+            Debug.Log("Investigating something");
+            Vector3 goalPos = (GetNearestObject(sightedTargets)).transform.position;
+            MoveToPos(goalPos);
+        }
     }
 
     // Moves to passed position
@@ -154,9 +160,9 @@ public class SimpleAI : AI {
         FacePosition(position);
         thisAnimal.GetMotorSystem().SetArgs("step rate", 0.01f);
 
-        if ((animalTransform.position - position).magnitude > 1) { 
+        if ((animalTransform.position - position).magnitude > .1) { 
             Debug.Log("Walking to and fro"); 
-            decidedActions[6] = 1;
+            decidedActions[5] = 1;
         } else {
             randomPos = blankPos;
         }
@@ -165,7 +171,7 @@ public class SimpleAI : AI {
     // Faces the passed position
     public void FacePosition(Vector3 targetPos) {
         if(!IsFacing(targetPos)) {
-            decidedActions[5] = 1;
+            decidedActions[4] = 1;
             if (GetRelativePosition(targetPos) == -1) {
             thisAnimal.GetMotorSystem().SetArgs("rotation velocity", -0.05f);
             } else { thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 0.05f); }
@@ -199,8 +205,9 @@ public class SimpleAI : AI {
     public List<GameObject> GetSightedTargets(string targetTag) {
         List<GameObject> targetList = new List<GameObject>();
         foreach (GameObject x in inSight) {
-            if (x.tag == targetTag) {
+            if (x.tag == targetTag && x.tag != "Human") {
                 targetList.Add(x);
+                Debug.Log(x.name);
             }
         }
         return targetList;
@@ -208,7 +215,7 @@ public class SimpleAI : AI {
 
     // Returns the nearest object to the human or null if none exists
     public GameObject GetNearestObject(List<GameObject> targetList) {
-        GameObject nearestObject = thisAnimal.GetGameObject();
+        GameObject nearestObject = null;
         if (targetList.Count > 0) {
             nearestObject = targetList[0];
             float nearestDis = Vector3.Distance(animalTransform.position, nearestObject.transform.position);

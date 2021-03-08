@@ -1381,7 +1381,7 @@ GameObject:
   - component: {fileID: 4641620454115887991}
   m_Layer: 8
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1825,7 +1825,7 @@ GameObject:
   - component: {fileID: 5979916567250675146}
   m_Layer: 8
   m_Name: Neck
-  m_TagString: Untagged
+  m_TagString: Skeleton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

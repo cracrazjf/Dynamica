@@ -15,9 +15,9 @@ public class MainUI : MonoBehaviour
     private float genericHop = 2;
     private static float eyeLevel = 2.55f;
 
-    private float climbAdjustment = 0f;
-    private float moveAdjustment = 0f;
-    private float rotateAdjustment = 0f;
+    private float climbAdjustment = 1f;
+    private float moveAdjustment = 1f;
+    private float rotateAdjustment = 1f;
 
     private float xRotation = 0.0f;
     private float yRotation = 0.0f;
@@ -98,13 +98,13 @@ public class MainUI : MonoBehaviour
             transform.rotation = followedCam.transform.rotation;
 
         } else if (thirdPerson) { 
-            MoveNormally(baseMoveSpeed);
+            MoveNormally(baseMoveSpeed * moveAdjustment);
             // Fly if legal
-            if (toggleFlight) { MoveAirborne(baseClimbSpeed); }
+            if (toggleFlight) { MoveAirborne(baseClimbSpeed * climbAdjustment); }
             // Hold L Ctrl to rotate
             if (Input.GetKeyDown(KeyCode.LeftControl)) { ToggleRotate(); } 
             //Actually call the function
-            if(toggleRotate) { RotateCamera(baseRotateSpeed); }
+            if(toggleRotate) { RotateCamera(baseRotateSpeed * rotateAdjustment); }
         } else if (firstPerson) {
             MoveNormally(baseMoveSpeed);
             RotateCamera(baseRotateSpeed);

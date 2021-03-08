@@ -44,7 +44,7 @@ public class Gene {
             string outputString = "ERROR: Gene " + label + "wrong number of arguments in config file";
             Debug.Log(outputString);
         } else {
-            label = label;
+            this.label = label;
             geneType = geneInfo[0];
             geneSize = int.Parse(geneInfo[1]);
 

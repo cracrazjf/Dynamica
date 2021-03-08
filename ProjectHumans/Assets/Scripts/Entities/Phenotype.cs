@@ -119,6 +119,10 @@ public class Phenotype {
         traits[currentIndex] = passed;
     }
 
+    public float GetTrait(string label) {
+        return traitDict[label];
+    }
+
     private void Start(){}
 
     private void Update(){}

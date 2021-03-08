@@ -8,7 +8,7 @@ public class Body {
     protected Entity thisEntity;
     protected float height;
     protected float heightScale;
-    protected Rigidbody rigidbody;
+    public Rigidbody rigidbody;
     protected GameObject gameObject;
 
     protected bool[] states;

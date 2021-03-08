@@ -55,14 +55,16 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     public override void Rotate() {
+        Debug.Log("Rotating");
         float rotatingSpeed = argsDict["rotation velocity"];
         thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
     }
 
     
     public override void TakeSteps() {
+        Debug.Log("Walking");
         float stepProportion = argsDict["step rate"];
-        thisBody.globalPos.Translate(thisBody.globalPos.forward * stepProportion * Time.deltaTime, Space.World);
+        thisBody.globalPos.Translate(thisBody.globalPos.forward * stepProportion);
     }
 
     public override void PickUp() {
@@ -140,10 +142,12 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     private void Collapse() {
+        Debug.Log("Tried to collapse");
         thisBody.ToggleKinematic("Abdomen");
     }
 
     private void FixItem(GameObject holder) {
+        Debug.Log("Tried to affix something");
         Vector3 forCollider = new Vector3 (argsDict["target x"], argsDict["target y"], argsDict["target z"]);
         Collider[] hitColliders = Physics.OverlapSphere(forCollider, .025f);
         Rigidbody toConnect = holder.GetComponent<Rigidbody>();

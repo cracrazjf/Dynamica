@@ -11,6 +11,7 @@ using System;
         private static DriveSystem driveSystem;
         private static MotorSystem motorSystem;
         private static SensorySystem sensorySystem;
+        private bool finishedUpdate = true;
         protected AI activeAI;
         protected string action;
 
@@ -30,14 +31,20 @@ using System;
         }
 
         public override void UpdateEntity() {
-            this.GetDriveSystem().UpdateDrives();
-            float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
-            int[] toSend = activeAI.ChooseAction(visualInputMatrix);
-        
-            this.GetMotorSystem().TakeAction(toSend);
-            action = "In progress!";
+            Debug.Log("Updating an animal");
+            if (finishedUpdate) {
+                finishedUpdate = false;
+                this.GetDriveSystem().UpdateDrives();
+                float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
+                int[] toSend = activeAI.ChooseAction(visualInputMatrix);
+                Debug.Log(toSend);
+                this.GetMotorSystem().TakeAction(toSend);
+                action = "In progress!";
 
-            IncreaseAge(1);
+                IncreaseAge(1);
+                Debug.Log("Got through a loop");
+                finishedUpdate = true;
+            }
         }
 
         public void ToggleBodyPart(string part, bool toggle) {
@@ -45,7 +52,7 @@ using System;
         }
     
         // getters and setters for body, drive system, motor system, sensory system, and action choice class
-        public AnimalBody GetBody() { return animalBody; }
+        public new AnimalBody  GetBody() { return animalBody; }
 
         public bool GetBodyState(string state) { return this.GetBody().GetStateDict()[state]; }
 

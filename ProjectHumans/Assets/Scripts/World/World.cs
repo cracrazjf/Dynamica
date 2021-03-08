@@ -44,6 +44,7 @@ public class World : MonoBehaviour {
     public Dictionary<string, Body> allBodyDict;
     public Dictionary<string, MotorSystem> allMotorDict;
 
+    private bool updateCompleted = false;
     int updateCounter;
 
     void Start() {
@@ -69,6 +70,8 @@ public class World : MonoBehaviour {
                 AddEntity(speciesType, null);
             }
         }
+        Debug.Log("All entities spawned");
+        updateCompleted = true;
     }
 
     public static void DestroyComponent(Component passed) {
@@ -80,7 +83,7 @@ public class World : MonoBehaviour {
         Genome motherGenome = new Genome();
         motherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
 
-        Debug.Log("Spawning a " + speciesType );
+        // Debug.Log("Spawning a " + speciesType );
         if (!passedSpawn.HasValue) { 
             spawn = CreateRandomPosition();
         } else { spawn = (Vector3) passedSpawn; }
@@ -136,17 +139,24 @@ public class World : MonoBehaviour {
     public static Plant GetPlant(string name) { return plantDict[name]; }
 
     public void UpdateEntities() {
-        foreach(Entity entity in entityList) {
-            entity.UpdateEntity();
+        int numEntities = entityList.Count;
+        for (int i = 0; i < numEntities; i++) {
+            entityList[i].UpdateEntity();
         }
+        Debug.Log("All entities updated");
+        updateCompleted = true;
     }
 
     void Update() {
+        Debug.Log("Started an update");
         paused = MainUI.GetPause();
 
         if(!paused) {
-            UpdateEntities();
-            updateCounter++;
+            if(updateCompleted) {
+                updateCompleted = false;
+                UpdateEntities();
+                updateCounter++;
+            }
         }
     }
 
@@ -155,10 +165,6 @@ public class World : MonoBehaviour {
         FileInfo[] Files = d.GetFiles("*.config"); //Getting Text files
         string line;
         string[] lineInfo;
-        string objectType;
-        string lineType;
-
-        string propertyName;
 
         using (var reader = new StreamReader(@"Assets/Scripts/config/world.config")) {
             while ((line = reader.ReadLine()) != null) {
