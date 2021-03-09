@@ -34,6 +34,7 @@ public class AnimalBody : Body {
         InitStates(stateLabelList);
         InitBodyDicts();
         InitHolders();
+        PlaceBody(position);
     }
 
     public virtual void InitHolders() {
@@ -66,6 +67,16 @@ public class AnimalBody : Body {
         eyeLevel = head.transform.position.y;
     }
 
+    public override void InitGameObject(Vector3 pos) {
+        string filePath = "Prefabs/" + thisEntity.GetSpecies() + "Prefab";
+        GameObject loadedPrefab = Resources.Load(filePath, typeof(GameObject)) as GameObject;
+        this.gameObject = (GameObject.Instantiate(loadedPrefab, new Vector3(0,0,0), Quaternion.identity) as GameObject);
+        this.gameObject.name = thisEntity.GetName();
+
+        rigidbody = GetGameObject().GetComponent<Rigidbody>();
+        globalPos = this.gameObject.transform;
+    }
+
     // Initializes state information but also calls standard height and holder info
     public void InitStates(List<string> passedList) {
         states = new bool[passedList.Count];
@@ -80,6 +91,12 @@ public class AnimalBody : Body {
                 stateDict[passedList[i]] = false;
             }
         } else { Debug.Log("No body states passed to this animal"); }
+    }
+
+    public void PlaceBody(Vector3 position) {
+        this.globalPos.position = position;
+        this.gameObject.SetActive(true);
+        this.VerticalBump(GetHeight());
     }
 
     public void SetState(string label, bool passed) {
@@ -111,7 +128,7 @@ public class AnimalBody : Body {
     }
 
     public void TranslateSkeletonTo(string name, Vector3 goalPos) {
-        Debug.Log("Tried to move");
+        //Debug.Log("Tried to move");
         if (skeletonDict.ContainsKey(name)) {
             GameObject currentPart = skeletonDict[name];
             Vector3 currentPos = currentPart.transform.position;
@@ -142,14 +159,30 @@ public class AnimalBody : Body {
         }
     }
 
-    public void EatObject(int heldIndex) {
+    public virtual void SleepAdjust() {
+        float val = thisAnimal.GetDriveSystem().GetState("sleepiness");
+        val += (thisAnimal.GetPhenotype().GetTrait("sleepiness_change") * 20);
+        thisAnimal.GetDriveSystem().SetState("sleepiness", val);
+
+        Debug.Log("Snoozed a bit!");
+    }
+
+    public virtual void RestAdjust() {
+        float val = thisAnimal.GetDriveSystem().GetState("fatigue");
+        val += (thisAnimal.GetPhenotype().GetTrait("fatigue_change") * 20);
+        thisAnimal.GetDriveSystem().SetState("fatigue", val);
+
+        Debug.Log("Rested a bit!");
+    }
+
+    public virtual void EatObject(int heldIndex) {
         GameObject toEat = holdings[heldIndex];
         World.RemoveEntity(toEat.name);
         //eating stuff
         holdings.RemoveAt(heldIndex);
     }
 
-    public void RemoveObject(int heldIndex) {
+    public virtual void RemoveObject(int heldIndex) {
         World.DestroyComponent(holdings[heldIndex].GetComponent<FixedJoint>());
         holdings.RemoveAt(heldIndex);
     }

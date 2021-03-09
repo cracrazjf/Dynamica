@@ -36,12 +36,22 @@ public class GenomeUI : MonoBehaviour {
         InitNamer();
     }
     
-    private void Update() {
+   private void Update() {
         if (needsUpdate) {
-            showPanel = true;
-            needsUpdate = false;
+            OnAwake();
         }
         if (showPanel) { UpdatePanel(); }
+    }
+
+    public void OnAwake() {
+        selectedAnimal = World.GetAnimal(passed.name);
+        originalName.text = selectedAnimal.GetDisplayName();
+
+        panel.SetActive(true);
+        halo.SetActive(true);
+
+        showPanel = true;
+        needsUpdate = false;
     }
 
     public void InitXButton(){

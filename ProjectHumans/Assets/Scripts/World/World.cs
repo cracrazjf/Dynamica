@@ -143,12 +143,12 @@ public class World : MonoBehaviour {
         for (int i = 0; i < numEntities; i++) {
             entityList[i].UpdateEntity();
         }
-        Debug.Log("All entities updated");
+        //Debug.Log("All entities updated");
         updateCompleted = true;
     }
 
     void Update() {
-        Debug.Log("Started an update");
+        //Debug.Log("Started an update");
         paused = MainUI.GetPause();
 
         if(!paused) {

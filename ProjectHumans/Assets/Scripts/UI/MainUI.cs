@@ -32,6 +32,8 @@ public class MainUI : MonoBehaviour
     private static bool followingAnimal = false;
     private static Camera followedCam;
     private static GameObject mainCam;
+    private static Vector3 toSet;
+    private static bool centeredOn = false;
 
     // UI content 
     private GameObject alwaysPanel;
@@ -54,6 +56,10 @@ public class MainUI : MonoBehaviour
     void Update() {
         CheckClick();
         MovePlayer();
+
+        if (centeredOn) {
+            SetPosition(toSet);
+        }
     }
 
     public void InitPanels() {
@@ -118,7 +124,8 @@ public class MainUI : MonoBehaviour
         zTemp = passed.position.z;
 
         //https://forum.unity.com/threads/moving-the-camera-to-center-an-object-in-the-screen.219813/
-        SetPosition(new Vector3(xTemp, eyeLevel, zTemp));
+        toSet = new Vector3(xTemp, eyeLevel, zTemp);
+        centeredOn = true;
     }
 
     public static void EnterAnimalCam(Camera passed) {
@@ -159,8 +166,8 @@ public class MainUI : MonoBehaviour
         xRotation += Input.GetAxis("Mouse X") * passedSpeed  * Time.deltaTime;
         yRotation += Input.GetAxis("Mouse Y") * passedSpeed  * Time.deltaTime;
 
-        transform.localRotation = Quaternion.AngleAxis(xRotation, Vector3.up);
-        transform.localRotation *= Quaternion.AngleAxis(yRotation, Vector3.left);
+        transform.rotation = Quaternion.AngleAxis(xRotation, Vector3.up);
+        transform.rotation *= Quaternion.AngleAxis(yRotation, Vector3.left);
     }
 
     public void ResolveAltitude() {
@@ -202,6 +209,9 @@ public class MainUI : MonoBehaviour
 
     // Followed by the escape key
     public void CheckReset() {
+        if(centeredOn) {
+            centeredOn = false;
+        }
         if (firstPerson) {
             ToggleView();
             VerticalBump(genericHop);
@@ -242,5 +252,5 @@ public class MainUI : MonoBehaviour
     // Getters and Setters
 
     public static bool GetPause() { return isPaused; }
-    public static void SetPosition(Vector3 passedPos) {mainCam.transform.position = passedPos;}
+    public void SetPosition(Vector3 passedPos) {transform.position = passedPos;}
 }

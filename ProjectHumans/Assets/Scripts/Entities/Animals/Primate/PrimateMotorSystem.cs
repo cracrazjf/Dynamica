@@ -44,7 +44,7 @@ public class PrimateMotorSystem : MotorSystem {
     }
     
     public override void StandUp(){
-        Debug.Log("StandUp was called");
+        //Debug.Log("StandUp was called");
 
         Vector3 goalPosition = (thisBody.GetXZPosition() + new Vector3(0, thisBody.GetHeight(), 0));
         thisBody.TranslateSkeletonTo("Abdomen", goalPosition);
@@ -55,7 +55,7 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     public override void Rotate() {
-        Debug.Log("Rotating");
+        //Debug.Log("Rotating");
         float rotatingSpeed = argsDict["rotation velocity"];
         thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
     }
@@ -118,15 +118,19 @@ public class PrimateMotorSystem : MotorSystem {
         thisAnimal.ToggleBodyPart("Eye_R", false);
         Collapse();
 
-        thisBody.SetState("sleeping", true);  
+        thisBody.SetState("sleeping", true);
+        thisBody.SleepAdjust();
+        Debug.Log("Got here");  
     }
     
     public override void Rest() {
         Debug.Log("Resting");
+        thisBody.RestAdjust();
     }
 
     public override void LookAt() {
-        Debug.Log("Something caught my eye");
+        Quaternion toSend = Quaternion.LookRotation(thisBody.globalPos.forward);
+        thisBody.RotateJoint("Head", toSend);
     }
 
     private void BendKnees(float degree) {

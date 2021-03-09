@@ -38,15 +38,16 @@ public class SimpleAI : AI {
     public override int[] ChooseAction(float[ , ] visualInput) {
         decidedActions = new int[actionStates.Length];
 
-        animalTransform = thisAnimal.GetBody().GetGameObject().transform;
+        animalTransform = thisAnimal.GetBody().globalPos;
         UpdateFOV(animalTransform, 45, 10);
 
-        Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);
+        //Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);
         
         ChooseGoal();
         Debug.Log("Current goal is: " + currentGoal);
         goalDict[currentGoal].DynamicInvoke();
-        
+        decidedActions[12] = 1;
+
         return decidedActions;
     }
 
@@ -111,9 +112,8 @@ public class SimpleAI : AI {
         else { decidedActions[3] = 1; }
     }
 
-    // Moves to a random position (reset???)
     public void Explore() {
-        Debug.Log("Exploring");
+        //Debug.Log("Exploring");
         if(randomPos == blankPos) {
             randomPos = GetRandomPosition(3.0f);
             Debug.Log("New pos is " + randomPos);
@@ -161,7 +161,7 @@ public class SimpleAI : AI {
         thisAnimal.GetMotorSystem().SetArgs("step rate", 0.01f);
 
         if ((animalTransform.position - position).magnitude > .1) { 
-            Debug.Log("Walking to and fro"); 
+            //Debug.Log("Walking to and fro"); 
             decidedActions[5] = 1;
         } else {
             randomPos = blankPos;
@@ -173,8 +173,8 @@ public class SimpleAI : AI {
         if(!IsFacing(targetPos)) {
             decidedActions[4] = 1;
             if (GetRelativePosition(targetPos) == -1) {
-            thisAnimal.GetMotorSystem().SetArgs("rotation velocity", -0.05f);
-            } else { thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 0.05f); }
+            thisAnimal.GetMotorSystem().SetArgs("rotation velocity", -0.1f);
+            } else { thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 0.1f); }
         }
     }
 
@@ -207,7 +207,7 @@ public class SimpleAI : AI {
         foreach (GameObject x in inSight) {
             if (x.tag == targetTag && x.tag != "Human") {
                 targetList.Add(x);
-                Debug.Log(x.name);
+                Debug.Log("Can see a " + x.name);
             }
         }
         return targetList;

@@ -31,18 +31,18 @@ using System;
         }
 
         public override void UpdateEntity() {
-            Debug.Log("Updating an animal");
+            //Debug.Log("Updating an animal");
             if (finishedUpdate) {
                 finishedUpdate = false;
                 this.GetDriveSystem().UpdateDrives();
                 float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
                 int[] toSend = activeAI.ChooseAction(visualInputMatrix);
-                Debug.Log(toSend);
+                //Debug.Log(toSend);
                 this.GetMotorSystem().TakeAction(toSend);
                 action = "In progress!";
 
                 IncreaseAge(1);
-                Debug.Log("Got through a loop");
+                //Debug.Log("Got through a loop");
                 finishedUpdate = true;
             }
         }

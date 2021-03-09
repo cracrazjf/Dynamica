@@ -63,14 +63,13 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void PassAnimalCam() {
-       Camera toSend =  selectedAnimal.GetGameObject().GetComponent<Camera>();
+       Camera toSend =  selectedAnimal.GetGameObject().GetComponentInChildren<Camera>();
        MainUI.EnterAnimalCam(toSend);
     }
 
     public void UpdatePanel() {
         halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
 
-        //Skipping for now because animals dont have drives
         float[] passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
 
         goalText.text = selectedAnimal.GetAction();
@@ -106,7 +105,7 @@ public class AnimalUI : MonoBehaviour {
             } else if (child.name == "CenterObjectButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassCenter);
-            } else if (child.name == "GenoPanelButton") {
+            } else if (child.name == "GenoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassGenome);
             } 
@@ -131,6 +130,7 @@ public class AnimalUI : MonoBehaviour {
 
     public void PassGenome() {
         GenomeUI.ReceiveClicked(selectedAnimal.GetGameObject());
+        Debug.Log("Tried to pass to genome");
     }
 
     public void PassCenter() {

@@ -18,6 +18,7 @@ public class DriveSystem
     public List<string> GetStateLabels() { return stateLabelList; }
     public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
     public Dictionary<string, float> GetStateDict() { return stateDict; }
+    public float GetState(string state) { return stateDict[state]; }
 
 
     /// <summary>
