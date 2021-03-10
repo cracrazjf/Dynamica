@@ -9,15 +9,14 @@ public class MainUI : MonoBehaviour
     private Vector3 startPosition = new Vector3(-1, 3, 0);
     private Quaternion startRotation = new Quaternion(0, 90, 0, 0);
 
-    private float baseClimbSpeed = 4;
-    private float baseMoveSpeed = 10;
-    private float baseRotateSpeed = 100;
-    private float genericHop = 2;
+    private float baseClimbSpeed = 8;
+    private float baseMoveSpeed = 20;
+    private float baseRotateSpeed = 120;
     private static float eyeLevel = 2.55f;
 
-    private float climbAdjustment = 1f;
-    private float moveAdjustment = 1f;
-    private float rotateAdjustment = 1f;
+    private float climbAdjustment = 0.5f;
+    private float moveAdjustment = 0.5f;
+    private float rotateAdjustment = 0.5f;
 
     private float xRotation = 0.0f;
     private float yRotation = 0.0f;
@@ -39,6 +38,12 @@ public class MainUI : MonoBehaviour
     private GameObject alwaysPanel;
     private GameObject infoPanel;
     private GameObject pauseObj;
+    private Slider rotationSlider;
+    public GameObject rotatePub;
+    private Slider movementSlider;
+    public GameObject movePub;
+    private Slider climbSlider;
+    public GameObject climbPub;
     protected Button tempButton;
 
     private static bool isPaused = false;
@@ -47,8 +52,8 @@ public class MainUI : MonoBehaviour
     
     void Start() {
         InitPanels();
+        InitSliders();
         transform.position = startPosition;
-        transform.rotation = startRotation;
         mainCam = GameObject.Find("Main Camera");
     }
 
@@ -69,6 +74,12 @@ public class MainUI : MonoBehaviour
         
         infoPanel.SetActive(false);
         pauseObj.SetActive(false);
+    }
+
+    public void InitSliders() {
+        movementSlider = movePub.GetComponent<Slider>();
+        rotationSlider = rotatePub.GetComponent<Slider>();
+        climbSlider = climbPub.GetComponent<Slider>();
     }
 
     public void InitButtons() {
@@ -207,6 +218,21 @@ public class MainUI : MonoBehaviour
         }
     }
 
+    public void UpdateRotateSensitivity() {
+        float toUpdate = rotationSlider.value;
+        rotateAdjustment = toUpdate;
+    }
+
+    public void UpdateMoveSensitivity() {
+        float toUpdate = movementSlider.value;
+        moveAdjustment = toUpdate;
+    }
+
+    public void UpdateClimbSensitivity() {
+        float toUpdate = climbSlider.value;
+        climbAdjustment = toUpdate;
+    }
+
     // Followed by the escape key
     public void CheckReset() {
         if(centeredOn) {
@@ -214,10 +240,10 @@ public class MainUI : MonoBehaviour
         }
         if (firstPerson) {
             ToggleView();
-            VerticalBump(genericHop);
+            VerticalBump(2f);
         } else if (followingAnimal) {
             followingAnimal = false;
-            VerticalBump(genericHop);
+            VerticalBump(2f);
         } else { ToggleHelp(); }
     }
 

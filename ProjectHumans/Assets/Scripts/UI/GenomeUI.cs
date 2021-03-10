@@ -14,7 +14,6 @@ public class GenomeUI : MonoBehaviour {
     protected Genome displayGenome;
     protected Phenotype displayPhenotype;
     protected Animal selectedAnimal;
-    protected Entity selectedObject = null;
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;
@@ -24,16 +23,12 @@ public class GenomeUI : MonoBehaviour {
     protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject mainCam;
-    protected GameObject halo;
 
-    protected Text originalName;
-    protected Text inputName;
-    protected InputField panelNamer;
 
 
     private void Start() {
         InitPanel();
-        InitNamer();
+        InitXButton();
     }
     
    private void Update() {
@@ -44,11 +39,10 @@ public class GenomeUI : MonoBehaviour {
     }
 
     public void OnAwake() {
+        Debug.Log(passed.name);
         selectedAnimal = World.GetAnimal(passed.name);
-        originalName.text = selectedAnimal.GetDisplayName();
 
         panel.SetActive(true);
-        halo.SetActive(true);
 
         showPanel = true;
         needsUpdate = false;
@@ -67,12 +61,17 @@ public class GenomeUI : MonoBehaviour {
         string toDisplay = "";
         displayGenome = selectedAnimal.GetGenome();
         displayPhenotype = selectedAnimal.GetPhenotype();
-        displayText.text = toDisplay;
         
         if (showMutable) {
             toDisplay = displayPhenotype.GetDisplayInfo();
-        } else { toDisplay = displayGenome.GetConstantInfo(); }
+            muteText.text = "Mutable"; 
+
+        } else { 
+            toDisplay = displayGenome.GetConstantInfo(); 
+            muteText.text = "Immutable";
+        }
         displayText.text = toDisplay;
+
     }
 
     public static void ReceiveClicked(GameObject clicked) {
@@ -83,27 +82,26 @@ public class GenomeUI : MonoBehaviour {
 
     public void ToggleMutable() {
         showMutable = !showMutable;
-        UpdatePanel();
-
-        muteText.text = "Immutable";
-        if (showMutable) { muteText.text = "Mutable"; } 
     }
 
     public void InitPanel(){
         panel = GameObject.Find("GenomePanel");
         panel.SetActive(false);
-    }
 
-    public void InitNamer(){}
+        foreach (Transform child in panel.transform) {
+            if (child.name == "ToggleMuteButton") {
+                //muteText = child.gameObject.GetComponentInChildren<Text>();
+                //tempButton = child.gameObject.GetComponent<Button>();
+                //tempButton.onClick.AddListener(ToggleMutable);
+                child.gameObject.SetActive(false);
+            } else if (child.name == "GeneticScrollView") {
+                displayText = child.gameObject.GetComponentInChildren<Text>();
+            } 
+        }
+    }
 
     public void ExitPanel() {
         panel.SetActive(false);
-        halo.SetActive(false);
         showPanel = false;
-    }
-
-    public void Rename() {
-        selectedObject.SetDisplayName(inputName.text);
-        panelNamer.text = "";
     }
 }
