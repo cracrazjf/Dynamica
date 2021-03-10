@@ -52,8 +52,8 @@ public abstract class MotorSystem
         this.InitStates(stateLabelList);
 
         argsLabelList = new List<string> {
-            "step rate",                          
-            "rotation velocity",               
+            "step proportion",                          
+            "rotation proportion",               
             "held position",
             "target x",
             "target y",
@@ -76,10 +76,11 @@ public abstract class MotorSystem
         args[currentIndex] = val;
     }
 
-    public void TakeAction(int[] toDoList) {
-        for(int i = 0; i < toDoList.Length; i++) {
+    public void TakeAction(int[,] things) {
+        for(int i = 0; i < states.Length; i++) {
             // switched from i == 1... my bad
-            if (toDoList[i] == 1) {
+            if (things[0 , i] == 1) {
+                Debug.Log("Doing action at " + i);
                 actionList[i].DynamicInvoke();
             } 
         }
@@ -113,7 +114,6 @@ public abstract class MotorSystem
                 argsDict[passedArgsLabels[i]] = 0.0f;
             }
         } else { Debug.Log("No args defined for this animal"); }
-        SetArgs("step rate", thisAnimal.GetPhenotype().GetTrait("step_distance"));
     }
     void InitActionDict() {
         actionList = new List<Action>();

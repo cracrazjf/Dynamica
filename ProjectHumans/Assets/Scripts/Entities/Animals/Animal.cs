@@ -6,7 +6,9 @@ using System;
     public class Animal : Entity {
 
         public Camera visualInputCamera;
-        
+        public int cheatCommand;
+        public bool noCheats = true;
+
         private static AnimalBody animalBody;
         private static DriveSystem driveSystem;
         private static MotorSystem motorSystem;
@@ -27,7 +29,8 @@ using System;
             driveSystem = new DriveSystem(this);
             sensorySystem = new SensorySystem(this);
 
-            activeAI = new SimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
+            //activeAI = new SimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
+            activeAI = new TestAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
         }
 
         public override void UpdateEntity() {
@@ -36,7 +39,7 @@ using System;
                 finishedUpdate = false;
                 this.GetDriveSystem().UpdateDrives();
                 float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
-                int[] toSend = activeAI.ChooseAction(visualInputMatrix);
+                int[ , ] toSend = activeAI.ChooseAction(visualInputMatrix);
                 //Debug.Log(toSend);
                 this.GetMotorSystem().TakeAction(toSend);
                 action = "In progress!";
@@ -63,4 +66,15 @@ using System;
         public SensorySystem GetSensorySystem() { return sensorySystem; }
 
         public string GetAction() { return this.activeAI.GetAction(); }
+
+        public string GetSex() { 
+            if(this.GetPhenotype().GetTrait("sex") == 1.0) {
+                return "Male";
+            } else { return "Female"; }
+        }
+
+        public void SetCommand(string passed) {
+            cheatCommand = Int32.Parse("0" + passed);
+            noCheats = false;
+        }
     }

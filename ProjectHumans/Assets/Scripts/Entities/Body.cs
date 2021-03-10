@@ -17,6 +17,7 @@ public class Body {
     protected Dictionary<string, bool> stateDict;
     
     public bool[] GetStates() { return states; }
+    public bool GetState(string place) { return stateDict[place]; }
     public List<string> GetStateLabels() { return stateLabelList; }
     public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
     public Dictionary<string, bool> GetStateDict() { return stateDict; }

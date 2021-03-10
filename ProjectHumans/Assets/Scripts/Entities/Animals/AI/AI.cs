@@ -7,6 +7,7 @@ public class AI
 {
     protected Animal thisAnimal;
     protected int[] decidedActions;
+    protected int[] decidedArgs;
     protected float [ , ] visualInput;
 
     protected bool[] bodyStates;
@@ -60,7 +61,7 @@ public class AI
     }
 
     // Since ChooseAction is in here, it doesn't need all these values passed. AI already has the bodyState, actionState, etc. - JC
-    public virtual int[] ChooseAction (float[ , ] visualInput){
+    public virtual int[,] ChooseAction (float[ , ] visualInput){
         
         if (outputDefinitionError == false){
             Debug.Log("No ChooseAction function defined for this AI");

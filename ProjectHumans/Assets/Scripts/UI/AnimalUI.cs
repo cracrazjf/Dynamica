@@ -25,6 +25,8 @@ public class AnimalUI : MonoBehaviour {
     protected Text inputName;
     protected Transform panelNamer;
 
+    protected Text inputCommand;
+    protected Transform commandField;
 
     Button centerObjectButton;
     Button genomeButton;
@@ -116,7 +118,9 @@ public class AnimalUI : MonoBehaviour {
         foreach (Transform child in panel.transform) {
             if (child.name == "AnimalNamer") {
                 panelNamer = child;
-                break;
+            }
+            if (child.name == "CommandInput") {
+                commandField = child;
             }
         }
         foreach (Transform child in panelNamer) {
@@ -124,6 +128,12 @@ public class AnimalUI : MonoBehaviour {
                 originalName = child.gameObject.GetComponent<Text>();
             } else if (child.name == "InputName") {
                 inputName = child.gameObject.GetComponent<Text>();
+            }
+        }
+
+        foreach (Transform child in commandField) {
+            if (child.name == "InputName") {
+                inputCommand = child.gameObject.GetComponent<Text>();
             }
         }
     }
@@ -146,6 +156,13 @@ public class AnimalUI : MonoBehaviour {
     public void Rename() {
         if (panelNamer.gameObject.TryGetComponent(out InputField activeInput)) {
             selectedAnimal.SetDisplayName(activeInput.text);
+            activeInput.text = "";
+        }
+    }
+
+    public void PassAction() {
+        if (panelNamer.gameObject.TryGetComponent(out InputField activeInput)) {
+            selectedAnimal.SetCommand(activeInput.text);
             activeInput.text = "";
         }
     }

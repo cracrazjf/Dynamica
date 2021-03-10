@@ -68,8 +68,12 @@ public class AnimalBody : Body {
     }
 
     public override void InitGameObject(Vector3 pos) {
-        string filePath = "Prefabs/" + thisEntity.GetSpecies() + "Prefab";
+        thisAnimal = (Animal) thisEntity;
+
+        string bodyName = thisAnimal.GetSpecies() + thisAnimal.GetSex();
+        string filePath = "Prefabs/" + bodyName + "Prefab";
         GameObject loadedPrefab = Resources.Load(filePath, typeof(GameObject)) as GameObject;
+        
         this.gameObject = (GameObject.Instantiate(loadedPrefab, new Vector3(0,0,0), Quaternion.identity) as GameObject);
         this.gameObject.name = thisEntity.GetName();
 

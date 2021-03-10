@@ -12,9 +12,7 @@ public class PrimateMotorSystem : MotorSystem {
     
     public override void SitDown() {
         Debug.Log("SitDown was called");
-        thisBody.GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = true;
-        BendWaist(0.5f, 1f);
-        BendKnees(0.5f);
+        Crouch();
 
         thisBody.SetState("standing", false);
         thisBody.SetState("sitting", true);
@@ -22,9 +20,11 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void SitUp() {
         Debug.Log("SitUp was called");
-        thisBody.GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = true;
-        BendWaist(-0.5f, 1f);
-        BendKnees(-0.5f);
+        if(thisBody.GetState("sitting")) { 
+            LockLegs(); 
+        } 
+
+        StandUp();
 
         thisBody.SetState("laying", false);
         thisBody.SetState("sitting", true);          
@@ -32,10 +32,10 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void LayDown() {
         Debug.Log("Tried to lay down");
-        BendWaist(0f, 0f);
+        //BendWaist(0f, 0f);
 
         if (thisAnimal.GetBodyState("sitting") || thisAnimal.GetBodyState("laying")) {
-            thisBody.GetSkeletonDict()["Abdomen"].GetComponent<Rigidbody>().isKinematic = false;
+            Collapse();
         } else {
             SitDown();
         }
@@ -56,14 +56,14 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void Rotate() {
         //Debug.Log("Rotating");
-        float rotatingSpeed = argsDict["rotation velocity"];
+        float rotatingSpeed = argsDict["rotation proportion"] * thisAnimal.GetPhenotype().GetTrait("max_rotation");
         thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
     }
 
     
     public override void TakeSteps() {
         Debug.Log("Walking");
-        float stepProportion = argsDict["step rate"];
+        float stepProportion = argsDict["step proportion"] * thisAnimal.GetPhenotype().GetTrait("max_step");
         thisBody.globalPos.Translate(thisBody.globalPos.forward * stepProportion);
     }
 
@@ -82,13 +82,14 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void SetDown() {
         Debug.Log("Tried to set something down");
-        Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
+        int index = (int) argsDict["held position"];
+        Vector3 heldPos = thisBody.GetHolderCoords(index);
 
         //movement
-
-        thisBody.RemoveObject((int)argsDict["held position"]);
+        if(thisBody.GetHoldings()[index] != null) {
+            //thisBody.RemoveObject(index);
+        }
     }
-
     
     public override void Consume () {
         Debug.Log("Tried to eat something");
@@ -143,6 +144,21 @@ public class PrimateMotorSystem : MotorSystem {
         Quaternion toSend = new Quaternion(degree, 0, 0, z);
         thisBody.RotateJoint("Hip_L", toSend);
         thisBody.RotateJoint("Hip_R", toSend);
+    }
+
+    private void LockLegs() {
+        //thisBody.ToggleKinematic("Femur_R");
+        thisBody.ToggleKinematic("Tibia_R");
+        //thisBody.ToggleKinematic("Femur_L");
+        thisBody.ToggleKinematic("Tibia_L");
+    }
+
+    private void Crouch(){
+        LockLegs();
+        //BendKnees(0.5f);
+        Vector3 toSend = new Vector3(0f, (thisBody.GetHeight()/2f), 0f);
+        thisBody.TranslateSkeletonBy("Abdomen", toSend);
+
     }
 
     private void Collapse() {

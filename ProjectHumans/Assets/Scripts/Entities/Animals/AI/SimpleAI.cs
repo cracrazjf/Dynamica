@@ -35,8 +35,11 @@ public class SimpleAI : AI {
         InitGoalDict();
     }
 
-    public override int[] ChooseAction(float[ , ] visualInput) {
+    public override int[,] ChooseAction(float[ , ] visualInput) {
         decidedActions = new int[actionStates.Length];
+        decidedArgs = new int[actionArguments.Length];
+        
+        int[ , ] toReturn = new int[2 , actionStates.Length];
 
         animalTransform = thisAnimal.GetBody().globalPos;
         UpdateFOV(animalTransform, 45, 10);
@@ -48,7 +51,14 @@ public class SimpleAI : AI {
         goalDict[currentGoal].DynamicInvoke();
         decidedActions[12] = 1;
 
-        return decidedActions;
+        for( int i = 0; i < decidedActions.Length; i++) {
+            toReturn[0 ,i ] = decidedActions[i];
+        }
+
+        for( int j = 0; j < decidedActions.Length; j++) {
+            toReturn[1 , j] = decidedArgs[j];
+        }
+        return toReturn;
     }
 
     public void ChooseGoal() {
@@ -97,7 +107,7 @@ public class SimpleAI : AI {
         for (int i = 0; i < heldItems.Count; i++) {
             if (IsEdible(heldItems[i])) {
                 decidedActions[8] = 1;
-                this.thisAnimal.GetMotorSystem().SetArgs("held position", i);
+                decidedArgs[2] = i;
             }
         }
 
@@ -142,7 +152,7 @@ public class SimpleAI : AI {
             Debug.Log("No targets found");
             for(int i = 0; i < 180; i++) {
                 decidedActions[4] = 1;
-                thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 1.0f);
+                decidedArgs[1] = 1;
                 sightedTargets = GetSightedTargets(tag);
             }
             Explore();
@@ -158,7 +168,7 @@ public class SimpleAI : AI {
     public void MoveToPos(Vector3 position) {
         EnsureStanding();
         FacePosition(position);
-        thisAnimal.GetMotorSystem().SetArgs("step rate", 0.01f);
+        decidedArgs[0] = 1;
 
         if ((animalTransform.position - position).magnitude > .1) { 
             //Debug.Log("Walking to and fro"); 
@@ -173,8 +183,8 @@ public class SimpleAI : AI {
         if(!IsFacing(targetPos)) {
             decidedActions[4] = 1;
             if (GetRelativePosition(targetPos) == -1) {
-            thisAnimal.GetMotorSystem().SetArgs("rotation velocity", -0.1f);
-            } else { thisAnimal.GetMotorSystem().SetArgs("rotation velocity", 0.1f); }
+                decidedArgs[1] = -1;
+            } else { decidedArgs[1] = 1; }
         }
     }
 
@@ -250,9 +260,9 @@ public class SimpleAI : AI {
 
     // Handles these parameters 
     public void SetTargetArgs(Vector3 targetPos) {
-            thisAnimal.GetMotorSystem().SetArgs("target x", targetPos.x);
-            thisAnimal.GetMotorSystem().SetArgs("target y", targetPos.y);
-            thisAnimal.GetMotorSystem().SetArgs("target x", targetPos.z);
+            decidedArgs[3] =  (int) targetPos.x;
+            decidedArgs[4] =  (int) targetPos.y;
+            decidedArgs[5] =  (int) targetPos.z;
     }
     
     // Called when AI has to see
