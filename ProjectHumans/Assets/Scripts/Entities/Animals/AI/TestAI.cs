@@ -40,12 +40,13 @@ public class TestAI : AI {
         decidedActions = new int[actionStates.Length];
         decidedArgs = new int[actionArguments.Length];
         int[ , ] toReturn = new int[2 , actionStates.Length];
-
+        toReturn[1,0] = 1;
+        toReturn[1,1] = 1;
         if(thisAnimal.noCheats) {
             toReturn[0, 3] = 1;
         } else {
-            toReturn[0, thisAnimal.cheatCommand] = 1;
-            Debug.Log("tried my best");
+            int index = thisAnimal.cheatCommand;
+            toReturn[0, index] = 1;
         }
 
         //Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);

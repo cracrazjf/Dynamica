@@ -74,7 +74,7 @@ using System;
         }
 
         public void SetCommand(string passed) {
-            cheatCommand = Int32.Parse("0" + passed);
+            cheatCommand = Int32.Parse(passed);
             noCheats = false;
         }
     }

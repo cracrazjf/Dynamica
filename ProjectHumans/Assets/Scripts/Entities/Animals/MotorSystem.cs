@@ -77,6 +77,10 @@ public abstract class MotorSystem
     }
 
     public void TakeAction(int[,] things) {
+
+        SetArgs("step proportion", 1);
+        SetArgs("rotation proportion", 1);
+
         for(int i = 0; i < states.Length; i++) {
             // switched from i == 1... my bad
             if (things[0 , i] == 1) {

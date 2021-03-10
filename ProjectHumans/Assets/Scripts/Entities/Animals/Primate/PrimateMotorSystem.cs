@@ -106,8 +106,8 @@ public class PrimateMotorSystem : MotorSystem {
     public override void WakeUp() {
         Debug.Log("Waking up");
         
-        thisAnimal.ToggleBodyPart("Eye_L", true);
-        thisAnimal.ToggleBodyPart("Eye_R", true);
+        //thisAnimal.ToggleBodyPart("Eye_L", true);
+        //thisAnimal.ToggleBodyPart("Eye_R", true);
         
         thisBody.SetState("sleeping", false);  
     }
@@ -115,8 +115,8 @@ public class PrimateMotorSystem : MotorSystem {
     public override void Sleep() {
         Debug.Log("Sleeping");
 
-        thisAnimal.ToggleBodyPart("Eye_L", false);
-        thisAnimal.ToggleBodyPart("Eye_R", false);
+        //thisAnimal.ToggleBodyPart("Eye_L", false);
+        //thisAnimal.ToggleBodyPart("Eye_R", false);
         Collapse();
 
         thisBody.SetState("sleeping", true);

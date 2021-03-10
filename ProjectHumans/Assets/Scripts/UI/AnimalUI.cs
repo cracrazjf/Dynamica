@@ -161,8 +161,10 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void PassAction() {
-        if (panelNamer.gameObject.TryGetComponent(out InputField activeInput)) {
-            selectedAnimal.SetCommand(activeInput.text);
+        if (commandField.gameObject.TryGetComponent(out InputField activeInput)) {
+            string toSend = activeInput.text;
+            Debug.Log("Commanded to " + toSend);
+            selectedAnimal.SetCommand(toSend);
             activeInput.text = "";
         }
     }
