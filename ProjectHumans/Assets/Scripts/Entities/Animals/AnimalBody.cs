@@ -115,30 +115,22 @@ public class AnimalBody : Body {
 
     public void RotateJoint(string joint, Quaternion target) {
         if (this.jointDict.ContainsKey(joint)) {
-            this.jointDict[joint].targetRotation = target;
+            this.jointDict[joint].targetRotation = this.jointDict[joint].targetRotation * target;
         }
     }
 
-    // Unused at the moment
-    public void TranslateSkeletonBy(string name, Vector3 vector) {
-        if (skeletonDict.ContainsKey(name)) {
-            GameObject currentPart = skeletonDict[name];
-            Vector3 currentPos = currentPart.transform.position;
-            currentPart.GetComponent<Rigidbody>().isKinematic = true;
-            Vector3 translatedPos = currentPos + vector;
-
-            currentPos = Vector3.MoveTowards(currentPos, translatedPos, 1.0f * Time.deltaTime);
-        }
-    }
 
     public void TranslateSkeletonTo(string name, Vector3 goalPos) {
-        //Debug.Log("Tried to move");
+        Debug.Log("Tried to translate " + name + " to " + goalPos);
+        
         if (skeletonDict.ContainsKey(name)) {
             GameObject currentPart = skeletonDict[name];
             Vector3 currentPos = currentPart.transform.position;
-            currentPart.GetComponent<Rigidbody>().isKinematic = true;
+            bool kinematicTemp = currentPart.GetComponent<Rigidbody>().isKinematic;
 
-            currentPos = Vector3.MoveTowards(currentPos, goalPos, 1.0f * Time.deltaTime);
+            currentPart.GetComponent<Rigidbody>().isKinematic = true;
+            currentPos = Vector3.MoveTowards(currentPos, goalPos, 1.5f * Time.deltaTime);
+            currentPart.GetComponent<Rigidbody>().isKinematic = kinematicTemp;
         }
     }
 
@@ -159,6 +151,24 @@ public class AnimalBody : Body {
             if (skeletonDict.ContainsKey(name)) {
                 GameObject currentPart = skeletonDict[name];
                 currentPart.GetComponent<Rigidbody>().isKinematic = !(currentPart.GetComponent<Rigidbody>().isKinematic);
+            }
+        }
+    }
+
+    public void DisableKinematic(string name) {
+        if (name != null) {
+            if (skeletonDict.ContainsKey(name)) {
+                GameObject currentPart = skeletonDict[name];
+                currentPart.GetComponent<Rigidbody>().isKinematic = false;
+            }
+        }
+    }
+
+    public void EnsureKinematic(string name) {
+        if (name != null) {
+            if (skeletonDict.ContainsKey(name)) {
+                GameObject currentPart = skeletonDict[name];
+                currentPart.GetComponent<Rigidbody>().isKinematic = true;
             }
         }
     }

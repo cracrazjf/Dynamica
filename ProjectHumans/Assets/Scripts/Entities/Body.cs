@@ -60,4 +60,10 @@ public class Body {
     public void VerticalBump(float height) {
         globalPos.position += new Vector3(0, height, 0);
     }
+
+    public void TranslateBodyTo(Vector3 goalPos) {
+        Debug.Log("Tried to translate body to " + goalPos);
+        Vector3 currentPos = globalPos.position;
+        currentPos = Vector3.MoveTowards(currentPos, goalPos, 1.5f * Time.deltaTime);
+    }
 }

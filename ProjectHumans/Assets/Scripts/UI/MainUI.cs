@@ -52,7 +52,6 @@ public class MainUI : MonoBehaviour
     
     void Start() {
         InitPanels();
-        InitSliders();
         transform.position = startPosition;
         mainCam = GameObject.Find("Main Camera");
     }
@@ -74,12 +73,6 @@ public class MainUI : MonoBehaviour
         
         infoPanel.SetActive(false);
         pauseObj.SetActive(false);
-    }
-
-    public void InitSliders() {
-        movementSlider = movePub.GetComponent<Slider>();
-        rotationSlider = rotatePub.GetComponent<Slider>();
-        climbSlider = climbPub.GetComponent<Slider>();
     }
 
     public void InitButtons() {
@@ -219,16 +212,19 @@ public class MainUI : MonoBehaviour
     }
 
     public void UpdateRotateSensitivity() {
+        rotationSlider = rotatePub.GetComponent<Slider>();
         float toUpdate = rotationSlider.value;
         rotateAdjustment = toUpdate;
     }
 
     public void UpdateMoveSensitivity() {
+        movementSlider = movePub.GetComponent<Slider>();
         float toUpdate = movementSlider.value;
         moveAdjustment = toUpdate;
     }
 
     public void UpdateClimbSensitivity() {
+        climbSlider = climbPub.GetComponent<Slider>();
         float toUpdate = climbSlider.value;
         climbAdjustment = toUpdate;
     }

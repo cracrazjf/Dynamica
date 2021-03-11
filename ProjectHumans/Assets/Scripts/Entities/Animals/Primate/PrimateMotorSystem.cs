@@ -47,6 +47,7 @@ public class PrimateMotorSystem : MotorSystem {
         //Debug.Log("StandUp was called");
 
         Vector3 goalPosition = (thisBody.GetXZPosition() + new Vector3(0, thisBody.GetHeight(), 0));
+        thisBody.EnsureKinematic("Abdomen");
         thisBody.TranslateSkeletonTo("Abdomen", goalPosition);
 
         thisBody.SetState("laying", false);
@@ -140,10 +141,17 @@ public class PrimateMotorSystem : MotorSystem {
         thisBody.RotateJoint("Tibia_R", toSend);
     }
 
-    private void BendWaist(float degree, float z) {
-        Quaternion toSend = new Quaternion(degree, 0, 0, z);
-        thisBody.RotateJoint("Hip_L", toSend);
-        thisBody.RotateJoint("Hip_R", toSend);
+    private void BendWaist(float degree) {
+        Quaternion toSend = new Quaternion(degree, 0, 0, 0);
+        thisBody.DisableKinematic("Abdomen");
+        thisBody.RotateJoint("Hips", toSend);
+        
+    }
+
+    private void LegUp(float degree) {
+        Quaternion toSend = new Quaternion(degree, 0, 0, 0);
+        thisBody.RotateJoint("Femur_L", toSend);
+        thisBody.RotateJoint("Femur_R", toSend);
     }
 
     private void LockLegs() {
@@ -154,16 +162,23 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     private void Crouch(){
-        LockLegs();
-        //BendKnees(0.5f);
-        Vector3 toSend = new Vector3(0f, (thisBody.GetHeight()/2f), 0f);
-        thisBody.TranslateSkeletonBy("Abdomen", toSend);
+        Vector3 toSend = thisBody.GetSkeletonDict()["Abdomen"].transform.position;
+        if (toSend.y > thisBody.GetHeight()/2) {
+            BendWaist(-30f);
+            LegUp(60f);
+            BendKnees(-45f);
+            float crouchHeight = thisBody.GetHeight()/3;
+            toSend.y = crouchHeight;
 
+            thisBody.TranslateSkeletonTo("Abdomen", toSend);
+        } else {
+            thisBody.EnsureKinematic("Abdomen");
+        }
     }
 
     private void Collapse() {
         Debug.Log("Tried to collapse");
-        thisBody.ToggleKinematic("Abdomen");
+        thisBody.DisableKinematic("Abdomen");
     }
 
     private void FixItem(GameObject holder) {
