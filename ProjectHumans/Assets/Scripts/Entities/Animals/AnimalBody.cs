@@ -119,18 +119,27 @@ public class AnimalBody : Body {
         }
     }
 
+    public void RotateJointTo(string joint, Quaternion target) {
+        if (this.jointDict.ContainsKey(joint)) {
+            this.jointDict[joint].targetRotation = target;
+        }
+    }
 
     public void TranslateSkeletonTo(string name, Vector3 goalPos) {
         Debug.Log("Tried to translate " + name + " to " + goalPos);
-        
         if (skeletonDict.ContainsKey(name)) {
             GameObject currentPart = skeletonDict[name];
             Vector3 currentPos = currentPart.transform.position;
-            bool kinematicTemp = currentPart.GetComponent<Rigidbody>().isKinematic;
 
-            currentPart.GetComponent<Rigidbody>().isKinematic = true;
-            currentPos = Vector3.MoveTowards(currentPos, goalPos, 1.5f * Time.deltaTime);
-            currentPart.GetComponent<Rigidbody>().isKinematic = kinematicTemp;
+            if (Math.Pow(currentPos.y - goalPos.y, 2) < 0.001 ) { // something funky\
+                Debug.Log("Reached goal position");
+                currentPart.GetComponent<Rigidbody>().isKinematic = true;
+                currentPart.GetComponent<Rigidbody>().useGravity = true;
+            } else {
+                currentPart.GetComponent<Rigidbody>().useGravity = false;
+                currentPos = Vector3.MoveTowards(currentPos, goalPos, 1.5f * Time.deltaTime);
+                Debug.Log("Tried to translate " + name + " to " + goalPos); // less often???
+            }
         }
     }
 

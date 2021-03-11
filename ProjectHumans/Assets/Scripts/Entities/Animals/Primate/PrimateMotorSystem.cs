@@ -20,34 +20,31 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void SitUp() {
         Debug.Log("SitUp was called");
-        if(thisBody.GetState("sitting")) { 
-            LockLegs(); 
-        } 
-
-        StandUp();
-
-        thisBody.SetState("laying", false);
+        if (thisBody.GetState("laying")) {
+            thisBody.DisableKinematic("Abdomen");
+            thisBody.RotateJointTo("Hips", new Quaternion(1,0,0,0));
+        } else {
+            thisBody.DisableKinematic("Abdomen");
+            thisBody.RotateJointTo("Hips", new Quaternion(0,0,0,0)); 
+        }
         thisBody.SetState("sitting", true);          
     }
 
     public override void LayDown() {
         Debug.Log("Tried to lay down");
-        //BendWaist(0f, 0f);
 
         if (thisAnimal.GetBodyState("sitting") || thisAnimal.GetBodyState("laying")) {
             Collapse();
+            thisBody.SetState("laying", true);  
+            thisBody.SetState("sitting", false);
         } else {
             SitDown();
-        }
-        thisBody.SetState("sitting", false);
-        thisBody.SetState("laying", true);  
+        }  
     }
     
-    public override void StandUp(){
-        //Debug.Log("StandUp was called");
+    public override void StandUp() {
 
         Vector3 goalPosition = (thisBody.GetXZPosition() + new Vector3(0, thisBody.GetHeight(), 0));
-        thisBody.EnsureKinematic("Abdomen");
         thisBody.TranslateSkeletonTo("Abdomen", goalPosition);
 
         thisBody.SetState("laying", false);
@@ -167,7 +164,7 @@ public class PrimateMotorSystem : MotorSystem {
             BendWaist(-30f);
             LegUp(60f);
             BendKnees(-45f);
-            float crouchHeight = thisBody.GetHeight()/3;
+            float crouchHeight = thisBody.GetHeight()/2;
             toSend.y = crouchHeight;
 
             thisBody.TranslateSkeletonTo("Abdomen", toSend);
@@ -177,7 +174,7 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     private void Collapse() {
-        Debug.Log("Tried to collapse");
+        Debug.Log("Collapsing");
         thisBody.DisableKinematic("Abdomen");
     }
 
