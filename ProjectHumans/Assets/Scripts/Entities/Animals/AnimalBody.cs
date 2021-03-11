@@ -6,9 +6,8 @@ using UnityEngine;
 public class AnimalBody : Body {
 
     protected Animal thisAnimal;
-    protected GameObject abdomen;
-    protected GameObject head;
-    protected float eyeLevel;
+    public GameObject abdomen;
+    public GameObject head;
 
     protected Dictionary<string, GameObject> limbDict;
     public Dictionary<string, GameObject> GetLimbDict() { return limbDict; }
@@ -64,7 +63,6 @@ public class AnimalBody : Body {
         }
         abdomen = skeletonDict["Abdomen"];
         head = skeletonDict["Head"];
-        eyeLevel = head.transform.position.y;
     }
 
     public override void InitGameObject(Vector3 pos) {
@@ -113,7 +111,7 @@ public class AnimalBody : Body {
 
     public virtual void UpdateSkeletonStates() { Debug.Log("No update skeleton states defined for this animal"); }
 
-    public void RotateJoint(string joint, Quaternion target) {
+    public void RotateJointBy(string joint, Quaternion target) {
         if (this.jointDict.ContainsKey(joint)) {
             this.jointDict[joint].targetRotation = this.jointDict[joint].targetRotation * target;
         }
@@ -126,20 +124,32 @@ public class AnimalBody : Body {
     }
 
     public void TranslateSkeletonTo(string name, Vector3 goalPos) {
-        Debug.Log("Tried to translate " + name + " to " + goalPos);
+        //Debug.Log("Tried to translate " + name + " to " + goalPos);
+        if (skeletonDict.ContainsKey(name)) {
+            GameObject currentPart = skeletonDict[name];
+            Vector3 currentPos = currentPart.transform.position;
+            bool kinematicTemp = currentPart.GetComponent<Rigidbody>().isKinematic;
+
+            if (Math.Pow(currentPos.y - goalPos.y, 2) < 0.005 ) { // something funky\
+                Debug.Log("Reached goal position");
+                currentPart.GetComponent<Rigidbody>().isKinematic = kinematicTemp;
+            } else {
+                currentPart.GetComponent<Rigidbody>().useGravity = false;
+                currentPart.GetComponent<Rigidbody>().isKinematic = true;
+                currentPos = Vector3.MoveTowards(currentPos, goalPos, 10f * Time.deltaTime);
+                //Debug.Log("Tried to translate " + name + " to " + goalPos);
+                currentPart.GetComponent<Rigidbody>().isKinematic = kinematicTemp;
+                currentPart.GetComponent<Rigidbody>().useGravity = true;
+            }
+        }
+    }
+
+    public void PrintSkelPos(string name) {
         if (skeletonDict.ContainsKey(name)) {
             GameObject currentPart = skeletonDict[name];
             Vector3 currentPos = currentPart.transform.position;
 
-            if (Math.Pow(currentPos.y - goalPos.y, 2) < 0.001 ) { // something funky\
-                Debug.Log("Reached goal position");
-                currentPart.GetComponent<Rigidbody>().isKinematic = true;
-                currentPart.GetComponent<Rigidbody>().useGravity = true;
-            } else {
-                currentPart.GetComponent<Rigidbody>().useGravity = false;
-                currentPos = Vector3.MoveTowards(currentPos, goalPos, 1.5f * Time.deltaTime);
-                Debug.Log("Tried to translate " + name + " to " + goalPos); // less often???
-            }
+            Debug.Log("Current position of " + name + " is " + currentPos);
         }
     }
 
@@ -173,11 +183,29 @@ public class AnimalBody : Body {
         }
     }
 
+    public void DisableGravity(string name) {
+        if (name != null) {
+            if (skeletonDict.ContainsKey(name)) {
+                GameObject currentPart = skeletonDict[name];
+                currentPart.GetComponent<Rigidbody>().useGravity = false;
+            }
+        }
+    }
+
     public void EnsureKinematic(string name) {
         if (name != null) {
             if (skeletonDict.ContainsKey(name)) {
                 GameObject currentPart = skeletonDict[name];
                 currentPart.GetComponent<Rigidbody>().isKinematic = true;
+            }
+        }
+    }
+
+    public void EnsureGravity(string name) {
+        if (name != null) {
+            if (skeletonDict.ContainsKey(name)) {
+                GameObject currentPart = skeletonDict[name];
+                currentPart.GetComponent<Rigidbody>().useGravity = true;
             }
         }
     }

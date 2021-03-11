@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3348940}
   - component: {fileID: 2358290}
   - component: {fileID: -4559891030012924526}
+  - component: {fileID: 1455808314918081216}
   m_Layer: 0
   m_Name: TreeRoundPrefab
   m_TagString: Plant
@@ -93,7 +94,21 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 1.3490796
-  m_Height: 5.05582
+  m_Radius: 0.3
+  m_Height: 2
   m_Direction: 1
-  m_Center: {x: -0.01153183, y: 2.52791, z: 0.04996425}
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!136 &1455808314918081216
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171372}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 1.3490796
+  m_Height: 3.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 3.5, z: 0}

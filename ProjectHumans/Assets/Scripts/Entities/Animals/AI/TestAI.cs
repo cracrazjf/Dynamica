@@ -42,7 +42,7 @@ public class TestAI : AI {
         int[ , ] toReturn = new int[2 , actionStates.Length];
         toReturn[1,0] = 1;
         toReturn[1,1] = 1;
-        if(thisAnimal.noCheats) {
+        if (thisAnimal.noCheats) {
             toReturn[0, 3] = 1;
         } else {
             int index = thisAnimal.cheatCommand;

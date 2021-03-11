@@ -71,7 +71,7 @@ public class AI
         return null;
     }
 
-    public string GetAction() {
+    public virtual string GetAction() {
         return "In progress!";
     }
 }

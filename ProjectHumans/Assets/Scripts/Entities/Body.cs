@@ -25,10 +25,11 @@ public class Body {
     public void SetGameObject(GameObject toSet) { this.gameObject = toSet; }
 
     public Transform globalPos;
+    public float displacement;
 
     public Body(Entity passed, Vector3 position) {
         thisEntity = passed;
-
+        displacement = thisEntity.GetPhenotype().GetTraitDict()["displacement"];
         InitHeight();
         InitGameObject(position);
         passed.SetGameObject(this.gameObject);
@@ -42,7 +43,7 @@ public class Body {
 
         rigidbody = GetGameObject().GetComponent<Rigidbody>();
         globalPos = this.gameObject.transform;
-        this.VerticalBump(thisEntity.GetPhenotype().GetTraitDict()["displacement"]);
+        this.VerticalBump(displacement);
         this.gameObject.SetActive(true);
     }
     
@@ -63,7 +64,7 @@ public class Body {
 
     public void TranslateBodyTo(Vector3 goalPos) {
         Debug.Log("Tried to translate body to " + goalPos);
-        Vector3 currentPos = globalPos.position;
-        currentPos = Vector3.MoveTowards(currentPos, goalPos, 1.5f * Time.deltaTime);
+
+        globalPos.position = goalPos;
     }
 }

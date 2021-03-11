@@ -21,10 +21,10 @@ public class PrimateMotorSystem : MotorSystem {
     public override void SitUp() {
         Debug.Log("SitUp was called");
         if (thisBody.GetState("laying")) {
-            thisBody.DisableKinematic("Abdomen");
+            //thisBody.DisableKinematic("Abdomen");
             thisBody.RotateJointTo("Hips", new Quaternion(1,0,0,0));
         } else {
-            thisBody.DisableKinematic("Abdomen");
+            //hisBody.DisableKinematic("Abdomen");
             thisBody.RotateJointTo("Hips", new Quaternion(0,0,0,0)); 
         }
         thisBody.SetState("sitting", true);          
@@ -42,11 +42,24 @@ public class PrimateMotorSystem : MotorSystem {
         }  
     }
     
+    //doesnt work later on because the body got to move more than the abdomen? so nowhere for ab to go?
     public override void StandUp() {
+        Vector3 toSend = thisBody.globalPos.position;
 
-        Vector3 goalPosition = (thisBody.GetXZPosition() + new Vector3(0, thisBody.GetHeight(), 0));
-        thisBody.TranslateSkeletonTo("Abdomen", goalPosition);
+        if (toSend.y < thisBody.GetHeight()) {
+            Vector3 localHold = thisBody.abdomen.transform.localPosition;
 
+            // These cause unity to crash
+            // BendLegs(0f, true);
+            // BendKnees(0f, true);
+            // BendWaist(0f, true);
+
+            thisBody.globalPos.Translate(Vector3.up * (Time.deltaTime));
+            thisBody.abdomen.transform.localPosition = localHold;
+            
+        } else {
+            Debug.Log("I think I'm standing");
+        }
         thisBody.SetState("laying", false);
         thisBody.SetState("sitting", false);
         thisBody.SetState("standing", true);  
@@ -62,7 +75,7 @@ public class PrimateMotorSystem : MotorSystem {
     public override void TakeSteps() {
         Debug.Log("Walking");
         float stepProportion = argsDict["step proportion"] * thisAnimal.GetPhenotype().GetTrait("max_step");
-        thisBody.globalPos.Translate(thisBody.globalPos.forward * stepProportion);
+        thisBody.TranslateBodyTo(thisBody.globalPos.forward * stepProportion);
     }
 
     public override void PickUp() {
@@ -129,53 +142,65 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void LookAt() {
         Quaternion toSend = Quaternion.LookRotation(thisBody.globalPos.forward);
-        thisBody.RotateJoint("Head", toSend);
+        thisBody.RotateJointTo("Head", toSend);
     }
 
-    private void BendKnees(float degree) {
+    private void BendKnees(float degree, bool passedGoal) {
         Quaternion toSend = new Quaternion(degree, 0, 0, 0);
-        thisBody.RotateJoint("Tibia_L", toSend);
-        thisBody.RotateJoint("Tibia_R", toSend);
+
+        if(passedGoal) {
+            thisBody.RotateJointTo("Tibia_L", toSend);
+            thisBody.RotateJointTo("Tibia_R", toSend);
+        } else {
+            thisBody.RotateJointBy("Tibia_L", toSend);
+            thisBody.RotateJointBy("Tibia_R", toSend);
+        }
     }
 
-    private void BendWaist(float degree) {
+    private void BendWaist(float degree, bool passedGoal) {
         Quaternion toSend = new Quaternion(degree, 0, 0, 0);
-        thisBody.DisableKinematic("Abdomen");
-        thisBody.RotateJoint("Hips", toSend);
-        
+
+        if(passedGoal) {
+            thisBody.RotateJointTo("Hips", toSend);
+        } else {
+            thisBody.RotateJointBy("Hips", toSend);
+        }
     }
 
-    private void LegUp(float degree) {
+    private void BendLegs(float degree, bool passedGoal) {
         Quaternion toSend = new Quaternion(degree, 0, 0, 0);
-        thisBody.RotateJoint("Femur_L", toSend);
-        thisBody.RotateJoint("Femur_R", toSend);
-    }
 
-    private void LockLegs() {
-        //thisBody.ToggleKinematic("Femur_R");
-        thisBody.ToggleKinematic("Tibia_R");
-        //thisBody.ToggleKinematic("Femur_L");
-        thisBody.ToggleKinematic("Tibia_L");
+        if(passedGoal) {
+            thisBody.RotateJointTo("Femur_L", toSend);
+            thisBody.RotateJointTo("Femur_R", toSend);
+        } else {
+            thisBody.RotateJointBy("Femur_L", toSend);
+            thisBody.RotateJointBy("Femur_R", toSend);
+        }
     }
 
     private void Crouch(){
-        Vector3 toSend = thisBody.GetSkeletonDict()["Abdomen"].transform.position;
-        if (toSend.y > thisBody.GetHeight()/2) {
-            BendWaist(-30f);
-            LegUp(60f);
-            BendKnees(-45f);
-            float crouchHeight = thisBody.GetHeight()/2;
-            toSend.y = crouchHeight;
+        Vector3 toSend = thisBody.globalPos.position;
+        if (toSend.y > thisBody.GetHeight()/2 + 0.5) {
+            Vector3 localHold = thisBody.abdomen.transform.localPosition;
 
-            thisBody.TranslateSkeletonTo("Abdomen", toSend);
+            BendLegs(60f, false);
+            BendKnees(-45f, false);
+            BendWaist(-30f, false);
+
+            thisBody.globalPos.Translate(Vector3.up * (Time.deltaTime * -1));
+            thisBody.abdomen.transform.localPosition = localHold;
+            
         } else {
-            thisBody.EnsureKinematic("Abdomen");
+            Debug.Log("I think I'm sitting");
         }
     }
 
     private void Collapse() {
         Debug.Log("Collapsing");
         thisBody.DisableKinematic("Abdomen");
+        Vector3 globalAdjust = new Vector3(0f, thisBody.displacement, 0f);
+        thisBody.globalPos.transform.position = thisBody.abdomen.transform.position + globalAdjust;
     }
 
     private void FixItem(GameObject holder) {
