@@ -67,4 +67,10 @@ public class Body {
 
         globalPos.position = goalPos;
     }
+
+    public void RotateBodyTo(Quaternion target) {
+        Debug.Log("Tried to rotate body to " + target);
+
+        globalPos.localRotation = target;  
+    }
 }

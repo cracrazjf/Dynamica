@@ -98,7 +98,6 @@ public class AnimalBody : Body {
     public void PlaceBody(Vector3 position) {
         this.globalPos.position = position;
         this.gameObject.SetActive(true);
-        this.VerticalBump(GetHeight());
     }
 
     public void SetState(string label, bool passed) {
@@ -111,15 +110,32 @@ public class AnimalBody : Body {
 
     public virtual void UpdateSkeletonStates() { Debug.Log("No update skeleton states defined for this animal"); }
 
-    public void RotateJointBy(string joint, Quaternion target) {
+
+    // do not use
+    public void RotateJointTo(string joint, Quaternion target) {
         if (this.jointDict.ContainsKey(joint)) {
-            this.jointDict[joint].targetRotation = this.jointDict[joint].targetRotation * target;
+            Quaternion toMultiply = skeletonDict[joint].transform.localRotation;
+            toMultiply = toMultiply * target;
+            this.jointDict[joint].targetRotation = this.jointDict[joint].targetRotation * toMultiply;
         }
     }
 
-    public void RotateJointTo(string joint, Quaternion target) {
+    public void RotateJointBy(string joint, Quaternion target) {
         if (this.jointDict.ContainsKey(joint)) {
-            this.jointDict[joint].targetRotation = target;
+            this.jointDict[joint].targetRotation = Quaternion.identity * (this.jointDict[joint].targetRotation * Quaternion.Inverse(target));
+        }
+    }
+
+    public void RotateSkeletonTo(string name, Quaternion target) {
+        if (this.skeletonDict.ContainsKey(name)) {
+            this.skeletonDict[name].transform.localRotation = target;
+        }
+    }
+
+    public void RotateLimbBy(string name, Quaternion target) {
+        Debug.Log("Tried limb rotation");
+        if (this.limbDict.ContainsKey(name)) {
+            this.limbDict[name].transform.localRotation = Quaternion.identity * Quaternion.Inverse(target);
         }
     }
 
@@ -163,15 +179,6 @@ public class AnimalBody : Body {
 
     public void AddHoldings(GameObject toAdd, int heldIndex) { 
         holdings[heldIndex] = toAdd;
-    }
-
-    public void ToggleKinematic(string name) {
-        if (name != null) {
-            if (skeletonDict.ContainsKey(name)) {
-                GameObject currentPart = skeletonDict[name];
-                currentPart.GetComponent<Rigidbody>().isKinematic = !(currentPart.GetComponent<Rigidbody>().isKinematic);
-            }
-        }
     }
 
     public void DisableKinematic(string name) {
@@ -236,5 +243,18 @@ public class AnimalBody : Body {
     public virtual void RemoveObject(int heldIndex) {
         World.DestroyComponent(holdings[heldIndex].GetComponent<FixedJoint>());
         holdings.RemoveAt(heldIndex);
+    }
+
+    public bool CheckBend(string joint, float toCheck) {
+        if (this.jointDict.ContainsKey(joint)) {
+            Quaternion toMultiply = skeletonDict[joint].transform.localRotation;
+            Quaternion toSee = this.jointDict[joint].targetRotation * toMultiply;
+            Debug.Log("Current bend is " + toSee);
+            if (toCheck > toSee.x) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 }

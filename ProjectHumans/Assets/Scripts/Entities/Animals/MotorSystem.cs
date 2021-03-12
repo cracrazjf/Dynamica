@@ -84,7 +84,7 @@ public abstract class MotorSystem
         for(int i = 0; i < states.Length; i++) {
             // switched from i == 1... my bad
             if (things[0 , i] == 1) {
-                Debug.Log("Doing action at " + i);
+                //Debug.Log("Doing action at " + i);
                 actionList[i].DynamicInvoke();
             } 
         }

@@ -6,28 +6,29 @@ using System.Linq;
 
 public class PrimateMotorSystem : MotorSystem {
 
+    Transform abdomenTrans;
+
     public PrimateMotorSystem(Animal animal) : base(animal) {
         Debug.Log("An ape was born!");
+        abdomenTrans = thisBody.abdomen.transform;
     }
     
     public override void SitDown() {
-        Debug.Log("SitDown was called");
+        //Debug.Log("SitDown was called");
         Crouch();
-
-        thisBody.SetState("standing", false);
-        thisBody.SetState("sitting", true);
+        //Kneel();
     }
 
     public override void SitUp() {
-        Debug.Log("SitUp was called");
+        //Debug.Log("SitUp was called");
         if (thisBody.GetState("laying")) {
-            //thisBody.DisableKinematic("Abdomen");
-            thisBody.RotateJointTo("Hips", new Quaternion(1,0,0,0));
+            BendLegs(45f, 0f, true);
         } else {
-            //hisBody.DisableKinematic("Abdomen");
             thisBody.RotateJointTo("Hips", new Quaternion(0,0,0,0)); 
-        }
-        thisBody.SetState("sitting", true);          
+
+            BendLegs(0f, 0f, false);
+            BendKnees(0f, false);
+        }          
     }
 
     public override void LayDown() {
@@ -35,34 +36,20 @@ public class PrimateMotorSystem : MotorSystem {
 
         if (thisAnimal.GetBodyState("sitting") || thisAnimal.GetBodyState("laying")) {
             Collapse();
-            thisBody.SetState("laying", true);  
-            thisBody.SetState("sitting", false);
         } else {
             SitDown();
         }  
     }
     
-    //doesnt work later on because the body got to move more than the abdomen? so nowhere for ab to go?
     public override void StandUp() {
-        Vector3 toSend = thisBody.globalPos.position;
+        Vector3 toSend = abdomenTrans.position;
 
         if (toSend.y < thisBody.GetHeight()) {
-            Vector3 localHold = thisBody.abdomen.transform.localPosition;
-
-            // These cause unity to crash
-            // BendLegs(0f, true);
-            // BendKnees(0f, true);
-            // BendWaist(0f, true);
-
-            thisBody.globalPos.Translate(Vector3.up * (Time.deltaTime));
-            thisBody.abdomen.transform.localPosition = localHold;
+            abdomenTrans.Translate(Vector3.up * (Time.deltaTime));
             
         } else {
             Debug.Log("I think I'm standing");
-        }
-        thisBody.SetState("laying", false);
-        thisBody.SetState("sitting", false);
-        thisBody.SetState("standing", true);  
+        } 
     }
 
     public override void Rotate() {
@@ -85,7 +72,8 @@ public class PrimateMotorSystem : MotorSystem {
         if (argsDict["target y"] > heldPos.y) {
             // Reach up
         } else {
-            //Reach down
+            Kneel();
+            
         }
         GameObject holder = thisBody.GetHolder((int) argsDict["held position"]);
         FixItem(holder);
@@ -96,7 +84,7 @@ public class PrimateMotorSystem : MotorSystem {
         int index = (int) argsDict["held position"];
         Vector3 heldPos = thisBody.GetHolderCoords(index);
 
-        //movement
+        Kneel();
         if(thisBody.GetHoldings()[index] != null) {
             //thisBody.RemoveObject(index);
         }
@@ -158,49 +146,57 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     private void BendWaist(float degree, bool passedGoal) {
-        Quaternion toSend = new Quaternion(degree, 0, 0, 0);
+        Debug.Log("Waist bend imminent?");
+        Quaternion toSend = new Quaternion(degree, 0, 0, 1);
+
+        thisBody.RotateJointBy("Abdomen", toSend);
+        
+    }
+
+    private void BendLegs(float xDegree, float yDegree, bool passedGoal) {
+        Quaternion sendLeft = new Quaternion(xDegree, yDegree, 0, 0);
+        Quaternion sendRight = new Quaternion(xDegree, -yDegree, 0, 0);
 
         if(passedGoal) {
-            thisBody.RotateJointTo("Hips", toSend);
+            thisBody.RotateJointTo("Femur_L", sendLeft);
+            thisBody.RotateJointTo("Femur_R", sendRight);
         } else {
-            thisBody.RotateJointBy("Hips", toSend);
+            thisBody.RotateJointBy("Femur_L", sendLeft);
+            thisBody.RotateJointBy("Femur_R", sendRight);
         }
     }
 
-    private void BendLegs(float degree, bool passedGoal) {
-        Quaternion toSend = new Quaternion(degree, 0, 0, 0);
+    private void Kneel(){
+        Vector3 toSend = abdomenTrans.position;
+        if (toSend.y > thisBody.GetHeight()/2 + 0.5) {
 
-        if(passedGoal) {
-            thisBody.RotateJointTo("Femur_L", toSend);
-            thisBody.RotateJointTo("Femur_R", toSend);
+            BendLegs(30f, 0f, false);
+            BendKnees(-45f, false);
+
+            abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
         } else {
-            thisBody.RotateJointBy("Femur_L", toSend);
-            thisBody.RotateJointBy("Femur_R", toSend);
+            Debug.Log("I think I'm kneeling");
         }
     }
 
     private void Crouch(){
-        Vector3 toSend = thisBody.globalPos.position;
-        if (toSend.y > thisBody.GetHeight()/2 + 0.5) {
-            Vector3 localHold = thisBody.abdomen.transform.localPosition;
+        Vector3 toSend = abdomenTrans.position;
+        double crouchHeight = thisBody.GetHeight()/1.5 + 0.5;
+        if (toSend.y > crouchHeight) {
 
-            BendLegs(60f, false);
-            BendKnees(-45f, false);
-            BendWaist(-30f, false);
-
-            thisBody.globalPos.Translate(Vector3.up * (Time.deltaTime * -1));
-            thisBody.abdomen.transform.localPosition = localHold;
+            BendLegs(80f, 0f, false);
+            BendKnees(-30f, false);
+            
+            abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
             
         } else {
-            Debug.Log("I think I'm sitting");
+            Debug.Log("I think I'm squatting");
         }
     }
 
     private void Collapse() {
         Debug.Log("Collapsing");
         thisBody.DisableKinematic("Abdomen");
-        Vector3 globalAdjust = new Vector3(0f, thisBody.displacement, 0f);
-        thisBody.globalPos.transform.position = thisBody.abdomen.transform.position + globalAdjust;
     }
 
     private void FixItem(GameObject holder) {
