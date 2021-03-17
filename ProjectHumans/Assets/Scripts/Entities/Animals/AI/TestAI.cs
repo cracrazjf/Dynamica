@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using NumSharp;
+
 
 public class TestAI : AI {
     Transform animalTransform;
@@ -77,6 +79,10 @@ public class TestAI : AI {
         // "sleeping",    // 10
         // "resting",     // 11
         // "looking"      // 12
+
+        // NDArray test = np.ones((1, 1), np.float64);
+        // np.tanh(test);
+
         return toReturn;
     }
 }

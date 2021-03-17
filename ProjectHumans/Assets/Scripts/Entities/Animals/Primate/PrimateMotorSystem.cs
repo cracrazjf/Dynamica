@@ -48,6 +48,7 @@ public class PrimateMotorSystem : MotorSystem {
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime));
             
         } else {
+            //ArmUp(true, .025f); 
             Debug.Log("I think I'm standing");
         } 
     }
@@ -70,7 +71,8 @@ public class PrimateMotorSystem : MotorSystem {
         Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
 
         if (argsDict["target y"] > heldPos.y) {
-            // Reach up
+            //calculate dis from right and left to obj
+           ArmUp(true, argsDict["target y"]); 
         } else {
             Kneel();
             
@@ -95,7 +97,7 @@ public class PrimateMotorSystem : MotorSystem {
         Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
 
         if (heldPos.y > thisBody.globalPos.position.y) {
-            // Reach up
+           ArmUp(true, heldPos.y);
         } else {
             //Reach down
         }
@@ -166,6 +168,23 @@ public class PrimateMotorSystem : MotorSystem {
         }
     }
 
+    private void ArmUp(bool rightSide, float targetHeight) {
+        string arm = "Hand_L";
+        if (rightSide) {
+            arm = "Hand_R";
+        }
+        Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
+        float handHeight = armTrans.position.y;
+
+        if (handHeight < targetHeight) {
+            Debug.Log("reaching with " + arm);
+            thisBody.EnsureKinematic(arm);
+            armTrans.Translate(Vector3.up * (Time.deltaTime * 1));
+        }
+    }
+
+    
+
     private void Kneel(){
         Vector3 toSend = abdomenTrans.position;
         if (toSend.y > thisBody.GetHeight()/2 + 0.5) {
@@ -173,6 +192,7 @@ public class PrimateMotorSystem : MotorSystem {
             BendLegs(30f, 0f, false);
             BendKnees(-45f, false);
 
+            ArmUp(true, 2.5f); 
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
         } else {
             Debug.Log("I think I'm kneeling");
@@ -187,6 +207,7 @@ public class PrimateMotorSystem : MotorSystem {
             BendLegs(80f, 0f, false);
             BendKnees(-30f, false);
             
+            ArmUp(true, 2.5f); 
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
             
         } else {
