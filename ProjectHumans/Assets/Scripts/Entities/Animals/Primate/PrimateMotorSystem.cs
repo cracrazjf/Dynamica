@@ -184,6 +184,34 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     
+    private void ArmForward(bool rightSide, float targetDistance) {
+        string arm = "Hand_L";
+        if (rightSide) {
+            arm = "Hand_R";
+        }
+        Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
+        float handHeight = armTrans.position.x;
+
+        if (handHeight < targetDistance) {
+            Debug.Log("reaching with " + arm);
+            thisBody.EnsureKinematic(arm);
+            armTrans.Translate(Vector3.forward * (Time.deltaTime * 1));
+        }
+    }
+
+    private void ArmTo(bool rightSide, Vector3 translation) {
+        string arm = "Hand_L";
+        if (rightSide) {
+            arm = "Hand_R";
+        }
+        thisBody.EnsureKinematic(arm);
+        Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
+        Vector3 targetPos = armTrans.position + translation;
+        armTrans.position = Vector3.Slerp(armTrans.position, targetPos, Time.deltaTime);
+    }
+
+
+    
 
     private void Kneel(){
         Vector3 toSend = abdomenTrans.position;
@@ -207,7 +235,8 @@ public class PrimateMotorSystem : MotorSystem {
             BendLegs(80f, 0f, false);
             BendKnees(-30f, false);
             
-            ArmUp(true, 2.5f); 
+            Vector3 newVec = new Vector3(1f, 0.5f, 0.25f);
+            ArmTo(true, newVec);
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
             
         } else {
