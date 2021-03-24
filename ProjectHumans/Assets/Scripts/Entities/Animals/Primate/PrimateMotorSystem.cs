@@ -97,7 +97,7 @@ public class PrimateMotorSystem : MotorSystem {
         Debug.Log("Tried to eat something");
         Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
 
-        if (ArmTo(true, thisBody.mouth.transform.position)) {
+        if (ArmTo(true, thisBody.head.transform.position)) {
             thisBody.EatObject((int) argsDict["held position"]);
             DropArm(true);
         }
