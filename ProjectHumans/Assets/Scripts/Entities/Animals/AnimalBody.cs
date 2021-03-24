@@ -95,6 +95,7 @@ public class AnimalBody : Body {
         } else { Debug.Log("No body states passed to this animal"); }
     }
 
+
     public void PlaceBody(Vector3 position) {
         this.globalPos.position = position;
         this.gameObject.SetActive(true);
@@ -176,6 +177,7 @@ public class AnimalBody : Body {
         Debug.Log("Not a valid held item position");
         return new Vector3(0, 0, 0);
     }
+
 
     public void AddHoldings(GameObject toAdd, int heldIndex) { 
         holdings[heldIndex] = toAdd;

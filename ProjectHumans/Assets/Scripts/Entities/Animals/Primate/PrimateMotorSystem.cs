@@ -68,17 +68,18 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void PickUp() {
         Debug.Log("Tried to pick something up");
-        Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
+        Vector3 holdPos = thisBody.GetHolderCoords(argsDict["held position"]);
+        Vector3 itemPos = GetTargetPos();
 
-        if (argsDict["target y"] > heldPos.y) {
-            //calculate dis from right and left to obj
-           ArmUp(true, argsDict["target y"]); 
+        if (itemPos.y > holdPos.y) {
+            if (ArmTo(true, itemPos)) {
+                GameObject holder = thisBody.GetHolder((int) argsDict["held position"]);
+                FixItem(holder);
+                DropArm(true);
+            }
         } else {
             Kneel();
-            
         }
-        GameObject holder = thisBody.GetHolder((int) argsDict["held position"]);
-        FixItem(holder);
     }
 
     public override void SetDown() {
@@ -199,7 +200,7 @@ public class PrimateMotorSystem : MotorSystem {
         }
     }
 
-    private void ArmTo(bool rightSide, Vector3 translation) {
+    private bool ArmTo(bool rightSide, Vector3 translation) {
         string arm = "Hand_L";
         if (rightSide) {
             arm = "Hand_R";
@@ -208,10 +209,16 @@ public class PrimateMotorSystem : MotorSystem {
         Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
         Vector3 targetPos = armTrans.position + translation;
         armTrans.position = Vector3.Slerp(armTrans.position, targetPos, Time.deltaTime);
+        return (armTrans.position == targetPos);
     }
 
-
-    
+    private void DropArm(bool rightSide) {
+        string arm = "Hand_L";
+        if (rightSide) {
+            arm = "Hand_R";
+        }
+        thisBody.DisableeKinematic(arm);
+    }
 
     private void Kneel(){
         Vector3 toSend = abdomenTrans.position;

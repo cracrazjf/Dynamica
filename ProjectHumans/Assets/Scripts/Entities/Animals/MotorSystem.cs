@@ -137,6 +137,10 @@ public abstract class MotorSystem
         actionList.Add(LookAt);
     }
 
+    public Vector3 GetTargetPos() {
+        return new Vector3(argsDict["target x"], argsDict["target y"], argsDict["target z"]);
+    }
+
     public abstract void SitDown();
     public abstract void SitUp();
     public abstract void LayDown();
