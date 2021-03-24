@@ -8,6 +8,7 @@ public class AnimalBody : Body {
     protected Animal thisAnimal;
     public GameObject abdomen;
     public GameObject head;
+    public GameObject mouth;
 
     protected Dictionary<string, GameObject> limbDict;
     public Dictionary<string, GameObject> GetLimbDict() { return limbDict; }
@@ -63,6 +64,7 @@ public class AnimalBody : Body {
         }
         abdomen = skeletonDict["Abdomen"];
         head = skeletonDict["Head"];
+        mouth = skeletonDict["Mouth"];
     }
 
     public override void InitGameObject(Vector3 pos) {

@@ -89,7 +89,7 @@ public class PrimateMotorSystem : MotorSystem {
 
         Kneel();
         if(thisBody.GetHoldings()[index] != null) {
-            //thisBody.RemoveObject(index);
+            thisBody.RemoveObject(index);
         }
     }
     
@@ -97,12 +97,11 @@ public class PrimateMotorSystem : MotorSystem {
         Debug.Log("Tried to eat something");
         Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
 
-        if (heldPos.y > thisBody.globalPos.position.y) {
-           ArmUp(true, heldPos.y);
-        } else {
-            //Reach down
+        if (ArmTo(true, thisBody.mouth.transform.position)) {
+            thisBody.EatObject((int) argsDict["held position"]);
+            DropArm(true);
         }
-        thisBody.EatObject((int) argsDict["held position"]);
+        
     }
 
     public override void WakeUp() {
