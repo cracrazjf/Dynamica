@@ -217,7 +217,7 @@ public class PrimateMotorSystem : MotorSystem {
         if (rightSide) {
             arm = "Hand_R";
         }
-        thisBody.DisableeKinematic(arm);
+        thisBody.DisableKinematic(arm);
     }
 
     private void Kneel(){
