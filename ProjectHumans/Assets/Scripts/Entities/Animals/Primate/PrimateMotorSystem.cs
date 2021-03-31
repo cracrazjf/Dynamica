@@ -13,6 +13,7 @@ public class PrimateMotorSystem : MotorSystem {
         abdomenTrans = thisBody.abdomen.transform;
     }
     
+    // Functional
     public override void SitDown() {
         //Debug.Log("SitDown was called");
         Crouch();
@@ -41,6 +42,7 @@ public class PrimateMotorSystem : MotorSystem {
         }  
     }
     
+    // Functional
     public override void StandUp() {
         Vector3 toSend = abdomenTrans.position;
 
@@ -53,27 +55,35 @@ public class PrimateMotorSystem : MotorSystem {
         } 
     }
 
+    // Functional
     public override void Rotate() {
         //Debug.Log("Rotating");
         float rotatingSpeed = argsDict["rotation proportion"] * thisAnimal.GetPhenotype().GetTrait("max_rotation");
         thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
     }
 
-    
+    // Functional
     public override void TakeSteps() {
         Debug.Log("Walking");
         float stepProportion = argsDict["step proportion"] * thisAnimal.GetPhenotype().GetTrait("max_step");
         thisBody.TranslateBodyTo(thisBody.globalPos.forward * stepProportion);
     }
 
+    // Untested
     public override void PickUp() {
         Debug.Log("Tried to pick something up");
+
+        GameObject holder = thisBody.GetSkeleton("Hand_L");
+        if (argsDict["active right"] == 1f) {
+            holder = thisBody.GetSkeleton("Hand_R");
+        } 
+
         Vector3 holdPos = thisBody.GetHolderCoords(argsDict["held position"]);
         Vector3 itemPos = GetTargetPos();
 
         if (itemPos.y > holdPos.y) {
             if (ArmTo(true, itemPos)) {
-                GameObject holder = thisBody.GetHolder((int) argsDict["held position"]);
+                
                 FixItem(holder);
                 DropArm(true);
             }
@@ -82,28 +92,38 @@ public class PrimateMotorSystem : MotorSystem {
         }
     }
 
+    // Untested
     public override void SetDown() {
         Debug.Log("Tried to set something down");
-        int index = (int) argsDict["held position"];
-        Vector3 heldPos = thisBody.GetHolderCoords(index);
 
-        Kneel();
-        if(thisBody.GetHoldings()[index] != null) {
-            thisBody.RemoveObject(index);
+        GameObject holder = thisBody.GetSkeleton("Hand_L");
+        if (argsDict["active right"] == 1f) {
+            holder = thisBody.GetSkeleton("Hand_R");
+        }
+
+        if (CheckSitting()) {
+            RemoveFromHolder(holder);
+        } else {
+            Kneel();
         }
     }
     
+    // Nonfunctional - no ArmTo anymore
     public override void Consume () {
         Debug.Log("Tried to eat something");
-        Vector3 heldPos = thisBody.GetHolderCoords(argsDict["held position"]);
+        
+        GameObject holder = thisBody.GetSkeleton("Hand_L");
+        if (argsDict["active right"] == 1f) {
+            holder = thisBody.GetSkeleton("Hand_R");
+        }
 
         if (ArmTo(true, thisBody.head.transform.position)) {
-            thisBody.EatObject((int) argsDict["held position"]);
-            DropArm(true);
+            thisBody.EatObject(holder);
+            DropArm();
         }
-        
     }
 
+    // Functional
     public override void WakeUp() {
         Debug.Log("Waking up");
         
@@ -113,6 +133,7 @@ public class PrimateMotorSystem : MotorSystem {
         thisBody.SetState("sleeping", false);  
     }
 
+    // Nonfunctional - no sleep adjustment
     public override void Sleep() {
         Debug.Log("Sleeping");
 
@@ -122,19 +143,21 @@ public class PrimateMotorSystem : MotorSystem {
 
         thisBody.SetState("sleeping", true);
         thisBody.SleepAdjust();
-        Debug.Log("Got here");  
     }
     
+    // Functional
     public override void Rest() {
         Debug.Log("Resting");
         thisBody.RestAdjust();
     }
 
+    // Functional (but hated)
     public override void LookAt() {
         Quaternion toSend = Quaternion.LookRotation(thisBody.globalPos.forward);
         thisBody.RotateJointTo("Head", toSend);
     }
 
+    // Functional
     private void BendKnees(float degree, bool passedGoal) {
         Quaternion toSend = new Quaternion(degree, 0, 0, 0);
 
@@ -147,14 +170,7 @@ public class PrimateMotorSystem : MotorSystem {
         }
     }
 
-    private void BendWaist(float degree, bool passedGoal) {
-        Debug.Log("Waist bend imminent?");
-        Quaternion toSend = new Quaternion(degree, 0, 0, 1);
-
-        thisBody.RotateJointBy("Abdomen", toSend);
-        
-    }
-
+    // Functional
     private void BendLegs(float xDegree, float yDegree, bool passedGoal) {
         Quaternion sendLeft = new Quaternion(xDegree, yDegree, 0, 0);
         Quaternion sendRight = new Quaternion(xDegree, -yDegree, 0, 0);
@@ -168,57 +184,37 @@ public class PrimateMotorSystem : MotorSystem {
         }
     }
 
-    private void ArmUp(bool rightSide, float targetHeight) {
+    // Untested
+    private bool ArmToGoal() {
         string arm = "Hand_L";
-        if (rightSide) {
+        if (argsDict["active right"] == 1f) {
             arm = "Hand_R";
         }
-        Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
-        float handHeight = armTrans.position.y;
 
-        if (handHeight < targetHeight) {
-            Debug.Log("reaching with " + arm);
-            thisBody.EnsureKinematic(arm);
-            armTrans.Translate(Vector3.up * (Time.deltaTime * 1));
-        }
-    }
+        float xTrans = argsDict["reach proportion x"] * thisBody.xMax;
+        float yTrans = argsDict["reach proportion y"] * thisBody.yMax;
+        float zTrans = argsDict["reach proportion z"] * thisBody.zMax;
+        Vector3 netTrans = new Vector3(xTrans, yTrans, zTrans);
 
-    
-    private void ArmForward(bool rightSide, float targetDistance) {
-        string arm = "Hand_L";
-        if (rightSide) {
-            arm = "Hand_R";
-        }
-        Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
-        float handHeight = armTrans.position.x;
-
-        if (handHeight < targetDistance) {
-            Debug.Log("reaching with " + arm);
-            thisBody.EnsureKinematic(arm);
-            armTrans.Translate(Vector3.forward * (Time.deltaTime * 1));
-        }
-    }
-
-    private bool ArmTo(bool rightSide, Vector3 translation) {
-        string arm = "Hand_L";
-        if (rightSide) {
-            arm = "Hand_R";
-        }
         thisBody.EnsureKinematic(arm);
         Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
-        Vector3 targetPos = armTrans.position + translation;
+        Vector3 targetPos = globalPos.position + netTrans;
         armTrans.position = Vector3.Slerp(armTrans.position, targetPos, Time.deltaTime);
+
         return (armTrans.position == targetPos);
     }
 
-    private void DropArm(bool rightSide) {
+    // Functional
+    private void DropArm() {
         string arm = "Hand_L";
-        if (rightSide) {
+        if (argsDict["active right"] == 1f) {
             arm = "Hand_R";
         }
+
         thisBody.DisableKinematic(arm);
     }
 
+    // Functional
     private void Kneel(){
         Vector3 toSend = abdomenTrans.position;
         if (toSend.y > thisBody.GetHeight()/2 + 0.5) {
@@ -233,6 +229,7 @@ public class PrimateMotorSystem : MotorSystem {
         }
     }
 
+    // Functional
     private void Crouch(){
         Vector3 toSend = abdomenTrans.position;
         double crouchHeight = thisBody.GetHeight()/1.5 + 0.5;
@@ -250,14 +247,22 @@ public class PrimateMotorSystem : MotorSystem {
         }
     }
 
+    // Functional
     private void Collapse() {
         Debug.Log("Collapsing");
         thisBody.DisableKinematic("Abdomen");
     }
 
-    private void FixItem(GameObject holder) {
+    // Untested
+    private void GrabItem() {
         Debug.Log("Tried to affix something");
-        Vector3 forCollider = new Vector3 (argsDict["target x"], argsDict["target y"], argsDict["target z"]);
+
+        GameObject holder = thisBody.GetSkeleton("Hand_L");
+        if (argsDict["active right"] == 1f) {
+            holder = thisBody.GetSkeleton("Hand_R");
+        }
+
+        Vector3 forCollider = holder.transform.position;
         Collider[] hitColliders = Physics.OverlapSphere(forCollider, .025f);
         Rigidbody toConnect = holder.GetComponent<Rigidbody>();
         
@@ -267,6 +272,13 @@ public class PrimateMotorSystem : MotorSystem {
                 FixedJoint newJoint = hit.gameObject.AddComponent<FixedJoint>() as FixedJoint;
                 newJoint.connectedBody = toConnect;
             }
+        }
+    }
+
+    // Untested
+    private void RemoveFromHolder(GameObject holder) {
+        if (thisBody.GetHoldings()[holder.name] != null) {
+                thisBody.RemoveObject(holder.name);
         }
     }
 }

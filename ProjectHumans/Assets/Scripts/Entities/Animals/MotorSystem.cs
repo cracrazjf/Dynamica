@@ -54,10 +54,11 @@ public abstract class MotorSystem
         argsLabelList = new List<string> {
             "step proportion",                          
             "rotation proportion",               
-            "held position",
-            "target x",
-            "target y",
-            "target z"
+            "active right",
+            "active left",
+            "reach proportion x",
+            "reach proportion y",
+            "reach proportion z"
         };
 
         this.InitActionArguments(argsLabelList);
