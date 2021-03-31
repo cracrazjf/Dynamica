@@ -79,8 +79,8 @@ public class PrimateMotorSystem : MotorSystem {
         } 
         
         if (ArmToGoal()) {    
-            GrabWithHolder(holder);
-            DropArm(true);
+            GrabWithHolder(holder.name);
+            DropArm();
         }
     }
 
@@ -93,14 +93,14 @@ public class PrimateMotorSystem : MotorSystem {
             holder = thisBody.GetSkeleton("Hand_R");
         }
 
-        if (CheckSitting()) {
-            RemoveFromHolder(holder);
+        if (thisBody.CheckSitting()) {
+            RemoveFromHolder(holder.name);
         } else {
             Kneel();
         }
     }
     
-    // Nonfunctional - no ArmTo anymore
+    // Untested
     public override void Consume () {
         Debug.Log("Tried to eat something");
         
@@ -109,8 +109,8 @@ public class PrimateMotorSystem : MotorSystem {
             holder = thisBody.GetSkeleton("Hand_R");
         }
 
-        if (ArmTo(true, thisBody.head.transform.position)) {
-            thisBody.EatObject(holder);
+        if (ArmTo(thisBody.head.transform.position)) {
+            thisBody.EatObject(holder.name);
             DropArm();
         }
     }
@@ -190,7 +190,21 @@ public class PrimateMotorSystem : MotorSystem {
 
         thisBody.EnsureKinematic(arm);
         Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
-        Vector3 targetPos = globalPos.position + netTrans;
+        Vector3 targetPos = thisBody.globalPos.position + netTrans;
+        armTrans.position = Vector3.Slerp(armTrans.position, targetPos, Time.deltaTime);
+
+        return (armTrans.position == targetPos);
+    }
+
+    // Untested
+    private bool ArmTo(Vector3 targetPos) {
+        string arm = "Hand_L";
+        if (argsDict["active right"] == 1f) {
+            arm = "Hand_R";
+        }
+
+        thisBody.EnsureKinematic(arm);
+        Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
         armTrans.position = Vector3.Slerp(armTrans.position, targetPos, Time.deltaTime);
 
         return (armTrans.position == targetPos);
@@ -213,8 +227,7 @@ public class PrimateMotorSystem : MotorSystem {
 
             BendLegs(30f, 0f, false);
             BendKnees(-45f, false);
-
-            ArmUp(true, 2.5f); 
+ 
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
         } else {
             Debug.Log("I think I'm kneeling");
@@ -226,12 +239,10 @@ public class PrimateMotorSystem : MotorSystem {
         Vector3 toSend = abdomenTrans.position;
         double crouchHeight = thisBody.GetHeight()/1.5 + 0.5;
         if (toSend.y > crouchHeight) {
-            
+
             BendLegs(80f, 0f, false);
             BendKnees(-30f, false);
-            
-            Vector3 newVec = new Vector3(1f, 0.5f, 0.25f);
-            ArmTo(true, newVec);
+        
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
             
         } else {
@@ -258,8 +269,10 @@ public class PrimateMotorSystem : MotorSystem {
         foreach(var hit in hitColliders) {
             if(!thisBody.GetSkeletonDict().ContainsKey(hit.gameObject.name)) {
                 
-                FixedJoint newJoint = hit.gameObject.AddComponent<FixedJoint>() as FixedJoint;
-                newJoint.connectedBody = toConnect;
+                if (CheckMovableObject(hit.gameObject)) {
+                    FixedJoint newJoint = hit.gameObject.AddComponent<FixedJoint>() as FixedJoint;
+                    newJoint.connectedBody = toConnect;
+                }
             }
         }
     }
@@ -284,6 +297,16 @@ public class PrimateMotorSystem : MotorSystem {
         } else if (argsDict["action left"] == -1f) {
             RemoveFromHolder("Hand_R");
         }
+    }
+
+    // Untested
+    private bool CheckMovableObject(GameObject toLift) {
+        float liftMass = toLift.GetComponent<Rigidbody>().mass;
+
+        if (liftMass < thisBody.rigidbody.mass) {
+            return true;
+        } 
+        return false;
     }
 }
 

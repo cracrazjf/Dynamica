@@ -25,6 +25,7 @@ public class AnimalBody : Body {
     
     protected Dictionary<string, GameObject> holdings;
     public GameObject GetHeld(string holder) { return holdings[holder]; }
+    public Dictionary<string, GameObject> GetHoldings() {return holdings;}
 
     public AnimalBody(Animal animal, Vector3 position) : base((Entity) animal, position) {
         stateLabelList = new List<string> {
@@ -41,6 +42,9 @@ public class AnimalBody : Body {
 
     public virtual void InitHolders() {
         holdings = new Dictionary<string, GameObject>();
+        xMax = thisAnimal.GetPhenotype().GetTrait("default_max_reach_x");
+        yMax = thisAnimal.GetPhenotype().GetTrait("default_max_reach_y");
+        zMax = thisAnimal.GetPhenotype().GetTrait("default_max_reach_z");
     }
 
     public void InitBodyDicts() {
@@ -113,6 +117,8 @@ public class AnimalBody : Body {
     public virtual void UpdateBodyStates() { Debug.Log("No update body states defined for this animal"); }
 
     public virtual void UpdateSkeletonStates() { Debug.Log("No update skeleton states defined for this animal"); }
+    
+    public virtual bool CheckSitting() { return false; }
 
 
     // do not use
@@ -173,7 +179,7 @@ public class AnimalBody : Body {
         }
     }
 
-    public void AddHoldings(GameObject toAdd, int heldIndex) { 
+    public void AddHoldings(GameObject toAdd, string heldIndex) { 
         holdings[heldIndex] = toAdd;
     }
 

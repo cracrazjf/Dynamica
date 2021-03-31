@@ -103,7 +103,7 @@ public class SimpleAI : AI {
 
     public void Consume() {
         // Check for both hands (or positions of potential holding)
-        List<GameObject> heldItems = thisAnimal.GetBody().GetHoldings();
+        List<GameObject> heldItems = new List<GameObject>(thisAnimal.GetBody().GetHoldings().Values);
         for (int i = 0; i < heldItems.Count; i++) {
             if (IsEdible(heldItems[i])) {
                 decidedActions[8] = 1;
