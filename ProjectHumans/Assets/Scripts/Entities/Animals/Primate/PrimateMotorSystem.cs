@@ -77,18 +77,10 @@ public class PrimateMotorSystem : MotorSystem {
         if (argsDict["active right"] == 1f) {
             holder = thisBody.GetSkeleton("Hand_R");
         } 
-
-        Vector3 holdPos = thisBody.GetHolderCoords(argsDict["held position"]);
-        Vector3 itemPos = GetTargetPos();
-
-        if (itemPos.y > holdPos.y) {
-            if (ArmTo(true, itemPos)) {
-                
-                FixItem(holder);
-                DropArm(true);
-            }
-        } else {
-            Kneel();
+        
+        if (ArmToGoal()) {    
+            GrabWithHolder(holder);
+            DropArm(true);
         }
     }
 
@@ -234,7 +226,7 @@ public class PrimateMotorSystem : MotorSystem {
         Vector3 toSend = abdomenTrans.position;
         double crouchHeight = thisBody.GetHeight()/1.5 + 0.5;
         if (toSend.y > crouchHeight) {
-
+            
             BendLegs(80f, 0f, false);
             BendKnees(-30f, false);
             
@@ -254,13 +246,10 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     // Untested
-    private void GrabItem() {
+    private void GrabWithHolder(string holderName) {
         Debug.Log("Tried to affix something");
 
-        GameObject holder = thisBody.GetSkeleton("Hand_L");
-        if (argsDict["active right"] == 1f) {
-            holder = thisBody.GetSkeleton("Hand_R");
-        }
+        GameObject holder = thisBody.GetSkeleton(holderName);
 
         Vector3 forCollider = holder.transform.position;
         Collider[] hitColliders = Physics.OverlapSphere(forCollider, .025f);
@@ -276,9 +265,24 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     // Untested
-    private void RemoveFromHolder(GameObject holder) {
-        if (thisBody.GetHoldings()[holder.name] != null) {
-                thisBody.RemoveObject(holder.name);
+    private void RemoveFromHolder(string holderName) {
+        if (thisBody.GetHeld(holderName) != null) {
+                thisBody.RemoveObject(holderName);
+        }
+    }
+
+    // Untested
+    private void UpdateHands() {
+        if (argsDict["action right"] == 1f) {
+            GrabWithHolder("Hand_R");
+        } else if (argsDict["action right"] == -1f) {
+            RemoveFromHolder("Hand_R");
+        }
+
+        if (argsDict["action left"] == 1f) {
+            GrabWithHolder("Hand_L");
+        } else if (argsDict["action left"] == -1f) {
+            RemoveFromHolder("Hand_R");
         }
     }
 }

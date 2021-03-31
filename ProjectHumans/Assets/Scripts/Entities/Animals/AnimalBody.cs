@@ -17,14 +17,14 @@ public class AnimalBody : Body {
 
     protected Dictionary<string, GameObject> skeletonDict;
     public Dictionary<string, GameObject> GetSkeletonDict() { return skeletonDict; }
+    public GameObject GetSkeleton(string name) { return skeletonDict[name]; }
 
     protected Dictionary<string, ConfigurableJoint> jointDict;
     public Dictionary<string, ConfigurableJoint> GetJointDict() { return jointDict; }
 
-    protected List<GameObject> holders;
-    protected List<GameObject> holdings;
-    public List<GameObject> GetHoldings() { return holdings; }
-    public GameObject GetHolder(int i) { return holders[i]; }
+    
+    protected Dictionary<string, GameObject> holdings;
+    public GameObject GetHeld(string holder) { return holdings[holder]; }
 
     public AnimalBody(Animal animal, Vector3 position) : base((Entity) animal, position) {
         stateLabelList = new List<string> {
@@ -40,8 +40,7 @@ public class AnimalBody : Body {
     }
 
     public virtual void InitHolders() {
-        holdings = new List<GameObject>();
-        holders = new List<GameObject>();
+        holdings = new Dictionary<string, GameObject>();
     }
 
     public void InitBodyDicts() {
@@ -174,15 +173,6 @@ public class AnimalBody : Body {
         }
     }
 
-    public Vector3 GetHolderCoords(float passedIndex) {
-        int index = (int) passedIndex;
-        if (holders.Count > index) { return holders[(int) index].transform.position; }
-
-        Debug.Log("Not a valid held item position");
-        return new Vector3(0, 0, 0);
-    }
-
-
     public void AddHoldings(GameObject toAdd, int heldIndex) { 
         holdings[heldIndex] = toAdd;
     }
@@ -239,16 +229,16 @@ public class AnimalBody : Body {
         Debug.Log("Rested a bit!");
     }
 
-    public virtual void EatObject(int heldIndex) {
-        GameObject toEat = holdings[heldIndex];
+    public virtual void EatObject(string holder) {
+        GameObject toEat = holdings[holder];
         World.RemoveEntity(toEat.name);
         //eating stuff
-        holdings.RemoveAt(heldIndex);
+        holdings.Remove(holder);
     }
 
-    public virtual void RemoveObject(int heldIndex) {
-        World.DestroyComponent(holdings[heldIndex].GetComponent<FixedJoint>());
-        holdings.RemoveAt(heldIndex);
+    public virtual void RemoveObject(string holder) {
+        World.DestroyComponent(holdings[holder].GetComponent<FixedJoint>());
+        holdings.Remove(holder);
     }
 
     public bool CheckBend(string joint, float toCheck) {

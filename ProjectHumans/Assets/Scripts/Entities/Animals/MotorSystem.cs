@@ -55,7 +55,8 @@ public abstract class MotorSystem
             "step proportion",                          
             "rotation proportion",               
             "active right",
-            "active left",
+            "action right",
+            "action left",
             "reach proportion x",
             "reach proportion y",
             "reach proportion z"
