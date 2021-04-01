@@ -7,10 +7,12 @@ using System.Linq;
 public class PrimateMotorSystem : MotorSystem {
 
     Transform abdomenTrans;
+    PrimateBody primateBody;
 
     public PrimateMotorSystem(Animal animal) : base(animal) {
         Debug.Log("An ape was born!");
         abdomenTrans = thisBody.abdomen.transform;
+        primateBody = (PrimateBody)thisBody;
     }
     
     // Functional
@@ -179,21 +181,23 @@ public class PrimateMotorSystem : MotorSystem {
     // Untested
     private bool ArmToGoal() {
         string arm = "Hand_L";
+        Vector3 goalPos = primateBody.localStartLeft;
+
         if (argsDict["active right"] == 1f) {
             arm = "Hand_R";
+            goalPos = primateBody.localStartRight;
         }
 
         float xTrans = argsDict["reach proportion x"] * thisBody.xMax;
         float yTrans = argsDict["reach proportion y"] * thisBody.yMax;
         float zTrans = argsDict["reach proportion z"] * thisBody.zMax;
-        Vector3 netTrans = new Vector3(xTrans, yTrans, zTrans);
+        goalPos += new Vector3(xTrans, yTrans, zTrans);
 
         thisBody.EnsureKinematic(arm);
         Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
-        Vector3 targetPos = thisBody.globalPos.position + netTrans;
-        armTrans.position = Vector3.Slerp(armTrans.position, targetPos, Time.deltaTime);
+        armTrans.position = Vector3.Slerp(armTrans.position, goalPos, Time.deltaTime);
 
-        return (armTrans.position == targetPos);
+        return (armTrans.position == goalPos);
     }
 
     // Untested

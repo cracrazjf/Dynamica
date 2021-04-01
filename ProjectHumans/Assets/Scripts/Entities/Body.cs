@@ -8,6 +8,7 @@ public class Body {
     protected Entity thisEntity;
     protected float height;
     protected float heightScale;
+    protected float currentMass;
     public Rigidbody rigidbody;
     protected GameObject gameObject;
 
@@ -33,6 +34,7 @@ public class Body {
         InitHeight();
         InitGameObject(position);
         passed.SetGameObject(this.gameObject);
+        
     }
 
     public virtual void InitGameObject(Vector3 pos) {
@@ -44,12 +46,18 @@ public class Body {
         rigidbody = GetGameObject().GetComponent<Rigidbody>();
         globalPos = this.gameObject.transform;
         this.VerticalBump(displacement);
+        this.InitMass();
         this.gameObject.SetActive(true);
     }
     
     public void InitHeight() {
         heightScale = thisEntity.GetPhenotype().GetTraitDict()["size"]; 
         height = thisEntity.GetPhenotype().GetTraitDict()["height"] * heightScale; 
+    }
+
+    public void InitMass() {
+        currentMass = thisEntity.GetPhenotype().GetTraitDict()["mass"]; 
+        rigidbody.mass = currentMass;
     }
 
     public float GetHeight() { return height; }
