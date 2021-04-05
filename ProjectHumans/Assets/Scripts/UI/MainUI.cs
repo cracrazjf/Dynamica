@@ -160,7 +160,7 @@ public class MainUI : MonoBehaviour
         // Descend update
         if (Input.GetKey(KeyCode.LeftShift)) {
             if (transform.position.y > 1) {
-                yTemp = yTemp * passedSpeed * Time.deltaTime;
+                yTemp = transform.position.y * passedSpeed * Time.deltaTime;
                 transform.position -= new Vector3(0, yTemp, 0);
             }
         }

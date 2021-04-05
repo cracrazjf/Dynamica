@@ -244,6 +244,7 @@ public class PrimateMotorSystem : MotorSystem {
         double crouchHeight = thisBody.GetHeight()/1.5 + 0.5;
         if (toSend.y > crouchHeight) {
 
+            BendLegs(-1f, 0f, false);
             BendLegs(80f, 0f, false);
             BendKnees(-30f, false);
         

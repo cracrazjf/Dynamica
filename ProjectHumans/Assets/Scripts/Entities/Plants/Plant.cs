@@ -34,13 +34,16 @@ public class Plant : Entity {
     }
 
     public void CreateFruit() {
-        // Figure out where the apple should appear
-        float distance = GetPhenotype().GetTraitDict()["fruit_drop_distance"];
         string fruitType = GetGenome().GetQualDict()["fruit_type"];
 
-        Vector3 fruitDisplacement = new Vector3(Random.Range(-distance,distance),0,Random.Range(-distance,distance));                           
-        Vector3 fruitLocation = GetBody().globalPos.position + fruitDisplacement;
+        if (fruitType != "None") {
+            // Figure out where the apple should appear
+            float distance = GetPhenotype().GetTraitDict()["fruit_drop_distance"];
+        
+            Vector3 fruitDisplacement = new Vector3(Random.Range(-distance,distance),0,Random.Range(-distance,distance));                           
+            Vector3 fruitLocation = GetBody().globalPos.position + fruitDisplacement;
 
-        World.AddEntity(fruitType, fruitLocation);
+            World.AddEntity(fruitType, fruitLocation);
+        }
     }
 }
