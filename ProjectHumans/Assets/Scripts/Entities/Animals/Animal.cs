@@ -38,8 +38,8 @@ using System;
             if (finishedUpdate) {
                 finishedUpdate = false;
                 this.GetDriveSystem().UpdateDrives();
-                float[ , ] visualInputMatrix = GetSensorySystem().GetVisualInput();
-                int[ , ] toSend = activeAI.ChooseAction(visualInputMatrix);
+                Matrix<float> visualInputMatrix = GetSensorySystem().GetVisualInput();
+                Vector<float> toSend = activeAI.ChooseAction(visualInputMatrix);
                 //Debug.Log(toSend);
                 this.GetMotorSystem().TakeAction(toSend);
                 action = "In progress!";

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
 public class DriveSystem
@@ -9,16 +10,16 @@ public class DriveSystem
     protected Animal thisAnimal;
     protected Dictionary<string, float> thisTraitDict;
 
-    protected float[] states;
+    protected Vector<float> states;
     protected List<string> stateLabelList;
     protected Dictionary<string, int> stateIndexDict;
     protected Dictionary<string, float> stateDict;
     
-    public float[] GetStates() { return states; }
+    public Vector<float> GetStates() { return states; }
+    public float GetState(string place) { return stateDict[place]; }
     public List<string> GetStateLabels() { return stateLabelList; }
     public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
     public Dictionary<string, float> GetStateDict() { return stateDict; }
-    public float GetState(string state) { return stateDict[state]; }
 
 
     /// <summary>
@@ -42,7 +43,7 @@ public class DriveSystem
    void InitStates(List<string> passedList) {
         thisTraitDict = thisAnimal.GetPhenotype().GetTraitDict();
 
-        states = new float[passedList.Count];
+        states = new Vector<float>();
         stateLabelList = passedList;
         stateIndexDict = new Dictionary<string, int>();
         stateDict = new Dictionary<string, float>();
@@ -72,8 +73,8 @@ public class DriveSystem
             float toUpdate = GetStateDict()[label] + changeValue;
             SetState(label, toUpdate);
             // Ensure all drive states are in bounds
-            if (this.stateDict[label] < 0) { this.SetState(label, 0.0f); }
-            else if (this.stateDict[label] > 1) { this.SetState(label, 1.0f); }
+            if (this.stateDict[label] < 0f) { this.SetState(label, 0.0f); }
+            else if (this.stateDict[label] > 1f) { this.SetState(label, 1.0f); }
         }
 
         // Hunger and thirst updates

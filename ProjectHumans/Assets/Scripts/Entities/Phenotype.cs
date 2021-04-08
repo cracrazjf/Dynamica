@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
 public class Phenotype {
@@ -8,13 +9,13 @@ public class Phenotype {
     protected Entity thisEntity;
     protected Genome thisGenome;
 
-    protected float[] traits;
+    protected Vector<float> traits;
     protected List<string> traitLabelList = new List<string>();
     protected Dictionary<string, int> traitIndexDict = new Dictionary<string, int>();
     protected Dictionary<string, float> traitDict = new Dictionary<string, float>();
     protected Dictionary<string, string> qualDict = new Dictionary<string, string>();
 
-    public float[] GetTraits() { return traits; }
+    public Vector<float> GetTraits() { return traits; }
     public List<string> GetTraitLabels() { return traitLabelList; }
     public Dictionary<string, int> GetTraitIndices() { return traitIndexDict; }
     public Dictionary<string, float> GetTraitDict() { return traitDict; }

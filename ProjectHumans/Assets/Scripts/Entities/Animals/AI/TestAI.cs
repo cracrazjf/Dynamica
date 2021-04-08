@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using NumSharp;
-
 
 public class TestAI : AI {
     Transform animalTransform;
@@ -38,18 +36,18 @@ public class TestAI : AI {
         actionCount = 0;
     }
 
-    public override int[,] ChooseAction(float[ , ] visualInput) {
-        decidedActions = new int[actionStates.Length];
-        decidedArgs = new int[actionArguments.Length];
-        int[ , ] toReturn = new int[2 , actionStates.Length];
-        toReturn[1,0] = 1;
-        toReturn[1,1] = 1;
-        if (thisAnimal.noCheats) {
-            toReturn[0, 3] = 1;
-        } else {
-            int index = thisAnimal.cheatCommand;
-            toReturn[0, index] = 1;
-        }
+    //public override int[,] ChooseAction(float[ , ] visualInput) {
+    //    decidedActions = new int[actionStates.Length];
+    //    decidedArgs = new int[actionArguments.Length];
+    //    int[ , ] toReturn = new int[2 , actionStates.Length];
+    //    toReturn[1,0] = 1;
+    //    toReturn[1,1] = 1;
+    //    if(thisAnimal.noCheats) {
+    //        toReturn[0, 3] = 1;
+    //    } else {
+    //        int index = thisAnimal.cheatCommand;
+    //        toReturn[0, index] = 1;
+    //    }
 
         //Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);
 
@@ -79,12 +77,8 @@ public class TestAI : AI {
         // "sleeping",    // 10
         // "resting",     // 11
         // "looking"      // 12
-
-        // NDArray test = np.ones((1, 1), np.float64);
-        // np.tanh(test);
-
-        return toReturn;
-    }
+    //    return toReturn;
+    //}
 }
 
 

@@ -11,7 +11,7 @@ public class SimpleAI : AI {
     static Vector3 blankPos = new Vector3(0,0,0);
     Vector3 randomPos = blankPos;
     
-    Dictionary<string, bool> bodyStateDict;
+    Dictionary<string, float> bodyStateDict;
     Dictionary<string, float> driveStateDict;
     Dictionary<string, float> traitDict;
     Dictionary<string, Action> goalDict;
@@ -35,31 +35,31 @@ public class SimpleAI : AI {
         InitGoalDict();
     }
 
-    public override int[,] ChooseAction(float[ , ] visualInput) {
-        decidedActions = new int[actionStates.Length];
-        decidedArgs = new int[actionArguments.Length];
+    //public override int[,] ChooseAction(float[ , ] visualInput) {
+    //    decidedActions = new int[actionStates.Length];
+    //    decidedArgs = new int[actionArguments.Length];
         
-        int[ , ] toReturn = new int[2 , actionStates.Length];
+    //    int[ , ] toReturn = new int[2 , actionStates.Length];
 
-        animalTransform = thisAnimal.GetBody().globalPos;
-        UpdateFOV(animalTransform, 45, 10);
+    //    animalTransform = thisAnimal.GetBody().globalPos;
+    //    UpdateFOV(animalTransform, 45, 10);
 
-        //Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);
+    //    //Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);
         
-        ChooseGoal();
-        Debug.Log("Current goal is: " + currentGoal);
-        goalDict[currentGoal].DynamicInvoke();
-        decidedActions[12] = 1;
+    //    ChooseGoal();
+    //    Debug.Log("Current goal is: " + currentGoal);
+    //    goalDict[currentGoal].DynamicInvoke();
+    //    decidedActions[12] = 1;
 
-        for( int i = 0; i < decidedActions.Length; i++) {
-            toReturn[0 ,i ] = decidedActions[i];
-        }
+    //    for( int i = 0; i < decidedActions.Length; i++) {
+    //        toReturn[0 ,i ] = decidedActions[i];
+    //    }
 
-        for( int j = 0; j < decidedActions.Length; j++) {
-            toReturn[1 , j] = decidedArgs[j];
-        }
-        return toReturn;
-    }
+    //    for( int j = 0; j < decidedActions.Length; j++) {
+    //        toReturn[1 , j] = decidedArgs[j];
+    //    }
+    //    return toReturn;
+    //}
 
     public void ChooseGoal() {
         string toSet = "None";
@@ -103,7 +103,7 @@ public class SimpleAI : AI {
 
     public void Consume() {
         // Check for both hands (or positions of potential holding)
-        List<GameObject> heldItems = new List<GameObject>(thisAnimal.GetBody().GetHoldings().Values);
+        List<GameObject> heldItems = thisAnimal.GetBody().GetHoldings();
         for (int i = 0; i < heldItems.Count; i++) {
             if (IsEdible(heldItems[i])) {
                 decidedActions[8] = 1;

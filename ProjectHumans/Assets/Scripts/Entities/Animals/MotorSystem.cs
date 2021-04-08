@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
 public abstract class MotorSystem 
@@ -9,25 +10,16 @@ public abstract class MotorSystem
     protected AnimalBody thisBody;
     protected List<Action> actionList;
 
-    protected bool[] states;
+    protected Vector<float> states;
     protected List<string> stateLabelList;
     protected Dictionary<string, int> stateIndexDict;
-    protected Dictionary<string, bool> stateDict;
+    protected Dictionary<string, float> stateDict;
     
-    public bool[] GetStates() { return states; }
+    public Vector<float> GetStates() { return states; }
+    public float GetState(string place) { return stateDict[place]; }
     public List<string> GetStateLabels() { return stateLabelList; }
     public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
-    public Dictionary<string, bool> GetStateDict() { return stateDict; }
-    
-    protected float[] args;
-    protected List<string> argsLabelList;
-    protected Dictionary<string, int> argsIndexDict;
-    protected Dictionary<string, float> argsDict;
-
-    public float[] GetArgs() { return args; }
-    public List<string> GetArgLabels() { return argsLabelList; }
-    public Dictionary<string, int> GetArgIndices() { return argsIndexDict; }
-    public Dictionary<string, float> GetArgDict() { return argsDict; }
+    public Dictionary<string, float> GetStateDict() { return stateDict; }
 
 
     public MotorSystem(Animal passed) {
@@ -35,57 +27,36 @@ public abstract class MotorSystem
         this.thisBody = thisAnimal.GetBody();
 
         stateLabelList = new List<string> {
-            "sitting down",// 0
-            "sitting up",  // 1
+            "crouching",   // 0, negative is down 
+            "sitting",     // 1, negative is down
             "laying down", // 2
             "standing up", // 3
-            "rotating",    // 4
-            "taking steps",// 5
-            "picking up",  // 6
-            "setting down",// 7 
+            "rotating",    // 4, now a proportion
+            "taking steps",// 5, now a proportion
+            "hand action", // 6, release/maintain/grab
+            "active hand", // 7  
             "consuming",   // 8
-            "waking up",   // 9
-            "sleeping",    // 10
+            "sleeping",    // 9, awake/maintain/fall asleep
             "resting",     // 11
-            "looking"      // 12
+            "looking",     // 12
+            "RP x",        // 13
+            "RP y",        // 14
+            "RP z"         // 15
         };
         this.InitStates(stateLabelList);
-
-        argsLabelList = new List<string> {
-            "step proportion",                          
-            "rotation proportion",               
-            "active right",
-            "action right",
-            "action left",
-            "reach proportion x",
-            "reach proportion y",
-            "reach proportion z"
-        };
-
-        this.InitActionArguments(argsLabelList);
-        this.InitActionDict();
     }
 
-    public void SetState(string label, bool val) {
+    public void SetState(string label, float val) {
         stateDict[label] = val;
         int currentIndex = stateIndexDict[label];
         states[currentIndex] = val;
     }
 
-    public void SetArgs(string label, float val) {
-        argsDict[label] = val;
-        int currentIndex = argsIndexDict[label];
-        args[currentIndex] = val;
-    }
-
-    public void TakeAction(int[,] things) {
-
-        SetArgs("step proportion", 1);
-        SetArgs("rotation proportion", 1);
+    public void TakeAction(Vector<float> things) {
 
         for(int i = 0; i < states.Length; i++) {
             // switched from i == 1... my bad
-            if (things[0 , i] == 1) {
+            if (things[i] == 1f) {
                 //Debug.Log("Doing action at " + i);
                 actionList[i].DynamicInvoke();
             } 
@@ -93,34 +64,20 @@ public abstract class MotorSystem
     }
 
     void InitStates(List<string> passedList) {
-        states = new bool[passedList.Count];
+        states = new Vector<float>();
         stateLabelList = passedList;
         stateIndexDict = new Dictionary<string, int>();
-        stateDict = new Dictionary<string, bool>();
+        stateDict = new Dictionary<string, float>();
 
         if (passedList != null){
             for (int i = 0; i < passedList.Count; i++) {
-                states[i] = false;
+                states[i] = 0f;
                 stateIndexDict[passedList[i]] = i;
-                stateDict[passedList[i]] = false;
+                stateDict[passedList[i]] = 0f;
             }
         } else { Debug.Log("No actions passed to this animal"); }
     }
 
-    void InitActionArguments(List<string> passedArgsLabels) {
-        args = new float[passedArgsLabels.Count];
-        argsLabelList = passedArgsLabels;
-        argsIndexDict = new Dictionary<string, int>();
-        argsDict = new Dictionary<string, float>();
-
-        if (passedArgsLabels != null){
-            for (int i = 0; i < passedArgsLabels.Count; i++) {
-                args[i] = 0.0f;
-                argsIndexDict[passedArgsLabels[i]] = i;
-                argsDict[passedArgsLabels[i]] = 0.0f;
-            }
-        } else { Debug.Log("No args defined for this animal"); }
-    }
     void InitActionDict() {
         actionList = new List<Action>();
 
@@ -137,10 +94,6 @@ public abstract class MotorSystem
         actionList.Add(Sleep);
         actionList.Add(Rest);
         actionList.Add(LookAt);
-    }
-
-    public Vector3 GetTargetPos() {
-        return new Vector3(argsDict["target x"], argsDict["target y"], argsDict["target z"]);
     }
 
     public abstract void SitDown();

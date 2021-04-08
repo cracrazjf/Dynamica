@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
 public class Body {
@@ -12,16 +13,17 @@ public class Body {
     public Rigidbody rigidbody;
     protected GameObject gameObject;
 
-    protected bool[] states;
+    protected Vector<float> states;
     protected List<string> stateLabelList;
     protected Dictionary<string, int> stateIndexDict;
-    protected Dictionary<string, bool> stateDict;
+    protected Dictionary<string, float> stateDict;
     
-    public bool[] GetStates() { return states; }
-    public bool GetState(string place) { return stateDict[place]; }
+    public Vector<float> GetStates() { return states; }
+    public float GetState(string place) { return stateDict[place]; }
     public List<string> GetStateLabels() { return stateLabelList; }
     public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
-    public Dictionary<string, bool> GetStateDict() { return stateDict; }
+    public Dictionary<string, float> GetStateDict() { return stateDict; }
+    
     public GameObject GetGameObject() { return gameObject; }
     public void SetGameObject(GameObject toSet) { this.gameObject = toSet; }
 
