@@ -8,6 +8,7 @@ public class Animal : Entity {
 
     public Camera visualInputCamera;
     public int cheatCommand;
+    public float cheatArgs;
     public bool noCheats = true;
 
     private static AnimalBody animalBody;
@@ -40,8 +41,6 @@ public class Animal : Entity {
     
 
     public override void UpdateEntity() {
-        
-        
         //Debug.Log("Updating an animal");
         if (finishedUpdate) {
             // get the system time here
@@ -90,8 +89,10 @@ public class Animal : Entity {
         } else { return "Female"; }
     }
 
-    public void SetCommand(string passed) {
-        cheatCommand = Int32.Parse(passed);
+    public void SetCommand(float command, float param) {
+        Debug.Log("Passed command B " + command + " with parameter of " + param);
+        cheatCommand = (int) command;
+        cheatArgs = param;
         noCheats = false;
     }
 

@@ -22,6 +22,9 @@ public class AnimalUI : MonoBehaviour {
     protected GameObject mainCam;
     protected GameObject halo;
 
+    protected Dropdown actionDrop;
+    protected Dropdown paramDrop;
+
     protected Text originalName;
     protected Text inputName;
     protected Transform panelNamer;
@@ -111,7 +114,15 @@ public class AnimalUI : MonoBehaviour {
             } else if (child.name == "GenoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassGenome);
-            } 
+            } else if (child.name == "ActionDropdown") {
+                actionDrop = child.gameObject.GetComponent<Dropdown>();
+            } else if (child.name == "ParamDropdown") {
+                paramDrop = child.gameObject.GetComponent<Dropdown>();
+            } else if (child.name == "CommandButton") {
+                Debug.Log("Found this button!");
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(PassAction);
+            }
         }
     }
 
@@ -120,21 +131,12 @@ public class AnimalUI : MonoBehaviour {
             if (child.name == "AnimalNamer") {
                 panelNamer = child;
             }
-            if (child.name == "CommandInput") {
-                commandField = child;
-            }
         }
         foreach (Transform child in panelNamer) {
             if (child.name == "CurrentName") {
                 originalName = child.gameObject.GetComponent<Text>();
             } else if (child.name == "InputName") {
                 inputName = child.gameObject.GetComponent<Text>();
-            }
-        }
-
-        foreach (Transform child in commandField) {
-            if (child.name == "InputName") {
-                inputCommand = child.gameObject.GetComponent<Text>();
             }
         }
     }
@@ -162,11 +164,11 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void PassAction() {
-        if (commandField.gameObject.TryGetComponent(out InputField activeInput)) {
-            string toSend = activeInput.text;
-            Debug.Log("Commanded to " + toSend);
-            selectedAnimal.SetCommand(toSend);
-            activeInput.text = "";
-        }
+        var command = actionDrop.value;
+        int param = Int32.Parse(paramDrop.options[paramDrop.value].text);
+
+        Debug.Log("Passed command A " + command + " with parameter of " + param);
+
+        selectedAnimal.SetCommand(command, param);
     }
 }

@@ -307,6 +307,7 @@ public class PrimateMotorSystem : MotorSystem {
 
     // Functional
     void CrouchDown() {
+        Debug.Log("Crouch was called");
         Vector3 toSend = abdomenTrans.position;
         double crouchHeight = thisBody.GetHeight()/1.5 + 0.5;
         if (toSend.y > crouchHeight) {

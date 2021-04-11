@@ -54,12 +54,16 @@ public abstract class MotorSystem
         states[currentIndex] = val;
     }
 
-    public void TakeAction(Vector<float> things) {
-        paramCopy = things;
+    public void SetState(int index, float val) {
+        string label  = stateLabelList[index];
+        stateDict[label] = val;
+        states[index] = val;
+    }
 
+    public void TakeAction(Vector<float> actions) {
         for(int i = 0; i < states.Count; i++) {
-            // switched from i == 1... my bad
-            if (things[i] == 1f) {
+            if (actions[i] != 0) {
+                SetState(i, actions[i]);
                 Debug.Log("Doing action at " + i);
                 actionList[i].DynamicInvoke();
             } 

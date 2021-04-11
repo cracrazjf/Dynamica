@@ -50,7 +50,7 @@ public class TestAI : AI {
             decidedActions[3] = 1;
         } else {
             int index = thisAnimal.cheatCommand;
-            decidedActions[index] = -1;
+            decidedActions[index] = thisAnimal.cheatArgs;
         }
         return decidedActions;
     }
