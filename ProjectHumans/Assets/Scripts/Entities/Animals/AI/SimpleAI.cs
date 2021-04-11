@@ -26,9 +26,6 @@ public class SimpleAI : AI {
         actionStates = motor.GetStates();
         actionStateLabelList = motor.GetStateLabels();
 
-        actionArguments = motor.GetArgs();
-        actionStateLabelList = motor.GetArgLabels();
-
         driveStateDict = drives.GetStateDict();
         traitDict = traits.GetTraitDict();
 
@@ -103,22 +100,21 @@ public class SimpleAI : AI {
 
     public void Consume() {
         // Check for both hands (or positions of potential holding)
-        List<GameObject> heldItems = thisAnimal.GetBody().GetHoldings();
-        for (int i = 0; i < heldItems.Count; i++) {
-            if (IsEdible(heldItems[i])) {
-                decidedActions[8] = 1;
-                decidedArgs[2] = i;
+        Dictionary<string, GameObject> heldItems = thisAnimal.GetBody().GetHoldings();
+        foreach(KeyValuePair<string, GameObject> entry in heldItems) {
+            if (IsEdible(entry.Value)) {
+                decidedActions[8] = 1f;
             }
         }
 
-        if (decidedActions[8] != 1) {
+        if (decidedActions[8] == 0f) {
             AcquireObject("Object");
         }
     }
 
     // Makes human stand if not already
     public void EnsureStanding() {
-        if (bodyStateDict["standing"]) {}
+        if (bodyStateDict["standing"] == 1f) {}
         else { decidedActions[3] = 1; }
     }
 
@@ -138,7 +134,6 @@ public class SimpleAI : AI {
         if (target != null) {
             Debug.Log("Targeting a " + target.name);
             if (IsReachable(target)) {
-                SetTargetArgs(target.transform.position);
                 decidedActions[6] = 1;
             } else { MoveToPos(target.transform.position); }
         } else { SearchForObjects("Object"); }
@@ -152,7 +147,6 @@ public class SimpleAI : AI {
             Debug.Log("No targets found");
             for(int i = 0; i < 180; i++) {
                 decidedActions[4] = 1;
-                decidedArgs[1] = 1;
                 sightedTargets = GetSightedTargets(tag);
             }
             Explore();
@@ -168,7 +162,6 @@ public class SimpleAI : AI {
     public void MoveToPos(Vector3 position) {
         EnsureStanding();
         FacePosition(position);
-        decidedArgs[0] = 1;
 
         if ((animalTransform.position - position).magnitude > .1) { 
             //Debug.Log("Walking to and fro"); 
@@ -183,8 +176,8 @@ public class SimpleAI : AI {
         if(!IsFacing(targetPos)) {
             decidedActions[4] = 1;
             if (GetRelativePosition(targetPos) == -1) {
-                decidedArgs[1] = -1;
-            } else { decidedArgs[1] = 1; }
+                //decidedArgs[1] = -1;
+            } //else { decidedArgs[1] = 1; }
         }
     }
 
@@ -258,12 +251,6 @@ public class SimpleAI : AI {
         return toReturn;
     }
 
-    // Handles these parameters 
-    public void SetTargetArgs(Vector3 targetPos) {
-            decidedArgs[3] =  (int) targetPos.x;
-            decidedArgs[4] =  (int) targetPos.y;
-            decidedArgs[5] =  (int) targetPos.z;
-    }
     
     // Called when AI has to see
     public void UpdateFOV(Transform checkingObject, float maxAngle, float maxRadius) {

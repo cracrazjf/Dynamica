@@ -13,7 +13,7 @@ public class TestAI : AI {
     int actionCount;
     int numUpdates = 800;
     
-    Dictionary<string, bool> bodyStateDict;
+    Dictionary<string, float> bodyStateDict;
     Dictionary<string, float> driveStateDict;
     Dictionary<string, float> traitDict;
 
@@ -25,9 +25,6 @@ public class TestAI : AI {
 
         actionStates = motor.GetStates();
         actionStateLabelList = motor.GetStateLabels();
-
-        actionArguments = motor.GetArgs();
-        actionStateLabelList = motor.GetArgLabels();
 
         driveStateDict = drives.GetStateDict();
         traitDict = traits.GetTraitDict();

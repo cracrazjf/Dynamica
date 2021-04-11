@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -72,7 +73,7 @@ public class AnimalUI : MonoBehaviour {
     public void UpdatePanel() {
         halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
 
-        float[] passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
+        Vector<float> passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
 
         goalText.text = selectedAnimal.GetAction();
         stateText = new Text[5];

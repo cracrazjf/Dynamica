@@ -380,7 +380,7 @@ public class NeuralAI : AI
 
     float distanceCounter = 0.0f;
     float rotationCounter = 0.0f;
-    public override Matrix<float> ChooseAction()
+    public override Vector<float> ChooseAction()
     {
         
 
@@ -415,6 +415,6 @@ public class NeuralAI : AI
 
 
 
-        return networkLayerDict["outputActionLayer"].Output;
+        return networkLayerDict["outputActionLayer"].Output.Row(0);
     }
 }

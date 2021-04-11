@@ -17,8 +17,13 @@ public class PrimateBody : AnimalBody {
     }
 
     public override void UpdateBodyStates() {
-        SetState("sitting", CheckSitting());
-        SetState("laying", CheckSitting());
+        if (CheckSitting()) {
+            SetState("sitting", 1f);
+        }
+        if (CheckLaying()) {
+            SetState("Laying", 1f);
+        }
+    
     }
     
     public override bool CheckSitting() {

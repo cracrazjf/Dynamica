@@ -35,7 +35,7 @@ public abstract class MotorSystem
             "taking steps",// 5, now a proportion
             "hand action", // 6, release/maintain/grab
             "active hand", // 7  
-            "consuming",   // 8
+            "consuming",   // 8, set to consumable if ongoing
             "sleeping",    // 9, awake/maintain/fall asleep
             "resting",     // 11
             "looking",     // 12
@@ -54,7 +54,7 @@ public abstract class MotorSystem
 
     public void TakeAction(Vector<float> things) {
 
-        for(int i = 0; i < states.Length; i++) {
+        for(int i = 0; i < states.Count; i++) {
             // switched from i == 1... my bad
             if (things[i] == 1f) {
                 //Debug.Log("Doing action at " + i);
@@ -64,7 +64,7 @@ public abstract class MotorSystem
     }
 
     void InitStates(List<string> passedList) {
-        states = new Vector<float>();
+        states = Vector<float>.Build.Dense(passedList.Count);
         stateLabelList = passedList;
         stateIndexDict = new Dictionary<string, int>();
         stateDict = new Dictionary<string, float>();

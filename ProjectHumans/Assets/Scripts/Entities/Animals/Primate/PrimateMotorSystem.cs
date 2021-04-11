@@ -25,7 +25,7 @@ public class PrimateMotorSystem : MotorSystem {
 
     public override void SitUp() {
         //Debug.Log("SitUp was called");
-        if (thisBody.GetState("laying")) {
+        if (thisBody.GetState("laying") == 1f) {
             BendLegs(45f, 0f, true);
         } else {
             thisBody.RotateJointTo("Hips", new Quaternion(0,0,0,0)); 
@@ -38,7 +38,7 @@ public class PrimateMotorSystem : MotorSystem {
     public override void LayDown() {
         Debug.Log("Tried to lay down");
 
-        if (thisAnimal.GetBodyState("sitting") || thisAnimal.GetBodyState("laying")) {
+        if ((thisAnimal.GetBodyState("sitting")) || (thisAnimal.GetBodyState("laying"))) {
             Collapse();
         } else {
             SitDown();
@@ -61,14 +61,14 @@ public class PrimateMotorSystem : MotorSystem {
     // Functional
     public override void Rotate() {
         //Debug.Log("Rotating");
-        float rotatingSpeed = argsDict["rotation proportion"] * thisAnimal.GetPhenotype().GetTrait("max_rotation");
+        float rotatingSpeed = stateDict["rotation proportion"] * thisAnimal.GetPhenotype().GetTrait("max_rotation");
         thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
     }
 
     // Functional
     public override void TakeSteps() {
         Debug.Log("Walking");
-        float stepProportion = argsDict["step proportion"] * thisAnimal.GetPhenotype().GetTrait("max_step");
+        float stepProportion = stateDict["step proportion"] * thisAnimal.GetPhenotype().GetTrait("max_step");
         thisBody.TranslateBodyTo(thisBody.globalPos.forward * stepProportion);
     }
 
@@ -77,7 +77,7 @@ public class PrimateMotorSystem : MotorSystem {
         Debug.Log("Tried to pick something up");
 
         GameObject holder = thisBody.GetSkeleton("Hand_L");
-        if (argsDict["active right"] == 1f) {
+        if (stateDict["active right"] == 1f) {
             holder = thisBody.GetSkeleton("Hand_R");
         } 
         
@@ -92,7 +92,7 @@ public class PrimateMotorSystem : MotorSystem {
         Debug.Log("Tried to set something down");
 
         GameObject holder = thisBody.GetSkeleton("Hand_L");
-        if (argsDict["active right"] == 1f) {
+        if (stateDict["active right"] == 1f) {
             holder = thisBody.GetSkeleton("Hand_R");
         }
 
@@ -108,7 +108,7 @@ public class PrimateMotorSystem : MotorSystem {
         Debug.Log("Tried to eat something");
         
         GameObject holder = thisBody.GetSkeleton("Hand_L");
-        if (argsDict["active right"] == 1f) {
+        if (stateDict["active right"] == 1f) {
             holder = thisBody.GetSkeleton("Hand_R");
         }
 
@@ -125,7 +125,7 @@ public class PrimateMotorSystem : MotorSystem {
         //thisAnimal.ToggleBodyPart("Eye_L", true);
         //thisAnimal.ToggleBodyPart("Eye_R", true);
         
-        thisBody.SetState("sleeping", false);  
+        thisBody.SetState("sleeping", 0f);  
     }
 
     // Nonfunctional - no sleep adjustment
@@ -136,7 +136,7 @@ public class PrimateMotorSystem : MotorSystem {
         //thisAnimal.ToggleBodyPart("Eye_R", false);
         Collapse();
 
-        thisBody.SetState("sleeping", true);
+        thisBody.SetState("sleeping", 1f);
         thisBody.SleepAdjust();
     }
     
@@ -184,14 +184,14 @@ public class PrimateMotorSystem : MotorSystem {
         string arm = "Hand_L";
         Vector3 goalPos = primateBody.localStartLeft;
 
-        if (argsDict["active right"] == 1f) {
+        if (stateDict["active right"] == 1f) {
             arm = "Hand_R";
             goalPos = primateBody.localStartRight;
         }
 
-        float xTrans = argsDict["reach proportion x"] * thisBody.xMax;
-        float yTrans = argsDict["reach proportion y"] * thisBody.yMax;
-        float zTrans = argsDict["reach proportion z"] * thisBody.zMax;
+        float xTrans = stateDict["reach proportion x"] * thisBody.xMax;
+        float yTrans = stateDict["reach proportion y"] * thisBody.yMax;
+        float zTrans = stateDict["reach proportion z"] * thisBody.zMax;
         goalPos += new Vector3(xTrans, yTrans, zTrans);
 
         thisBody.EnsureKinematic(arm);
@@ -204,7 +204,7 @@ public class PrimateMotorSystem : MotorSystem {
     // Untested
     private bool ArmTo(Vector3 targetPos) {
         string arm = "Hand_L";
-        if (argsDict["active right"] == 1f) {
+        if (stateDict["active right"] == 1f) {
             arm = "Hand_R";
         }
 
@@ -218,7 +218,7 @@ public class PrimateMotorSystem : MotorSystem {
     // Functional
     private void DropArm() {
         string arm = "Hand_L";
-        if (argsDict["active right"] == 1f) {
+        if (stateDict["active right"] == 1f) {
             arm = "Hand_R";
         }
 
@@ -292,15 +292,15 @@ public class PrimateMotorSystem : MotorSystem {
 
     // Untested
     private void UpdateHands() {
-        if (argsDict["action right"] == 1f) {
+        if (stateDict["action right"] == 1f) {
             GrabWithHolder("Hand_R");
-        } else if (argsDict["action right"] == -1f) {
+        } else if (stateDict["action right"] == -1f) {
             RemoveFromHolder("Hand_R");
         }
 
-        if (argsDict["action left"] == 1f) {
+        if (stateDict["action left"] == 1f) {
             GrabWithHolder("Hand_L");
-        } else if (argsDict["action left"] == -1f) {
+        } else if (stateDict["action left"] == -1f) {
             RemoveFromHolder("Hand_R");
         }
     }

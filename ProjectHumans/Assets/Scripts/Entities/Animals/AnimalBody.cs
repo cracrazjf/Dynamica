@@ -89,16 +89,16 @@ public class AnimalBody : Body {
 
     // Initializes state information but also calls standard height and holder info
     public void InitStates(List<string> passedList) {
-        states = new bool[passedList.Count];
+        states = Vector<float>.Build.Dense(passedList.Count);
         stateLabelList = passedList;
         stateIndexDict = new Dictionary<string, int>();
-        stateDict = new Dictionary<string, bool>();
+        stateDict = new Dictionary<string, float>();
 
         if (passedList != null){
             for (int i = 0; i < passedList.Count; i++) {
-                states[i] = false;
+                states[i] = 0f;
                 stateIndexDict[passedList[i]] = i;
-                stateDict[passedList[i]] = false;
+                stateDict[passedList[i]] = 0f;
             }
         } else { Debug.Log("No body states passed to this animal"); }
     }
@@ -109,7 +109,7 @@ public class AnimalBody : Body {
         this.gameObject.SetActive(true);
     }
 
-    public void SetState(string label, bool passed) {
+    public void SetState(string label, float passed) {
         stateDict[label] = passed;
         int currentIndex = stateIndexDict[label];
         states[currentIndex] = passed;

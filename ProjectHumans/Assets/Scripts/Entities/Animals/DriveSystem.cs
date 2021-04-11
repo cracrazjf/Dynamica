@@ -43,7 +43,7 @@ public class DriveSystem
    void InitStates(List<string> passedList) {
         thisTraitDict = thisAnimal.GetPhenotype().GetTraitDict();
 
-        states = new Vector<float>();
+        states = Vector<float>.Build.Dense(passedList.Count);
         stateLabelList = passedList;
         stateIndexDict = new Dictionary<string, int>();
         stateDict = new Dictionary<string, float>();
