@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using MathNet.Numerics.LinearAlgebra;
 
 public class TestAI : AI {
     Transform animalTransform;
@@ -33,18 +34,26 @@ public class TestAI : AI {
         actionCount = 0;
     }
 
-    //public override int[,] ChooseAction(float[ , ] visualInput) {
-    //    decidedActions = new int[actionStates.Length];
-    //    decidedArgs = new int[actionArguments.Length];
-    //    int[ , ] toReturn = new int[2 , actionStates.Length];
-    //    toReturn[1,0] = 1;
-    //    toReturn[1,1] = 1;
-    //    if(thisAnimal.noCheats) {
-    //        toReturn[0, 3] = 1;
-    //    } else {
-    //        int index = thisAnimal.cheatCommand;
-    //        toReturn[0, index] = 1;
-    //    }
+    // public override Vector<float> ChooseAction(Matrix<float> visualInput) {
+    //     var toReturn = Vector<float>.Build.Dense(15);
+    //     toReturn[1] = 1;
+
+    //     return toReturn;
+    // }
+
+    // Untested but should be good to go
+    public override Vector<float> ChooseAction() {
+        decidedActions = Vector<float>.Build.Dense(actionStates.Count);
+        
+        //check for input cheats
+        if (thisAnimal.noCheats) {
+            decidedActions[3] = 1;
+        } else {
+            int index = thisAnimal.cheatCommand;
+            decidedActions[index] = -1;
+        }
+        return decidedActions;
+    }
 
         //Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);
 
@@ -61,19 +70,22 @@ public class TestAI : AI {
         // }
 
 
-        // "sitting down",// 0
-        // "sitting up",  // 1
-        // "laying down", // 2
-        // "standing up", // 3
-        // "rotating",    // 4
-        // "taking steps",// 5
-        // "picking up",  // 6
-        // "setting down",// 7 
-        // "consuming",   // 8
-        // "waking up",   // 9
-        // "sleeping",    // 10
-        // "resting",     // 11
-        // "looking"      // 12
+        // "crouching",   // 0, negative is down 
+        // "sitting",     // 1, negative is down
+        // "laying down", // 2 -1 or 1 (or 0 if not switched)
+        // "standing up", // 3 -1 or 1 (or 0 if not switched)
+        // "rotating",    // 4, now a proportion
+        // "taking steps",// 5, now a proportion
+        // "hand action", // 6, release/maintain/grab
+        // "consuming",   // 7, set to consumable if ongoing
+        // "sleeping",    // 8, awake/maintain/fall asleep
+        // "resting",     // 9 -1 or 1 (or 0 if not switched)
+        // "looking",     // 10 -1 or 1 (or 0 if not switched)
+        // "RP x",        // 11  -1 to 1, proportion of max range from start pos
+        // "RP y",        // 12
+        // "RP z"         // 13
+        // "active hand", // 7  -1 or 1 (or 0 if not switched)
+        
     //    return toReturn;
     //}
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using MathNet.Numerics.LinearAlgebra;
 
 public class SimpleAI : AI {
     Transform animalTransform;
@@ -32,31 +33,19 @@ public class SimpleAI : AI {
         InitGoalDict();
     }
 
-    //public override int[,] ChooseAction(float[ , ] visualInput) {
-    //    decidedActions = new int[actionStates.Length];
-    //    decidedArgs = new int[actionArguments.Length];
+    public override Vector<float> ChooseAction() {
+       decidedActions = Vector<float>.Build.Dense(actionStates.Count);
+
+       animalTransform = thisAnimal.GetBody().globalPos;
+       UpdateFOV(animalTransform, 45, 10);
+
+       //Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);
         
-    //    int[ , ] toReturn = new int[2 , actionStates.Length];
-
-    //    animalTransform = thisAnimal.GetBody().globalPos;
-    //    UpdateFOV(animalTransform, 45, 10);
-
-    //    //Debug.DrawRay(animalTransform.position, animalTransform.forward * 10, Color.yellow);
-        
-    //    ChooseGoal();
-    //    Debug.Log("Current goal is: " + currentGoal);
-    //    goalDict[currentGoal].DynamicInvoke();
-    //    decidedActions[12] = 1;
-
-    //    for( int i = 0; i < decidedActions.Length; i++) {
-    //        toReturn[0 ,i ] = decidedActions[i];
-    //    }
-
-    //    for( int j = 0; j < decidedActions.Length; j++) {
-    //        toReturn[1 , j] = decidedArgs[j];
-    //    }
-    //    return toReturn;
-    //}
+       ChooseGoal();
+       Debug.Log("Current goal is: " + currentGoal);
+       
+       return decidedActions;
+    }
 
     public void ChooseGoal() {
         string toSet = "None";
