@@ -14,7 +14,6 @@ public class PlantUI : MonoBehaviour {
     protected bool showPanel = false;
 
     protected Button tempButton;
-    protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject mainCam;
     protected GameObject halo;
@@ -36,14 +35,6 @@ public class PlantUI : MonoBehaviour {
         if (showPanel) { UpdatePanel(); }
     }
 
-    public void InitXButton(){
-        foreach (Transform child in panel.transform) {
-            if (child.name == "ClosePanelButton") {
-                closePanelButton = child.gameObject.GetComponent<Button>();
-            } 
-            closePanelButton.onClick.AddListener(ExitPanel);
-        }
-    }
 
     public void UpdatePanel(){
         selectedPlant = World.GetPlant(passed.name);
@@ -60,6 +51,12 @@ public class PlantUI : MonoBehaviour {
             } else if (child.name == "GenoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassGenome);
+            } else if (child.name == "TrashButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(TrashEntity);
+            } else if (child.name == "ClosePanelButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ExitPanel);
             }
         }
     }
@@ -89,5 +86,10 @@ public class PlantUI : MonoBehaviour {
     public void Rename() {
         selectedPlant.SetDisplayName(inputName.text);
         panelNamer.text = "";
+    }
+
+    public void TrashEntity() {
+        World.RemoveEntity(selectedPlant.GetName());
+        ExitPanel();
     }
 }

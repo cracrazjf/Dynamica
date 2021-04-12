@@ -17,7 +17,6 @@ public class AnimalUI : MonoBehaviour {
     protected bool showPanel = false;
 
     protected Button tempButton;
-    protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject mainCam;
     protected GameObject halo;
@@ -28,6 +27,7 @@ public class AnimalUI : MonoBehaviour {
     protected Text originalName;
     protected Text inputName;
     protected Transform panelNamer;
+    protected Transform buttonParent;
 
     protected Text inputCommand;
     protected Transform commandField;
@@ -38,34 +38,25 @@ public class AnimalUI : MonoBehaviour {
 
     private void Start() {
         InitPanel();
+        InitButtons();
         InitNamer();
     }
     
     private void Update() {
-        if (needsUpdate) {
-            OnAwake();
-        }
+        if (needsUpdate) { OnAwake(); }
         if (showPanel) { UpdatePanel(); }
     }
 
     public void OnAwake() {
         selectedAnimal = World.GetAnimal(passed.name);
         originalName.text = selectedAnimal.GetDisplayName();
+        InitDriveDisplays();
 
         panel.SetActive(true);
         halo.SetActive(true);
 
         showPanel = true;
         needsUpdate = false;
-    }
-
-    public void InitXButton(){
-        foreach (Transform child in panel.transform) {
-            if (child.name == "ClosePanelButton") {
-                closePanelButton = child.gameObject.GetComponent<Button>();
-            } 
-            closePanelButton.onClick.AddListener(ExitPanel);
-        }
     }
 
     public void PassAnimalCam() {
@@ -75,16 +66,12 @@ public class AnimalUI : MonoBehaviour {
 
     public void UpdatePanel() {
         halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
-
-        Vector<float> passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
-
         goalText.text = selectedAnimal.GetAction();
-        stateText = new Text[5];
-        for (int i = 0; i < 5; i++) {
-            string label = selectedAnimal.GetDriveSystem().GetStateLabels()[i];
-            string objectName = label + "Text";
-            stateText[i] = GameObject.Find(objectName).GetComponent<Text>();
-        }
+        UpdateDriveDisplays();
+    }
+
+    private void UpdateDriveDisplays() {
+        Vector<float> passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
         for(int i = 0; i < 5; i++) {
             float toDisplay = (passedDrives[i] * 100f);
             // Debug.Log(toDisplay);
@@ -108,30 +95,48 @@ public class AnimalUI : MonoBehaviour {
         foreach (Transform child in panel.transform) {
             if (child.name == "GoalInfo") {
                 goalText = child.gameObject.GetComponentInChildren<Text>();
-            } else if (child.name == "CenterObjectButton") {
+            } else if (child.name == "ActionDropdown") {
+                actionDrop = child.gameObject.GetComponent<Dropdown>();
+            } else if (child.name == "ParamDropdown") {
+                paramDrop = child.gameObject.GetComponent<Dropdown>();
+            } else if (child.name == "AnimalButtons") {
+                buttonParent = child;
+            } else if (child.name == "AnimalNamer") {
+                panelNamer = child;
+            } 
+        }
+    }
+
+    public void InitDriveDisplays() {
+        stateText = new Text[5];
+        for (int i = 0; i < 5; i++) {
+            string objectName = (selectedAnimal.GetDriveSystem().GetStateLabels()[i]) + "Text";
+            stateText[i] = GameObject.Find(objectName).GetComponent<Text>();
+        }
+    }
+
+    public void InitButtons() {
+        foreach (Transform child in buttonParent) {
+            if (child.name == "CenterObjectButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassCenter);
             } else if (child.name == "GenoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassGenome);
-            } else if (child.name == "ActionDropdown") {
-                actionDrop = child.gameObject.GetComponent<Dropdown>();
-            } else if (child.name == "ParamDropdown") {
-                paramDrop = child.gameObject.GetComponent<Dropdown>();
             } else if (child.name == "CommandButton") {
-                Debug.Log("Found this button!");
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassAction);
-            }
+            } else if (child.name == "ClosePanelButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ExitPanel);
+            } else if (child.name == "TrashButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(TrashEntity);
+            } 
         }
     }
 
     public void InitNamer() {
-        foreach (Transform child in panel.transform) {
-            if (child.name == "AnimalNamer") {
-                panelNamer = child;
-            }
-        }
         foreach (Transform child in panelNamer) {
             if (child.name == "CurrentName") {
                 originalName = child.gameObject.GetComponent<Text>();
@@ -161,6 +166,11 @@ public class AnimalUI : MonoBehaviour {
             selectedAnimal.SetDisplayName(activeInput.text);
             activeInput.text = "";
         }
+    }
+
+    public void TrashEntity() {
+        World.RemoveEntity(selectedAnimal.GetName());
+        ExitPanel();
     }
 
     public void PassAction() {

@@ -31,7 +31,13 @@ public class PrimateBody : AnimalBody {
         return Physics.Raycast(abdomen.transform.position, -abdomen.transform.up, bodyExtent + 0.2f);
     }
 
-    bool CheckLaying() {
+    public override bool CheckCrouching() { 
+        Vector3 toSend = abdomen.transform.position;
+        double crouchHeight = GetHeight()/1.5 + 0.5;
+        return (toSend.y > crouchHeight);
+    }
+
+    public override bool CheckLaying() {
         return (abdomen.transform.position.y < 1f);
     }
 }

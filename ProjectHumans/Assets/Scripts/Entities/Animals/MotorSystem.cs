@@ -61,12 +61,16 @@ public abstract class MotorSystem
     }
 
     public void TakeAction(Vector<float> actions) {
-        for(int i = 0; i < states.Count; i++) {
-            if (actions[i] != 0) {
-                SetState(i, actions[i]);
-                Debug.Log("Doing action at " + i);
-                actionList[i].DynamicInvoke();
+        if (actions[11] != 1) {
+            for(int i = 0; i < states.Count; i++) {
+                if (actions[i] != 0) {
+                    SetState(i, actions[i]);
+                    Debug.Log("Doing action at " + i);
+                    actionList[i].DynamicInvoke();
+                }
             } 
+        } else {
+            Rest();
         }
     }
 

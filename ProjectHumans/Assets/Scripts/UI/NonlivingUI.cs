@@ -14,7 +14,6 @@ public class NonlivingUI : MonoBehaviour {
     protected bool showPanel = false;
 
     protected Button tempButton;
-    protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject mainCam;
     protected GameObject halo;
@@ -36,15 +35,6 @@ public class NonlivingUI : MonoBehaviour {
         if (showPanel) { UpdatePanel(); }
     }
 
-    public void InitXButton(){
-        foreach (Transform child in panel.transform) {
-            if (child.name == "ClosePanelButton") {
-                closePanelButton = child.gameObject.GetComponent<Button>();
-            } 
-            closePanelButton.onClick.AddListener(ExitPanel);
-        }
-    }
-
     public void UpdatePanel(){}
 
     public static void ReceiveClicked(GameObject clicked) {
@@ -63,6 +53,12 @@ public class NonlivingUI : MonoBehaviour {
             if (child.name == "CenterObjectButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassCenter);
+            } else if (child.name == "TrashButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(TrashEntity);
+            } else if (child.name == "ClosePanelButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ExitPanel);
             }
         }
     }
@@ -82,5 +78,10 @@ public class NonlivingUI : MonoBehaviour {
     public void Rename() {
         selectedObject.SetDisplayName(inputName.text);
         panelNamer.text = "";
+    }
+
+    public void TrashEntity() {
+        World.RemoveEntity(selectedObject.GetName());
+        ExitPanel();
     }
 }

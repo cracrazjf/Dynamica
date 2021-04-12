@@ -2204,6 +2204,7 @@ GameObject:
   - component: {fileID: 8905028590127705697}
   - component: {fileID: 2563372436386249264}
   - component: {fileID: 5196529259258431910}
+  - component: {fileID: 3527971713093234284}
   m_Layer: 8
   m_Name: Foot_R
   m_TagString: Skeleton
@@ -2385,6 +2386,19 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!135 &3527971713093234284
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6998396350381752046}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.15
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7114162686281561988
 GameObject:
   m_ObjectHideFlags: 0
@@ -3011,6 +3025,7 @@ GameObject:
   - component: {fileID: 8899340081345544846}
   - component: {fileID: 4193204673264549399}
   - component: {fileID: 2450271988928189278}
+  - component: {fileID: 6659782050845683248}
   m_Layer: 8
   m_Name: Foot_L
   m_TagString: Skeleton
@@ -3192,6 +3207,19 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!135 &6659782050845683248
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7851431872238800062}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.15
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8588368842040449076
 GameObject:
   m_ObjectHideFlags: 0
@@ -3848,7 +3876,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.4, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: -0.35999995, z: 0}
+  m_ConnectedAnchor: {x: 0, y: -0.3599999, z: 0}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -4332,7 +4360,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.4, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: -0.35999995, z: 0}
+  m_ConnectedAnchor: {x: 0, y: -0.3599999, z: 0}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0

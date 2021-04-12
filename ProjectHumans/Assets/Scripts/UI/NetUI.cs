@@ -13,8 +13,8 @@ public class NetUI : MonoBehaviour {
     protected bool togglePanel = false;
 
     protected Button tempButton;
-    protected Button closePanelButton;
     protected GameObject panel;
+    protected GameObject header;
     protected GameObject mainCam;
     protected GameObject halo;
 
@@ -38,15 +38,6 @@ public class NetUI : MonoBehaviour {
         }
     }
 
-    public void InitXButton(){
-        foreach (Transform child in panel.transform) {
-            if (child.name == "ClosePanelButton") {
-                closePanelButton = child.gameObject.GetComponent<Button>();
-            } 
-            closePanelButton.onClick.AddListener(ExitPanel);
-        }
-    }
-
     public static void ReceiveClicked(GameObject clicked) {
         // selectedObject = World.GetObject(clicked.name);
         passed = clicked;
@@ -57,7 +48,21 @@ public class NetUI : MonoBehaviour {
     public void InitPanel() {
         panel = GameObject.Find("BrainPanel");
         panel.SetActive(false);
+
+        foreach (Transform child in panel.transform) {
+            if (child.name == "Header") {
+                header = child.gameObject;
+            }
+        }
+
+        foreach (Transform child in header.transform) {
+            if (child.name == "ClosePanelButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ExitPanel);
+            } 
+        }
     }
+    
     public void InitNamer(){}
 
     public void TogglePanel() {

@@ -37,6 +37,7 @@ public class MainUI : MonoBehaviour
     // UI content 
     private GameObject alwaysPanel;
     private GameObject infoPanel;
+    private GameObject optionPanel;
     private GameObject pauseObj;
     private Slider rotationSlider;
     public GameObject rotatePub;
@@ -49,6 +50,7 @@ public class MainUI : MonoBehaviour
     private static bool isPaused = false;
     private bool isFF = false;
     private bool toggleHelp;
+    private bool toggleOptions;
     
     void Start() {
         InitPanels();
@@ -69,6 +71,7 @@ public class MainUI : MonoBehaviour
     public void InitPanels() {
         alwaysPanel = GameObject.Find("AlwaysPanel");
         infoPanel = GameObject.Find("InfoPanel");
+        optionPanel = GameObject.Find("OptionPanel");
         pauseObj = GameObject.Find("PauseText");
         
         infoPanel.SetActive(false);
@@ -89,6 +92,9 @@ public class MainUI : MonoBehaviour
             } else if (child.name == "WalkButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ToggleView);
+            } else if (child.name == "SettingsButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ToggleOptions);
             }
         }
 
@@ -96,7 +102,13 @@ public class MainUI : MonoBehaviour
             if (child.name == "CloseInfoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ToggleHelp);
-            } 
+            } else if (child.name == "SettingsButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ToggleOptions);
+            } else if (child.name == "ExitButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(QuitPlay);
+            }
         }
     }
 
@@ -243,6 +255,14 @@ public class MainUI : MonoBehaviour
         } else { ToggleHelp(); }
     }
 
+    public void QuitPlay() {
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #else
+        Application.Quit();
+        #endif
+    }
+
     // Toggles
 
     // Flips from first to third person or vice versa
@@ -265,6 +285,11 @@ public class MainUI : MonoBehaviour
     public void ToggleHelp() {
         toggleHelp = !toggleHelp;
         infoPanel.SetActive(toggleHelp);
+    }
+
+    public void ToggleOptions() {
+        toggleOptions = !toggleOptions;
+        optionPanel.SetActive(toggleOptions);
     }
 
     public void ToggleRotate() {

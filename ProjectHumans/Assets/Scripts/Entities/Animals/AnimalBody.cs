@@ -31,7 +31,8 @@ public class AnimalBody : Body {
     public AnimalBody(Animal animal, Vector3 position) : base((Entity) animal, position) {
         stateLabelList = new List<string> {
             "standing", 
-            "sitting", 
+            "sitting",
+            "crouching",
             "laying",
             "alive"
         };
@@ -120,6 +121,10 @@ public class AnimalBody : Body {
     public virtual void UpdateSkeletonStates() { Debug.Log("No update skeleton states defined for this animal"); }
     
     public virtual bool CheckSitting() { return false; }
+
+    public virtual bool CheckCrouching() { return false; }
+
+    public virtual bool CheckLaying() { return false; }
 
 
     // do not use

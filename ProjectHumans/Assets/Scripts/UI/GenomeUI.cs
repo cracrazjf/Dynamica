@@ -22,13 +22,11 @@ public class GenomeUI : MonoBehaviour {
     protected Button tempButton;
     protected Button closePanelButton;
     protected GameObject panel;
+    protected GameObject header;
     protected GameObject mainCam;
-
-
 
     private void Start() {
         InitPanel();
-        InitXButton();
     }
     
    private void Update() {
@@ -46,15 +44,6 @@ public class GenomeUI : MonoBehaviour {
 
         showPanel = true;
         needsUpdate = false;
-    }
-
-    public void InitXButton(){
-        foreach (Transform child in panel.transform) {
-            if (child.name == "ClosePanelButton") {
-                closePanelButton = child.gameObject.GetComponent<Button>();
-            } 
-            closePanelButton.onClick.AddListener(ExitPanel);
-        }
     }
 
     public void UpdatePanel(){
@@ -89,16 +78,26 @@ public class GenomeUI : MonoBehaviour {
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
-            if (child.name == "ToggleMuteButton") {
-                //muteText = child.gameObject.GetComponentInChildren<Text>();
-                //tempButton = child.gameObject.GetComponent<Button>();
-                //tempButton.onClick.AddListener(ToggleMutable);
-                child.gameObject.SetActive(false);
+            if (child.name == "Header") {
+                header = child.gameObject;
             } else if (child.name == "GeneticScrollView") {
                 displayText = child.gameObject.GetComponentInChildren<Text>();
             } 
         }
+
+        foreach (Transform child in header.transform) {
+            if (child.name == "ToggleMuteButton") {
+                muteText = child.gameObject.GetComponentInChildren<Text>();
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ToggleMutable);
+                child.gameObject.SetActive(false);
+            } else if (child.name == "ClosePanelButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ExitPanel);
+            } 
+        }
     }
+        
 
     public void ExitPanel() {
         panel.SetActive(false);

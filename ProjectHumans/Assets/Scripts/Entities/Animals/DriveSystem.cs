@@ -73,7 +73,7 @@ public class DriveSystem
             float toUpdate = GetStateDict()[label] + changeValue;
             SetState(label, toUpdate);
             // Ensure all drive states are in bounds
-            if (this.stateDict[label] < 0f) { this.SetState(label, 0.0f); }
+            if (this.stateDict[label] < -1f) { this.SetState(label, -1f); }
             else if (this.stateDict[label] > 1f) { this.SetState(label, 1.0f); }
         }
 
