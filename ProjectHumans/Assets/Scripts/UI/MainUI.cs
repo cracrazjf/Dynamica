@@ -39,6 +39,7 @@ public class MainUI : MonoBehaviour
     private GameObject infoPanel;
     private GameObject optionPanel;
     private GameObject pauseObj;
+    private GameObject bannerObj;
     private Slider rotationSlider;
     public GameObject rotatePub;
     private Slider movementSlider;
@@ -73,10 +74,12 @@ public class MainUI : MonoBehaviour
         infoPanel = GameObject.Find("InfoPanel");
         optionPanel = GameObject.Find("OptionsPanel");
         pauseObj = GameObject.Find("PauseText");
+        bannerObj = GameObject.Find("BrainText");
         
         infoPanel.SetActive(false);
         optionPanel.SetActive(false);
         pauseObj.SetActive(false);
+        bannerObj.SetActive(false);
     }
 
     public void InitButtons() {
@@ -146,6 +149,7 @@ public class MainUI : MonoBehaviour
         // Always called in case player goes under plane
         ResolveAltitude();
         if (followingAnimal) {
+            bannerObj.SetActive(true);
             transform.position = followedCam.transform.position;
             transform.rotation = followedCam.transform.rotation;
 
@@ -280,6 +284,7 @@ public class MainUI : MonoBehaviour
             ToggleView();
             VerticalBump(2f);
         } else if (followingAnimal) {
+            bannerObj.SetActive(false);
             followingAnimal = false;
             VerticalBump(2f);
         } else { ToggleHelp(); }

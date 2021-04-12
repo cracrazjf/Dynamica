@@ -16,7 +16,7 @@ public class Item : Entity {
         if (this.GetSpecies() == "Apple") {
             float poison = this.GetPhenotype().GetTraitDict()["poison"];
             if (poison == 1) {
-                this.gameObject.GetComponent<MeshRenderer> ().material.color = new Color(1,0,1,1);
+                this.gameObject.GetComponent<MeshRenderer> ().material.color = new Color(1f,0.75f,.25f,1f);
             }
         }
     }
