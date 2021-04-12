@@ -10,6 +10,8 @@ public class PrimateMotorSystem : MotorSystem {
     Transform abdomenTrans;
     PrimateBody primateBody;
     Vector3 goalPos;
+    int footUpdates = 0;
+    bool rightStep = true; // change this at some point like handedness
 
     public PrimateMotorSystem(Animal animal) : base(animal) {
         Debug.Log("An ape was born!");
@@ -51,18 +53,26 @@ public class PrimateMotorSystem : MotorSystem {
     public override void TakeSteps() {
         Debug.Log("Walking");
 
-        float degree = stateDict["walking"] * 0.5f;
-        float stepProportion = degree * thisAnimal.GetPhenotype().GetTrait("max_step");
+        float degree = stateDict["taking steps"];
+        float stepProportion = degree * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.5f;
 
-        thisBody.TranslateBodyTo(thisBody.globalPos.forward * stepProportion);
+        if (footUpdates < 500) {
+            LegUp(rightStep);
+            footUpdates++;
+        } else {
+            footUpdates = 0;
+            rightStep = !rightStep;
+        }
+
+        abdomenTrans.Translate(thisBody.globalPos.forward * stepProportion * Time.deltaTime);
     }
     
     public override void UseHand() {
         GameObject holder = GetActiveHand();
         if (stateDict["hand action"] == 1f) {
-            GrabWithHolder(holder);
+            PickUp();
         } else {
-            RemoveFromHolder(holder);
+            DropArm();
         }
     }
 
@@ -77,7 +87,7 @@ public class PrimateMotorSystem : MotorSystem {
     }
 
     public override void Sleep() {
-        if (stateDict["cosuming"] == 1f) {
+        if (stateDict["consuming"] == 1f) {
             FallAsleep();
         } else { WakeUp(); }
     }
@@ -101,9 +111,6 @@ public class PrimateMotorSystem : MotorSystem {
             double sitHeight = thisBody.GetHeight() / 4.0;
 
             if (toSend.y > sitHeight) {
-                BendLegs(-1f, 0f);
-                BendLegs(80f, 0f);
-                BendKnees(-30f);
                 thisBody.DisableKinematic("Abdomen");
 
             } else {
@@ -216,6 +223,23 @@ public class PrimateMotorSystem : MotorSystem {
         thisBody.RotateJointBy("Tibia_R", toSend);
     }
 
+    void LegUp(bool right) {
+        Quaternion forward = new Quaternion(30, 0, 0, 0);
+        Quaternion back = new Quaternion(-30, 0, 0, 0);
+
+        if(right) {
+            thisBody.RotateJointBy("Tibia_L", back);
+            thisBody.RotateJointBy("Tibia_R", forward);
+        } else {
+            thisBody.RotateJointBy("Tibia_L", forward);
+            thisBody.RotateJointBy("Tibia_R", back);
+        }
+    }
+
+    
+
+
+
     // Functional
     void BendLegs(float xDegree, float yDegree) {
         Quaternion sendLeft = new Quaternion(xDegree, yDegree, 0, 0);
@@ -227,25 +251,23 @@ public class PrimateMotorSystem : MotorSystem {
 
     // Untested
     bool ArmToGoal() {
-        string arm = GetActiveHand().name;
-        if (stateDict["active right"] == 1f) {
-            goalPos = primateBody.localStartRight;
-        } else { Vector3 goalPos = primateBody.localStartLeft; }
+        // string arm = GetActiveHand().name;
+        // if (stateDict["active right"] == 1f) {
+        //     goalPos = primateBody.localStartRight;
+        // } else { Vector3 goalPos = primateBody.localStartLeft; }
 
-        float xTrans = stateDict["RP x"] * thisBody.xMax;
-        float yTrans = stateDict["RP y"] * thisBody.yMax;
-        float zTrans = stateDict["RP z"] * thisBody.zMax;
-        Vector3 toAdd = new Vector3(xTrans, yTrans, zTrans);
+        // float xTrans = stateDict["RP x"] * thisBody.xMax;
+        // float yTrans = stateDict["RP y"] * thisBody.yMax;
+        // float zTrans = stateDict["RP z"] * thisBody.zMax;
+        // Vector3 toAdd = new Vector3(xTrans, yTrans, zTrans);
 
-        // Ensure values are actually set to something
-        if (toAdd.x == 0f && toAdd.y == 0f) {
-            Debug.Log("Reaching default amount");
-            toAdd = new Vector3(1f, -1f, 0.5f);
-        }
+        // // Ensure values are actually set to something
+        // if (toAdd.x == 0f && toAdd.y == 0f) {)
 
-        goalPos += toAdd;
-        thisBody.EnsureKinematic(arm);
-        Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
+        Transform armTrans = GetActiveHand().transform;
+        Debug.Log("Reaching default amount");
+        Vector3 goalPos = abdomenTrans.position + new Vector3(.5f, -.5f, 1f);
+        thisBody.EnsureKinematic(armTrans.name);
         armTrans.position = Vector3.Slerp(armTrans.position, goalPos, Time.deltaTime);
 
         return (armTrans.position == goalPos);

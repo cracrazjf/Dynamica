@@ -36,11 +36,7 @@ public class AnimalUI : MonoBehaviour {
     Button genomeButton;
     Button brainButton;
 
-    private void Start() {
-        InitPanel();
-        InitButtons();
-        InitNamer();
-    }
+    private void Start() { InitPanel(); }
     
     private void Update() {
         if (needsUpdate) { OnAwake(); }
@@ -49,14 +45,17 @@ public class AnimalUI : MonoBehaviour {
 
     public void OnAwake() {
         selectedAnimal = World.GetAnimal(passed.name);
-        originalName.text = selectedAnimal.GetDisplayName();
-        InitDriveDisplays();
-
+        
         panel.SetActive(true);
         halo.SetActive(true);
+        
+        InitNamer();
+        InitDriveDisplays();
+        InitButtons();
 
         showPanel = true;
         needsUpdate = false;
+        originalName.text = selectedAnimal.GetDisplayName();
     }
 
     public void PassAnimalCam() {
@@ -66,7 +65,7 @@ public class AnimalUI : MonoBehaviour {
 
     public void UpdatePanel() {
         halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
-        goalText.text = selectedAnimal.GetAction();
+        //goalText.text = selectedAnimal.GetAction();
         UpdateDriveDisplays();
     }
 

@@ -49,8 +49,8 @@ public class MainUI : MonoBehaviour
 
     private static bool isPaused = false;
     private bool isFF = false;
-    private bool toggleHelp;
-    private bool toggleOptions;
+    private bool toggleHelp = false;
+    private bool toggleOptions = false;
     
     void Start() {
         InitPanels();
@@ -71,10 +71,11 @@ public class MainUI : MonoBehaviour
     public void InitPanels() {
         alwaysPanel = GameObject.Find("AlwaysPanel");
         infoPanel = GameObject.Find("InfoPanel");
-        optionPanel = GameObject.Find("OptionPanel");
+        optionPanel = GameObject.Find("OptionsPanel");
         pauseObj = GameObject.Find("PauseText");
         
         infoPanel.SetActive(false);
+        optionPanel.SetActive(false);
         pauseObj.SetActive(false);
     }
 
@@ -99,15 +100,44 @@ public class MainUI : MonoBehaviour
         }
 
         foreach (Transform child in infoPanel.transform) {
-            if (child.name == "CloseInfoButton") {
-                tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(ToggleHelp);
-            } else if (child.name == "SettingsButton") {
-                tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(ToggleOptions);
-            } else if (child.name == "ExitButton") {
-                tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(QuitPlay);
+            if (child.name == "Header") {
+                foreach (Transform grandchild in child) {
+                    if (grandchild.name == "SettingsButton") {
+                        tempButton = grandchild.gameObject.GetComponent<Button>();
+                        tempButton.onClick.AddListener(ToggleOptions);
+                    }
+                }
+            } else if (child.name == "Footer") {
+                foreach (Transform grandchild in child) {
+                    if (grandchild.name == "CloseInfoButton") {
+                        tempButton = grandchild.gameObject.GetComponent<Button>();
+                        tempButton.onClick.AddListener(ToggleHelp);
+                    } else if (grandchild.name == "ExitButton") {
+                        tempButton = grandchild.gameObject.GetComponent<Button>();
+                        tempButton.onClick.AddListener(QuitPlay);
+                    }
+                }
+            }
+        }
+
+        foreach (Transform child in optionPanel.transform) {
+            if (child.name == "Header") {
+                foreach (Transform grandchild in child) {
+                    if (grandchild.name == "InfoButton") {
+                        tempButton = grandchild.gameObject.GetComponent<Button>();
+                        tempButton.onClick.AddListener(ToggleHelp);
+                    }
+                }
+            } else if (child.name == "Footer") {
+                foreach (Transform grandchild in child) {
+                    if (grandchild.name == "CloseOptionsButton") {
+                        tempButton = grandchild.gameObject.GetComponent<Button>();
+                        tempButton.onClick.AddListener(ToggleOptions);
+                    } else if (grandchild.name == "ExitButton") {
+                        tempButton = grandchild.gameObject.GetComponent<Button>();
+                        tempButton.onClick.AddListener(QuitPlay);
+                    }
+                }
             }
         }
     }
@@ -285,11 +315,17 @@ public class MainUI : MonoBehaviour
     public void ToggleHelp() {
         toggleHelp = !toggleHelp;
         infoPanel.SetActive(toggleHelp);
+
+        optionPanel.SetActive(false);
+        toggleOptions = false;
     }
 
     public void ToggleOptions() {
         toggleOptions = !toggleOptions;
         optionPanel.SetActive(toggleOptions);
+
+        infoPanel.SetActive(false);
+        toggleHelp = false;
     }
 
     public void ToggleRotate() {
