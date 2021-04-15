@@ -6,14 +6,12 @@ using UnityEngine;
 
 public class PrimateBody : AnimalBody {
 
-    public Vector3 localStartRight;
-    public Vector3 localStartLeft;
+    public Vector3 abAdjRight;
+    public Vector3 abAdjLeft;
 
     public PrimateBody(Animal animal, Vector3 position) : base(animal, position) {
-        localStartLeft = GetSkeleton("Hand_L").transform.localPosition;
-        localStartRight = GetSkeleton("Hand_R").transform.localPosition;
-
-        // so in the future we can move hand pos to localStart + (proportion * max)
+        abAdjLeft = GetSkeleton("Hand_L").transform.position - GetSkeleton("Abdomen").transform.position; 
+        abAdjRight = GetSkeleton("Hand_R").transform.position - GetSkeleton("Abdomen").transform.position; 
     }
 
     public override void UpdateBodyStates() {
