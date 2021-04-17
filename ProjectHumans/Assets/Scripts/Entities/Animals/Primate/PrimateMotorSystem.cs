@@ -21,44 +21,46 @@ public class PrimateMotorSystem : MotorSystem
     }
     
     public override void Crouch() {
-        if (stateDict["crouching"] == -1f) {
+        if (stateDict["crouch"] == -1f) {
             CrouchDown(); }
-        else if (stateDict["crouching"] == 1f) {
+        else if (stateDict["crouch"] == 1f) {
             SitUp();
         } else { Rest(); }
     }
 
     public override void Sit() {
-        if (stateDict["sitting"] == -1f) {
+        if (stateDict["sit"] == -1f) {
             SitDown();
         } else { SitUp(); }
     }
 
     public override void Lay() {
-        if (stateDict["laying down"] == -1f) {
+        if (stateDict["lay"] == -1f) {
             LayDown();
-        } else if (stateDict["laying down"] == 1f) {
+        } else if (stateDict["lay"] == 1f) {
             SitUp();
         } else { Rest(); }
     }
 
     public override void Stand() {
-        if (stateDict["standing up"] == 1f) {
+        if (stateDict["stand"] == 1f) {
             StandUp();
-        } else if (stateDict["standing up"] == -1f) {
+        } else if (stateDict["stand"] == -1f) {
             SitDown();
         } else { Rest(); }
     }
     public override void Rotate() {
-        float degree = stateDict["rotating"] * 0.5f;
+        float degree = stateDict["rotate"] * 0.5f;
         float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
 
         thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
     }
     public override void TakeSteps() {
-        float degree = stateDict["taking steps"];
-        float stepProportion = degree * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.5f;
-        float xQ = Mathf.Lerp(xMin, xMax, timeValue);
+        float direction = stateDict["take steps"];
+        float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.5f;
+        ConfigurableJoint leg = thisBody.GetSkeleton("Femur_R").GetComponent<ConfigurableJoint>();
+        float crouchAdjust = leg.targetRotation.x;
+        float xQ = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjust/90;
         timeValue += 0.5f * Time.deltaTime;
 
         if (timeValue > 1.0f) {
@@ -68,7 +70,6 @@ public class PrimateMotorSystem : MotorSystem
             timeValue = 0.0f;
         }
 
-        ConfigurableJoint leg = thisBody.GetSkeleton("Femur_R").GetComponent<ConfigurableJoint>();
         leg.targetRotation = new Quaternion(xQ, 0, 0, 1);
 
         if (footUpdates < 500) {
@@ -78,7 +79,7 @@ public class PrimateMotorSystem : MotorSystem
             footUpdates = 0;
             rightStep = !rightStep;
         }
-        
+
         // Super important to move parts of the body, not the whole gameObject. 
         abdomenTrans.Translate(abdomenTrans.forward * stepProportion * Time.deltaTime);
     }
@@ -99,7 +100,7 @@ public class PrimateMotorSystem : MotorSystem
         }
     }
     public override void Sleep() {
-        if (stateDict["consuming"] == 1f) {
+        if (stateDict["consume"] == 1f) {
             FallAsleep();
         } else { WakeUp(); }
     }
@@ -110,7 +111,7 @@ public class PrimateMotorSystem : MotorSystem
     }
 
     public override void Look() {
-        if (stateDict["looking"] == 1f) {
+        if (stateDict["look"] == 1f) {
             LookAt();
         } else { LookForward(); }
     }

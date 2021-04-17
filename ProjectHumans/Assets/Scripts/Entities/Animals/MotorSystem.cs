@@ -28,21 +28,21 @@ public abstract class MotorSystem
         this.thisBody = thisAnimal.GetBody();
 
         stateLabelList = new List<string> {
-            "crouching",   // 0, negative is down 
-            "sitting",     // 1, negative is down
-            "laying down", // 2 -1 or 1 (or 0 if not switched)
-            "standing up", // 3 -1 or 1 (or 0 if not switched)
-            "rotating",    // 4, now a proportion
-            "taking steps",// 5, now a proportion
-            "hand action", // 6, release/maintain/grab
-            "active right",// 7  -1 or 1 (1 if right)
-            "consuming",   // 8, set to consumable if ongoing
-            "sleeping",    // 9, awake/maintain/fall asleep
-            "resting",     // 11 -1 or 1 (or 0 if not switched)
-            "looking",     // 12 -1 or 1 (or 0 if not switched)
-            "RP x",        // 13  -1 to 1, proportion of max range from start pos
-            "RP y",        // 14
-            "RP z"         // 15
+            "crouch",      // 0, negative is down 
+            "sit",         // 1, negative is down
+            "lay",         // 2 -1 or 1 (or 0 if not switched)
+            "stand",       // 3 -1 or 1 (or 0 if not switched)
+            "rotate",      // 4, now a proportion
+            "take steps",  // 5, now a proportion
+            "consume",     // 6, set to consumable if ongoing
+            "sleep",       // 7, awake/maintain/fall asleep
+            "rest",        // 8 -1 or 1 (or 0 if not switched)
+            "look",        // 9 -1 or 1 (or 0 if not switched)
+            "hand action", // 10, release/maintain/grab
+            "active right",// 11  -1 or 1 (1 if right)
+            "RP x",        // 12  -1 to 1, proportion of max range from start pos
+            "RP y",        // 13
+            "RP z"         // 14
         };
         this.InitStates(stateLabelList);
         this.InitActionDict();
@@ -99,11 +99,11 @@ public abstract class MotorSystem
         actionList.Add(Stand);
         actionList.Add(Rotate);
         actionList.Add(TakeSteps);
-        actionList.Add(UseHand);
         actionList.Add(Consume);
         actionList.Add(Sleep);
         actionList.Add(Rest);
         actionList.Add(Look);
+        actionList.Add(UseHand);
     }
 
     public abstract void Crouch();
@@ -112,9 +112,9 @@ public abstract class MotorSystem
     public abstract void Stand();
     public abstract void Rotate();
     public abstract void TakeSteps();
-    public abstract void UseHand();
     public abstract void Consume();
     public abstract void Sleep();
     public abstract void Rest();
     public abstract void Look();
+    public abstract void UseHand();
 }
