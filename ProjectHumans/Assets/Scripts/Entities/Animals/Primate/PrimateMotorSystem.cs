@@ -67,6 +67,7 @@ public class PrimateMotorSystem : MotorSystem
             float temp = xMax;
             xMax = xMin;
             xMin = temp;
+            
             timeValue = 0.0f;
         }
 
@@ -118,24 +119,31 @@ public class PrimateMotorSystem : MotorSystem
 
     // BEGIN HELPER FUNCTIONS
     void SitDown() {
-        if (thisBody.CheckCrouching()) {
+        if (((PrimateBody)thisBody).CheckCrouchingTop()) {
             Vector3 toSend = abdomenTrans.position;
-            double sitHeight = thisBody.GetHeight() / 4.0;
+            double sitHeight = thisBody.GetHeight() / 2.25;
+            Debug.Log("Checking to see if more " + toSend.y + " " + sitHeight);
             if (toSend.y > sitHeight) {
-                thisBody.DisableKinematic("Abdomen");
+                BendWaist(50f);
+                BendLegs(50f, 20f);
+                abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
             } else {
                 thisBody.EnsureKinematic("Abdomen");
+                thisBody.FreeRotation("Hips");
                 Debug.Log("I think I'm sitting");
             }
         } else { CrouchDown(); }
     }
     void SitUp() {
-        if (thisBody.GetState("laying") == 1f) {
+        if (thisBody.CheckLaying()) {
+            Debug.Log("Trying condition one");
             BendLegs(45f, 0f);
+            BendWaist(50f);
         } else {
-            thisBody.RotateJointTo("Hips", new Quaternion(0, 0, 0, 0));
-            BendLegs(0f, 0f);
-            BendKnees(0f);
+            Debug.Log("Trying condition two"); 
+            BendWaist(1f);
+            BendLegs(1f, 0f);
+            BendKnees(1f);
         }
     }
 
@@ -213,8 +221,8 @@ public class PrimateMotorSystem : MotorSystem
     // Functional
     void BendKnees(float degree) {
         Quaternion toSend = new Quaternion(degree, 0, 0, 0);
-        thisBody.RotateJointBy("Tibia_L", toSend);
-        thisBody.RotateJointBy("Tibia_R", toSend);
+        thisBody.RotateJointTo("Tibia_L", toSend);
+        thisBody.RotateJointTo("Tibia_R", toSend);
     }
     void LegUp(bool right) {
         Quaternion forward = new Quaternion(30, 0, 0, 0);
@@ -232,8 +240,13 @@ public class PrimateMotorSystem : MotorSystem
     void BendLegs(float xDegree, float yDegree) {
         Quaternion sendLeft = new Quaternion(xDegree, yDegree, 0, 0);
         Quaternion sendRight = new Quaternion(xDegree, -yDegree, 0, 0);
-        thisBody.RotateJointBy("Femur_L", sendLeft);
-        thisBody.RotateJointBy("Femur_R", sendRight);
+        thisBody.RotateJointTo("Femur_L", sendLeft);
+        thisBody.RotateJointTo("Femur_R", sendRight);
+    }
+
+    void BendWaist(float xDegree) {
+        Quaternion toSend = new Quaternion(xDegree, 0, 0, 0);
+        thisBody.RotateJointTo("Hips", toSend);
     }
 
     bool ArmToGoal() {
@@ -279,11 +292,11 @@ public class PrimateMotorSystem : MotorSystem
 
     void CrouchDown() {
         Debug.Log("Crouch was called");
-        if (thisBody.CheckCrouching()) {
+        if (((PrimateBody)thisBody).CheckCrouchingBottom()) {
             BendLegs(-1f, 0f);
             BendLegs(80f, 0f);
             BendKnees(-30f);
-            abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
+            abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -0.75f));
         } else { thisBody.SetState("crouching", 1f); }
     }
 

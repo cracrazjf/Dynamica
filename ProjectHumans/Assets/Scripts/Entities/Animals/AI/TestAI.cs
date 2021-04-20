@@ -10,9 +10,6 @@ public class TestAI : AI {
     List<GameObject> inSight;
     static Vector3 blankPos = new Vector3(0,0,0);
     Vector3 randomPos = blankPos;
-    int updateCount;
-    int actionCount;
-    int numUpdates = 800;
     
     Dictionary<string, float> bodyStateDict;
     Dictionary<string, float> driveStateDict;
@@ -29,9 +26,6 @@ public class TestAI : AI {
 
         driveStateDict = drives.GetStateDict();
         traitDict = traits.GetTraitDict();
-
-        updateCount = 0;
-        actionCount = 0;
     }
 
     // public override Vector<float> ChooseAction(Matrix<float> visualInput) {

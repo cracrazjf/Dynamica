@@ -135,13 +135,11 @@ public class AnimalBody : Body {
 
     public virtual bool CheckLaying() { return false; }
 
-
-    // do not use
     public void RotateJointTo(string joint, Quaternion target) {
         if (this.jointDict.ContainsKey(joint)) {
-            Quaternion toMultiply = skeletonDict[joint].transform.localRotation;
-            toMultiply = toMultiply * target;
-            this.jointDict[joint].targetRotation = this.jointDict[joint].targetRotation * toMultiply;
+            Debug.Log("Trying this");
+            Quaternion initialRotation =  this.jointDict[joint].transform.localRotation;
+            this.jointDict[joint].SetTargetRotationLocal(target, initialRotation);
         }
     }
 
@@ -225,6 +223,24 @@ public class AnimalBody : Body {
         }
     }
 
+    public void LockRotation(string name) {
+        if (name != null) {
+            if (skeletonDict.ContainsKey(name)) {
+                GameObject currentPart = skeletonDict[name];
+                currentPart.GetComponent<Rigidbody>().freezeRotation = true;
+            }
+        }
+    }
+
+    public void FreeRotation(string name) {
+        if (name != null) {
+            if (skeletonDict.ContainsKey(name)) {
+                GameObject currentPart = skeletonDict[name];
+                currentPart.GetComponent<Rigidbody>().freezeRotation = false;
+            }
+        }
+    }
+
     public void EnsureGravity(string name) {
         if (name != null) {
             if (skeletonDict.ContainsKey(name)) {
@@ -233,6 +249,7 @@ public class AnimalBody : Body {
             }
         }
     }
+
 
     public virtual void SleepAdjust() {
         float val = thisAnimal.GetDriveSystem().GetState("sleepiness");
@@ -275,3 +292,4 @@ public class AnimalBody : Body {
         return false;
     }
 }
+
