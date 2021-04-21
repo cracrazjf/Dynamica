@@ -51,41 +51,42 @@ public class PrimateMotorSystem : MotorSystem
         } else { Rest(); }
     }
     public override void Rotate() {
-        float degree = stateDict["rotate"] * 0.5f;
-        float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
+        if(thisBody.GetState("standing") == 1f) {
+            float degree = stateDict["rotate"] * 0.5f;
+            float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
 
-        thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
+            thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
+        } else {
+            float degree = stateDict["rotate"] * 0.25f;
+            float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
+            abdomenTrans.Rotate(0, rotatingSpeed, 0, Space.Self);
+        }
     }
     public override void TakeSteps() {
         float direction = stateDict["take steps"];
         float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.5f;
 
-        float crouchAdjust = thisBody.GetTargetRotation("Femur_R").x;
-        float xQ = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjust/90;
+        ConfigurableJoint legR = thisBody.GetSkeleton("Femur_R").GetComponent<ConfigurableJoint>();
+        ConfigurableJoint legL = thisBody.GetSkeleton("Femur_L").GetComponent<ConfigurableJoint>();
+
+        float crouchAdjustR = legR.targetRotation.x;
+        float crouchAdjustL = legL.targetRotation.x;
+
+        float xQR = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjustR/90;
+        float xQL = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjustL/90;
         timeValue += 0.5f * Time.deltaTime;
 
         if (timeValue > 1.0f) {
-            float temp = xMax;
-            xMax = xMin;
-            xMin = temp;
-            
             timeValue = 0.0f;
         }
-
-        thisBody.RotateJointTo("Femur_R", new Quaternion(xQ, 0, 0, 1));
-        thisBody.RotateJointTo("Femur_L", new Quaternion(-xQ, 0, 0, 1));
-
-        if (footUpdates < 500) {
-            LegUp(rightStep);
-            footUpdates++;
-        } else {
-            footUpdates = 0;
-            rightStep = !rightStep;
-        }
+        
+        legR.targetRotation = new Quaternion(xQR, 0, 0, 1);
+        legL.targetRotation = new Quaternion(-xQL, 0, 0, 1);
 
         // Super important to move parts of the body, not the whole gameObject. 
         abdomenTrans.Translate(abdomenTrans.forward * stepProportion * Time.deltaTime);
     }
+
     public override void UseHand() {
         GameObject holder = GetActiveHand();
 
@@ -131,7 +132,7 @@ public class PrimateMotorSystem : MotorSystem
                 abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
             } else {
                 thisBody.EnsureKinematic("Abdomen");
-                thisBody.FreeRotation("Hips");
+                thisBody.FreeRotation("Abdomen");
                 Debug.Log("I think I'm sitting");
                 thisBody.SetState("sitting", 1f);
             }
@@ -142,9 +143,11 @@ public class PrimateMotorSystem : MotorSystem
             Debug.Log("Trying condition one");
             BendLegs(45f, 0f);
             BendWaist(50f);
-            if (abdomenTrans.position.y < .5f) {
+            if (abdomenTrans.position.y < 1f) {
+                Debug.Log("Trying to lift abdomen");
                 thisBody.EnsureKinematic("Abdomen");
-                abdomenTrans.Translate(Vector3.up * (Time.deltaTime * .5f));
+                Vector3 targetPos = new Vector3(abdomenTrans.position.x, 1f, abdomenTrans.position.z);
+                abdomenTrans.position = Vector3.Slerp(abdomenTrans.position, targetPos, Time.deltaTime);
             }
         } else {
             Debug.Log("Trying condition two"); 
@@ -158,6 +161,7 @@ public class PrimateMotorSystem : MotorSystem
         if (thisAnimal.GetBodyState("sitting")) {
             if (!primateBody.CheckLaying()) {
                 ExtendLegs();
+                //thisBody.SlerpRotateTo("Abdomen", Quaternion.identity);
             }
             Collapse();
         } else { SitDown(); }
@@ -166,8 +170,8 @@ public class PrimateMotorSystem : MotorSystem
     void StandUp() {
         Vector3 toSend = abdomenTrans.localPosition;
 
-        if (Math.Pow(toSend.y - 0f, 2) > 0.05 ) {
-            if (toSend.y < 0) {
+        if (Math.Pow(toSend.y - 0.2f, 2) > 0.05 ) {
+            if (toSend.y < 0.2f) {
                 abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * .5f);
             } else {
                 abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * -.5f);
@@ -239,18 +243,6 @@ public class PrimateMotorSystem : MotorSystem
         thisBody.RotateJointTo("Tibia_L", toSend);
         thisBody.RotateJointTo("Tibia_R", toSend);
     }
-    void LegUp(bool right) {
-        Quaternion forward = new Quaternion(30, 0, 0, 0);
-        Quaternion back = new Quaternion(-30, 0, 0, 0);
-
-        if (right) {
-            thisBody.RotateJointBy("Tibia_L", back);
-            thisBody.RotateJointBy("Tibia_R", forward);
-        } else {
-            thisBody.RotateJointBy("Tibia_L", forward);
-            thisBody.RotateJointBy("Tibia_R", back);
-        }
-    }
     
     void BendLegs(float xDegree, float yDegree) {
         Quaternion sendLeft = new Quaternion(xDegree, yDegree, 0, 0);
@@ -261,7 +253,7 @@ public class PrimateMotorSystem : MotorSystem
 
     void BendWaist(float xDegree) {
         Quaternion toSend = new Quaternion(xDegree, 0, 0, 0);
-        thisBody.RotateJointTo("Hips", toSend);
+        thisBody.RotateJointTo("Abdomen", toSend);
     }
 
     bool ArmToGoal() {
@@ -320,11 +312,15 @@ public class PrimateMotorSystem : MotorSystem
     void ExtendLegs() {
         Debug.Log("Stretching my toes");
 
-        Vector3 goalR = abdomenTrans.position + primateBody.footAdjRight;
-        Vector3 goalL = abdomenTrans.position + primateBody.footAdjLeft;
+        // Vector3 goalR = abdomenTrans.position + primateBody.footAdjRight;
+        // Vector3 goalL = abdomenTrans.position + primateBody.footAdjLeft;
 
-        thisBody.SlerpTargetTo("Foot_R", goalR);
-        thisBody.SlerpTargetTo("Foot_L", goalL);
+        // thisBody.SlerpTargetTo("Foot_R", goalR);
+        // thisBody.SlerpTargetTo("Foot_L", goalL);
+
+        BendKnees(0f);
+        BendLegs(0f, 0f);
+        //BendWaist(0f);
     }
 
     void Collapse() {

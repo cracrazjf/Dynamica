@@ -90,7 +90,7 @@ public class Animal : Entity {
     }
 
     public void SetCommand(float command, float param) {
-        Debug.Log("Passed command B " + command + " with parameter of " + param);
+        //Debug.Log("Passed command B " + command + " with parameter of " + param);
         cheatCommand = (int) command;
         cheatArgs = param;
         noCheats = false;

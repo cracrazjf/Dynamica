@@ -20,7 +20,7 @@ public class PlantUI : MonoBehaviour {
 
     protected Text originalName;
     protected Text inputName;
-    protected InputField panelNamer;
+    protected Transform panelNamer;
 
     private void Start() {
         InitPanel();
@@ -29,21 +29,42 @@ public class PlantUI : MonoBehaviour {
     
     private void Update() {
         if (needsUpdate) {
-            showPanel = true;
             needsUpdate = false;
         }
         if (showPanel) { UpdatePanel(); }
     }
 
+    public void UpdatePanel() {
+        halo.transform.position = selectedPlant.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
+    }
 
-    public void UpdatePanel(){
+    public void OnAwake() {
         selectedPlant = World.GetPlant(passed.name);
+        
+        panel.SetActive(true);
+        halo.SetActive(true);
+        
+        InitNamer();
+        InitButtons();
+
+        showPanel = true;
+        needsUpdate = false;
+        originalName.text = selectedPlant.GetDisplayName();
     }
 
     public void InitPanel(){
         panel = GameObject.Find("PlantPanel");
         panel.SetActive(false);
+        halo = GameObject.Find("Halo");
+        
+        foreach (Transform child in panel.transform) {
+            if (child.name == "EntityNamer") {
+                panelNamer = child;
+            } 
+        }
+    }
 
+    public void InitButtons() {
         foreach (Transform child in panel.transform) {
             if (child.name == "CenterObjectButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
@@ -75,7 +96,15 @@ public class PlantUI : MonoBehaviour {
         MainUI.CenterObject(passed.transform);
     }
     
-    public void InitNamer(){}
+    public void InitNamer(){
+        foreach (Transform child in panelNamer) {
+            if (child.name == "CurrentName") {
+                originalName = child.gameObject.GetComponent<Text>();
+            } else if (child.name == "InputName") {
+                inputName = child.gameObject.GetComponent<Text>();
+            }
+        }
+    }
 
     public void ExitPanel() {
         panel.SetActive(false);
@@ -84,8 +113,10 @@ public class PlantUI : MonoBehaviour {
     }
 
     public void Rename() {
-        selectedPlant.SetDisplayName(inputName.text);
-        panelNamer.text = "";
+        if (panelNamer.gameObject.TryGetComponent(out InputField activeInput)) {
+            selectedPlant.SetDisplayName(activeInput.text);
+            activeInput.text = "";
+        }
     }
 
     public void TrashEntity() {
