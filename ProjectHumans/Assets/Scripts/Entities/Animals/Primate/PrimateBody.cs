@@ -8,15 +8,22 @@ public class PrimateBody : AnimalBody {
 
     public Vector3 abAdjRight;
     public Vector3 abAdjLeft;
+    public Vector3 footAdjRight;
+    public Vector3 footAdjLeft;
 
     public PrimateBody(Animal animal, Vector3 position) : base(animal, position) {
         abAdjLeft = GetSkeleton("Hand_L").transform.position - GetSkeleton("Abdomen").transform.position; 
-        abAdjRight = GetSkeleton("Hand_R").transform.position - GetSkeleton("Abdomen").transform.position; 
+        abAdjRight = GetSkeleton("Hand_R").transform.position - GetSkeleton("Abdomen").transform.position;
+
+        footAdjLeft = GetSkeleton("Foot_L").transform.position - GetSkeleton("Abdomen").transform.position; 
+        footAdjRight = GetSkeleton("Foot_R").transform.position - GetSkeleton("Abdomen").transform.position;  
+
+
     }
 
     public override void UpdateBodyStates() {
         if (CheckSitting()) {
-            Debug.Log("I think I'm sitting");
+            Debug.Log("Body believes in sitting");
             SetState("sitting", 1f);
         }
         if (CheckLaying()) {

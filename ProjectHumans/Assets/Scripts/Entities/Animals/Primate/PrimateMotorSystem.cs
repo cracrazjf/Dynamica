@@ -18,6 +18,7 @@ public class PrimateMotorSystem : MotorSystem
         Debug.Log("An ape was born!");
         abdomenTrans = thisBody.abdomen.transform;
         primateBody = (PrimateBody)thisBody;
+        StandUp();
     }
     
     public override void Crouch() {
@@ -58,8 +59,8 @@ public class PrimateMotorSystem : MotorSystem
     public override void TakeSteps() {
         float direction = stateDict["take steps"];
         float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.5f;
-        ConfigurableJoint leg = thisBody.GetSkeleton("Femur_R").GetComponent<ConfigurableJoint>();
-        float crouchAdjust = leg.targetRotation.x;
+
+        float crouchAdjust = thisBody.GetTargetRotation("Femur_R").x;
         float xQ = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjust/90;
         timeValue += 0.5f * Time.deltaTime;
 
@@ -71,7 +72,8 @@ public class PrimateMotorSystem : MotorSystem
             timeValue = 0.0f;
         }
 
-        leg.targetRotation = new Quaternion(xQ, 0, 0, 1);
+        thisBody.RotateJointTo("Femur_R", new Quaternion(xQ, 0, 0, 1));
+        thisBody.RotateJointTo("Femur_L", new Quaternion(-xQ, 0, 0, 1));
 
         if (footUpdates < 500) {
             LegUp(rightStep);
@@ -125,12 +127,13 @@ public class PrimateMotorSystem : MotorSystem
             Debug.Log("Checking to see if more " + toSend.y + " " + sitHeight);
             if (toSend.y > sitHeight) {
                 BendWaist(50f);
-                BendLegs(50f, 20f);
+                BendLegs(50f, -40f);
                 abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
             } else {
                 thisBody.EnsureKinematic("Abdomen");
                 thisBody.FreeRotation("Hips");
                 Debug.Log("I think I'm sitting");
+                thisBody.SetState("sitting", 1f);
             }
         } else { CrouchDown(); }
     }
@@ -139,11 +142,13 @@ public class PrimateMotorSystem : MotorSystem
             Debug.Log("Trying condition one");
             BendLegs(45f, 0f);
             BendWaist(50f);
+            if (abdomenTrans.position.y < .5f) {
+                thisBody.EnsureKinematic("Abdomen");
+                abdomenTrans.Translate(Vector3.up * (Time.deltaTime * .5f));
+            }
         } else {
             Debug.Log("Trying condition two"); 
             BendWaist(1f);
-            BendLegs(1f, 0f);
-            BendKnees(1f);
         }
     }
 
@@ -151,16 +156,26 @@ public class PrimateMotorSystem : MotorSystem
         Debug.Log("Tried to lay down");
 
         if (thisAnimal.GetBodyState("sitting")) {
+            if (!primateBody.CheckLaying()) {
+                ExtendLegs();
+            }
             Collapse();
         } else { SitDown(); }
     }
     
     void StandUp() {
-        Vector3 toSend = abdomenTrans.position;
+        Vector3 toSend = abdomenTrans.localPosition;
 
-        if (toSend.y < thisBody.GetHeight()) {
-            abdomenTrans.Translate(Vector3.up * (Time.deltaTime));
-        } else { Debug.Log("I think I'm standing"); }
+        if (Math.Pow(toSend.y - 0f, 2) > 0.05 ) {
+            if (toSend.y < 0) {
+                abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * .5f);
+            } else {
+                abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * -.5f);
+            } 
+        } else {
+            Debug.Log("I think I'm standing");
+            thisBody.SetState("standing", 1f);
+        }
     }
     
     void PickUp() {
@@ -297,7 +312,19 @@ public class PrimateMotorSystem : MotorSystem
             BendLegs(80f, 0f);
             BendKnees(-30f);
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -0.75f));
+            BendWaist(-1f);
+            BendWaist(15f);
         } else { thisBody.SetState("crouching", 1f); }
+    }
+    
+    void ExtendLegs() {
+        Debug.Log("Stretching my toes");
+
+        Vector3 goalR = abdomenTrans.position + primateBody.footAdjRight;
+        Vector3 goalL = abdomenTrans.position + primateBody.footAdjLeft;
+
+        thisBody.SlerpTargetTo("Foot_R", goalR);
+        thisBody.SlerpTargetTo("Foot_L", goalL);
     }
 
     void Collapse() {

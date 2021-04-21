@@ -176,7 +176,7 @@ public class AnimalUI : MonoBehaviour {
         var command = actionDrop.value;
         int param = Int32.Parse(paramDrop.options[paramDrop.value].text);
 
-        Debug.Log("Passed command A " + command + " with parameter of " + param);
+        // Debug.Log("Passed command A " + command + " with parameter of " + param);
 
         selectedAnimal.SetCommand(command, param);
     }

@@ -61,7 +61,6 @@ public abstract class MotorSystem
     }
 
     public void TakeAction(Vector<float> actions) {
-        Debug.Log(actions);
         if (actions[11] != 1) {
             for(int i = 0; i < states.Count; i++) {
                 if (actions[i] != 0) {

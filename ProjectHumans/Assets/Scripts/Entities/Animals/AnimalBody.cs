@@ -137,7 +137,6 @@ public class AnimalBody : Body {
 
     public void RotateJointTo(string joint, Quaternion target) {
         if (this.jointDict.ContainsKey(joint)) {
-            Debug.Log("Trying this");
             Quaternion initialRotation =  this.jointDict[joint].transform.localRotation;
             this.jointDict[joint].SetTargetRotationLocal(target, initialRotation);
         }
@@ -149,16 +148,11 @@ public class AnimalBody : Body {
         }
     }
 
-    public void RotateSkeletonTo(string name, Quaternion target) {
-        if (this.skeletonDict.ContainsKey(name)) {
-            this.skeletonDict[name].transform.localRotation = target;
-        }
-    }
-
-    public void RotateLimbBy(string name, Quaternion target) {
-        Debug.Log("Tried limb rotation");
-        if (this.limbDict.ContainsKey(name)) {
-            this.limbDict[name].transform.localRotation = Quaternion.identity * Quaternion.Inverse(target);
+    public void SlerpTargetTo(string name, Vector3 target) {
+        if (skeletonDict.ContainsKey(name)) {
+            GameObject currentPart = skeletonDict[name];
+            Transform partTrans = currentPart.transform;
+            partTrans.position = Vector3.Slerp(partTrans.position, target, Time.deltaTime);
         }
     }
 
@@ -169,7 +163,7 @@ public class AnimalBody : Body {
             Vector3 currentPos = currentPart.transform.position;
             bool kinematicTemp = currentPart.GetComponent<Rigidbody>().isKinematic;
 
-            if (Math.Pow(currentPos.y - goalPos.y, 2) < 0.005 ) { // something funky\
+            if (Math.Pow(currentPos.y - goalPos.y, 2) < 0.005 ) { // something funky
                 Debug.Log("Reached goal position");
                 currentPart.GetComponent<Rigidbody>().isKinematic = kinematicTemp;
             } else {
@@ -181,6 +175,18 @@ public class AnimalBody : Body {
                 currentPart.GetComponent<Rigidbody>().useGravity = true;
             }
         }
+    }
+
+    public bool ConfirmRotation(string name, Vector3 target) {
+        if (skeletonDict.ContainsKey(name)) {
+            GameObject currentPart = skeletonDict[name];
+            Quaternion currentRotation = currentPart.transform.localRotation;
+
+            if (Math.Pow(currentRotation.x - target.x, 2) < 0.005 ) {
+                return true;
+            }
+        } 
+        return false;
     }
 
     public void PrintSkelPos(string name) {
@@ -279,17 +285,14 @@ public class AnimalBody : Body {
         holdings.Remove(holder);
     }
 
-    public bool CheckBend(string joint, float toCheck) {
+    public Quaternion GetTargetRotation(string joint) {
         if (this.jointDict.ContainsKey(joint)) {
-            Quaternion toMultiply = skeletonDict[joint].transform.localRotation;
-            Quaternion toSee = this.jointDict[joint].targetRotation * toMultiply;
-            Debug.Log("Current bend is " + toSee);
-            if (toCheck > toSee.x) {
-                return false;
-            }
-            return true;
+            return jointDict[joint].targetRotation;
+        } else {
+            return Quaternion.identity;
         }
-        return false;
     }
+
+    
 }
 
