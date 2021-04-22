@@ -79,7 +79,7 @@ public class PrimateMotorSystem : MotorSystem
         if (timeValue > 1.0f) {
             timeValue = 0.0f;
         }
-        
+
         legR.targetRotation = new Quaternion(xQR, 0, 0, 1);
         legL.targetRotation = new Quaternion(-xQL, 0, 0, 1);
 
@@ -125,7 +125,8 @@ public class PrimateMotorSystem : MotorSystem
         if (((PrimateBody)thisBody).CheckCrouchingTop()) {
             Vector3 toSend = abdomenTrans.position;
             double sitHeight = thisBody.GetHeight() / 2.25;
-            Debug.Log("Checking to see if more " + toSend.y + " " + sitHeight);
+            Debug.Log("Sitting down");
+            //Debug.Log("Checking to see if more " + toSend.y + " " + sitHeight);
             if (toSend.y > sitHeight) {
                 BendWaist(50f);
                 BendLegs(50f, -40f);
@@ -139,30 +140,14 @@ public class PrimateMotorSystem : MotorSystem
         } else { CrouchDown(); }
     }
     void SitUp() {
-        if (thisBody.CheckLaying()) {
-            Debug.Log("Trying condition one");
-            BendLegs(45f, 0f);
-            BendWaist(50f);
-            if (abdomenTrans.position.y < 1f) {
-                Debug.Log("Trying to lift abdomen");
-                thisBody.EnsureKinematic("Abdomen");
-                Vector3 targetPos = new Vector3(abdomenTrans.position.x, 1f, abdomenTrans.position.z);
-                abdomenTrans.position = Vector3.Slerp(abdomenTrans.position, targetPos, Time.deltaTime);
-            }
-        } else {
-            Debug.Log("Trying condition two"); 
-            BendWaist(1f);
-        }
+        Debug.Log("Trying to lift abdomen");
+        thisBody.EnsureKinematic("Abdomen");
+        thisBody.SlerpRotateTo("Abdomen", Quaternion.identity);
     }
 
     void LayDown() {
         Debug.Log("Tried to lay down");
-
         if (thisAnimal.GetBodyState("sitting")) {
-            if (!primateBody.CheckLaying()) {
-                ExtendLegs();
-                //thisBody.SlerpRotateTo("Abdomen", Quaternion.identity);
-            }
             Collapse();
         } else { SitDown(); }
     }
@@ -318,8 +303,8 @@ public class PrimateMotorSystem : MotorSystem
         // thisBody.SlerpTargetTo("Foot_R", goalR);
         // thisBody.SlerpTargetTo("Foot_L", goalL);
 
-        BendKnees(0f);
-        BendLegs(0f, 0f);
+        BendKnees(1f);
+        BendLegs(1f, 0f);
         //BendWaist(0f);
     }
 
