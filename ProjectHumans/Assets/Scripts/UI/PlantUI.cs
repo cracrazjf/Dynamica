@@ -11,6 +11,7 @@ public class PlantUI : MonoBehaviour {
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;
+    public static bool toExit = false;
     protected bool showPanel = false;
 
     protected Button tempButton;
@@ -25,11 +26,15 @@ public class PlantUI : MonoBehaviour {
     private void Start() { InitPanel(); }
     
     private void Update() {
+        if (toExit) { ExitPanel(); }
         if (needsUpdate) { OnAwake(); }
         if (showPanel) { UpdatePanel(); }
     }
 
     public void OnAwake() {
+        NonlivingUI.Sleep();
+        AnimalUI.Sleep();
+
         selectedPlant = World.GetPlant(passed.name);
         
         panel.SetActive(true);
@@ -79,6 +84,7 @@ public class PlantUI : MonoBehaviour {
     }
 
     public static void ReceiveClicked(GameObject clicked) {
+        toExit = false;
         Debug.Log("Got a plant!");
         passed = clicked;
         needsUpdate = true;
@@ -118,5 +124,9 @@ public class PlantUI : MonoBehaviour {
     public void TrashEntity() {
         World.RemoveEntity(selectedPlant.GetName());
         ExitPanel();
+    }
+
+    public static void Sleep() {
+        toExit = true;
     }
 }

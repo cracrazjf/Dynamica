@@ -14,6 +14,7 @@ public class AnimalUI : MonoBehaviour {
     protected static GameObject passed;
 
     protected static bool needsUpdate;
+    public static bool toExit = false;
     protected bool showPanel = false;
 
     protected Button tempButton;
@@ -39,11 +40,15 @@ public class AnimalUI : MonoBehaviour {
     private void Start() { InitPanel(); }
     
     private void Update() {
+        if (toExit) { ExitPanel(); }
         if (needsUpdate) { OnAwake(); }
         if (showPanel) { UpdatePanel(); }
     }
 
     public void OnAwake() {
+        NonlivingUI.Sleep();
+        PlantUI.Sleep();
+        
         selectedAnimal = World.GetAnimal(passed.name);
         
         panel.SetActive(true);
@@ -79,7 +84,7 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public static void ReceiveClicked(GameObject clicked) {
-        // selectedObject = World.GetObject(clicked.name);
+        toExit = false;
         Debug.Log("Got an animal!");
         passed = clicked;
 
@@ -179,5 +184,9 @@ public class AnimalUI : MonoBehaviour {
         // Debug.Log("Passed command A " + command + " with parameter of " + param);
 
         selectedAnimal.SetCommand(command, param);
+    }
+
+    public static void Sleep() {
+        toExit = true;
     }
 }

@@ -11,6 +11,7 @@ public class NonlivingUI : MonoBehaviour {
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;
+    public static bool toExit = false;
     protected bool showPanel = false;
 
     protected Button tempButton;
@@ -26,11 +27,15 @@ public class NonlivingUI : MonoBehaviour {
     private void Start() { InitPanel(); }
     
     private void Update() {
+        if (toExit) { ExitPanel(); }
         if (needsUpdate) { OnAwake(); }
         if (showPanel) { UpdatePanel(); }
     }
 
     public void OnAwake() {
+        PlantUI.Sleep();
+        AnimalUI.Sleep();
+
         selectedItem = World.GetItem(passed.name);
         
         panel.SetActive(true);
@@ -50,6 +55,7 @@ public class NonlivingUI : MonoBehaviour {
     }
 
     public static void ReceiveClicked(GameObject clicked) {
+        toExit = false;
         Debug.Log("Got something!");
         passed = clicked;
         needsUpdate = true;
@@ -117,5 +123,9 @@ public class NonlivingUI : MonoBehaviour {
     public void TrashEntity() {
         World.RemoveEntity(selectedItem.GetName());
         ExitPanel();
+    }
+
+    public static void Sleep() {
+        toExit = true;
     }
 }
