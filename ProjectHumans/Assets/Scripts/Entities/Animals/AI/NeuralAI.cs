@@ -87,6 +87,7 @@ public class NeuralAI : AI
         GetOutputConnectionDict();
         InitInputs();
         Feedforward();
+        UpdateWeights();
         
         //foreach (Layer x in networkLayerDict.Values)
         //{
@@ -152,7 +153,7 @@ public class NeuralAI : AI
                     Debug.Log("String could not be parsed.");
                 }
             }
-            networkLayerDict.Add(layerInfo.Key, new Layer(inputDict, recurrentMemoryDict, networkLayerDict)
+            networkLayerDict.Add(layerInfo.Key, new Layer(inputDict, recurrentMemoryDict, networkLayerDict,networkLayerInfoDict)
             {
                 Name = layerInfo.Key,
                 Shape = shape,
@@ -349,22 +350,26 @@ public class NeuralAI : AI
         {
             layerInfo.Value.CalculatedThisUpdate = false;
         }
-        foreach (KeyValuePair<string, Layer> inputLayer in outputLayerDict)
+        foreach (KeyValuePair<string, Layer> outputLayer in outputLayerDict)
         {
-            inputLayer.Value.CalculateCost();      
+            if(!outputLayer.Value.Name.Contains("zOutput"))
+            {
+                outputLayer.Value.CalculateCost();
+            }
+                
         }
 
 
         //     foreach all the connections
         //         connection.calculateDeltaWeights
- 
 
-
-        //     foreach all the connections
-        //         connection.updateWeights
-        // */
-
-
+        foreach (KeyValuePair<string, Layer> layerInfo in networkLayerDict)
+        {
+            foreach(KeyValuePair<string, Connection> connection in layerInfo.Value.OutputConnectionDict)
+            {
+                connection.Value.UpdateWeights();
+            }
+        }
     }
 
     void InitInputs(){
@@ -380,7 +385,7 @@ public class NeuralAI : AI
 
     float distanceCounter = 0.0f;
     float rotationCounter = 0.0f;
-    public override Vector<float> ChooseAction()
+    public override Matrix<float> ChooseAction()
     {
         
 
@@ -415,6 +420,6 @@ public class NeuralAI : AI
 
 
 
-        return networkLayerDict["outputActionLayer"].Output.Row(0);
+        return networkLayerDict["outputActionLayer"].Output;
     }
 }

@@ -3,56 +3,68 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class NetUI : MonoBehaviour {
 
-    protected Entity selectedObject = null;
+    protected Text displayText;
+
+    protected static Entity selectedEntity;
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;
-    protected bool togglePanel = false;
+    protected bool showPanel = false;
 
     protected Button tempButton;
+    protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject header;
     protected GameObject mainCam;
-    protected GameObject halo;
-
-    protected Text originalName;
-    protected Text inputName;
-    protected InputField panelNamer;
 
     private void Start() {
         InitPanel();
-        InitNamer();
     }
     
-    private void Update() {
-        if(needsUpdate) {
-            TogglePanel();
-            needsUpdate = false;
+   private void Update() {
+        if (needsUpdate) {
+            OnAwake();
         }
+        if (showPanel) { UpdatePanel(); }
+    }
 
-        if(togglePanel) {
-            UpdatePanel();
-        }
+    public void OnAwake() {
+        Debug.Log(passed.name);
+        selectedEntity = World.GetEntity(passed.name);
+
+        panel.SetActive(true);
+
+        showPanel = true;
+        needsUpdate = false;
+    }
+
+    public void UpdatePanel(){
+        string toDisplay = "";
+        
+        displayText.text = toDisplay;
+
     }
 
     public static void ReceiveClicked(GameObject clicked) {
-        // selectedObject = World.GetObject(clicked.name);
+        selectedEntity = World.GetEntity(clicked.name);
         passed = clicked;
         needsUpdate = true;
     }
 
-    public void UpdatePanel(){}
-    public void InitPanel() {
-        panel = GameObject.Find("BrainPanel");
+    public void InitPanel(){
+        panel = GameObject.Find("GenomePanel");
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
             if (child.name == "Header") {
                 header = child.gameObject;
-            }
+            } else if (child.name == "BrainScrollView") {
+                displayText = child.gameObject.GetComponentInChildren<Text>();
+            } 
         }
 
         foreach (Transform child in header.transform) {
@@ -62,17 +74,14 @@ public class NetUI : MonoBehaviour {
             } 
         }
     }
-    
-    public void InitNamer(){}
-
-    public void TogglePanel() {
-        togglePanel = !togglePanel;
-        panel.SetActive(togglePanel);
-        UpdatePanel();
-    }
+        
 
     public void ExitPanel() {
         panel.SetActive(false);
-        halo.SetActive(false);
+        showPanel = false;
     }
+
+    // ACTUAL NN STUFF
+
+
 }

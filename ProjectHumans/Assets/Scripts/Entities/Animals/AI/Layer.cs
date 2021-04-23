@@ -20,13 +20,16 @@ public class Layer
 
     
     bool calculatedThisUpdate;
+    bool calculatedThisCost;
 
 
-    public Layer(Dictionary<string, Matrix<float>> passedInputDict, Dictionary<string, Matrix<float>> passedRecurrentMemoryDict, Dictionary<string, Layer> passedLayerDict)
+    public Layer(Dictionary<string, Matrix<float>> passedInputDict, Dictionary<string, Matrix<float>> passedRecurrentMemoryDict, Dictionary<string, Layer> passedLayerDict, Dictionary<string, List<string>> passedLayerInfoDcit)
     {
         this.thisInputDict = passedInputDict;
         this.thisRecurrentMemoryDict = passedRecurrentMemoryDict;
         this.thisLayerDict = passedLayerDict;
+
+        initOutput();
     }
 
     public string Name
@@ -95,6 +98,7 @@ public class Layer
         }
         else
         {
+            Debug.Log(name);
             output = thisInputDict[name];
         }
     }
@@ -137,33 +141,31 @@ public class Layer
 
     // MAKE SURE THIS WORKING CORRECTLY
     public void CalculateCost(){
-        if(firstRun)
+        Debug.Log("Not First Run");
+        if (!calculatedThisCost)
         {
-            initOutput();
-            firstRun = false;
-        }
-        else
-        {
-            if (!calculatedThisUpdate)
+            Debug.Log(calculatedThisUpdate);
+            if (layerType == "output" && !name.Contains("zOutput"))
             {
-                if (layerType == "output" && !name.Contains("zOutput"))
-                {
-                    string inputLayerName = "input" + name.Substring(6);
-                    Debug.Log(inputLayerName);
-                    Matrix<float> predictionError = thisInputDict[inputLayerName] - output;
-                    cost = predictionError;
-                }
-                else
-                {
-                    cost = Matrix<float>.Build.Dense(shape[0], shape[1]);
-                    foreach (KeyValuePair<string, Connection> outputConnection in outputConnectionDict)
-                    {
-                        thisLayerDict[outputConnection.Key].CalculateCost();
-                        cost += outputConnection.Value.ConnectionWeight * thisLayerDict[outputConnection.Key].cost;
-                    }
-                }
-                calculatedThisUpdate = true;
+                string inputLayerName = "input" + name.Substring(6);
+                Debug.Log(inputLayerName);
+                Matrix<float> predictionError = thisInputDict[inputLayerName] - output;
+                cost = predictionError;
             }
+            else
+            {
+                Debug.Log("Calculated Cost");
+                cost = Matrix<float>.Build.Dense(shape[0], shape[1]);
+                foreach (KeyValuePair<string, Connection> outputInfo in outputConnectionDict)
+                {
+                    Connection currentConnection = OutputConnectionDict[outputInfo.Key];
+                    thisLayerDict[outputInfo.Key].CalculateCost();
+                    Matrix<float> x = thisLayerDict[outputInfo.Key].output;
+                    Matrix<float> y = thisLayerDict[outputInfo.Key].cost;
+                    cost += currentConnection.CalculateDeltaWeights(x, y);
+                }
+            }
+            calculatedThisCost = true;
         }
         
         

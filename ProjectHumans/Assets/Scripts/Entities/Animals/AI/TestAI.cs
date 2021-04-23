@@ -6,6 +6,7 @@ using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 
 public class TestAI : AI {
+    protected  Matrix<float> decidedActions;
     Transform animalTransform;
     List<GameObject> inSight;
     static Vector3 blankPos = new Vector3(0,0,0);
@@ -36,15 +37,15 @@ public class TestAI : AI {
     // }
 
     // Untested but should be good to go
-    public override Vector<float> ChooseAction() {
-        decidedActions = Vector<float>.Build.Dense(actionStates.Count);
+    public override Matrix<float> ChooseAction() {
+        decidedActions = Matrix<float>.Build.Dense(actionStates.Count, 1);
         
         //check for input cheats
         if (thisAnimal.noCheats) {
-            decidedActions[3] = 1;
+            decidedActions[3, 0] = 1f;
         } else {
             int index = thisAnimal.cheatCommand;
-            decidedActions[index] = thisAnimal.cheatArgs;
+            decidedActions[index, 0] = thisAnimal.cheatArgs;
         }
         return decidedActions;
     }

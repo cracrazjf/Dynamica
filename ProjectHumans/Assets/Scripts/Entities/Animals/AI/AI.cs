@@ -7,7 +7,6 @@ using MathNet.Numerics.LinearAlgebra;
 public class AI 
 {
     protected Animal thisAnimal;
-    protected Vector<float> decidedActions;
     protected  Matrix<float> visualInput;
 
     protected Vector<float> bodyStates;
@@ -59,7 +58,7 @@ public class AI
     }
 
     // Since ChooseAction is in here, it doesn't need all these values passed. AI already has the bodyState, actionState, etc. - JC
-    public virtual Vector<float> ChooseAction (){
+    public virtual Matrix<float> ChooseAction (){
         
         if (outputDefinitionError == false){
             //Debug.Log("No ChooseAction function defined for this AI");

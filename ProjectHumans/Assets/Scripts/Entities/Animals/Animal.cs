@@ -53,7 +53,7 @@ public class Animal : Entity {
             AddEventTime("Get Sensory System");
             AddEventTime("Finished Choose Action");
             // get the system time again here, subtract
-            var temp = activeAI.ChooseAction();
+            Vector<float> temp = activeAI.ChooseAction().Column(0);
             this.GetMotorSystem().TakeAction(temp);
             //Debug.Log(activeAI.ChooseAction(visualInputMatrix)[0,0].GetType());
             action = "In progress!";

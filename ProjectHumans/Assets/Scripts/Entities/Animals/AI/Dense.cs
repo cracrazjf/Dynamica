@@ -5,15 +5,13 @@ using System.Collections.Generic;
 
 public class Dense : Connection
 {
-
+    public Dense() : base()
+    {
+        this.updateType = "tanh_prime";
+    }
     public override Matrix<float> GetNetInputArray(Matrix<float> input)
     {
         return this.connectionWeight.Multiply(input);
-    }
-
-    public override void CalculateDeltaWeights(Matrix<float> output, Matrix<float> cost)
-    {
-        
     }
 
     // w = [[1,1,1,1],[2,2,2,2],[3,3,3,3]]   dot((1,3),(3,4)) = (1,4)
