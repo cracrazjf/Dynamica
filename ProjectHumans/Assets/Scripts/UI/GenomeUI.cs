@@ -13,7 +13,7 @@ public class GenomeUI : MonoBehaviour {
 
     protected Genome displayGenome;
     protected Phenotype displayPhenotype;
-    protected Animal selectedAnimal;
+    protected static Entity selectedEntity;
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;
@@ -38,7 +38,7 @@ public class GenomeUI : MonoBehaviour {
 
     public void OnAwake() {
         Debug.Log(passed.name);
-        selectedAnimal = World.GetAnimal(passed.name);
+        selectedEntity = World.GetEntity(passed.name);
 
         panel.SetActive(true);
 
@@ -48,8 +48,8 @@ public class GenomeUI : MonoBehaviour {
 
     public void UpdatePanel(){
         string toDisplay = "";
-        displayGenome = selectedAnimal.GetGenome();
-        displayPhenotype = selectedAnimal.GetPhenotype();
+        displayGenome = selectedEntity.GetGenome();
+        displayPhenotype = selectedEntity.GetPhenotype();
         
         if (showMutable) {
             toDisplay = displayPhenotype.GetDisplayInfo();
@@ -64,7 +64,7 @@ public class GenomeUI : MonoBehaviour {
     }
 
     public static void ReceiveClicked(GameObject clicked) {
-        // selectedObject = World.GetObject(clicked.name);
+        selectedEntity = World.GetEntity(clicked.name);
         passed = clicked;
         needsUpdate = true;
     }

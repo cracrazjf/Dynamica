@@ -18,7 +18,10 @@ public class PrimateBody : AnimalBody {
         footAdjLeft = GetSkeleton("Foot_L").transform.position - GetSkeleton("Abdomen").transform.position; 
         footAdjRight = GetSkeleton("Foot_R").transform.position - GetSkeleton("Abdomen").transform.position;  
 
-
+        LegList = new List<string>();
+        LegList.Add("Femur_R");
+        LegList.Add("Femur_L");
+        
     }
 
     public override void UpdateBodyStates() {
@@ -44,7 +47,7 @@ public class PrimateBody : AnimalBody {
 
     public bool CheckCrouchingBottom() { 
         Vector3 toSend = abdomen.transform.position;
-        double minCrouchHeight = GetHeight()/1.5 + 0.75;
+        double minCrouchHeight = GetHeight()/1.5 + 0.5;
         //Debug.Log("Checking to see if more " + toSend.y + " " + minCrouchHeight);
         Debug.Log("Checking to see if more");
         return (toSend.y > minCrouchHeight);
@@ -52,7 +55,7 @@ public class PrimateBody : AnimalBody {
 
     public bool CheckCrouchingTop() { 
         Vector3 toSend = abdomen.transform.position;
-        double minCrouchHeight = GetHeight()/1.5 + 0.75;
+        double minCrouchHeight = GetHeight()/1.5 + 0.5;
         //Debug.Log("Checking to see if less " + toSend.y + " " + minCrouchHeight);
         Debug.Log("Checking to see if less");
         return (toSend.y < minCrouchHeight);

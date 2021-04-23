@@ -10,6 +10,7 @@ public class AnimalBody : Body {
     public GameObject abdomen;
     public GameObject head;
     public GameObject mouth;
+    public List<string> LegList;
 
     public float xMax, yMax, zMax;
 
@@ -162,7 +163,7 @@ public class AnimalBody : Body {
             GameObject currentPart = skeletonDict[name];
             Transform partTrans = currentPart.transform;
             EnsureKinematic(name);
-            partTrans.rotation = Quaternion.Slerp(partTrans.rotation, target, Time.deltaTime);
+            partTrans.rotation = Quaternion.Slerp(partTrans.rotation, target, Time.deltaTime * 0.5f);
         }
     }
 

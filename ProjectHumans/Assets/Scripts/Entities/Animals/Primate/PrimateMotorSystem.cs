@@ -27,12 +27,14 @@ public class PrimateMotorSystem : MotorSystem
         else if (stateDict["crouch"] == 1f) {
             SitUp();
         } else { Rest(); }
+        LegCheck();
     }
 
     public override void Sit() {
         if (stateDict["sit"] == -1f) {
             SitDown();
         } else { SitUp(); }
+        LegCheck();
     }
 
     public override void Lay() {
@@ -41,6 +43,7 @@ public class PrimateMotorSystem : MotorSystem
         } else if (stateDict["lay"] == 1f) {
             SitUp();
         } else { Rest(); }
+        LegCheck();
     }
 
     public override void Stand() {
@@ -49,6 +52,7 @@ public class PrimateMotorSystem : MotorSystem
         } else if (stateDict["stand"] == -1f) {
             SitDown();
         } else { Rest(); }
+        LegCheck();
     }
     public override void Rotate() {
         if(thisBody.GetState("standing") == 1f) {
@@ -63,28 +67,33 @@ public class PrimateMotorSystem : MotorSystem
         }
     }
     public override void TakeSteps() {
-        float direction = stateDict["take steps"];
-        float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.5f;
+        UnlockFeet();
+        if (primateBody.CheckSitting()) {
+            StandUp();
+        } else {
+            float direction = stateDict["take steps"];
+            float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.5f;
 
-        ConfigurableJoint legR = thisBody.GetSkeleton("Femur_R").GetComponent<ConfigurableJoint>();
-        ConfigurableJoint legL = thisBody.GetSkeleton("Femur_L").GetComponent<ConfigurableJoint>();
+            ConfigurableJoint legR = thisBody.GetSkeleton("Femur_R").GetComponent<ConfigurableJoint>();
+            ConfigurableJoint legL = thisBody.GetSkeleton("Femur_L").GetComponent<ConfigurableJoint>();
 
-        float crouchAdjustR = legR.targetRotation.x;
-        float crouchAdjustL = legL.targetRotation.x;
+            float crouchAdjustR = legR.targetRotation.x;
+            float crouchAdjustL = legL.targetRotation.x;
 
-        float xQR = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjustR/90;
-        float xQL = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjustL/90;
-        timeValue += 0.5f * Time.deltaTime;
+            float xQR = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjustR/90;
+            float xQL = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjustL/90;
+            timeValue += 0.5f * Time.deltaTime;
 
-        if (timeValue > 1.0f) {
-            timeValue = 0.0f;
+            if (timeValue > 1.0f) {
+                timeValue = 0.0f;
+            }
+
+            legR.targetRotation = new Quaternion(xQR, 0, 0, 1);
+            legL.targetRotation = new Quaternion(-xQL, 0, 0, 1);
+
+            // Super important to move parts of the body, not the whole gameObject. 
+            abdomenTrans.Translate(abdomenTrans.forward * stepProportion * Time.deltaTime);
         }
-
-        legR.targetRotation = new Quaternion(xQR, 0, 0, 1);
-        legL.targetRotation = new Quaternion(-xQL, 0, 0, 1);
-
-        // Super important to move parts of the body, not the whole gameObject. 
-        abdomenTrans.Translate(abdomenTrans.forward * stepProportion * Time.deltaTime);
     }
 
     public override void UseHand() {
@@ -128,8 +137,7 @@ public class PrimateMotorSystem : MotorSystem
             Debug.Log("Sitting down");
             //Debug.Log("Checking to see if more " + toSend.y + " " + sitHeight);
             if (toSend.y > sitHeight) {
-                BendWaist(50f);
-                BendLegs(50f, -40f);
+                BendLegs(.5f, 0.15f);
                 abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
             } else {
                 thisBody.EnsureKinematic("Abdomen");
@@ -149,21 +157,26 @@ public class PrimateMotorSystem : MotorSystem
         Debug.Log("Tried to lay down");
         if (thisAnimal.GetBodyState("sitting")) {
             Collapse();
+            thisBody.RotateJointTo("Femur_R", new Quaternion(-1, 0, 0, 1));
+            thisBody.RotateJointTo("Femur_L", new Quaternion(-1, 0, 0, 1));
         } else { SitDown(); }
     }
     
     void StandUp() {
         Vector3 toSend = abdomenTrans.localPosition;
-
-        if (Math.Pow(toSend.y - 0.2f, 2) > 0.05 ) {
-            if (toSend.y < 0.2f) {
-                abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * .5f);
-            } else {
-                abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * -.5f);
-            } 
+        if(abdomenTrans.rotation.x > 5f || abdomenTrans.rotation.x < -5f) {
+            SitUp();
         } else {
-            Debug.Log("I think I'm standing");
-            thisBody.SetState("standing", 1f);
+            if (Math.Pow(toSend.y - 0.2f, 2) > 0.05 ) {
+                if (toSend.y < 0.2f) {
+                    abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * .5f);
+                } else {
+                    abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * -.5f);
+                } 
+            } else {
+               Debug.Log("I think I'm standing");
+               thisBody.SetState("standing", 1f);
+            }
         }
     }
     
@@ -222,6 +235,7 @@ public class PrimateMotorSystem : MotorSystem
         armTrans.position = Vector3.Slerp(armTrans.position, targetPos, Time.deltaTime);
         return (armTrans.position == targetPos);
     }
+
     // Functional
     void BendKnees(float degree) {
         Quaternion toSend = new Quaternion(degree, 0, 0, 0);
@@ -230,16 +244,12 @@ public class PrimateMotorSystem : MotorSystem
     }
     
     void BendLegs(float xDegree, float yDegree) {
-        Quaternion sendLeft = new Quaternion(xDegree, yDegree, 0, 0);
-        Quaternion sendRight = new Quaternion(xDegree, -yDegree, 0, 0);
+        Quaternion sendLeft = new Quaternion(xDegree, yDegree, 0, 1f);
+        Quaternion sendRight = new Quaternion(xDegree, yDegree, 0, 1f);
         thisBody.RotateJointTo("Femur_L", sendLeft);
         thisBody.RotateJointTo("Femur_R", sendRight);
     }
 
-    void BendWaist(float xDegree) {
-        Quaternion toSend = new Quaternion(xDegree, 0, 0, 0);
-        thisBody.RotateJointTo("Abdomen", toSend);
-    }
 
     bool ArmToGoal() {
         Vector3 abAdj = primateBody.abAdjLeft;
@@ -276,8 +286,8 @@ public class PrimateMotorSystem : MotorSystem
     void KneelDown() {
         Vector3 toSend = abdomenTrans.position;
         if (toSend.y > thisBody.GetHeight() / 2 + 0.5) {
-            BendLegs(30f, 0f);
-            BendKnees(-45f);
+            BendLegs(.25f, 0f);
+            BendKnees(-.33f);
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
         } else { Debug.Log("I think I'm kneeling"); }
     }
@@ -286,26 +296,13 @@ public class PrimateMotorSystem : MotorSystem
         Debug.Log("Crouch was called");
         if (((PrimateBody)thisBody).CheckCrouchingBottom()) {
             BendLegs(-1f, 0f);
-            BendLegs(80f, 0f);
-            BendKnees(-30f);
+            BendLegs(.33f, 0f);
+            BendKnees(-.25f);
+            LockFeet();
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -0.75f));
-            BendWaist(-1f);
-            BendWaist(15f);
+            UnlockFeet();
+            thisBody.SlerpRotateTo("Abdomen", new Quaternion(0.55f, 0, 0, 1));
         } else { thisBody.SetState("crouching", 1f); }
-    }
-    
-    void ExtendLegs() {
-        Debug.Log("Stretching my toes");
-
-        // Vector3 goalR = abdomenTrans.position + primateBody.footAdjRight;
-        // Vector3 goalL = abdomenTrans.position + primateBody.footAdjLeft;
-
-        // thisBody.SlerpTargetTo("Foot_R", goalR);
-        // thisBody.SlerpTargetTo("Foot_L", goalL);
-
-        BendKnees(1f);
-        BendLegs(1f, 0f);
-        //BendWaist(0f);
     }
 
     void Collapse() {
@@ -348,5 +345,25 @@ public class PrimateMotorSystem : MotorSystem
     void ToggleEyes(bool open) {
         thisBody.GetSkeleton("Eye_R").SetActive(open);
         thisBody.GetSkeleton("Eye_L").SetActive(open);
+    }
+
+    void LockFeet() {
+        thisBody.EnsureKinematic("Foot_R");
+        thisBody.EnsureKinematic("Foot_L");
+    }
+
+    void UnlockFeet() {
+        thisBody.DisableKinematic("Foot_R");
+        thisBody.DisableKinematic("Foot_L");
+    }
+
+    void LegCheck() {
+        foreach (string leg in thisBody.LegList) {
+            float rotCheck = thisBody.GetSkeleton(leg).transform.rotation.y;
+            if (rotCheck > 90 || rotCheck < -90) {
+                Debug.Log("Fixing leg: " + leg);
+                thisBody.SlerpRotateTo(leg, Quaternion.identity);
+            }
+        }
     }
 }

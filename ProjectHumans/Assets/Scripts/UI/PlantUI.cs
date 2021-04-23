@@ -22,20 +22,11 @@ public class PlantUI : MonoBehaviour {
     protected Text inputName;
     protected Transform panelNamer;
 
-    private void Start() {
-        InitPanel();
-        InitNamer();
-    }
+    private void Start() { InitPanel(); }
     
     private void Update() {
-        if (needsUpdate) {
-            needsUpdate = false;
-        }
+        if (needsUpdate) { OnAwake(); }
         if (showPanel) { UpdatePanel(); }
-    }
-
-    public void UpdatePanel() {
-        halo.transform.position = selectedPlant.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
     }
 
     public void OnAwake() {
@@ -50,6 +41,11 @@ public class PlantUI : MonoBehaviour {
         showPanel = true;
         needsUpdate = false;
         originalName.text = selectedPlant.GetDisplayName();
+    }
+
+    public void UpdatePanel() {
+        halo.transform.position = selectedPlant.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
+        //goalText.text = selectedAnimal.GetAction();
     }
 
     public void InitPanel(){

@@ -33,6 +33,7 @@ public class World : MonoBehaviour {
     
     /// These lists keep track of entities needing an update each epoch
     public static List<Entity> entityList = new List<Entity>();
+    public static Dictionary<string, Entity> entityDict = new Dictionary<string, Entity>();
 
 
     /// <value>Setting initial world properties</value>
@@ -115,6 +116,7 @@ public class World : MonoBehaviour {
         Animal newAnimal = new Animal(speciesType, val, mother, father, spawn);
         animalDict[newAnimal.GetName()] = newAnimal;
         entityList.Add(newAnimal);
+        entityDict[newAnimal.GetName()] = newAnimal;
         entityCountDict[speciesType]++;
     }
 
@@ -123,6 +125,7 @@ public class World : MonoBehaviour {
         Plant newPlant = new Plant(speciesType, val, mother, father, spawn);
         plantDict[newPlant.GetName()] = newPlant;
         entityList.Add(newPlant);
+        entityDict[newPlant.GetName()] = newPlant;
         entityCountDict[speciesType]++;
     }
 
@@ -131,12 +134,19 @@ public class World : MonoBehaviour {
         Item newObj = new Item(speciesType, val, mother, spawn);
         itemDict[newObj.GetName()] = newObj;
         entityList.Add(newObj);
+        entityDict[newObj.GetName()] = newObj;
         entityCountDict[speciesType]++;
     }
 
     public static Animal GetAnimal(string name) { return animalDict[name]; }
+    
     public static Item GetItem(string name) { return itemDict[name]; }
+
     public static Plant GetPlant(string name) { return plantDict[name]; }
+
+    public static Entity GetEntity(string name) { 
+        return entityDict[name];
+    }
 
     public void UpdateEntities() {
         int numEntities = entityList.Count;

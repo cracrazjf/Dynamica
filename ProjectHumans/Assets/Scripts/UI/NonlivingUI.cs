@@ -22,20 +22,12 @@ public class NonlivingUI : MonoBehaviour {
     protected Text inputName;
     protected Transform panelNamer;
 
-    private void Start() {
-        InitPanel();
-        InitNamer();
-    }
+    
+    private void Start() { InitPanel(); }
     
     private void Update() {
-        if (needsUpdate) {
-            needsUpdate = false;
-        }
+        if (needsUpdate) { OnAwake(); }
         if (showPanel) { UpdatePanel(); }
-    }
-
-    public void UpdatePanel() {
-        halo.transform.position = selectedItem.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
     }
 
     public void OnAwake() {
@@ -52,10 +44,19 @@ public class NonlivingUI : MonoBehaviour {
         originalName.text = selectedItem.GetDisplayName();
     }
 
+    public void UpdatePanel() {
+        halo.transform.position = selectedItem.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
+        //goalText.text = selectedAnimal.GetAction();
+    }
+
     public static void ReceiveClicked(GameObject clicked) {
         Debug.Log("Got something!");
         passed = clicked;
         needsUpdate = true;
+    }
+
+    public void PassGenome() {
+        GenomeUI.ReceiveClicked(selectedItem.GetGameObject());
     }
 
     public void InitPanel(){
