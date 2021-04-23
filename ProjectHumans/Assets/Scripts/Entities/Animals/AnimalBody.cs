@@ -158,12 +158,12 @@ public class AnimalBody : Body {
         }
     }
 
-    public void SlerpRotateTo(string name, Quaternion target) {
+    public void SlerpRotateTo(string name, Quaternion target, float rate) {
         if (skeletonDict.ContainsKey(name)) {
             GameObject currentPart = skeletonDict[name];
             Transform partTrans = currentPart.transform;
             EnsureKinematic(name);
-            partTrans.rotation = Quaternion.Slerp(partTrans.rotation, target, Time.deltaTime * 0.5f);
+            partTrans.rotation = Quaternion.Slerp(partTrans.rotation, target, Time.deltaTime * rate);
         }
     }
 

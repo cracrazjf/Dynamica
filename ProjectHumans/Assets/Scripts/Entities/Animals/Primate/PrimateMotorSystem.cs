@@ -11,7 +11,7 @@ public class PrimateMotorSystem : MotorSystem
     Vector3 goalPos;
     int footUpdates = 0;
     bool rightStep = true; // change this at some point like handedness
-    private float xMin = -1.0f, xMax = 1.0f;
+    private float xMin = -1f, xMax = 1f;
     private float timeValue = 0.0f;
 
     public PrimateMotorSystem(Animal animal) : base(animal) {
@@ -71,6 +71,7 @@ public class PrimateMotorSystem : MotorSystem
         if (primateBody.CheckSitting()) {
             StandUp();
         } else {
+            Debug.Log("taking steps");
             float direction = stateDict["take steps"];
             float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.5f;
 
@@ -81,7 +82,7 @@ public class PrimateMotorSystem : MotorSystem
             float crouchAdjustL = legL.targetRotation.x;
 
             float xQR = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjustR/90;
-            float xQL = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjustL/90;
+            float xQL = Mathf.Lerp(xMax, xMin, timeValue) + crouchAdjustL/90;
             timeValue += 0.5f * Time.deltaTime;
 
             if (timeValue > 1.0f) {
@@ -89,10 +90,13 @@ public class PrimateMotorSystem : MotorSystem
             }
 
             legR.targetRotation = new Quaternion(xQR, 0, 0, 1);
-            legL.targetRotation = new Quaternion(-xQL, 0, 0, 1);
+            legL.targetRotation = new Quaternion(xQL, 0, 0, 1);
 
+            float diff = (float) Math.Sqrt((xQR * xQR) + (xQL * xQL));
             // Super important to move parts of the body, not the whole gameObject. 
-            abdomenTrans.Translate(abdomenTrans.forward * stepProportion * Time.deltaTime);
+            abdomenTrans.Translate(abdomenTrans.forward * stepProportion * Time.deltaTime * diff);
+            
+            LegCheck();
         }
     }
 
@@ -150,7 +154,7 @@ public class PrimateMotorSystem : MotorSystem
     void SitUp() {
         Debug.Log("Trying to lift abdomen");
         thisBody.EnsureKinematic("Abdomen");
-        thisBody.SlerpRotateTo("Abdomen", Quaternion.identity);
+        thisBody.SlerpRotateTo("Abdomen", Quaternion.identity, 0.5f);
     }
 
     void LayDown() {
@@ -301,7 +305,7 @@ public class PrimateMotorSystem : MotorSystem
             LockFeet();
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -0.75f));
             UnlockFeet();
-            thisBody.SlerpRotateTo("Abdomen", new Quaternion(0.55f, 0, 0, 1));
+            thisBody.SlerpRotateTo("Abdomen", new Quaternion(0.55f, 0, 0, 1), 0.5f);
         } else { thisBody.SetState("crouching", 1f); }
     }
 
@@ -352,6 +356,7 @@ public class PrimateMotorSystem : MotorSystem
         thisBody.EnsureKinematic("Foot_L");
     }
 
+
     void UnlockFeet() {
         thisBody.DisableKinematic("Foot_R");
         thisBody.DisableKinematic("Foot_L");
@@ -360,9 +365,10 @@ public class PrimateMotorSystem : MotorSystem
     void LegCheck() {
         foreach (string leg in thisBody.LegList) {
             float rotCheck = thisBody.GetSkeleton(leg).transform.rotation.y;
-            if (rotCheck > 90 || rotCheck < -90) {
+            if (rotCheck > 0.40f || rotCheck < -0.40f) {
                 Debug.Log("Fixing leg: " + leg);
-                thisBody.SlerpRotateTo(leg, Quaternion.identity);
+                thisBody.SlerpRotateTo(leg, Quaternion.identity, 1f);
+                thisBody.DisableKinematic(leg);
             }
         }
     }

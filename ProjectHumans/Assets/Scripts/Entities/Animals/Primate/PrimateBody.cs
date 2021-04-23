@@ -35,8 +35,9 @@ public class PrimateBody : AnimalBody {
     }
     
     public override bool CheckSitting() {
-        float bodyExtent = abdomen.GetComponent<Collider>().bounds.extents.y;
-        return Physics.Raycast(abdomen.transform.position, -abdomen.transform.up, bodyExtent + 0.2f);
+        // float bodyExtent = abdomen.GetComponent<Collider>().bounds.extents.y;
+        // return Physics.Raycast(abdomen.transform.position, -abdomen.transform.up, bodyExtent + 0.2f);
+        return CheckCrouchingTop();
     }
 
     public override bool CheckCrouching() { 
