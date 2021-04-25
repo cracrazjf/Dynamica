@@ -11,7 +11,7 @@ public class Connection
     protected string connectionType = "None";
     protected string updateType = "None"; // tanh_prime
     protected Matrix<float> connectionWeight;
-    protected float learning_rate = 0.1f;
+    protected float learning_rate = 0.6f;
     protected Matrix<float> deltaWeight;
 
     public Connection()
@@ -38,20 +38,26 @@ public class Connection
         get { return connectionWeight; }
         set { connectionWeight = value; }
     }
+    public Matrix<float> DeltaWeight
+    {
+        get { return deltaWeight; }
+        set { deltaWeight = value; }
+    }
     public virtual Matrix<float> GetNetInputArray(Matrix<float> x)
     {
         return connectionWeight;
     }
 
-    public Matrix<float> CalculateDeltaWeights(Matrix<float> output, Matrix<float> cost){
+    public Matrix<float> CalculateDeltaWeights(Matrix<float> output, Matrix<float> cost)
+    {
         // these variables should be defined above initialized to all zeros, and set here
-        Debug.Log("CalculatedDeltaWeights");
         if (connectionType == "dense")
         {
             //deltaWeight = Matrix<float>.Build.Dense()
             if (updateType == "tanh_prime")
             {
-                deltaWeight = TanhPrime(output, cost);
+                Matrix<float> resizedWeight = connectionWeight.Resize(connectionWeight.ColumnCount, connectionWeight.RowCount);
+                deltaWeight = resizedWeight.Multiply(TanhPrime(output, cost));
             }
             else if (updateType == "sigmoid_prime")
             {
@@ -68,22 +74,23 @@ public class Connection
             // is the case where there were no transformations, in which case its 
             deltaWeight = cost;
         }
+        //Debug.Log(sender + " " + deltaWeight);
         return deltaWeight;
 
     }
 
-    public void UpdateWeights() {
-        if (connectionType == "dense"){
-            
-            connectionWeight += deltaWeight * learning_rate;
+    public void UpdateWeights()
+    {
+        if (connectionType == "dense")
+        {
+
         }
     }
 
-    Matrix<float> TanhPrime(Matrix<float> output, Matrix<float> cost){
-        Debug.Log(output);
-        Matrix<float> tanh_prime_of_output = (Matrix<float>.Tanh(output).Power(2).SubtractFrom(1));
-        deltaWeight = cost * tanh_prime_of_output;
-        return deltaWeight;        
+    Matrix<float> TanhPrime(Matrix<float> output, Matrix<float> cost)
+    {
+        Matrix<float> tanh_prime_of_output = (Matrix<float>.Tanh(output).PointwisePower(2).SubtractFrom(1));
+        deltaWeight = cost.PointwiseMultiply(tanh_prime_of_output);
+        return tanh_prime_of_output;
     }
-
 }

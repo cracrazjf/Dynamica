@@ -16,9 +16,7 @@ public class Animal : Entity {
     private static MotorSystem motorSystem;
     private static SensorySystem sensorySystem;
     private bool finishedUpdate = true;
-
     protected AI activeAI;
-
     protected string action;
 
     public static List<int> timeList = new List<int>();
@@ -36,10 +34,9 @@ public class Animal : Entity {
         driveSystem = new DriveSystem(this);
         sensorySystem = new SensorySystem(this);
 
-        networkName = "TestAI";
-        //activeAI = new SimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
-        activeAI = new TestAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
-        //activeAI = new NeuralAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
+    //activeAI = new SimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
+    //activeAI = new TestAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
+    activeAI = new NeuralAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
     }
     
 
@@ -57,7 +54,6 @@ public class Animal : Entity {
             AddEventTime("Finished Choose Action");
             // get the system time again here, subtract
             Vector<float> temp = activeAI.ChooseAction().Column(0);
-            Debug.Log(temp);
             this.GetMotorSystem().TakeAction(temp);
             //Debug.Log(activeAI.ChooseAction(visualInputMatrix)[0,0].GetType());
             action = "In progress!";
@@ -85,10 +81,7 @@ public class Animal : Entity {
 
     public SensorySystem GetSensorySystem() { return sensorySystem; }
 
-    public AI GetAI() { return activeAI; }
-
     public string GetAction() { return this.activeAI.GetAction(); }
-
 
     public string GetSex() { 
         if(this.GetPhenotype().GetTrait("sex") == 1.0) {
@@ -97,13 +90,11 @@ public class Animal : Entity {
     }
 
     public void SetCommand(float command, float param) {
-        Debug.Log("Passed command " + command + " with parameter of " + param);
+        //Debug.Log("Passed command B " + command + " with parameter of " + param);
         cheatCommand = (int) command;
         cheatArgs = param;
         noCheats = false;
     }
-
-    
 
     public static void ResetEventTimes(){
         timeList.Clear();

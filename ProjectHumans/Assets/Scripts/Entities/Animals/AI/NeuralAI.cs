@@ -9,8 +9,8 @@ using MathNet.Numerics.Distributions;
 public class NeuralAI : AI
 {
     // this is a dictionary of layer names points to lists of layer info, [layerType, layerShape]
-    Dictionary<string, List<string>> networkLayerInfoDict; 
-    
+    Dictionary<string, List<string>> networkLayerInfoDict;
+
     Dictionary<string, Dictionary<string, string>> networkConnectionInfoDict = new Dictionary<string, Dictionary<string, string>>()
     {
         // this is a dict of the Connections and their sender and input types
@@ -20,8 +20,8 @@ public class NeuralAI : AI
         { "inputDriveLayer", new Dictionary<string, string>(){ } },
         { "inputBodyLayer", new Dictionary<string, string>(){ } },
         { "inputActionLayer", new Dictionary<string, string>(){ } },
-        { "inputActionArgumentLayer", new Dictionary<string, string>(){ } },
-        { "recurrentHiddenLayer", new Dictionary<string, string>(){ { "zHiddenLayer", "dense"},
+        //{ "inputActionArgumentLayer", new Dictionary<string, string>(){ } },
+        { "recurrentHiddenLayer", new Dictionary<string, string>(){ { "zHiddenLayer", "copy"},
                                                                { "biasLayer", "dense"} } },
         { "zHiddenLayer", new Dictionary<string, string>()
             {
@@ -31,7 +31,7 @@ public class NeuralAI : AI
                 { "inputDriveLayer", "dense"},
                 { "inputBodyLayer", "dense"},
                 { "inputActionLayer", "dense"},
-                { "inputActionArgumentLayer", "dense"},
+                //{ "inputActionArgumentLayer", "dense"},
                 { "biasLayer", "dense"}
             } },
         { "hiddenLayer", new Dictionary<string, string>(){ { "zHiddenLayer", "tanh"}}},
@@ -47,8 +47,8 @@ public class NeuralAI : AI
                                                                { "biasLayer", "dense"}} },
         { "zOutputActionLayer", new Dictionary<string, string>(){ { "hiddenLayer", "dense" },
                                                                  { "biasLayer", "dense"}} },
-        { "zOutputActionArgumentLayer", new Dictionary<string, string>(){ { "hiddenLayer", "dense" },
-                                                                            { "biasLayer", "dense"}} },
+        //{ "zOutputActionArgumentLayer", new Dictionary<string, string>(){ { "hiddenLayer", "dense" },
+        //                                                                    { "biasLayer", "dense"}} },
 
         { "outputVisionRedLayer", new Dictionary<string, string>(){ { "zOutputVisionRedLayer", "tanh" }}},
         { "outputVisionGreenLayer", new Dictionary<string, string>(){ { "zOutputVisionGreenLayer", "tanh" }}},
@@ -56,12 +56,8 @@ public class NeuralAI : AI
         { "outputDriveLayer", new Dictionary<string, string>(){{ "zOutputDriveLayer", "tanh"}}},
         { "outputBodyLayer", new Dictionary<string, string>(){{ "zOutputBodyLayer", "tanh"}}},
         { "outputActionLayer", new Dictionary<string, string>(){ { "zOutputActionLayer", "tanh" }}},
-        { "outputActionArgumentLayer", new Dictionary<string, string>(){{ "zOutputActionArgumentLayer", "tanh" }}}
+        //{ "outputActionArgumentLayer", new Dictionary<string, string>(){{ "zOutputActionArgumentLayer", "tanh" }}}
     };
-
-
-    Animal thisHuman;
-    int[,,] hiddenSize = new int[128, 1, 1];
 
     // dictionary of the layer objects
     Dictionary<string, Layer> networkLayerDict = new Dictionary<string, Layer>();
@@ -75,8 +71,9 @@ public class NeuralAI : AI
 
     // dictionary of the layer objects
     Dictionary<string, Matrix<float>> inputDict = new Dictionary<string, Matrix<float>>();
-    
-    
+    Dictionary<string, Layer> inputLayerDict = new Dictionary<string, Layer>();
+
+
 
     public NeuralAI(Animal animal, Body body, DriveSystem drives, MotorSystem motor, SensorySystem senses, Phenotype phenotype) :
                     base(body, drives, motor, senses, phenotype)
@@ -86,17 +83,9 @@ public class NeuralAI : AI
         initConnections();
         GetOutputConnectionDict();
         InitInputs();
+        initOutputs();
+        BackPropagate();
         Feedforward();
-        UpdateWeights();
-        
-        //foreach (Layer x in networkLayerDict.Values)
-        //{
-        //    Debug.Log(x.Name);
-        //    foreach(KeyValuePair<string, Connection> y in x.OutputConnectionDict)
-        //    {
-        //        Debug.Log(y);
-        //    }
-        //}
     }
 
     void initNetworkLayerInfoDict()
@@ -112,9 +101,9 @@ public class NeuralAI : AI
             {"inputDriveLayer", new List<string>() {"input", driveStates.Count.ToString() + ",1" } },
             {"inputBodyLayer", new List<string>() {"input", bodyStates.Count.ToString() + ",1" } },
             {"inputActionLayer", new List<string>() {"input", actionStates.Count.ToString() + ",1" } },
-            {"inputActionArgumentLayer", new List<string>() {"input", actionArguments.Count.ToString() + ",1" } },
+            //{"inputActionArgumentLayer", new List<string>() {"input", actionArguments.Count.ToString() + ",1" } },
             {"recurrentHiddenLayer", new List<string>() { "recurrent", "128,1" } },
-            
+
             {"zHiddenLayer", new List<string>() { "hidden", "128,1" } },
             {"hiddenLayer", new List<string>() { "hidden", "128,1" } },
 
@@ -124,7 +113,7 @@ public class NeuralAI : AI
             {"zOutputDriveLayer", new List<string>() { "output", driveStates.Count.ToString() + ",1" } },
             {"zOutputBodyLayer", new List<string>() { "output", bodyStates.Count.ToString() + ",1" } },
             {"zOutputActionLayer", new List<string>() { "output", actionStates.Count.ToString() + ",1" } },
-            {"zOutputActionArgumentLayer", new List<string>() { "output", actionArguments.Count.ToString() + ",1" } },
+            //{"zOutputActionArgumentLayer", new List<string>() { "output", actionArguments.Count.ToString() + ",1" } },
             
             {"outputVisionRedLayer", new List<string>() {"output", visualInput.ColumnCount.ToString() + ",1" } },
             {"outputVisionGreenLayer", new List<string>() { "output", visualInput.ColumnCount.ToString() + ",1" } },
@@ -132,7 +121,7 @@ public class NeuralAI : AI
             {"outputDriveLayer", new List<string>() { "output", driveStates.Count.ToString() + ",1" } },
             {"outputBodyLayer", new List<string>() { "output", bodyStates.Count.ToString() + ",1" } },
             {"outputActionLayer", new List<string>() { "output", actionStates.Count.ToString() + ",1" } },
-            {"outputActionArgumentLayer", new List<string>() { "output", actionArguments.Count.ToString() + ",1" } },
+            //{"outputActionArgumentLayer", new List<string>() { "output", actionArguments.Count.ToString() + ",1" } },
         };
     }
 
@@ -153,7 +142,7 @@ public class NeuralAI : AI
                     Debug.Log("String could not be parsed.");
                 }
             }
-            networkLayerDict.Add(layerInfo.Key, new Layer(inputDict, recurrentMemoryDict, networkLayerDict,networkLayerInfoDict)
+            networkLayerDict.Add(layerInfo.Key, new Layer(inputDict, recurrentMemoryDict, networkLayerDict, networkLayerInfoDict)
             {
                 Name = layerInfo.Key,
                 Shape = shape,
@@ -178,34 +167,35 @@ public class NeuralAI : AI
             {
                 Matrix<float> currentInput = Matrix<float>.Build.Dense(shape[0], shape[1]);
                 inputDict.Add(layerInfo.Key, currentInput);
-                
+                inputLayerDict.Add(layerInfo.Key, networkLayerDict[layerInfo.Key]);
+
             }
             if (layerInfo.Value[0] == "output")
             {
                 outputLayerDict.Add(layerInfo.Key, networkLayerDict[layerInfo.Key]);
             }
-            if (layerInfo.Value[0] == "bias")
-            {
-                networkLayerDict["biasLayer"].Output = Matrix<float>.Build.Dense(shape[0], shape[1], 1.0f);
-            }
+            //if (layerInfo.Value[0] == "bias")
+            //{
+            //    networkLayerDict["biasLayer"].Output = Matrix<float>.Build.Dense(shape[0], shape[1], 1.0f);
+            //}
         }
 
-        networkLayerDict["zHiddenLayer"].Output = Matrix<float>.Build.Dense(128, 1);
-        networkLayerDict["hiddenLayer"].Output = Matrix<float>.Build.Dense(128, 1);
-        networkLayerDict["zOutputVisionRedLayer"].Output = Matrix<float>.Build.Dense(256, 1);
-        networkLayerDict["zOutputVisionGreenLayer"].Output = Matrix<float>.Build.Dense(256, 1);
-        networkLayerDict["zOutputVisionBlueLayer"].Output = Matrix<float>.Build.Dense(256, 1);
-        networkLayerDict["zOutputDriveLayer"].Output = Matrix<float>.Build.Dense(5, 1);
-        networkLayerDict["zOutputBodyLayer"].Output = Matrix<float>.Build.Dense(4, 1);
-        networkLayerDict["zOutputActionLayer"].Output = Matrix<float>.Build.Dense(13, 1);
-        networkLayerDict["zOutputActionArgumentLayer"].Output = Matrix<float>.Build.Dense(6, 1);
-        networkLayerDict["outputVisionRedLayer"].Output = Matrix<float>.Build.Dense(256, 1);
-        networkLayerDict["outputVisionGreenLayer"].Output = Matrix<float>.Build.Dense(256, 1);
-        networkLayerDict["outputVisionBlueLayer"].Output = Matrix<float>.Build.Dense(256, 1);
-        networkLayerDict["outputDriveLayer"].Output = Matrix<float>.Build.Dense(5, 1);
-        networkLayerDict["outputBodyLayer"].Output = Matrix<float>.Build.Dense(4, 1);
-        networkLayerDict["outputActionLayer"].Output = Matrix<float>.Build.Dense(13, 1);
-        networkLayerDict["outputActionArgumentLayer"].Output = Matrix<float>.Build.Dense(6, 1);
+        //networkLayerDict["zHiddenLayer"].Output = Matrix<float>.Build.Dense(128, 1);
+        //networkLayerDict["hiddenLayer"].Output = Matrix<float>.Build.Dense(128, 1);
+        //networkLayerDict["zOutputVisionRedLayer"].Output = Matrix<float>.Build.Dense(256, 1);
+        //networkLayerDict["zOutputVisionGreenLayer"].Output = Matrix<float>.Build.Dense(256, 1);
+        //networkLayerDict["zOutputVisionBlueLayer"].Output = Matrix<float>.Build.Dense(256, 1);
+        //networkLayerDict["zOutputDriveLayer"].Output = Matrix<float>.Build.Dense(5, 1);
+        //networkLayerDict["zOutputBodyLayer"].Output = Matrix<float>.Build.Dense(4, 1);
+        //networkLayerDict["zOutputActionLayer"].Output = Matrix<float>.Build.Dense(13, 1);
+        ////networkLayerDict["zOutputActionArgumentLayer"].Output = Matrix<float>.Build.Dense(6, 1);
+        //networkLayerDict["outputVisionRedLayer"].Output = Matrix<float>.Build.Dense(256, 1);
+        //networkLayerDict["outputVisionGreenLayer"].Output = Matrix<float>.Build.Dense(256, 1);
+        //networkLayerDict["outputVisionBlueLayer"].Output = Matrix<float>.Build.Dense(256, 1);
+        //networkLayerDict["outputDriveLayer"].Output = Matrix<float>.Build.Dense(5, 1);
+        //networkLayerDict["outputBodyLayer"].Output = Matrix<float>.Build.Dense(4, 1);
+        //networkLayerDict["outputActionLayer"].Output = Matrix<float>.Build.Dense(13, 1);
+        ////networkLayerDict["outputActionArgumentLayer"].Output = Matrix<float>.Build.Dense(6, 1);
     }
 
     void initConnections()
@@ -234,10 +224,7 @@ public class NeuralAI : AI
                     else if (connectionInfo.Value == "tanh")
                     {
                         Connection tanh = new TanhActivation { ConnectionType = connectionInfo.Value, Sender = connectionInfo.Key, Recipient = structureInfo.Key };
-                        // this shouldn't be here, right?
-                        tanh.ConnectionWeight = Matrix<float>.Build.Random(networkLayerDict[tanh.Recipient].NumUnits, networkLayerDict[tanh.Sender].NumUnits, new Normal(0, weight_init_range));
                         networkLayerDict[structureInfo.Key].InputConnectionDict.Add(connectionInfo.Key, tanh);
-
                     }
                 }
             }
@@ -255,10 +242,9 @@ public class NeuralAI : AI
         }
     }
 
-    int counter = 0;
-    public void Feedforward(){
-        // testTimes();
 
+    public void Feedforward()
+    {
         foreach (KeyValuePair<string, Layer> layerInfo in networkLayerDict)
         {
             layerInfo.Value.CalculatedThisUpdate = false;
@@ -274,43 +260,6 @@ public class NeuralAI : AI
         {
             networkLayerDict[recurrentInfoDict[memoryKey]].Output.CopyTo(recurrentMemoryDict[memoryKey]);
         }
-    }
-
-    public override string GetStringInput(int vbadIndex) {
-        string toSend = "";
-
-        if (vbadIndex < 3) {
-            // Visual return
-            toSend = visualInput.Row(vbadIndex).ToColumnMatrix().ToString();
-        } else if ( vbadIndex == 3 ) {
-            toSend = bodyStates.ToColumnMatrix().ToString();
-        } else if (vbadIndex == 4 ) {
-            toSend = actionStates.ToColumnMatrix().ToString();
-        } else if (vbadIndex == 5) {
-            toSend = driveStates.ToColumnMatrix().ToString();
-        }
-        
-        return toSend;
-    }
-
-    public override string GetStringOutput(int vbadIndex) {
-        string toSend = "";
-        
-        if (vbadIndex == 0) {
-            toSend = networkLayerDict["outputVisionRedLayer"].Output.ToString();
-        } else if (vbadIndex == 0) {
-            toSend = networkLayerDict["outputVisionGreenLayer"].Output.ToString();
-        } else if (vbadIndex == 0) {
-            toSend = networkLayerDict["outputVisionBlueLayer"].Output.ToString();
-        } else if ( vbadIndex == 3 ) {
-            toSend = networkLayerDict["outputBodyLayer"].Output.ToString();
-        } else if (vbadIndex == 4 ) {
-            toSend = networkLayerDict["outputActionLayer"].Output.ToString();
-        } else if (vbadIndex == 5) {
-            toSend = networkLayerDict["outputDriveLayer"].Output.ToString();
-        }
-
-        return toSend;
     }
 
     // public void HardCodedFeedforward(){
@@ -331,39 +280,39 @@ public class NeuralAI : AI
     //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["inputActionLayer"].ConnectionWeight.Multiply(networkLayerDict["inputActionLayer"].Output);
     //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["inputActionArgumentLayer"].ConnectionWeight.Multiply(networkLayerDict["inputActionArgumentLayer"].Output);
 
-        
+
     //     networkLayerDict["zOutputVisionRedLayer"].Output += networkLayerDict["zOutputVisionRedLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
 
     //     networkLayerDict["zOutputVisionRedLayer"].Output += networkLayerDict["zOutputVisionRedLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
     //     networkLayerDict["outputVisionRedLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputVisionRedLayer"].Output);
-        
+
     //     networkLayerDict["zOutputVisionGreenLayer"].Output += networkLayerDict["zOutputVisionGreenLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
+
     //     networkLayerDict["zOutputVisionGreenLayer"].Output += networkLayerDict["zOutputVisionGreenLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-        
+
     //     networkLayerDict["outputVisionGreenLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputVisionGreenLayer"].Output);
 
     //     networkLayerDict["zOutputVisionBlueLayer"].Output += networkLayerDict["zOutputVisionBlueLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
+
     //     networkLayerDict["zOutputVisionBlueLayer"].Output += networkLayerDict["zOutputVisionBlueLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-       
+
     //     networkLayerDict["outputVisionBlueLayer"].Output += Matrix<float>.Tanh(networkLayerDict["outputVisionBlueLayer"].Output);
 
     //     networkLayerDict["zOutputDriveLayer"].Output += networkLayerDict["zOutputDriveLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
+
     //     networkLayerDict["zOutputDriveLayer"].Output += networkLayerDict["zOutputDriveLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-       
+
     //     networkLayerDict["outputDriveLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputDriveLayer"].Output);
 
     //     networkLayerDict["zOutputBodyLayer"].Output += networkLayerDict["zOutputBodyLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
+
     //     networkLayerDict["zOutputBodyLayer"].Output += networkLayerDict["zOutputBodyLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-        
+
     //     networkLayerDict["outputBodyLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputBodyLayer"].Output);
     //     networkLayerDict["zOutputActionLayer"].Output += networkLayerDict["zOutputActionLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
+
     //     networkLayerDict["zOutputActionLayer"].Output += networkLayerDict["zOutputActionLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-        
+
     //     networkLayerDict["outputActionLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputActionLayer"].Output);
 
     //     networkLayerDict["zOutputActionArgumentLayer"].Output += networkLayerDict["zOutputActionArgumentLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
@@ -379,37 +328,36 @@ public class NeuralAI : AI
     // }
     // create a copy of previous input layer
 
-    void UpdateWeights(){
+
+    void BackPropagate()
+    {
         // make sure we initialize all the non-bias layers to zero, and bias to 1
 
         // we may want to rename CalculatedThisUpdate and break it into two, CalculatedFeedforwardThisUpdate, and CalculatedWeightUpdateThisUpdate
         foreach (KeyValuePair<string, Layer> layerInfo in networkLayerDict)
         {
-            layerInfo.Value.CalculatedThisUpdate = false;
+            layerInfo.Value.CalculatedThisCost = false;
         }
-        foreach (KeyValuePair<string, Layer> outputLayer in outputLayerDict)
+        foreach (KeyValuePair<string, Layer> inputLayerInfo in inputLayerDict)
         {
-            if(!outputLayer.Value.Name.Contains("zOutput"))
-            {
-                outputLayer.Value.CalculateCost();
-            }
-                
+            inputLayerInfo.Value.CalculateCost();
         }
-
-
-        //     foreach all the connections
-        //         connection.calculateDeltaWeights
-
-        foreach (KeyValuePair<string, Layer> layerInfo in networkLayerDict)
+        foreach (Layer layer in networkLayerDict.Values)
         {
-            foreach(KeyValuePair<string, Connection> connection in layerInfo.Value.OutputConnectionDict)
+            if (layer.Name != "biasLayer")
             {
-                connection.Value.UpdateWeights();
+                foreach (Connection connection in layer.OutputConnectionDict.Values)
+                {
+                    connection.UpdateWeights();
+                }
             }
+
+
         }
     }
 
-    void InitInputs(){
+    void InitInputs()
+    {
         // ideally this would loop that iterates over the inputDict data structure
         networkLayerDict["inputVisionRedLayer"].Output = visualInput.Row(0).ToColumnMatrix();
         networkLayerDict["inputVisionGreenLayer"].Output = visualInput.Row(1).ToColumnMatrix();
@@ -417,48 +365,48 @@ public class NeuralAI : AI
         networkLayerDict["inputDriveLayer"].Output = driveStates.ToColumnMatrix();
         networkLayerDict["inputBodyLayer"].Output = bodyStates.ToColumnMatrix();
         networkLayerDict["inputActionLayer"].Output = actionStates.ToColumnMatrix();
-        networkLayerDict["inputActionArgumentLayer"].Output = actionArguments.ToColumnMatrix();
+        //networkLayerDict["inputActionArgumentLayer"].Output = actionArguments.ToColumnMatrix();
+    }
+    void initOutputs()
+    {
+        foreach (KeyValuePair<string, Layer> layerInfo in networkLayerDict)
+        {
+            layerInfo.Value.initOutput();
+
+        }
     }
 
     float distanceCounter = 0.0f;
     float rotationCounter = 0.0f;
+    int counter = 0;
     public override Matrix<float> ChooseAction()
     {
-        
-
         counter += 1;
         if (counter % 100 == 0)
         {
             // the real choose action
             InitInputs();
-            UpdateWeights();
-
+            BackPropagate();
             Feedforward();
-            Debug.Log(networkLayerDict["outputActionLayer"].Output);
         }
 
-
-        // hard coded walk in a square
-        if (distanceCounter > 10.0f)
-        {
-            rotationCounter += 90;
-            if(rotationCounter == 360)
-            {
-                rotationCounter = 0.0f;
-            }
-            this.gameobject.transform.GetChild(0).transform.localRotation = Quaternion.Euler(0, rotationCounter, 0);
-            distanceCounter = 0.0f;
-        }
-        else
-        {
-            this.gameobject.transform.Translate(this.gameobject.transform.GetChild(0).forward * Time.deltaTime);
-            distanceCounter += Time.deltaTime;
-        }
-
-
+        //// hard coded walk in a square
+        //if (distanceCounter > 10.0f)
+        //{
+        //    rotationCounter += 90;
+        //    if(rotationCounter == 360)
+        //    {
+        //        rotationCounter = 0.0f;
+        //    }
+        //    this.gameobject.transform.GetChild(0).transform.localRotation = Quaternion.Euler(0, rotationCounter, 0);
+        //    distanceCounter = 0.0f;
+        //}
+        //else
+        //{
+        //    this.gameobject.transform.Translate(this.gameobject.transform.GetChild(0).forward * Time.deltaTime);
+        //    distanceCounter += Time.deltaTime;
+        //}
 
         return networkLayerDict["outputActionLayer"].Output;
     }
-
-    
 }
