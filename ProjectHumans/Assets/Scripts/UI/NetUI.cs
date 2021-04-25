@@ -7,12 +7,15 @@ using UnityEngine.Events;
 
 public class NetUI : MonoBehaviour {
 
-    protected Text displayText;
+    protected Text inputText;
+    protected Text outputText;
+    protected Dropdown systemDrop;
 
     protected static Entity selectedEntity;
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;
+    public static bool toExit = false;
     protected bool showPanel = false;
 
     protected Button tempButton;
@@ -21,32 +24,28 @@ public class NetUI : MonoBehaviour {
     protected GameObject header;
     protected GameObject mainCam;
 
-    private void Start() {
-        InitPanel();
-    }
+    private void Start() { InitPanel(); }
     
-   private void Update() {
-        if (needsUpdate) {
-            OnAwake();
-        }
-        if (showPanel) { UpdatePanel(); }
+    private void Update() {
+        if (toExit) { ExitPanel(); }
+        if (needsUpdate) { OnAwake(); }
     }
 
     public void OnAwake() {
-        Debug.Log(passed.name);
+        GenomeUI.Sleep();
         selectedEntity = World.GetEntity(passed.name);
-
         panel.SetActive(true);
-
+    
+        InitButtons();
         showPanel = true;
         needsUpdate = false;
     }
-
     public void UpdatePanel(){
-        string toDisplay = "";
+        string output = GetOutput();
+        string input = GetInput();
         
-        displayText.text = toDisplay;
-
+        outputText.text = output;
+        inputText.text = input;
     }
 
     public static void ReceiveClicked(GameObject clicked) {
@@ -55,23 +54,32 @@ public class NetUI : MonoBehaviour {
         needsUpdate = true;
     }
 
-    public void InitPanel(){
-        panel = GameObject.Find("GenomePanel");
+    public void InitPanel() {
+        panel = GameObject.Find("BrainPanel");
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
             if (child.name == "Header") {
                 header = child.gameObject;
-            } else if (child.name == "BrainScrollView") {
-                displayText = child.gameObject.GetComponentInChildren<Text>();
+            } else if (child.name == "InputScrollView") {
+                inputText = child.gameObject.GetComponentInChildren<Text>();
+            } else if (child.name == "OutputScrollView") {
+                outputText = child.gameObject.GetComponentInChildren<Text>();
             } 
         }
+    }
 
+    public void InitButtons() {
         foreach (Transform child in header.transform) {
             if (child.name == "ClosePanelButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ExitPanel);
-            } 
+            } else if (child.name == "RefreshButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(UpdatePanel);
+            } else if (child.name == "SystemDropdown") {
+                systemDrop = child.gameObject.GetComponent<Dropdown>();
+            }
         }
     }
         
@@ -83,5 +91,31 @@ public class NetUI : MonoBehaviour {
 
     // ACTUAL NN STUFF
 
+    public string GetInput() {
+        string sendInfo = "This entity is unresponsive";
+        int vbadIndex = systemDrop.value;
+        string aiType = selectedEntity.GetNetworkName();
+        if (aiType != "Unresponsive"){
+            Animal brainOwner = World.GetAnimal(selectedEntity.GetName());
+            string rawInfo = brainOwner.GetAI().GetStringInput(vbadIndex);
+            sendInfo = rawInfo;
+        }
+        return sendInfo;
+    }
 
+    public string GetOutput() {
+        string sendInfo = "This entity is unresponsive";
+        int vbadIndex = systemDrop.value;
+        string aiType = selectedEntity.GetNetworkName();
+        if (aiType != "Unresponsive"){
+            Animal brainOwner = World.GetAnimal(selectedEntity.GetName());
+            string rawInfo = brainOwner.GetAI().GetStringOutput(vbadIndex);
+            sendInfo = rawInfo;
+        }
+        return sendInfo;
+    }
+
+    public static void Sleep() {
+        toExit = true;
+    }
 }

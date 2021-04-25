@@ -24,6 +24,7 @@ public class MainUI : MonoBehaviour
 
     private bool toggleFlight = true;
     private bool toggleRotate = false;
+    private bool toggleMovement = false;
 
     // Camera content
     private bool thirdPerson = true;
@@ -38,6 +39,8 @@ public class MainUI : MonoBehaviour
     private GameObject alwaysPanel;
     private GameObject infoPanel;
     private GameObject optionPanel;
+    private GameObject startPanel;
+
     private GameObject pauseObj;
     private GameObject bannerObj;
     private Slider rotationSlider;
@@ -48,8 +51,10 @@ public class MainUI : MonoBehaviour
     public GameObject climbPub;
     protected Button tempButton;
 
+    protected static bool needsUpdate = false;
     private static bool isPaused = false;
     private bool isFF = false;
+    private bool isAwake = false;
     private bool toggleHelp = false;
     private bool toggleOptions = false;
     
@@ -59,27 +64,46 @@ public class MainUI : MonoBehaviour
         mainCam = GameObject.Find("Main Camera");
     }
 
+    public void OnAwake() {
+        isAwake = true;
+        alwaysPanel.SetActive(true);
+        toggleMovement = true;
+    }
+
+    public static void ToggleUpdate() {
+        needsUpdate = !needsUpdate;
+    }
+
     // Called once a frame
     void Update() {
+        if (needsUpdate) {
+            OnAwake();
+        }
         CheckClick();
         MovePlayer();
 
-        if (centeredOn) {
-            SetPosition(toSet);
-        }
+        if (centeredOn) { SetPosition(toSet); }
+
+        if(toggleHelp && toggleRotate) { ToggleRotate(); }
+
+        if (toggleOptions && toggleRotate) { ToggleRotate(); }
     }
 
     public void InitPanels() {
         alwaysPanel = GameObject.Find("AlwaysPanel");
         infoPanel = GameObject.Find("InfoPanel");
         optionPanel = GameObject.Find("OptionsPanel");
+        startPanel = GameObject.Find("StartPanel");
         pauseObj = GameObject.Find("PauseText");
         bannerObj = GameObject.Find("BrainText");
         
+        alwaysPanel.SetActive(false);
         infoPanel.SetActive(false);
         optionPanel.SetActive(false);
         pauseObj.SetActive(false);
         bannerObj.SetActive(false);
+
+        InitButtons();
     }
 
     public void InitButtons() {
@@ -136,6 +160,7 @@ public class MainUI : MonoBehaviour
                     if (grandchild.name == "CloseOptionsButton") {
                         tempButton = grandchild.gameObject.GetComponent<Button>();
                         tempButton.onClick.AddListener(ToggleOptions);
+                        tempButton.onClick.AddListener(CheckStart);
                     } else if (grandchild.name == "ExitButton") {
                         tempButton = grandchild.gameObject.GetComponent<Button>();
                         tempButton.onClick.AddListener(QuitPlay);
@@ -148,22 +173,26 @@ public class MainUI : MonoBehaviour
     private void MovePlayer() {
         // Always called in case player goes under plane
         ResolveAltitude();
-        if (followingAnimal) {
-            bannerObj.SetActive(true);
-            transform.position = followedCam.transform.position;
-            transform.rotation = followedCam.transform.rotation;
+        if (toggleMovement) {
 
-        } else if (thirdPerson) { 
-            MoveNormally(baseMoveSpeed * moveAdjustment);
-            // Fly if legal
-            if (toggleFlight) { MoveAirborne(baseClimbSpeed * climbAdjustment); }
-            // Hold L Ctrl to rotate
-            if (Input.GetKeyDown(KeyCode.LeftControl)) { ToggleRotate(); } 
-            //Actually call the function
-            if(toggleRotate) { RotateCamera(baseRotateSpeed * rotateAdjustment); }
-        } else if (firstPerson) {
-            MoveNormally(baseMoveSpeed);
-            RotateCamera(baseRotateSpeed);
+            if (followingAnimal) {
+                bannerObj.SetActive(true);
+                transform.position = followedCam.transform.position;
+                transform.rotation = followedCam.transform.rotation;
+
+            } else if (thirdPerson) { 
+                MoveNormally(baseMoveSpeed * moveAdjustment);
+                // Fly if legal
+                if (toggleFlight) { MoveAirborne(baseClimbSpeed * climbAdjustment); }
+                // Hold L Ctrl to rotate
+                if (Input.GetKeyDown(KeyCode.LeftControl)) { ToggleRotate(); } 
+                //Actually call the function
+                if(toggleRotate) { RotateCamera(baseRotateSpeed * rotateAdjustment); }
+
+            } else if (firstPerson) {
+                MoveNormally(baseMoveSpeed);
+                RotateCamera(baseRotateSpeed);
+            }
         }
         if (Input.GetKeyDown(KeyCode.Escape)) { CheckReset(); }
     }
@@ -263,6 +292,12 @@ public class MainUI : MonoBehaviour
         rotateAdjustment = toUpdate;
     }
 
+    public static void CheckStart() {
+        if (World.initWorld == false) {
+            IntroUI.ToggleUpdate();
+        }
+    }
+
     public void UpdateMoveSensitivity() {
         movementSlider = movePub.GetComponent<Slider>();
         float toUpdate = movementSlider.value;
@@ -277,17 +312,19 @@ public class MainUI : MonoBehaviour
 
     // Followed by the escape key
     public void CheckReset() {
-        if(centeredOn) {
-            centeredOn = false;
+        if(isAwake) {
+            if(centeredOn) {
+                centeredOn = false;
+            }
+            if (firstPerson) {
+                ToggleView();
+                VerticalBump(2f);
+            } else if (followingAnimal) {
+                bannerObj.SetActive(false);
+                followingAnimal = false;
+                VerticalBump(2f);
+            } else { ToggleHelp(); }
         }
-        if (firstPerson) {
-            ToggleView();
-            VerticalBump(2f);
-        } else if (followingAnimal) {
-            bannerObj.SetActive(false);
-            followingAnimal = false;
-            VerticalBump(2f);
-        } else { ToggleHelp(); }
     }
 
     public void QuitPlay() {

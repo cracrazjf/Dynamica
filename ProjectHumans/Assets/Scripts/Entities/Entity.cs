@@ -36,10 +36,12 @@ abstract public class Entity {
     // Body variables
     protected GameObject gameObject;
     protected Body body;
+    protected string networkName = "Unresponsive";
 
     public GameObject GetGameObject() { return gameObject; }
     public void SetGameObject(GameObject passed) { this.gameObject = passed; }
     public Body GetBody() { return body; }
+    public virtual string GetNetworkName(){ return networkName; }
 
     // Sexual reproduction constructor
     public Entity(string objType, int id, Genome motherGenome, Genome fatherGenome, Vector3 spawn) {
@@ -70,4 +72,5 @@ abstract public class Entity {
     public virtual void InitBody() {
         Debug.Log("This entity is not of this realm");
     }
+    
 }

@@ -10,7 +10,7 @@ public class PrimateMotorSystem : MotorSystem
     PrimateBody primateBody;
     Vector3 goalPos;
     int footUpdates = 0;
-    bool rightStep = true; // change this at some point like handedness
+    bool firstRight = true; // change this at some point like handedness
     private float xMin = -1f, xMax = 1f;
     private float timeValue = 0.0f;
 
@@ -73,7 +73,7 @@ public class PrimateMotorSystem : MotorSystem
         } else {
             Debug.Log("taking steps");
             float direction = stateDict["take steps"];
-            float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.5f;
+            float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.8f;
 
             ConfigurableJoint legR = thisBody.GetSkeleton("Femur_R").GetComponent<ConfigurableJoint>();
             ConfigurableJoint legL = thisBody.GetSkeleton("Femur_L").GetComponent<ConfigurableJoint>();
@@ -87,11 +87,43 @@ public class PrimateMotorSystem : MotorSystem
 
             if (timeValue > 1.0f) {
                 timeValue = 0.0f;
+                firstRight = !firstRight;
             }
 
-            legR.targetRotation = new Quaternion(xQR, 0, 0, 1);
-            legL.targetRotation = new Quaternion(xQL, 0, 0, 1);
+            if (firstRight) {
+                // Right foot first
+                legR.targetRotation = new Quaternion(xQR, 0, 0, 1);
+                legL.targetRotation = new Quaternion(xQL, 0, 0, 1);
 
+                if (xQL > -0.25f) {
+                thisBody.DisableKinematic("Foot_L");
+                } else {
+                thisBody.EnsureKinematic("Foot_L");
+                }
+
+                if (xQR > -0.25f) {
+                thisBody.DisableKinematic("Foot_R");
+                } else {
+                thisBody.EnsureKinematic("Foot_R");
+                }
+            } else {
+                // Left foot first
+                legL.targetRotation = new Quaternion(xQR, 0, 0, 1);
+                legR.targetRotation = new Quaternion(xQL, 0, 0, 1);
+
+                if (xQR > -0.25f) {
+                thisBody.DisableKinematic("Foot_L");
+                } else {
+                thisBody.EnsureKinematic("Foot_L");
+                }
+
+                if (xQL > -0.25f) {
+                thisBody.DisableKinematic("Foot_R");
+                } else {
+                thisBody.EnsureKinematic("Foot_R");
+                }
+            }
+            
             float diff = (float) Math.Sqrt((xQR * xQR) + (xQL * xQL));
             // Super important to move parts of the body, not the whole gameObject. 
             abdomenTrans.Translate(abdomenTrans.forward * stepProportion * Time.deltaTime * diff);
@@ -136,6 +168,7 @@ public class PrimateMotorSystem : MotorSystem
     // BEGIN HELPER FUNCTIONS
     void SitDown() {
         if (((PrimateBody)thisBody).CheckCrouchingTop()) {
+            thisBody.SlerpRotateTo("Abdomen", Quaternion.identity, 0.5f);
             Vector3 toSend = abdomenTrans.position;
             double sitHeight = thisBody.GetHeight() / 2.25;
             Debug.Log("Sitting down");
@@ -161,14 +194,14 @@ public class PrimateMotorSystem : MotorSystem
         Debug.Log("Tried to lay down");
         if (thisAnimal.GetBodyState("sitting")) {
             Collapse();
-            thisBody.RotateJointTo("Femur_R", new Quaternion(-1, 0, 0, 1));
-            thisBody.RotateJointTo("Femur_L", new Quaternion(-1, 0, 0, 1));
+            //thisBody.RotateJointTo("Femur_R", new Quaternion(-1, 0, 0, 1));
+            //thisBody.RotateJointTo("Femur_L", new Quaternion(-1, 0, 0, 1));
         } else { SitDown(); }
     }
     
     void StandUp() {
         Vector3 toSend = abdomenTrans.localPosition;
-        if(abdomenTrans.rotation.x > 5f || abdomenTrans.rotation.x < -5f) {
+        if(abdomenTrans.rotation.x > 15f || abdomenTrans.rotation.x < -15f) {
             SitUp();
         } else {
             if (Math.Pow(toSend.y - 0.2f, 2) > 0.05 ) {

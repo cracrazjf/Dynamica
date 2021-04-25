@@ -17,6 +17,7 @@ public class GenomeUI : MonoBehaviour {
     protected static GameObject passed;
 
     protected static bool needsUpdate = false;
+    public static bool toExit = false;
     protected bool showPanel = false;
 
     protected Button tempButton;
@@ -30,13 +31,13 @@ public class GenomeUI : MonoBehaviour {
     }
     
    private void Update() {
-        if (needsUpdate) {
-            OnAwake();
-        }
-        if (showPanel) { UpdatePanel(); }
+        if (toExit) { ExitPanel(); }
+        if (needsUpdate) { OnAwake(); }
     }
 
     public void OnAwake() {
+        NetUI.Sleep();
+
         Debug.Log(passed.name);
         selectedEntity = World.GetEntity(passed.name);
 
@@ -44,6 +45,7 @@ public class GenomeUI : MonoBehaviour {
 
         showPanel = true;
         needsUpdate = false;
+        UpdatePanel();
     }
 
     public void UpdatePanel(){
@@ -94,7 +96,10 @@ public class GenomeUI : MonoBehaviour {
             } else if (child.name == "ClosePanelButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ExitPanel);
-            } 
+            } else if (child.name == "RefreshButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(UpdatePanel);
+            }
         }
     }
         
@@ -102,5 +107,9 @@ public class GenomeUI : MonoBehaviour {
     public void ExitPanel() {
         panel.SetActive(false);
         showPanel = false;
+    }
+
+    public static void Sleep() {
+        toExit = true;
     }
 }

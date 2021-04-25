@@ -71,4 +71,12 @@ public class AI
     public string GetAction() {
         return "In progress!";
     }
+
+    public virtual string GetStringInput(int vbadIndex) {
+        return("This AI cannot format inputs");
+    }
+
+    public virtual string GetStringOutput(int vbadIndex) {
+        return("This AI cannot format outputs");
+    }
 }

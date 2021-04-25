@@ -276,6 +276,43 @@ public class NeuralAI : AI
         }
     }
 
+    public override string GetStringInput(int vbadIndex) {
+        string toSend = "";
+
+        if (vbadIndex < 3) {
+            // Visual return
+            toSend = visualInput.Row(vbadIndex).ToColumnMatrix().ToString();
+        } else if ( vbadIndex == 3 ) {
+            toSend = bodyStates.ToColumnMatrix().ToString();
+        } else if (vbadIndex == 4 ) {
+            toSend = actionStates.ToColumnMatrix().ToString();
+        } else if (vbadIndex == 5) {
+            toSend = driveStates.ToColumnMatrix().ToString();
+        }
+        
+        return toSend;
+    }
+
+    public override string GetStringOutput(int vbadIndex) {
+        string toSend = "";
+        
+        if (vbadIndex == 0) {
+            toSend = networkLayerDict["outputVisionRedLayer"].Output.ToString();
+        } else if (vbadIndex == 0) {
+            toSend = networkLayerDict["outputVisionGreenLayer"].Output.ToString();
+        } else if (vbadIndex == 0) {
+            toSend = networkLayerDict["outputVisionBlueLayer"].Output.ToString();
+        } else if ( vbadIndex == 3 ) {
+            toSend = networkLayerDict["outputBodyLayer"].Output.ToString();
+        } else if (vbadIndex == 4 ) {
+            toSend = networkLayerDict["outputActionLayer"].Output.ToString();
+        } else if (vbadIndex == 5) {
+            toSend = networkLayerDict["outputDriveLayer"].Output.ToString();
+        }
+
+        return toSend;
+    }
+
     // public void HardCodedFeedforward(){
     //     networkLayerDict["inputVisionRedLayer"].Output = visualInput.Row(0).ToColumnMatrix();
     //     networkLayerDict["inputVisionGreenLayer"].Output = visualInput.Row(1).ToColumnMatrix();
@@ -422,4 +459,6 @@ public class NeuralAI : AI
 
         return networkLayerDict["outputActionLayer"].Output;
     }
+
+    
 }

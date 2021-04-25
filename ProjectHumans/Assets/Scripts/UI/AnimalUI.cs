@@ -33,10 +33,6 @@ public class AnimalUI : MonoBehaviour {
     protected Text inputCommand;
     protected Transform commandField;
 
-    Button centerObjectButton;
-    Button genomeButton;
-    Button brainButton;
-
     private void Start() { InitPanel(); }
     
     private void Update() {
@@ -178,11 +174,12 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void PassAction() {
+        
         var command = actionDrop.value;
         int param = Int32.Parse(paramDrop.options[paramDrop.value].text);
 
         // Debug.Log("Passed command A " + command + " with parameter of " + param);
-
+        Debug.Log("Got an action!" + command + " " + param);
         selectedAnimal.SetCommand(command, param);
     }
 

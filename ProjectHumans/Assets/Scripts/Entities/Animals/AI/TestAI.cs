@@ -47,8 +47,11 @@ public class TestAI : AI {
             int index = thisAnimal.cheatCommand;
             decidedActions[index, 0] = thisAnimal.cheatArgs;
         }
+
+        Debug.Log(decidedActions);
         return decidedActions;
     }
+
 }
 
 

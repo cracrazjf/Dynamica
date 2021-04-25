@@ -11,6 +11,7 @@ using Random=UnityEngine.Random;
 
 public class World : MonoBehaviour {
     public bool paused = false;
+    public static int densityParam = 0;
 
     /// This dict keeps track of the total number of each kind of object that has been created
     public static Dictionary<string, int> entityCountDict = new Dictionary<string, int>();
@@ -41,6 +42,8 @@ public class World : MonoBehaviour {
     public static float maxPosition;
     public static float minPosition;
 
+    public static bool initWorld = false;
+
     public Dictionary<string, AI> allAIDict;
     public Dictionary<string, Body> allBodyDict;
     public Dictionary<string, MotorSystem> allMotorDict;
@@ -48,17 +51,11 @@ public class World : MonoBehaviour {
     private bool updateCompleted = false;
     int updateCounter;
 
-    void Start() {
-        updateCounter = 0;
-        
-        LoadWorldConfig();
-        CreateObjectInfoInstances();
+    void Start() {}
 
-        worldSize = worldConfigDict["World_Size"];
-        maxPosition = worldSize / 2;
-        minPosition = -worldSize / 2;
-
-        CreateEntities();
+    public static void SetGo(bool start) {
+        Debug.Log("Made it to world!");
+        initWorld = start;
     }
 
     void CreateEntities() {
@@ -158,6 +155,21 @@ public class World : MonoBehaviour {
     }
 
     void Update() {
+        if (initWorld) {
+            updateCounter = 0;
+        
+            LoadWorldConfig();
+            CreateObjectInfoInstances();
+
+            worldSize = worldConfigDict["World_Size"];
+            maxPosition = worldSize / 2;
+            minPosition = -worldSize / 2;
+
+            CreateEntities();
+            MainUI.ToggleUpdate();
+            initWorld = false;
+        }
+
         //Debug.Log("Started an update");
         paused = MainUI.GetPause();
 
@@ -170,13 +182,21 @@ public class World : MonoBehaviour {
         }
     }
 
+    public static void SetDensity(int passed) {
+        densityParam = passed;
+        Debug.Log("Recieved density as: " + passed);
+    }
+
     void LoadWorldConfig(){
         DirectoryInfo d = new DirectoryInfo(@"Assets/Scripts/config/");
         FileInfo[] Files = d.GetFiles("*.config"); //Getting Text files
         string line;
         string[] lineInfo;
 
-        using (var reader = new StreamReader(@"Assets/Scripts/config/world.config")) {
+        
+        string name = "world" + densityParam + ".config";
+        Debug.Log("Trying to open " + name);
+        using (var reader = new StreamReader(@"Assets/Scripts/config/" + name)) {
             while ((line = reader.ReadLine()) != null) {
                 lineInfo = line.Split(new[] { "," }, StringSplitOptions.None);
 

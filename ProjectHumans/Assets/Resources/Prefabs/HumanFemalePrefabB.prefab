@@ -973,6 +973,8 @@ GameObject:
   - component: {fileID: 2268426330051305036}
   - component: {fileID: 2268426330051305038}
   - component: {fileID: 2268426330051305037}
+  - component: {fileID: 7297760467992133335}
+  - component: {fileID: 2430854415651470776}
   m_Layer: 8
   m_Name: VisualInputCamera
   m_TagString: Human
@@ -1045,6 +1047,36 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2268426330051305035}
   m_Enabled: 0
+--- !u!54 &7297760467992133335
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2268426330051305035}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!138 &2430854415651470776
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2268426330051305035}
+  m_ConnectedBody: {fileID: 2268426330573849098}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &2268426330094524755
 GameObject:
   m_ObjectHideFlags: 0
