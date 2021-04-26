@@ -81,6 +81,8 @@ public class Animal : Entity {
 
     public SensorySystem GetSensorySystem() { return sensorySystem; }
 
+    public AI GetAI() { return activeAI; }
+
     public string GetAction() { return this.activeAI.GetAction(); }
 
     public string GetSex() { 
@@ -95,6 +97,7 @@ public class Animal : Entity {
         cheatArgs = param;
         noCheats = false;
     }
+
 
     public static void ResetEventTimes(){
         timeList.Clear();

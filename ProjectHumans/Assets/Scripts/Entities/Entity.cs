@@ -32,6 +32,14 @@ abstract public class Entity {
 
     protected Phenotype phenotype;
     public Phenotype GetPhenotype() { return phenotype; }
+
+    protected string thoughtStream = "";
+    public string GetStream() { return thoughtStream; }
+    public void AddThought(string thought) {
+        Debug.Log("adding a thought to " + name);
+        string toUpdate = DateTime.Now.ToString("HH:mm:ss");
+        thoughtStream += (thought + "\t" + toUpdate + "\n");
+    }
     
     // Body variables
     protected GameObject gameObject;

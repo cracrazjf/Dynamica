@@ -26,7 +26,6 @@ public class PrimateBody : AnimalBody {
 
     public override void UpdateBodyStates() {
         if (CheckSitting()) {
-            Debug.Log("Body believes in sitting");
             SetState("sitting", 1f);
         }
         if (CheckLaying()) {
@@ -50,7 +49,6 @@ public class PrimateBody : AnimalBody {
         Vector3 toSend = abdomen.transform.position;
         double minCrouchHeight = GetHeight()/1.5 + 0.5;
         //Debug.Log("Checking to see if more " + toSend.y + " " + minCrouchHeight);
-        Debug.Log("Checking to see if more");
         return (toSend.y > minCrouchHeight);
     }
 
@@ -58,7 +56,6 @@ public class PrimateBody : AnimalBody {
         Vector3 toSend = abdomen.transform.position;
         double minCrouchHeight = GetHeight()/1.5 + 0.5;
         //Debug.Log("Checking to see if less " + toSend.y + " " + minCrouchHeight);
-        Debug.Log("Checking to see if less");
         return (toSend.y < minCrouchHeight);
     }
 

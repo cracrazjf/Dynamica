@@ -5,14 +5,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class GenomeUI : MonoBehaviour {
+public class StreamUI : MonoBehaviour {
 
-    protected bool showMutable = true;
+    
     protected Text displayText;
-    protected Text muteText;
-
-    protected Genome displayGenome;
-    protected Phenotype displayPhenotype;
+    
     protected static Entity selectedEntity;
     protected static GameObject passed;
 
@@ -37,7 +34,7 @@ public class GenomeUI : MonoBehaviour {
 
     public void OnAwake() {
         NetUI.Sleep();
-        StreamUI.Sleep();
+        GenomeUI.Sleep();
 
         Debug.Log(passed.name);
         selectedEntity = World.GetEntity(passed.name);
@@ -50,20 +47,8 @@ public class GenomeUI : MonoBehaviour {
     }
 
     public void UpdatePanel(){
-        string toDisplay = "";
-        displayGenome = selectedEntity.GetGenome();
-        displayPhenotype = selectedEntity.GetPhenotype();
-        
-        if (showMutable) {
-            toDisplay = displayPhenotype.GetDisplayInfo();
-            muteText.text = "Mutable"; 
-
-        } else { 
-            toDisplay = displayGenome.GetConstantInfo(); 
-            muteText.text = "Immutable";
-        }
+        string toDisplay = selectedEntity.GetStream();
         displayText.text = toDisplay;
-
     }
 
     public static void ReceiveClicked(GameObject clicked) {
@@ -72,29 +57,20 @@ public class GenomeUI : MonoBehaviour {
         needsUpdate = true;
     }
 
-    public void ToggleMutable() {
-        showMutable = !showMutable;
-    }
-
     public void InitPanel(){
-        panel = GameObject.Find("GenomePanel");
+        panel = GameObject.Find("ThoughtPanel");
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
             if (child.name == "Header") {
                 header = child.gameObject;
-            } else if (child.name == "GeneticScrollView") {
+            } else if (child.name == "ThoughtScrollView") {
                 displayText = child.gameObject.GetComponentInChildren<Text>();
             } 
         }
 
         foreach (Transform child in header.transform) {
-            if (child.name == "ToggleMuteButton") {
-                muteText = child.gameObject.GetComponentInChildren<Text>();
-                tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(ToggleMutable);
-                child.gameObject.SetActive(false);
-            } else if (child.name == "ClosePanelButton") {
+            if (child.name == "ClosePanelButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ExitPanel);
             } else if (child.name == "RefreshButton") {
@@ -104,7 +80,6 @@ public class GenomeUI : MonoBehaviour {
         }
     }
         
-
     public void ExitPanel() {
         panel.SetActive(false);
         showPanel = false;

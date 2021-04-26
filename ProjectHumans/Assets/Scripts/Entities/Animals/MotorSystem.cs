@@ -15,6 +15,7 @@ public abstract class MotorSystem
     protected List<string> stateLabelList;
     protected Dictionary<string, int> stateIndexDict;
     protected Dictionary<string, float> stateDict;
+    protected int numArgs;
     
     public Vector<float> GetStates() { return states; }
     public float GetState(string place) { return stateDict[place]; }
@@ -46,6 +47,7 @@ public abstract class MotorSystem
         };
         this.InitStates(stateLabelList);
         this.InitActionDict();
+        this.numArgs = 4;
     }
 
     public void SetState(string label, float val) {
@@ -61,8 +63,8 @@ public abstract class MotorSystem
     }
 
     public void TakeAction(Vector<float> actions) {
-        if (actions[11] != 1) {
-            for(int i = 0; i < states.Count; i++) {
+        if (actions[8] != 1) {
+            for(int i = 0; i < states.Count - numArgs; i++) {
                 if (actions[i] != 0) {
                     SetState(i, actions[i]);
                     Debug.Log("Doing action at " + i);

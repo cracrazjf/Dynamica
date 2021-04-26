@@ -71,7 +71,6 @@ public class PrimateMotorSystem : MotorSystem
         if (primateBody.CheckSitting()) {
             StandUp();
         } else {
-            Debug.Log("taking steps");
             float direction = stateDict["take steps"];
             float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.8f;
 
@@ -140,7 +139,7 @@ public class PrimateMotorSystem : MotorSystem
         } else { DropArm(); }
     }
     public override void Consume() {
-        Debug.Log("Tried to eat something");
+        thisAnimal.AddThought("Tried to eat something");
         GameObject holder = GetActiveHand();
 
         if (ArmTo(thisBody.head.transform.position)) {
@@ -155,7 +154,7 @@ public class PrimateMotorSystem : MotorSystem
     }
 
     public override void Rest() {
-        Debug.Log("Resting");
+        thisAnimal.AddThought("Resting");
         thisBody.RestAdjust();
     }
 
@@ -171,27 +170,25 @@ public class PrimateMotorSystem : MotorSystem
             thisBody.SlerpRotateTo("Abdomen", Quaternion.identity, 0.5f);
             Vector3 toSend = abdomenTrans.position;
             double sitHeight = thisBody.GetHeight() / 2.25;
-            Debug.Log("Sitting down");
-            //Debug.Log("Checking to see if more " + toSend.y + " " + sitHeight);
             if (toSend.y > sitHeight) {
                 BendLegs(.5f, 0.15f);
                 abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
             } else {
                 thisBody.EnsureKinematic("Abdomen");
                 thisBody.FreeRotation("Abdomen");
-                Debug.Log("I think I'm sitting");
+                thisAnimal.AddThought("I think I'm sitting");
                 thisBody.SetState("sitting", 1f);
             }
         } else { CrouchDown(); }
     }
     void SitUp() {
-        Debug.Log("Trying to lift abdomen");
+        thisAnimal.AddThought("Tried to lift abdomen");
         thisBody.EnsureKinematic("Abdomen");
         thisBody.SlerpRotateTo("Abdomen", Quaternion.identity, 0.5f);
     }
 
     void LayDown() {
-        Debug.Log("Tried to lay down");
+        thisAnimal.AddThought("Tried to lay down");
         if (thisAnimal.GetBodyState("sitting")) {
             Collapse();
             //thisBody.RotateJointTo("Femur_R", new Quaternion(-1, 0, 0, 1));
@@ -211,14 +208,14 @@ public class PrimateMotorSystem : MotorSystem
                     abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * -.5f);
                 } 
             } else {
-               Debug.Log("I think I'm standing");
+               thisAnimal.AddThought("I think I'm standing");
                thisBody.SetState("standing", 1f);
             }
         }
     }
     
     void PickUp() {
-        Debug.Log("Tried to pick something up");
+        thisAnimal.AddThought("Tried to pick something up");
         GameObject holder = GetActiveHand();
 
         if (ArmToGoal()) {
@@ -228,7 +225,7 @@ public class PrimateMotorSystem : MotorSystem
     }
     
     void SetDown() {
-        Debug.Log("Tried to set something down");
+        thisAnimal.AddThought("Tried to set something down");
         GameObject holder = GetActiveHand();
         if (thisBody.CheckSitting()) {
             RemoveFromHolder(holder);
@@ -236,13 +233,13 @@ public class PrimateMotorSystem : MotorSystem
     }
     // Functional
     void WakeUp() {
-        Debug.Log("Waking up");
+        thisAnimal.AddThought("Waking up");
         ToggleEyes(true);
         thisBody.SetState("sleeping", -1f);
     }
 
     void FallAsleep() {
-        Debug.Log("Sleeping");
+        thisAnimal.AddThought("Sleeping");
         ToggleEyes(false);
 
         if (thisBody.CheckLaying()) {
@@ -304,7 +301,7 @@ public class PrimateMotorSystem : MotorSystem
         if (xTrans <= 1f && yTrans <= 1f && zTrans <= 1f) {
             toAdd = new Vector3(xTrans, yTrans, zTrans);
         } else {
-             Debug.Log("Reach out of bounds!");
+             thisAnimal.AddThought("Can't reach that far!");
         }
         
         Transform armTrans = GetActiveHand().transform;
@@ -326,11 +323,11 @@ public class PrimateMotorSystem : MotorSystem
             BendLegs(.25f, 0f);
             BendKnees(-.33f);
             abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
-        } else { Debug.Log("I think I'm kneeling"); }
+        } else { thisAnimal.AddThought("I think I'm kneeling"); }
     }
 
     void CrouchDown() {
-        Debug.Log("Crouch was called");
+        thisAnimal.AddThought("Crouching down");
         if (((PrimateBody)thisBody).CheckCrouchingBottom()) {
             BendLegs(-1f, 0f);
             BendLegs(.33f, 0f);
@@ -343,12 +340,12 @@ public class PrimateMotorSystem : MotorSystem
     }
 
     void Collapse() {
-        Debug.Log("Collapsing");
+        thisAnimal.AddThought("Collapsing");
         thisBody.DisableKinematic("Abdomen");
     }
 
     void GrabWithHolder(GameObject holder) {
-        Debug.Log("Tried to affix something");
+        thisAnimal.AddThought("Tried to grab something");
         Vector3 forCollider = holder.transform.position;
         Collider[] hitColliders = Physics.OverlapSphere(forCollider, .025f);
         Rigidbody toConnect = holder.GetComponent<Rigidbody>();
@@ -358,8 +355,8 @@ public class PrimateMotorSystem : MotorSystem
                 if (CheckMovableObject(hit.gameObject)) {
                     FixedJoint newJoint = hit.gameObject.AddComponent<FixedJoint>() as FixedJoint;
                     newJoint.connectedBody = toConnect;
-                } else { Debug.Log("Object too big to lift!"); }
-            } else { Debug.Log("Nothing to pick up!"); }
+                } else { thisAnimal.AddThought("Object too big to lift!"); }
+            } else { thisAnimal.AddThought("Nothing to pick up!"); }
         }
     }
 
@@ -380,8 +377,20 @@ public class PrimateMotorSystem : MotorSystem
     }
 
     void ToggleEyes(bool open) {
-        thisBody.GetSkeleton("Eye_R").SetActive(open);
-        thisBody.GetSkeleton("Eye_L").SetActive(open);
+        Transform head = thisBody.GetSkeleton("Head").transform;
+        Transform face = null;
+        foreach (Transform part in head) {
+            if (part.name == "Face") {
+                face = part;
+                break;
+            }
+        }
+
+        foreach (Transform feature in face) {
+            if (feature.name == "Eye_R" || feature.name == "Eye_L") {
+                feature.gameObject.SetActive(open);
+            }
+        }
     }
 
     void LockFeet() {

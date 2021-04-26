@@ -104,7 +104,7 @@ public class Layer
         {
             output = thisInputDict[name];
         }
-        Debug.Log(name);
+        //Debug.Log(name);
     }
 
 
@@ -154,7 +154,7 @@ public class Layer
                 string inputLayerName = "input" + name.Substring(6);
                 Matrix<float> predictionError = thisInputDict[inputLayerName] - output;
                 cost = predictionError;
-                Debug.Log(cost);
+                //Debug.Log(cost);
             }
             else
             {

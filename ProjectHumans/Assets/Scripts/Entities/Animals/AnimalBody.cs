@@ -34,6 +34,7 @@ public class AnimalBody : Body {
             "standing", 
             "sitting",
             "crouching",
+            "sleeping",
             "laying",
             "alive"
         };
@@ -121,6 +122,8 @@ public class AnimalBody : Body {
     }
 
     public void SetState(string label, float passed) {
+        Debug.Log(stateDict);
+        Debug.Log("Tried to pass " + passed + " to " + label);
         stateDict[label] = passed;
         int currentIndex = stateIndexDict[label];
         states[currentIndex] = passed;
@@ -242,6 +245,7 @@ public class AnimalBody : Body {
 
     public void LockRotation(string name) {
         if (name != null) {
+            //Debug.Log(name);
             if (skeletonDict.ContainsKey(name)) {
                 GameObject currentPart = skeletonDict[name];
                 currentPart.GetComponent<Rigidbody>().freezeRotation = true;

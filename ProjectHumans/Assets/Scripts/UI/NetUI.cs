@@ -33,6 +33,8 @@ public class NetUI : MonoBehaviour {
 
     public void OnAwake() {
         GenomeUI.Sleep();
+        StreamUI.Sleep();
+        
         selectedEntity = World.GetEntity(passed.name);
         panel.SetActive(true);
     

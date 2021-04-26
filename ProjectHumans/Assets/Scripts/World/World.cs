@@ -156,6 +156,8 @@ public class World : MonoBehaviour {
 
     void Update() {
         if (initWorld) {
+            initWorld = false;
+            Debug.Log("Should only send once");
             updateCounter = 0;
         
             LoadWorldConfig();
@@ -167,7 +169,6 @@ public class World : MonoBehaviour {
 
             CreateEntities();
             MainUI.ToggleUpdate();
-            initWorld = false;
         }
 
         //Debug.Log("Started an update");
@@ -188,11 +189,9 @@ public class World : MonoBehaviour {
     }
 
     void LoadWorldConfig(){
-        DirectoryInfo d = new DirectoryInfo(@"Assets/Scripts/config/");
-        FileInfo[] Files = d.GetFiles("*.config"); //Getting Text files
+
         string line;
         string[] lineInfo;
-
         
         string name = "world" + densityParam + ".config";
         Debug.Log("Trying to open " + name);
@@ -201,6 +200,7 @@ public class World : MonoBehaviour {
                 lineInfo = line.Split(new[] { "," }, StringSplitOptions.None);
 
                 if (lineInfo[0] == "Constant") {
+                    Debug.Log(lineInfo[1]);
                     worldConfigDict.Add(lineInfo[1], float.Parse(lineInfo[2]));
                     
                 } else {
