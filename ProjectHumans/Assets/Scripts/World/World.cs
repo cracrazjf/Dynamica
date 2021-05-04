@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Configuration;
 using System.Linq;
 using System.IO;
+using MathNet.Numerics.LinearAlgebra;
 using Random=UnityEngine.Random;
 
 
@@ -37,6 +38,7 @@ public class World : MonoBehaviour {
     public static Dictionary<string, Entity> entityDict = new Dictionary<string, Entity>();
 
 
+
     /// <value>Setting initial world properties</value>
     public static float worldSize;
     public static float maxPosition;
@@ -62,14 +64,43 @@ public class World : MonoBehaviour {
         foreach(KeyValuePair<string, int> entry in startingCountsDict) {
             string speciesType = entry.Key;
             entityCountDict[speciesType] = 0;
-            int numEntities = entry.Value;
 
-            for (int i = 0; i < numEntities; i++) {
-                AddEntity(speciesType, null);
+            if (speciesType == "TreeRound" || speciesType == "TreeBumpy") {
+                break;
+
+            } else {
+                int numEntities = entry.Value;
+                for (int i = 0; i < numEntities; i++) {
+                    AddEntity(speciesType, null);
+                }
             }
         }
+        SpawnGroves();
         Debug.Log("All entities spawned");
         updateCompleted = true;
+    }
+
+    public void SpawnGroves() {
+        List<Vector3>[] grid = InitGrid();
+        System.Random rand = new System.Random();
+        for ( int i = 0; i <  grid.Length; i++ ) {
+            double option = rand.NextDouble();
+            bool hasTrees = true;
+            string speciesType = "";
+
+            if (option < .2) {
+                speciesType = "TreeBumpy";
+            } else if (option < .5) {
+                speciesType = "TreeRound";
+            } else { hasTrees = false; }
+
+            if (hasTrees) {
+                for (int n = 0; n < grid[i].Count; n++) {
+                    Vector3 location = grid[i][n];
+                    AddEntity(speciesType, location);
+                }
+            }
+        }
     }
 
     public static void DestroyComponent(Component passed) {
@@ -239,5 +270,43 @@ public class World : MonoBehaviour {
         foreach(KeyValuePair<string, object> entry in thisStateDict) {
             Debug.Log(entry.Key + " " + entry.Value);
         }
+    }
+
+    public List<Vector3>[] InitGrid() {
+        // Okay so we're going to divide the map into an 8x8 grid
+        // Each of those 64 zones will have an array of 10 random locations within the zone
+
+        int gridDiv = 8;
+        float bump = maxPosition / (gridDiv / 2);
+        int numLocs = 10;
+        List<Vector3>[] grid = new List<Vector3>[gridDiv * gridDiv]; 
+
+        for (int i = 0; i < grid.Length; i++) {
+            grid[i] = new List<Vector3>();
+        }
+
+        int index = 0;
+        for (int xN = 0; xN < gridDiv - 1; xN++) {
+            float minX = minPosition + (xN * bump);
+            float maxX = minPosition + ((xN + 1) * bump);
+
+            // Technically in unity this is the Z coord, but a 2D plane was being imagined for development
+            for (int yN = 0; yN < gridDiv - 1; yN++) {
+                float minY = minPosition + (yN * bump);
+                float maxY = minPosition + ((yN + 1) * bump);
+
+                for (int j = 0; j < numLocs; j++) {
+
+                    float xRan = Random.Range(minX, maxX);
+                    float zRan = Random.Range(minY, maxY);
+                    Vector3 addPos = new Vector3 (xRan, 0, zRan);
+
+                    Debug.Log(index);
+                    grid[index].Add(addPos);
+                }
+                index++;
+            }
+        }
+        return grid;
     }
 }
