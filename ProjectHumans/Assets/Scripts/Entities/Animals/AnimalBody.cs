@@ -273,25 +273,39 @@ public class AnimalBody : Body {
 
 
     public virtual void SleepAdjust() {
-        float val = thisAnimal.GetDriveSystem().GetState("sleepiness");
-        val += (thisAnimal.GetPhenotype().GetTrait("sleepiness_change") * 20);
-        thisAnimal.GetDriveSystem().SetState("sleepiness", val);
+        
+        float val = (thisAnimal.GetPhenotype().GetTrait("sleepiness_change") * 20);
+        AdjustState("sleepiness", val);
 
         Debug.Log("Snoozed a bit!");
     }
 
     public virtual void RestAdjust() {
-        float val = thisAnimal.GetDriveSystem().GetState("fatigue");
-        val += (thisAnimal.GetPhenotype().GetTrait("fatigue_change") * 20);
-        thisAnimal.GetDriveSystem().SetState("fatigue", val);
+        float val = (thisAnimal.GetPhenotype().GetTrait("fatigue_change") * 20);
+        AdjustState("fatigue", val);
 
         Debug.Log("Rested a bit!");
     }
 
+    public void AdjustState(string label, float delta) {
+
+        float val = thisAnimal.GetDriveSystem().GetState(label);
+        val += delta;
+        thisAnimal.GetDriveSystem().SetState(label, val);
+    }
+
     public virtual void EatObject(string holder) {
         GameObject toEat = holdings[holder];
+        Nutrition consumed = World.GetEntity(toEat.name).GetBody().freshStats;
+        
+        //health hunger stamina thirst sleep
+        AdjustState("health", consumed.healthMod);
+        AdjustState("hunger", consumed.hungerMod);
+        AdjustState("stamina", consumed.staminaMod);
+        AdjustState("thirst", consumed.thirstMod);
+        AdjustState("health", consumed.sleepMod);
+
         World.RemoveEntity(toEat.name);
-        //eating stuff
         holdings.Remove(holder);
     }
 
