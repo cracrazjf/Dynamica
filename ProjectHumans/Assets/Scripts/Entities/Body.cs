@@ -13,6 +13,9 @@ public class Body {
     public Rigidbody rigidbody;
     protected GameObject gameObject;
 
+    public Nutrition freshStats;
+    public Nutrition staleStats;
+
     protected Vector<float> states;
     protected List<string> stateLabelList;
     protected Dictionary<string, int> stateIndexDict;
@@ -36,7 +39,7 @@ public class Body {
         InitHeight();
         InitGameObject(position);
         passed.SetGameObject(this.gameObject);
-        
+        InitNutrition();
     }
 
     public virtual void InitGameObject(Vector3 pos) {
@@ -57,8 +60,32 @@ public class Body {
         height = thisEntity.GetPhenotype().GetTraitDict()["height"] * heightScale; 
     }
 
+    public void InitNutrition() {
+        freshStats = new Nutrition();
+        staleStats = new Nutrition();
+
+        float temp = thisEntity.GetPhenotype().GetTrait("muscle_composition") * 100f;
+        freshStats.healthMod = temp;
+        staleStats.healthMod = temp * -0.5f;
+
+        temp = thisEntity.GetPhenotype().GetTrait("sugar_composition") * 100f;
+        freshStats.hungerMod = temp;
+        staleStats.hungerMod = temp * 0.5f;
+
+        temp = thisEntity.GetPhenotype().GetTrait("fat_composition") * 100f;
+        freshStats.staminaMod = temp;
+        staleStats.staminaMod = temp * 0.5f;
+
+        temp = thisEntity.GetPhenotype().GetTrait("water_composition") * 100f;
+        freshStats.thirstMod = temp;
+        staleStats.thirstMod = temp * 0.5f;
+
+        freshStats.sleepMod = 0.0f;
+        staleStats.sleepMod = 0.0f;
+    }
+
     public void InitMass() {
-        currentMass = thisEntity.GetPhenotype().GetTraitDict()["mass"]; 
+        currentMass = thisEntity.GetPhenotype().GetTrait("mass"); 
         rigidbody.mass = currentMass;
     }
 
@@ -82,5 +109,13 @@ public class Body {
         Debug.Log("Tried to rotate body to " + target);
 
         globalPos.localRotation = target;  
+    }
+
+    public struct Nutrition {
+        public float healthMod;
+        public float hungerMod;
+        public float staminaMod;
+        public float sleepMod;
+        public float thirstMod;
     }
 }
