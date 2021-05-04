@@ -9,6 +9,7 @@ public class Plant : Entity {
     public Plant(string objectType, int index, Genome motherGenome, Genome fatherGenome, Vector3 spawn) 
     : base (objectType, index, motherGenome, fatherGenome, spawn) {
         body = new Body(this, spawn);
+        SetTrunkSize(Random.Range(1.85f, 3f));
     }
 
     public override void UpdateEntity() {
@@ -44,6 +45,21 @@ public class Plant : Entity {
             Vector3 fruitLocation = GetBody().globalPos.position + fruitDisplacement;
 
             World.AddEntity(fruitType, fruitLocation);
+        }
+    }
+
+    public void SetTrunkSize(float y) {
+        bool found = false;
+        GameObject trunk = null;
+        Transform toSearch = this.body.GetGameObject().transform;
+        foreach (Transform child in toSearch) {
+            if (child.gameObject.name == "Trunk") {
+                found = true;
+                trunk = child.gameObject;
+            }
+        }
+        if (found) {
+            trunk.transform.localScale = new Vector3(2,y,2);
         }
     }
 }
