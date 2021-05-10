@@ -6,22 +6,35 @@ using UnityEngine;
 using System.Linq;
 
 
-public class ObjectInfo {
+public class Population {
     // this is the initial number that will be spawned
     public string name;
     public int startingN;
     public Genome genome;
+    public bool isItem = false;
+    public bool isAnimal = false;
+    public bool isPlant = false;
+    public bool isFirst = false;
 
-    public ObjectInfo(string passedSpeciesName, int passedStartingN) {
+    public string contrastPop = "";
+    protected List<Entity> entityList = new List<Entity>();
+
+    public Population(string passedSpeciesName, int passedStartingN) {
         name = passedSpeciesName;
         startingN = passedStartingN;
+        string toCast = "";
 
         this.genome = new Genome();
-        ImportObjectInfo();
+        ImportPopConfig();
+    
+        contrastPop = genome.GetQual("contrast_species");
+        if (contrastPop != "none") {
+            toCast = genome.GetQual("first_contrast");
+        }
+        if (toCast == "true") { isFirst = true; }
     }
 
-    public void ImportObjectInfo(){
-
+    public void ImportPopConfig(){
         string line;
         System.IO.StreamReader file;
         
@@ -40,8 +53,18 @@ public class ObjectInfo {
                 genome.AddConstantToGenome(leftArray[1], rightArray);
             } else if (leftArray[0] == "quality") {
                 genome.AddQualToGenome(leftArray[1], rightArray);
+            } else if (leftArray[0] == "object_type") {
+                if (rightArray[0] == "animal") {
+                    isAnimal = true;
+                } else if (rightArray[0] == "plant") {
+                    isPlant = true;
+                } else { isItem = true; }
             }
         }  
         file.Close();
+    }
+
+    public void SaveEntity(Entity passed) {
+        entityList.Add(passed);
     }
 }

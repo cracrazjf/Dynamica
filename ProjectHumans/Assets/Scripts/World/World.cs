@@ -17,11 +17,8 @@ public class World : MonoBehaviour {
     /// This dict keeps track of the total number of each kind of object that has been created
     public static Dictionary<string, int> entityCountDict = new Dictionary<string, int>();
     public Dictionary<string, int> startingCountsDict = new Dictionary<string, int>();
-    public static List<string> animalNames = new List<string>();
-    public static List<string> plantNames = new List<string>();
-    public static List<string> itemNames = new List<string>();
 
-    public static Dictionary<string, ObjectInfo> objectInfoDict = new Dictionary<string, ObjectInfo>();
+    public static Dictionary<string, Population> populationDict = new Dictionary<string, Population>();
     public static Dictionary<string, float> worldConfigDict = new Dictionary<string, float>();
 
     /// This dict keeps track of data in world.config
@@ -36,7 +33,6 @@ public class World : MonoBehaviour {
     /// These lists keep track of entities needing an update each epoch
     public static List<Entity> entityList = new List<Entity>();
     public static Dictionary<string, Entity> entityDict = new Dictionary<string, Entity>();
-
 
 
     /// <value>Setting initial world properties</value>
@@ -61,43 +57,54 @@ public class World : MonoBehaviour {
     }
 
     void CreateEntities() {
-        foreach(KeyValuePair<string, int> entry in startingCountsDict) {
+        foreach(KeyValuePair<string, Population> entry in populationDict) {
+            Population activePop = entry.Value;
             string speciesType = entry.Key;
             entityCountDict[speciesType] = 0;
 
-            if (speciesType == "TreeRound" || speciesType == "TreeBumpy") {
-                break;
+            Debug.Log(populationDict);
 
-            } else {
-                int numEntities = entry.Value;
+            if (activePop.contrastPop == "none") {
+                int numEntities = activePop.startingN;
                 for (int i = 0; i < numEntities; i++) {
-                    AddEntity(speciesType, null);
+                    Debug.Log(speciesType);
+                    AddEntity(activePop, null);
                 }
+            } else if (!activePop.isFirst) {
+                Debug.Log("Printing " + activePop.contrastPop);
+                SpawnGroves(populationDict[activePop.contrastPop], activePop, .2f, .5f);
             }
         }
-        SpawnGroves();
         Debug.Log("All entities spawned");
         updateCompleted = true;
     }
 
-    public void SpawnGroves() {
+    // pass a single object, spawn random
+
+
+    // make general, spawn contrastively for 2
+    public void SpawnGroves(Population first, Population second, float chanceEmpty, float chanceFirst) {
         List<Vector3>[] grid = InitGrid();
         System.Random rand = new System.Random();
+        
         for ( int i = 0; i <  grid.Length; i++ ) {
-            double option = rand.NextDouble();
-            bool hasTrees = true;
-            string speciesType = "";
 
-            if (option < .2) {
-                speciesType = "TreeBumpy";
-            } else if (option < .5) {
-                speciesType = "TreeRound";
-            } else { hasTrees = false; }
+            bool hasTrees = true;
+            double option = rand.NextDouble();
+            if (option < chanceEmpty) {
+                hasTrees = false;
+            }
+            
+            Population toPass = second;
+            option = rand.NextDouble();
+            if (option < chanceFirst) {
+                toPass = first;
+            }
 
             if (hasTrees) {
                 for (int n = 0; n < grid[i].Count; n++) {
                     Vector3 location = grid[i][n];
-                    AddEntity(speciesType, location);
+                    AddEntity(toPass, location);
                 }
             }
         }
@@ -107,27 +114,48 @@ public class World : MonoBehaviour {
         Destroy(passed);
     }
 
-    public static void AddEntity(string speciesType, Nullable<Vector3> passedSpawn) {
+    public static void AddEntity(string species, Nullable<Vector3> passedSpawn) {
+        Population toPass = populationDict[species];
+        AddEntity(toPass, passedSpawn);
+    }
+
+    public static void AddEntity(Population population, Nullable<Vector3> passedSpawn) {
         Vector3 spawn;
         Genome motherGenome = new Genome();
-        motherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
+        motherGenome.InheritGenome(population.genome, true);
 
         // Debug.Log("Spawning a " + speciesType );
         if (!passedSpawn.HasValue) { 
             spawn = CreateRandomPosition();
         } else { spawn = (Vector3) passedSpawn; }
 
-        int val = (entityCountDict[speciesType]);
-        if (itemNames.Contains(speciesType)) {
-            InitItem(val, speciesType, motherGenome, spawn);
+        int val = (entityCountDict[population.name]);
+        Entity newEnt = null;
+        string speciesType = population.name;
+
+        if (population.isItem) {
+            Item newObj = new Item(speciesType, val, motherGenome, spawn);
+            itemDict[newObj.GetName()] = newObj;
+            newEnt = newObj;
+
         } else {
             Genome fatherGenome = new Genome();
-            fatherGenome.InitGenomeFromSpeciesTemplate(objectInfoDict[speciesType]);
-
-            if (plantNames.Contains(speciesType)) {
-            InitPlant(val, speciesType, motherGenome, fatherGenome, spawn);
-            } else { InitAnimal(val, speciesType, motherGenome, fatherGenome, spawn); }
+            fatherGenome.InheritGenome(population.genome, true);
+            
+            if (population.isPlant) {
+                Plant newPlant = new Plant(speciesType, val, motherGenome, fatherGenome, spawn);
+                plantDict[newPlant.GetName()] = newPlant;
+                newEnt = newPlant;
+            } else {
+                Animal newAnimal = new Animal(speciesType, val, motherGenome, fatherGenome, spawn);
+                animalDict[newAnimal.GetName()] = newAnimal;
+                newEnt = newAnimal;
+            }
         } 
+        entityList.Add(newEnt);
+        entityDict[newEnt.GetName()] = newEnt;
+        entityCountDict[speciesType]++;
+        population.SaveEntity(newEnt);
     }
 
     public static void RemoveEntity(string name) {
@@ -137,34 +165,7 @@ public class World : MonoBehaviour {
                 entityList.RemoveAt(i);
             }
         }
-    }
-
-    public static void InitAnimal(int val, string speciesType, Genome mother, Genome father, Vector3 spawn ) {
-        // Debug.Log("making an animal in world");
-        Animal newAnimal = new Animal(speciesType, val, mother, father, spawn);
-        animalDict[newAnimal.GetName()] = newAnimal;
-        entityList.Add(newAnimal);
-        entityDict[newAnimal.GetName()] = newAnimal;
-        entityCountDict[speciesType]++;
-    }
-
-    public static void InitPlant(int val, string speciesType, Genome mother, Genome father, Vector3 spawn) {
-        // Debug.Log("making an plant in world");
-        Plant newPlant = new Plant(speciesType, val, mother, father, spawn);
-        plantDict[newPlant.GetName()] = newPlant;
-        entityList.Add(newPlant);
-        entityDict[newPlant.GetName()] = newPlant;
-        entityCountDict[speciesType]++;
-    }
-
-    public static void InitItem(int val, string speciesType, Genome mother, Vector3 spawn) {
-        // Debug.Log("making an item in world");
-        Item newObj = new Item(speciesType, val, mother, spawn);
-        itemDict[newObj.GetName()] = newObj;
-        entityList.Add(newObj);
-        entityDict[newObj.GetName()] = newObj;
-        entityCountDict[speciesType]++;
-    }
+    }    
 
     public static Animal GetAnimal(string name) { return animalDict[name]; }
     
@@ -192,7 +193,7 @@ public class World : MonoBehaviour {
             updateCounter = 0;
         
             LoadWorldConfig();
-            CreateObjectInfoInstances();
+            CreatePopulations();
 
             worldSize = worldConfigDict["World_Size"];
             maxPosition = worldSize / 2;
@@ -235,9 +236,6 @@ public class World : MonoBehaviour {
                     worldConfigDict.Add(lineInfo[1], float.Parse(lineInfo[2]));
                     
                 } else {
-                    if  (lineInfo[0] == "Animal") {animalNames.Add(lineInfo[1]);} 
-                    if  (lineInfo[0] == "Plant") {plantNames.Add(lineInfo[1]);} 
-                    if  (lineInfo[0] == "Item") {itemNames.Add(lineInfo[1]);} 
                     startingCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
                     entityCountDict.Add(lineInfo[1], 0);
                 }
@@ -245,10 +243,11 @@ public class World : MonoBehaviour {
         }
     }
 
-    void CreateObjectInfoInstances() {
+    void CreatePopulations() {
         foreach(KeyValuePair<string, int> entry in startingCountsDict) {
-            ObjectInfo newObjectInfo = new ObjectInfo(entry.Key, entry.Value);
-            objectInfoDict.Add(entry.Key, newObjectInfo);
+            Population newPop = new Population(entry.Key, entry.Value);
+            Debug.Log(entry.Key);
+            populationDict[entry.Key] = newPop;
         }
     }
 
@@ -301,8 +300,8 @@ public class World : MonoBehaviour {
                     float zRan = Random.Range(minY, maxY);
                     Vector3 addPos = new Vector3 (xRan, 0, zRan);
 
-                    Debug.Log(index);
                     grid[index].Add(addPos);
+                    //AddEntity("PinkCube", addPos);
                 }
                 index++;
             }

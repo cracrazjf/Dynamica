@@ -23,6 +23,7 @@ public class Genome {
     // some random qualitative traits
     public int numQuals;
     public Dictionary<string, string> qualDict;
+    public string GetQual(string qual) { return qualDict[qual]; }
     public Dictionary<string, string> GetQualDict() { return qualDict; }
 
     public Genome(Genome motherGenome, Genome fatherGenome) {
@@ -39,7 +40,7 @@ public class Genome {
         numQuals = 0;
         qualDict = new Dictionary<string, string>();
 
-        InheretGenome(motherGenome, fatherGenome);
+        InheritGenome(motherGenome, fatherGenome);
     }
 
     public Genome(Genome motherGenome) {
@@ -56,7 +57,7 @@ public class Genome {
         numQuals = 0;
         qualDict = new Dictionary<string, string>();
 
-        InheretGenome(motherGenome);
+        InheritGenome(motherGenome, false);
     }
 
     public Genome() {
@@ -75,7 +76,7 @@ public class Genome {
     }
 
 
-    public bool InheretGenome(Genome motherGenome, Genome fatherGenome) {
+    public bool InheritGenome(Genome motherGenome, Genome fatherGenome) {
         bool success = true;
 
         if (motherGenome.numGenes == fatherGenome.numGenes && motherGenome.numConstants == fatherGenome.numConstants) {
@@ -125,8 +126,7 @@ public class Genome {
         return success;
     }
 
-    // This method is for fission and does not call SexualReproduction... no mutation occurs for this reason
-    public bool InheretGenome(Genome motherGenome) {
+    public bool InheritGenome(Genome motherGenome, bool scramble) {
         bool success = true;
 
         numConstants = motherGenome.numConstants;
@@ -137,7 +137,11 @@ public class Genome {
         for (int i = 0; i < numGenes; i++) {
             string geneLabel = motherGenome.geneLabelList[i];
             Gene motherGene = motherGenome.geneDict[geneLabel];
-            Gene childGene = motherGene.ShallowCopy();//This might not be what we want.
+            Gene childGene = motherGene.ShallowCopy(); //This might not be what we want.
+
+            if(scramble) {
+                childGene.GenerateGeneSequence();
+            }
             
             geneLabelList.Add(geneLabel);
             geneDict.Add(geneLabel, childGene);
@@ -153,32 +157,6 @@ public class Genome {
             constantIndexDict.Add(constantLabel,numConstants); 
         }   
         return success;
-    }
-
-    public void InitGenomeFromSpeciesTemplate(ObjectInfo passedInfo){
-        numGenes = 0;
-        numConstants = 0;
-
-        for (int i = 0; i<passedInfo.genome.numGenes; i++){
-            string geneLabel = passedInfo.genome.geneLabelList[i];
-            geneLabelList.Add(geneLabel);
-            geneIndexDict.Add(geneLabel, numGenes);
-            numGenes++;
-            Gene newGene = passedInfo.genome.geneDict[geneLabel].ShallowCopy();
-            newGene.GenerateGeneSequence();
-            geneDict.Add(geneLabel, newGene);
-            
-        }
-        // there are probably data structure copy operations that would do this more efficiently
-        for (int i = 0; i<passedInfo.genome.numConstants; i++){
-            constantLabelList.Add(passedInfo.genome.constantLabelList[i]);
-            constantDict.Add(passedInfo.genome.constantLabelList[i], passedInfo.genome.constantDict[passedInfo.genome.constantLabelList[i]]);
-            constantIndexDict.Add(passedInfo.genome.constantLabelList[i], numConstants);
-            numConstants++;
-        }
-
-        numQuals = passedInfo.genome.numQuals;
-        qualDict = passedInfo.genome.qualDict;
     }
 
     public void AddGeneToGenome(string label, string[] geneInfo) {
