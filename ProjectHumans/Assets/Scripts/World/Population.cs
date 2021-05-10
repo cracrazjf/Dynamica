@@ -67,4 +67,26 @@ public class Population {
     public void SaveEntity(Entity passed) {
         entityList.Add(passed);
     }
+
+    public Dictionary<string, float> AverageDrives() {
+        Dictionary<string, float> averages = new Dictionary<string, float>();
+
+        foreach (Entity ent in entityList) {
+            Animal animal = (Animal) ent;
+            DriveSystem currentDrives = animal.GetDriveSystem();
+            if (averages.Count == 0) {
+                averages = currentDrives.GetStateDict();
+            } else {
+                foreach (KeyValuePair<string, float> entry in currentDrives.GetStateDict()) {
+                    averages[entry.Key] += currentDrives.GetState(entry.Key);
+                }
+            }
+        }
+
+        foreach (KeyValuePair<string, float> entry in averages) {
+            averages[entry.Key] = (entry.Value / entityList.Count);
+        }
+
+        return averages;
+    }
 }
