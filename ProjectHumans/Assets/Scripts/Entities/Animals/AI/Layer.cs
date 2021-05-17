@@ -18,7 +18,6 @@ public class Layer
     Dictionary<string, Matrix<float>> thisRecurrentMemoryDict;
     Dictionary<string, Layer> thisLayerDict;
 
-
     bool calculatedThisUpdate;
     bool calculatedThisCost;
 
@@ -92,7 +91,7 @@ public class Layer
 
     public void initOutput()
     {
-        if (layerType == "output" || layerType == "hidden" || layerType == "recurrent")
+        if(layerType == "output" || layerType == "hidden" || layerType == "recurrent")
         {
             output = Matrix<float>.Build.Dense(shape[0], shape[1]);
         }
@@ -102,11 +101,9 @@ public class Layer
         }
         else
         {
-            output = thisInputDict[name];
+            output = thisLayerDict[name].Output;
         }
-        //Debug.Log(name);
     }
-
 
     public void FeedForward()
     {
@@ -114,19 +111,20 @@ public class Layer
         {
             if (layerType == "input")
             {
-                output = thisInputDict[name];
+                //output = thisInputDict[name];
             }
             else if (layerType == "recurrent")
             {
                 output = thisRecurrentMemoryDict[name];
             }
-            else if (layerType == "bias")
-            {
+            else if (layerType == "bias"){
 
             }
             else
             // its either a hidden or an output
             {
+                output = Matrix<float>.Build.Dense(shape[0], shape[1]);
+
                 foreach (KeyValuePair<string, Connection> inputInfo in inputConnectionDict)
                 {
                     //One layer could have multiple connections
@@ -141,20 +139,24 @@ public class Layer
 
         }
     }
-
+    
+    public void PrintLayer(){
+        // for (int i =0; i < numUnits; i++){
+        //     string theValue = string.Format("{0:F3}", output[i,0]);
+        //     outputString += "    " + driveStateLabelList[i] + ": " + theValue + "\n";
+        // }
+    }
 
     // MAKE SURE THIS WORKING CORRECTLY
-    public void CalculateCost()
-    {
-
+    public void CalculateCost(){
+        
         if (!calculatedThisCost)
         {
             if (layerType == "output" && !name.Contains("zOutput"))
-            {
+            { 
                 string inputLayerName = "input" + name.Substring(6);
-                Matrix<float> predictionError = thisInputDict[inputLayerName] - output;
+                Matrix<float> predictionError = thisLayerDict[inputLayerName].output - output;
                 cost = predictionError;
-                //Debug.Log(cost);
             }
             else
             {
@@ -165,7 +167,7 @@ public class Layer
                     thisLayerDict[outputInfo.Key].CalculateCost();
                     Matrix<float> x = thisLayerDict[outputInfo.Key].output;
                     Matrix<float> y = thisLayerDict[outputInfo.Key].cost;
-                    cost += currentConnection.CalculateDeltaWeights(x, y);
+                    cost += currentConnection.CalculateNetCost(x, y);
                 }
             }
             calculatedThisCost = true;
@@ -194,33 +196,42 @@ public class Layer
 
             */
     }
+    void DisplayData(string layerName)
+    {
+        if(name == layerName)
+        {
+            string inputLayerName = "input" + name.Substring(6);
+            Debug.Log(name);
+            //Debug.Log(output);
+            Debug.Log(thisLayerDict[inputLayerName].output);
+        }
+    }
+/*
 
-    /*
+    example_list = [[], [], [], [], ...]
 
-        example_list = [[], [], [], [], ...]
+    for each input:
+        x = input
+        backpropogation()
 
-        for each input:
-            x = input
-            backpropogation()
+    for i in range(num_examples-1):
+        x = example_list[i]
+        y = example_list[i+1]
 
-        for i in range(num_examples-1):
-            x = example_list[i]
-            y = example_list[i+1]
+        o = feedforward(x)
+        o_cost = calc_cost(y, o)
+        backpropogation(x, o, h, o_cost, learning_rate)
 
-            o = feedforward(x)
-            o_cost = calc_cost(y, o)
-            backpropogation(x, o, h, o_cost, learning_rate)
+    def feedforward(self, x):
+        h = self.tanh(np.dot(self.h_x, x) + self.h_bias)
+        o = self.sigmoid(np.dot(self.o_h, h) + self.o_bias)
+        return h, o
 
-        def feedforward(self, x):
-            h = self.tanh(np.dot(self.h_x, x) + self.h_bias)
-            o = self.sigmoid(np.dot(self.o_h, h) + self.o_bias)
-            return h, o
+    def calc_cost(y, o):
+        return y - o
 
-        def calc_cost(y, o):
-            return y - o
+    def backpropogation(self, x, o, h, o_cost, learning_rate):
 
-        def backpropogation(self, x, o, h, o_cost, learning_rate):
-
-    */
+*/
 
 }

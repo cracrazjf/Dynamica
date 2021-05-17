@@ -125,7 +125,10 @@ public class AnimalUI : MonoBehaviour {
             } else if (child.name == "GenoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassGenome);
-            }else if (child.name == "InfoButton") {
+            } else if (child.name == "BrainButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(PassNet);
+            } else if (child.name == "InfoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassStream);
             } else if (child.name == "CommandButton") {
@@ -154,6 +157,11 @@ public class AnimalUI : MonoBehaviour {
     public void PassGenome() {
         GenomeUI.ReceiveClicked(selectedAnimal.GetGameObject());
         Debug.Log("Tried to pass to genome");
+    }
+
+    public void PassNet() {
+        NetUI.ReceiveClicked(selectedAnimal.GetGameObject());
+        Debug.Log("Tried to pass to nets");
     }
 
     public void PassStream() {
