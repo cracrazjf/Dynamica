@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class IntroUI : MonoBehaviour {
 
+    public GameObject humanPub;
     protected static bool needsUpdate = false;
     protected bool showPanel = false;
 
@@ -17,7 +18,7 @@ public class IntroUI : MonoBehaviour {
 
     protected Dropdown humanDrop;
     protected Dropdown nonDrop;
-    protected Dropdown densityDrop;
+    protected Dropdown biomeDrop;
     
 
     void Start() { InitPanel(); }
@@ -55,8 +56,8 @@ public class IntroUI : MonoBehaviour {
                 humanDrop = child.gameObject.GetComponent<Dropdown>();
             } else if (child.name == "NonHumanDropdown") {
                 nonDrop = child.gameObject.GetComponent<Dropdown>();
-            } else if (child.name == "DensityDropdown") {
-                densityDrop = child.gameObject.GetComponent<Dropdown>();
+            } else if (child.name == "BiomeDropdown") {
+                biomeDrop = child.gameObject.GetComponent<Dropdown>();
             }
         }
 
@@ -99,7 +100,7 @@ public class IntroUI : MonoBehaviour {
 
     public void StartWorld() {
         Debug.Log("Got here!");
-        UpdateDensity();
+        //UpdateBiome();
         World.SetGo(true);
         ExitPanel();
     }
@@ -112,9 +113,15 @@ public class IntroUI : MonoBehaviour {
         int type = nonDrop.value;
     }
 
-    public void UpdateDensity() {
-        int type = densityDrop.value;
-        World.SetDensity(type);
+    public void UpdateBiome() {
+        int type = biomeDrop.value;
+        World.SetBiome(type);
+    }
+
+    public void UpdateNumHumans() {
+        Slider humanSlider = humanPub.GetComponent<Slider>();
+        int toUpdate = (int) humanSlider.value;
+        World.SetNumSpecies("Human", toUpdate);
     }
 
     public static void ToggleUpdate() {

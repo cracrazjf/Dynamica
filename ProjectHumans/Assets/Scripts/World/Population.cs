@@ -9,7 +9,7 @@ using System.Linq;
 public class Population {
     // this is the initial number that will be spawned
     public string name;
-    public int startingN;
+    public float spawnChance = 0.0f;
     public Genome genome;
     public bool isItem = false;
     public bool isAnimal = false;
@@ -19,9 +19,9 @@ public class Population {
     public string contrastPop = "";
     protected List<Entity> entityList = new List<Entity>();
 
-    public Population(string passedSpeciesName, int passedStartingN) {
+    public Population(string passedSpeciesName, float passedSpawnChance) {
         name = passedSpeciesName;
-        startingN = passedStartingN;
+        spawnChance = passedSpawnChance;
         string toCast = "";
 
         this.genome = new Genome();

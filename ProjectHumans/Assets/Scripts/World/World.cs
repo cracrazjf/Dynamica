@@ -9,14 +9,17 @@ using System.IO;
 using MathNet.Numerics.LinearAlgebra;
 using Random=UnityEngine.Random;
 
-
 public class World : MonoBehaviour {
     public bool paused = false;
-    public static int densityParam = 0;
+    public static int biomeParam = 0;
+    public static int maxEntities = 100;
+    public static string biomeName;
+    System.Random rand = new System.Random();
 
     /// This dict keeps track of the total number of each kind of object that has been created
     public static Dictionary<string, int> entityCountDict = new Dictionary<string, int>();
-    public Dictionary<string, int> startingCountsDict = new Dictionary<string, int>();
+    public static Dictionary<string, int> startingCountsDict = new Dictionary<string, int>();
+    public static Dictionary<string, float> spawnChanceDict = new Dictionary<string, float>();
 
     public static Dictionary<string, Population> populationDict = new Dictionary<string, Population>();
     public static Dictionary<string, float> worldConfigDict = new Dictionary<string, float>();
@@ -34,7 +37,6 @@ public class World : MonoBehaviour {
     public static List<Entity> entityList = new List<Entity>();
     public static Dictionary<string, Entity> entityDict = new Dictionary<string, Entity>();
 
-
     /// <value>Setting initial world properties</value>
     public static float worldSize;
     public static float maxPosition;
@@ -46,10 +48,40 @@ public class World : MonoBehaviour {
     public Dictionary<string, Body> allBodyDict;
     public Dictionary<string, MotorSystem> allMotorDict;
 
+    private Material sky;
     private bool updateCompleted = false;
     int updateCounter;
 
     void Start() {}
+
+    void Update() {
+        if (initWorld) {
+            initWorld = false;
+            Debug.Log("Should only send once");
+            updateCounter = 0;
+        
+            LoadWorldConfig();
+            CreatePopulations();
+
+            worldSize = worldConfigDict["World_Size"];
+            maxPosition = worldSize / 2;
+            minPosition = -worldSize / 2;
+
+            CreateEntities();
+            MainUI.ToggleUpdate();
+        }
+
+        //Debug.Log("Started an update");
+        paused = MainUI.GetPause();
+
+        if(!paused) {
+            if(updateCompleted) {
+                updateCompleted = false;
+                UpdateEntities();
+                updateCounter++;
+            }
+        }
+    }
 
     public static void SetGo(bool start) {
         Debug.Log("Made it to world!");
@@ -65,10 +97,16 @@ public class World : MonoBehaviour {
             Debug.Log(populationDict);
 
             if (activePop.contrastPop == "none") {
-                int numEntities = activePop.startingN;
-                for (int i = 0; i < numEntities; i++) {
-                    Debug.Log(speciesType);
-                    AddEntity(activePop, null);
+                if (startingCountsDict.ContainsKey(speciesType)) {
+                    for (int i = 0; i < startingCountsDict[speciesType]; i++) {
+                        AddEntity(activePop, null);
+                    }
+                }
+                for (int i = 0; i < maxEntities; i++) {
+                    double option = rand.NextDouble();
+                    if (option < activePop.spawnChance) {
+                        AddEntity(activePop, null);
+                    }
                 }
             } else if (!activePop.isFirst) {
                 Debug.Log("Printing " + activePop.contrastPop);
@@ -79,13 +117,11 @@ public class World : MonoBehaviour {
         updateCompleted = true;
     }
 
-    // pass a single object, spawn random
 
 
     // make general, spawn contrastively for 2
     public void SpawnGroves(Population first, Population second, float chanceEmpty, float chanceFirst) {
-        List<Vector3>[] grid = InitGrid();
-        System.Random rand = new System.Random();
+        List<Vector3>[] grid = InitGrid(5);
         
         for ( int i = 0; i <  grid.Length; i++ ) {
 
@@ -115,8 +151,12 @@ public class World : MonoBehaviour {
     }
 
     public static void AddEntity(string species, Nullable<Vector3> passedSpawn) {
-        Population toPass = populationDict[species];
-        AddEntity(toPass, passedSpawn);
+        if(populationDict.ContainsKey(species)) {
+            Population toPass = populationDict[species];
+            AddEntity(toPass, passedSpawn);
+        } else {
+            Debug.Log("Can't spawn something that doesn't exist!");
+        }
     }
 
     public static void AddEntity(Population population, Nullable<Vector3> passedSpawn) {
@@ -129,7 +169,11 @@ public class World : MonoBehaviour {
             spawn = CreateRandomPosition();
         } else { spawn = (Vector3) passedSpawn; }
 
-        int val = (entityCountDict[population.name]);
+        int val = 0;
+        if(entityCountDict.ContainsKey(population.name)) {
+            val = (entityCountDict[population.name]);
+        } else { entityCountDict.Add(population.name, val); }
+
         Entity newEnt = null;
         string speciesType = population.name;
 
@@ -186,65 +230,71 @@ public class World : MonoBehaviour {
         updateCompleted = true;
     }
 
-    void Update() {
-        if (initWorld) {
-            initWorld = false;
-            Debug.Log("Should only send once");
-            updateCounter = 0;
-        
-            LoadWorldConfig();
-            CreatePopulations();
-
-            worldSize = worldConfigDict["World_Size"];
-            maxPosition = worldSize / 2;
-            minPosition = -worldSize / 2;
-
-            CreateEntities();
-            MainUI.ToggleUpdate();
-        }
-
-        //Debug.Log("Started an update");
-        paused = MainUI.GetPause();
-
-        if(!paused) {
-            if(updateCompleted) {
-                updateCompleted = false;
-                UpdateEntities();
-                updateCounter++;
-            }
+    public static void SetNumSpecies(string species, int passed) {
+        Debug.Log("Update species spawn " + species + " to: " + passed);
+        if(startingCountsDict.ContainsKey(species)) {
+            startingCountsDict[species] = passed;
+        } else {
+            startingCountsDict.Add(species, passed);
         }
     }
 
-    public static void SetDensity(int passed) {
-        densityParam = passed;
-        Debug.Log("Recieved density as: " + passed);
+    public static void SetSpawnChance(string species, float passed) {
+        Debug.Log("Update species spawn chance " + species + " to: " + passed);
+        if(spawnChanceDict.ContainsKey(species)) {
+            spawnChanceDict[species] = passed;
+        } else {
+            spawnChanceDict.Add(species, passed);
+        }
     }
 
-    void LoadWorldConfig(){
+    public static void SetBiome(int param) {
+        if (param == 1) {
+            biomeName = "tropic";
+        } else if (param == 2) {
+            biomeName = "desert";
+        }
+    }
+
+    public void LoadWorldConfig(){
 
         string line;
         string[] lineInfo;
-        
-        string name = "world" + densityParam + ".config";
-        Debug.Log("Trying to open " + name);
-        using (var reader = new StreamReader(@"Assets/Scripts/config/" + name)) {
+        string worldName = "world.config";
+        worldName = biomeName + worldName;
+
+        using (var reader = new StreamReader(@"Assets/Scripts/config/" + worldName)) {
             while ((line = reader.ReadLine()) != null) {
                 lineInfo = line.Split(new[] { "," }, StringSplitOptions.None);
+                string toPass = lineInfo[1];
+                float passNum = float.Parse(lineInfo[2]);
 
                 if (lineInfo[0] == "Constant") {
-                    Debug.Log(lineInfo[1]);
-                    worldConfigDict.Add(lineInfo[1], float.Parse(lineInfo[2]));
-                    
-                } else {
-                    startingCountsDict.Add(lineInfo[1], Int32.Parse(lineInfo[2]));
-                    entityCountDict.Add(lineInfo[1], 0);
-                }
+                    worldConfigDict.Add(toPass, passNum);
+                } else { SetSpawnChance(toPass, passNum); }
             }
         }
+
+        LoadTerrain(); 
+    }
+
+    public void LoadTerrain() {
+        Debug.Log("Got to LoadTerrain!");
+        
+        string toSend = "Terrain" + biomeName;
+        AddEntity(toSend, null);
+        SetSkybox(biomeName + "sky");
+    }
+
+    public void SetSkybox (string skyName) {
+        string path = @"Resources/Materials/Sky/" + skyName;
+        sky = Resources.Load<Material>(path);
+    
+        RenderSettings.skybox = sky;
     }
 
     void CreatePopulations() {
-        foreach(KeyValuePair<string, int> entry in startingCountsDict) {
+        foreach(KeyValuePair<string, float> entry in spawnChanceDict) {
             Population newPop = new Population(entry.Key, entry.Value);
             Debug.Log(entry.Key);
             populationDict[entry.Key] = newPop;
@@ -271,13 +321,13 @@ public class World : MonoBehaviour {
         }
     }
 
-    public List<Vector3>[] InitGrid() {
+    public List<Vector3>[] InitGrid(int locations) {
         // Okay so we're going to divide the map into an 8x8 grid
         // Each of those 64 zones will have an array of 10 random locations within the zone
 
         int gridDiv = 8;
         float bump = maxPosition / (gridDiv / 2);
-        int numLocs = 10;
+        int numLocs = locations;
         List<Vector3>[] grid = new List<Vector3>[gridDiv * gridDiv]; 
 
         for (int i = 0; i < grid.Length; i++) {
