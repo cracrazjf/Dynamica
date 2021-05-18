@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4043147233711056439}
   - component: {fileID: 4043147233711056433}
   - component: {fileID: 4043147233711056436}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TerrainTropicPrefab
   m_TagString: Ground
   m_Icon: {fileID: 0}

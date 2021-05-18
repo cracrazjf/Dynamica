@@ -1380,19 +1380,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 208839880}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 963194232}
-        m_TargetAssemblyTypeName: MainUI, Assembly-CSharp
-        m_MethodName: TogglePause
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &208839880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2143,7 +2131,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 652475932}
   m_Direction: 2
   m_Value: 0.9999878
-  m_Size: 0.6000006
+  m_Size: 0.5999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2268,7 +2256,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 858417184}
   m_Direction: 2
   m_Value: 0.9999878
-  m_Size: 0.6000006
+  m_Size: 0.5999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3102,19 +3090,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 546606121}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 963194232}
-        m_TargetAssemblyTypeName: MainUI, Assembly-CSharp
-        m_MethodName: ToggleView
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &546606121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4502,19 +4478,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 735905055}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 963194232}
-        m_TargetAssemblyTypeName: MainUI, Assembly-CSharp
-        m_MethodName: ToggleHelp
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &735905055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4868,7 +4832,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 571243827}
   m_Direction: 2
   m_Value: 0.9999878
-  m_Size: 0.6000006
+  m_Size: 0.5999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -8449,19 +8413,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1424653178}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 963194232}
-        m_TargetAssemblyTypeName: MainUI, Assembly-CSharp
-        m_MethodName: ToggleFF
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &1424653178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10254,7 +10206,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1806564296}
   m_Direction: 2
   m_Value: 0.9999878
-  m_Size: 0.6000006
+  m_Size: 0.5999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -26645,19 +26597,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4812890740790445505}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 963194236}
-        m_TargetAssemblyTypeName: AddUI, Assembly-CSharp
-        m_MethodName: OnAwake
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!224 &7230686610451943328
 RectTransform:
   m_ObjectHideFlags: 0

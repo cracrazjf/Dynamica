@@ -122,8 +122,7 @@ public class AnimalBody : Body {
     }
 
     public void SetState(string label, float passed) {
-        Debug.Log(stateDict);
-        Debug.Log("Tried to pass " + passed + " to " + label);
+        //Debug.Log("Tried to pass " + passed + " to " + label);
         stateDict[label] = passed;
         int currentIndex = stateIndexDict[label];
         states[currentIndex] = passed;

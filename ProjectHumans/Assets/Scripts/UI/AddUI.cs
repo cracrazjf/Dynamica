@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class AddUI : MonoBehaviour {
 
     protected static bool needsUpdate = false;
-    protected bool showPanel = false;
+    protected static bool showPanel = false;
 
     protected Button tempButton;
     protected Button closePanelButton;
@@ -25,20 +25,18 @@ public class AddUI : MonoBehaviour {
     }
     
    private void Update() {
-        if (needsUpdate) {
-            OnAwake();
-        }
+        if (needsUpdate) { OnAwake(); }
         if (showPanel) { UpdatePanel(); }
     }
 
-    public void OnAwake() {
-        panel.SetActive(true);
-
+    public static void OnAwake() {
         showPanel = true;
-        needsUpdate = false;
     }
 
-    public void UpdatePanel(){}
+    public void UpdatePanel() {
+        panel.SetActive(true);
+        needsUpdate = false;
+    }
 
     public void InitPanel(){
         panel = GameObject.Find("AddPanel");

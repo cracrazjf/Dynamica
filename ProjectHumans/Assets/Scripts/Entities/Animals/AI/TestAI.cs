@@ -29,14 +29,6 @@ public class TestAI : AI {
         traitDict = traits.GetTraitDict();
     }
 
-    // public override Vector<float> ChooseAction(Matrix<float> visualInput) {
-    //     var toReturn = Vector<float>.Build.Dense(15);
-    //     toReturn[1] = 1;
-
-    //     return toReturn;
-    // }
-
-    // Untested but should be good to go
     public override Matrix<float> ChooseAction() {
         decidedActions = Matrix<float>.Build.Dense(actionStates.Count, 1);
         
@@ -48,7 +40,7 @@ public class TestAI : AI {
             decidedActions[index, 0] = thisAnimal.cheatArgs;
         }
 
-        Debug.Log(decidedActions);
+        //Debug.Log(decidedActions);
         return decidedActions;
     }
 

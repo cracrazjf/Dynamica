@@ -80,8 +80,10 @@ public class World : MonoBehaviour {
 
         if(!paused) {
             if(updateCompleted) {
-                updateCompleted = false;
-                UpdateEntities();
+                if(updateCounter%2 == 0) {
+                    updateCompleted = false;
+                    UpdateEntities();
+                }
                 updateCounter++;
             }
         }

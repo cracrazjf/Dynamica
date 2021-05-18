@@ -120,9 +120,9 @@ public class MainUI : MonoBehaviour
             } else if (child.name == "WalkButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ToggleView);
-            } else if (child.name == "SettingsButton") {
+            } else if (child.name == "AddButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(ToggleOptions);
+                tempButton.onClick.AddListener(ToggleAdd);
             }
         }
 
@@ -360,6 +360,10 @@ public class MainUI : MonoBehaviour
 
         optionPanel.SetActive(false);
         toggleOptions = false;
+    }
+
+    public void ToggleAdd() {
+        AddUI.OnAwake();
     }
 
     public void ToggleOptions() {
