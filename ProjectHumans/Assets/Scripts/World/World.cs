@@ -62,6 +62,7 @@ public class World : MonoBehaviour {
         
             LoadWorldConfig();
             CreatePopulations();
+            LoadTerrain();
 
             worldSize = worldConfigDict["World_Size"];
             maxPosition = worldSize / 2;
@@ -94,7 +95,7 @@ public class World : MonoBehaviour {
             string speciesType = entry.Key;
             entityCountDict[speciesType] = 0;
 
-            Debug.Log(populationDict);
+            Debug.Log(speciesType);
 
             if (activePop.contrastPop == "none") {
                 if (startingCountsDict.ContainsKey(speciesType)) {
@@ -121,7 +122,7 @@ public class World : MonoBehaviour {
 
     // make general, spawn contrastively for 2
     public void SpawnGroves(Population first, Population second, float chanceEmpty, float chanceFirst) {
-        List<Vector3>[] grid = InitGrid(5);
+        List<Vector3>[] grid = InitGrid(10);
         
         for ( int i = 0; i <  grid.Length; i++ ) {
 
@@ -140,7 +141,11 @@ public class World : MonoBehaviour {
             if (hasTrees) {
                 for (int n = 0; n < grid[i].Count; n++) {
                     Vector3 location = grid[i][n];
-                    AddEntity(toPass, location);
+
+                    option = rand.NextDouble();
+                    if (option < toPass.spawnChance) {
+                        AddEntity(toPass, location);
+                    }
                 }
             }
         }
@@ -155,7 +160,7 @@ public class World : MonoBehaviour {
             Population toPass = populationDict[species];
             AddEntity(toPass, passedSpawn);
         } else {
-            Debug.Log("Can't spawn something that doesn't exist!");
+            Debug.Log("Error for " + species + ": Can't spawn something that doesn't exist!");
         }
     }
 
@@ -268,21 +273,19 @@ public class World : MonoBehaviour {
                 lineInfo = line.Split(new[] { "," }, StringSplitOptions.None);
                 string toPass = lineInfo[1];
                 float passNum = float.Parse(lineInfo[2]);
-
+                Debug.Log(toPass);
                 if (lineInfo[0] == "Constant") {
                     worldConfigDict.Add(toPass, passNum);
                 } else { SetSpawnChance(toPass, passNum); }
             }
-        }
-
-        LoadTerrain(); 
+        } 
     }
 
     public void LoadTerrain() {
         Debug.Log("Got to LoadTerrain!");
         
         string toSend = "Terrain" + biomeName;
-        AddEntity(toSend, null);
+        AddEntity(toSend, new Vector3(0,0,0));
         SetSkybox(biomeName + "sky");
     }
 
@@ -296,7 +299,7 @@ public class World : MonoBehaviour {
     void CreatePopulations() {
         foreach(KeyValuePair<string, float> entry in spawnChanceDict) {
             Population newPop = new Population(entry.Key, entry.Value);
-            Debug.Log(entry.Key);
+            Debug.Log("Adding population of " + entry.Key);
             populationDict[entry.Key] = newPop;
         }
     }

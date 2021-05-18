@@ -100,7 +100,8 @@ public class IntroUI : MonoBehaviour {
 
     public void StartWorld() {
         Debug.Log("Got here!");
-        //UpdateBiome();
+        UpdateNumHumans();
+        UpdateBiome();
         World.SetGo(true);
         ExitPanel();
     }
