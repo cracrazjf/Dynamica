@@ -10,6 +10,7 @@ using MathNet.Numerics.LinearAlgebra;
 using Random=UnityEngine.Random;
 
 public class World : MonoBehaviour {
+    public GameObject mainCam;
     public bool paused = false;
     public static int biomeParam = 0;
     public static int maxEntities = 100;
@@ -52,7 +53,9 @@ public class World : MonoBehaviour {
     private bool updateCompleted = false;
     int updateCounter;
 
-    void Start() {}
+    void Start() {
+        mainCam = GameObject.Find("Main Camera");
+    }
 
     void Update() {
         if (initWorld) {
@@ -95,8 +98,6 @@ public class World : MonoBehaviour {
             string speciesType = entry.Key;
             entityCountDict[speciesType] = 0;
 
-            Debug.Log(speciesType);
-
             if (activePop.contrastPop == "none") {
                 if (startingCountsDict.ContainsKey(speciesType)) {
                     for (int i = 0; i < startingCountsDict[speciesType]; i++) {
@@ -110,7 +111,6 @@ public class World : MonoBehaviour {
                     }
                 }
             } else if (!activePop.isFirst) {
-                Debug.Log("Printing " + activePop.contrastPop);
                 SpawnGroves(populationDict[activePop.contrastPop], activePop, .2f, .5f);
             }
         }
@@ -236,7 +236,7 @@ public class World : MonoBehaviour {
     }
 
     public static void SetNumSpecies(string species, int passed) {
-        Debug.Log("Update species spawn " + species + " to: " + passed);
+        //Debug.Log("Update species spawn " + species + " to: " + passed);
         if(startingCountsDict.ContainsKey(species)) {
             startingCountsDict[species] = passed;
         } else {
@@ -245,7 +245,7 @@ public class World : MonoBehaviour {
     }
 
     public static void SetSpawnChance(string species, float passed) {
-        Debug.Log("Update species spawn chance " + species + " to: " + passed);
+        //Debug.Log("Update species spawn chance " + species + " to: " + passed);
         if(spawnChanceDict.ContainsKey(species)) {
             spawnChanceDict[species] = passed;
         } else {
@@ -254,10 +254,10 @@ public class World : MonoBehaviour {
     }
 
     public static void SetBiome(int param) {
-        if (param == 1) {
-            biomeName = "tropic";
-        } else if (param == 2) {
-            biomeName = "desert";
+        if (param == 2) {
+            biomeName = "Tropic";
+        } else if (param == 1) {
+            biomeName = "Desert";
         }
     }
 
@@ -270,10 +270,11 @@ public class World : MonoBehaviour {
 
         using (var reader = new StreamReader(@"Assets/Scripts/config/" + worldName)) {
             while ((line = reader.ReadLine()) != null) {
+
                 lineInfo = line.Split(new[] { "," }, StringSplitOptions.None);
                 string toPass = lineInfo[1];
                 float passNum = float.Parse(lineInfo[2]);
-                Debug.Log(toPass);
+                
                 if (lineInfo[0] == "Constant") {
                     worldConfigDict.Add(toPass, passNum);
                 } else { SetSpawnChance(toPass, passNum); }
@@ -286,20 +287,12 @@ public class World : MonoBehaviour {
         
         string toSend = "Terrain" + biomeName;
         AddEntity(toSend, new Vector3(0,0,0));
-        SetSkybox(biomeName + "sky");
-    }
-
-    public void SetSkybox (string skyName) {
-        string path = @"Resources/Materials/Sky/" + skyName;
-        sky = Resources.Load<Material>(path);
-    
-        RenderSettings.skybox = sky;
     }
 
     void CreatePopulations() {
         foreach(KeyValuePair<string, float> entry in spawnChanceDict) {
             Population newPop = new Population(entry.Key, entry.Value);
-            Debug.Log("Adding population of " + entry.Key);
+            //Debug.Log("Adding population of " + entry.Key);
             populationDict[entry.Key] = newPop;
         }
     }

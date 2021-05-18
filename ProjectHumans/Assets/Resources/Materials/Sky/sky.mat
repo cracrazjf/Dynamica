@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: sky
+  m_Name: Sky
   m_Shader: {fileID: 4800000, guid: eb3c6fb598ded4c71b8968e1c40a3b4d, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 0
@@ -20,13 +20,13 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Floats:
-    - _HorizonLineContribution: 0.177
+    - _HorizonLineContribution: 0.332
     - _HorizonLineExponent: 4
     - _SkyGradientExponent: 2.5
     - _SunDiscContribution: 1
     - _SunDiscExponent: 125000
     - _SunDiscMultiplier: 25
-    - _SunHaloContribution: 0.5
+    - _SunHaloContribution: 0.731
     - _SunHaloExponent: 125
     - _Title: 0
     - __dirty: 0

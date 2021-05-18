@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 705507994}
+  m_Sun: {fileID: 0}
   m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
@@ -2142,8 +2142,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 652475933}
   m_HandleRect: {fileID: 652475932}
   m_Direction: 2
-  m_Value: 0.9999954
-  m_Size: 0.60000026
+  m_Value: 0.9999878
+  m_Size: 0.6000006
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2267,8 +2267,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 858417185}
   m_HandleRect: {fileID: 858417184}
   m_Direction: 2
-  m_Value: 0.9999954
-  m_Size: 0.60000026
+  m_Value: 0.9999878
+  m_Size: 0.6000006
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4215,7 +4215,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.5
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -4867,8 +4867,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 571243828}
   m_HandleRect: {fileID: 571243827}
   m_Direction: 2
-  m_Value: 0.9999954
-  m_Size: 0.60000026
+  m_Value: 0.9999878
+  m_Size: 0.6000006
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5629,6 +5629,7 @@ GameObject:
   - component: {fileID: 963194236}
   - component: {fileID: 963194237}
   - component: {fileID: 963194238}
+  - component: {fileID: 963194239}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -5654,7 +5655,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.6650944, g: 1, b: 1, a: 0}
+  m_BackGroundColor: {r: 0.7686275, g: 0.7686275, b: 0.7686275, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 1
@@ -5723,6 +5724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d57bd19c23aca04b915a721fa76bee4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCam: {fileID: 0}
   paused: 0
 --- !u!114 &963194231
 MonoBehaviour:
@@ -5833,6 +5835,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bcf367c69a06d445b681eb3422325b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!45 &963194239
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: 9aa8ed67591432941bb76f12eb23ff91, type: 2}
 --- !u!1 &970548998
 GameObject:
   m_ObjectHideFlags: 0
@@ -10242,8 +10253,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1806564297}
   m_HandleRect: {fileID: 1806564296}
   m_Direction: 2
-  m_Value: 0.9999954
-  m_Size: 0.60000026
+  m_Value: 0.9999878
+  m_Size: 0.6000006
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
