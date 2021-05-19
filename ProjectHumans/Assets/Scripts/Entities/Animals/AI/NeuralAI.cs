@@ -87,7 +87,7 @@ public class NeuralAI : AI
         initConnections();
         GetOutputConnectionDict();
         InitInputs();
-        initOutputs();
+        InitOutputs();
         BackPropagate();
         Feedforward();
     }
@@ -380,11 +380,10 @@ public class NeuralAI : AI
         networkLayerDict["inputActionLayer"].Output = actionStates.ToColumnMatrix();
         //networkLayerDict["inputActionArgumentLayer"].Output = actionArguments.ToColumnMatrix();
     }
-    void initOutputs()
-    {
+    void InitOutputs() {
         foreach (KeyValuePair<string, Layer> layerInfo in networkLayerDict)
         {
-            layerInfo.Value.initOutput();
+            layerInfo.Value.InitOutput();
 
         }
     }
@@ -392,8 +391,7 @@ public class NeuralAI : AI
     float distanceCounter = 0.0f;
     float rotationCounter = 0.0f;
     int counter = 0;
-    public override Matrix<float> ChooseAction()
-    {
+    public override Matrix<float> ChooseAction() {
         counter += 1;
         if (counter % 100 == 0)
         {

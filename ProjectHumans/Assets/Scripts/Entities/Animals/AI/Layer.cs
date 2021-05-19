@@ -89,7 +89,7 @@ public class Layer
         set { calculatedThisCost = value; }
     }
 
-    public void initOutput()
+    public void InitOutput()
     {
         if(layerType == "output" || layerType == "hidden" || layerType == "recurrent")
         {
