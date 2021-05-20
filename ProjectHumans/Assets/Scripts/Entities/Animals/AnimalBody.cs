@@ -276,14 +276,14 @@ public class AnimalBody : Body {
         float val = (thisAnimal.GetPhenotype().GetTrait("sleepiness_change") * 20);
         AdjustState("sleepiness", val);
 
-        Debug.Log("Snoozed a bit!");
+        //Debug.Log("Snoozed a bit!");
     }
 
     public virtual void RestAdjust() {
         float val = (thisAnimal.GetPhenotype().GetTrait("fatigue_change") * 20);
         AdjustState("fatigue", val);
 
-        Debug.Log("Rested a bit!");
+        //Debug.Log("Rested a bit!");
     }
 
     public void AdjustState(string label, float delta) {

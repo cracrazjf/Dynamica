@@ -67,7 +67,7 @@ public abstract class MotorSystem
             for(int i = 0; i < states.Count - numArgs; i++) {
                 if (actions[i] != 0) {
                     SetState(i, actions[i]);
-                    Debug.Log("Doing action at " + i);
+                    //Debug.Log("Doing action at " + i);
                     actionList[i].DynamicInvoke();
                 }
             } 

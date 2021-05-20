@@ -271,7 +271,7 @@ public class NeuralAI : AI
                 }
             }
         }
-        Debug.Log(outputString);
+        //Debug.Log(outputString);
 
         //outputLayerDict["outputVisionRedLayer"].FeedForward();
         foreach (string memoryKey in recurrentMemoryDict.Keys.ToList())
@@ -280,74 +280,7 @@ public class NeuralAI : AI
         }
     }
 
-    // public void HardCodedFeedforward(){
-    //     networkLayerDict["inputVisionRedLayer"].Output = visualInput.Row(0).ToColumnMatrix();
-    //     networkLayerDict["inputVisionGreenLayer"].Output = visualInput.Row(1).ToColumnMatrix();
-    //     networkLayerDict["inputVisionBlueLayer"].Output = visualInput.Row(2).ToColumnMatrix();
-    //     networkLayerDict["inputDriveLayer"].Output = driveStates.ToColumnMatrix();
-    //     networkLayerDict["inputBodyLayer"].Output = bodyStates.ToColumnMatrix();
-    //     networkLayerDict["inputActionLayer"].Output = actionStates.ToColumnMatrix();
-    //     networkLayerDict["inputActionArgumentLayer"].Output = actionArguments.ToColumnMatrix();
-    //     Debug.Log(networkLayerDict["inputVisionRedLayer"].Output.RowCount);
-    //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-    //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["inputVisionRedLayer"].ConnectionWeight.Multiply(networkLayerDict["inputVisionRedLayer"].Output);
-    //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["inputVisionGreenLayer"].ConnectionWeight.Multiply(networkLayerDict["inputVisionGreenLayer"].Output);
-    //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["inputVisionBlueLayer"].ConnectionWeight.Multiply(networkLayerDict["inputVisionBlueLayer"].Output);
-    //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["inputDriveLayer"].ConnectionWeight.Multiply(networkLayerDict["inputDriveLayer"].Output);
-    //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["inputBodyLayer"].ConnectionWeight.Multiply(networkLayerDict["inputBodyLayer"].Output);
-    //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["inputActionLayer"].ConnectionWeight.Multiply(networkLayerDict["inputActionLayer"].Output);
-    //     networkLayerDict["zHiddenLayer"].Output += networkLayerDict["zHiddenLayer"].InputConnectionDict["inputActionArgumentLayer"].ConnectionWeight.Multiply(networkLayerDict["inputActionArgumentLayer"].Output);
-
-        
-    //     networkLayerDict["zOutputVisionRedLayer"].Output += networkLayerDict["zOutputVisionRedLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-
-    //     networkLayerDict["zOutputVisionRedLayer"].Output += networkLayerDict["zOutputVisionRedLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-    //     networkLayerDict["outputVisionRedLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputVisionRedLayer"].Output);
-        
-    //     networkLayerDict["zOutputVisionGreenLayer"].Output += networkLayerDict["zOutputVisionGreenLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
-    //     networkLayerDict["zOutputVisionGreenLayer"].Output += networkLayerDict["zOutputVisionGreenLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-        
-    //     networkLayerDict["outputVisionGreenLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputVisionGreenLayer"].Output);
-
-    //     networkLayerDict["zOutputVisionBlueLayer"].Output += networkLayerDict["zOutputVisionBlueLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
-    //     networkLayerDict["zOutputVisionBlueLayer"].Output += networkLayerDict["zOutputVisionBlueLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-       
-    //     networkLayerDict["outputVisionBlueLayer"].Output += Matrix<float>.Tanh(networkLayerDict["outputVisionBlueLayer"].Output);
-
-    //     networkLayerDict["zOutputDriveLayer"].Output += networkLayerDict["zOutputDriveLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
-    //     networkLayerDict["zOutputDriveLayer"].Output += networkLayerDict["zOutputDriveLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-       
-    //     networkLayerDict["outputDriveLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputDriveLayer"].Output);
-
-    //     networkLayerDict["zOutputBodyLayer"].Output += networkLayerDict["zOutputBodyLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
-    //     networkLayerDict["zOutputBodyLayer"].Output += networkLayerDict["zOutputBodyLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-        
-    //     networkLayerDict["outputBodyLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputBodyLayer"].Output);
-    //     networkLayerDict["zOutputActionLayer"].Output += networkLayerDict["zOutputActionLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-        
-    //     networkLayerDict["zOutputActionLayer"].Output += networkLayerDict["zOutputActionLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-        
-    //     networkLayerDict["outputActionLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputActionLayer"].Output);
-
-    //     networkLayerDict["zOutputActionArgumentLayer"].Output += networkLayerDict["zOutputActionArgumentLayer"].InputConnectionDict["biasLayer"].ConnectionWeight;
-
-    //     networkLayerDict["zOutputActionArgumentLayer"].Output += networkLayerDict["zOutputActionArgumentLayer"].InputConnectionDict["hiddenLayer"].ConnectionWeight.Multiply(networkLayerDict["hiddenLayer"].Output);
-
-    //     networkLayerDict["outputActionArgumentLayer"].Output += Matrix<float>.Tanh(networkLayerDict["zOutputActionArgumentLayer"].Output);
-
-    //     foreach (string memoryKey in recurrentMemoryDict.Keys.ToList())
-    //     {
-    //         networkLayerDict[recurrentInfoDict[memoryKey]].Output.CopyTo(recurrentMemoryDict[memoryKey]);
-    //     }
-    // }
-    // create a copy of previous input layer
-    
-
-    void BackPropagate(){
+    void BackPropagate() {
         // make sure we initialize all the non-bias layers to zero, and bias to 1
 
         // we may want to rename CalculatedThisUpdate and break it into two, CalculatedFeedforwardThisUpdate, and CalculatedWeightUpdateThisUpdate
@@ -396,27 +329,11 @@ public class NeuralAI : AI
         if (counter % 100 == 0)
         {
             // the real choose action
+            Debug.Log("Got to this loop");
             InitInputs();
             BackPropagate();
             Feedforward();
         }
-
-        //// hard coded walk in a square
-        //if (distanceCounter > 10.0f)
-        //{
-        //    rotationCounter += 90;
-        //    if(rotationCounter == 360)
-        //    {
-        //        rotationCounter = 0.0f;
-        //    }
-        //    this.gameobject.transform.GetChild(0).transform.localRotation = Quaternion.Euler(0, rotationCounter, 0);
-        //    distanceCounter = 0.0f;
-        //}
-        //else
-        //{
-        //    this.gameobject.transform.Translate(this.gameobject.transform.GetChild(0).forward * Time.deltaTime);
-        //    distanceCounter += Time.deltaTime;
-        //}
 
         return networkLayerDict["outputActionLayer"].Output;
     }
