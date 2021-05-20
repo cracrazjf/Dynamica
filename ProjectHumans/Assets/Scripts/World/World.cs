@@ -223,9 +223,7 @@ public class World : MonoBehaviour {
 
     public static Plant GetPlant(string name) { return plantDict[name]; }
 
-    public static Entity GetEntity(string name) { 
-        return entityDict[name];
-    }
+    public static Entity GetEntity(string name) { return entityDict[name]; }
 
     public void UpdateEntities() {
         int numEntities = entityList.Count;

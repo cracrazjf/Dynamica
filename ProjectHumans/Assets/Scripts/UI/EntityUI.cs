@@ -6,34 +6,34 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class AnimalUI : MonoBehaviour {
+public class EntityUI : MonoBehaviour {
 
     protected Text[] stateText;
     protected Text goalText;
     protected Animal selectedAnimal = null;
+    protected Entity selectedEntity;
     protected static GameObject passed;
 
     protected static bool needsUpdate;
     public static bool toExit = false;
     protected bool showPanel = false;
+    static bool isAnimal;
 
     protected Button tempButton;
     protected GameObject panel;
     protected GameObject mainCam;
     protected GameObject halo;
 
-    protected Dropdown actionDrop;
-    protected Dropdown paramDrop;
-
     protected Text originalName;
     protected Text inputName;
     protected Transform panelNamer;
     protected Transform buttonParent;
+    protected Transform header;
 
-    protected Text inputCommand;
-    protected Transform commandField;
-
-    private void Start() { InitPanel(); }
+    private void Start() { 
+        InitPanel(); 
+        panel.SetActive(false);
+    }
     
     private void Update() {
         if (toExit) { ExitPanel(); }
@@ -42,21 +42,25 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void OnAwake() {
-        NonlivingUI.Sleep();
-        PlantUI.Sleep();
+        if (isAnimal) {
+            selectedAnimal = World.GetAnimal(passed.name);
+        } else { 
+            selectedEntity = World.GetEntity(passed.name);
+        }
         
-        selectedAnimal = World.GetAnimal(passed.name);
-        
+
         panel.SetActive(true);
         halo.SetActive(true);
         
-        InitNamer();
-        InitDriveDisplays();
         InitButtons();
+        InitNamer();
+        if (isAnimal) {
+            InitDriveDisplays();
+        }
 
         showPanel = true;
         needsUpdate = false;
-        originalName.text = selectedAnimal.GetDisplayName();
+        originalName.text = selectedEntity.GetDisplayName();
     }
 
     public void PassAnimalCam() {
@@ -65,9 +69,9 @@ public class AnimalUI : MonoBehaviour {
     }
 
     public void UpdatePanel() {
-        halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
+        //halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
         //goalText.text = selectedAnimal.GetAction();
-        UpdateDriveDisplays();
+        if(isAnimal) { UpdateDriveDisplays(); }
     }
 
     private void UpdateDriveDisplays() {
@@ -81,26 +85,22 @@ public class AnimalUI : MonoBehaviour {
         }
     }
 
-    public static void ReceiveClicked(GameObject clicked) {
+    public static void ReceiveClicked(GameObject clicked, bool animal) {
         toExit = false;
-        Debug.Log("Got an animal!");
+        Debug.Log("Recieved " + clicked.name + "!");
         passed = clicked;
-
+        isAnimal = animal;
         needsUpdate = true;
     }
 
     public void InitPanel() {
-        panel = GameObject.Find("AnimalPanel");
+        panel = GameObject.Find("EntityPanel");
         halo = GameObject.Find("Halo");
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
-            if (child.name == "GoalInfo") {
-                goalText = child.gameObject.GetComponentInChildren<Text>();
-            } else if (child.name == "ActionDropdown") {
-                actionDrop = child.gameObject.GetComponent<Dropdown>();
-            } else if (child.name == "ParamDropdown") {
-                paramDrop = child.gameObject.GetComponent<Dropdown>();
+            if (child.name == "Header") {
+               header = child;
             } else if (child.name == "AnimalButtons") {
                 buttonParent = child;
             } else if (child.name == "AnimalNamer") {
@@ -119,10 +119,7 @@ public class AnimalUI : MonoBehaviour {
 
     public void InitButtons() {
         foreach (Transform child in buttonParent) {
-            if (child.name == "CenterObjectButton") {
-                tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(PassCenter);
-            } else if (child.name == "GenoButton") {
+            if (child.name == "GenoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassGenome);
             } else if (child.name == "BrainButton") {
@@ -131,16 +128,22 @@ public class AnimalUI : MonoBehaviour {
             } else if (child.name == "InfoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(PassStream);
-            } else if (child.name == "CommandButton") {
-                tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(PassAction);
-            } else if (child.name == "ClosePanelButton") {
-                tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(ExitPanel);
             } else if (child.name == "TrashButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(TrashEntity);
             } 
+        }
+
+        foreach (Transform child in header) {
+            if (child.name == "AnimalNamer") {
+                panelNamer = child;
+            } else if (child.name == "ClosePanelButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(ExitPanel);
+            }  else if (child.name == "CenterObjectButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(PassCenter);
+            }
         }
     }
 
@@ -191,15 +194,15 @@ public class AnimalUI : MonoBehaviour {
         ExitPanel();
     }
 
-    public void PassAction() {
+    // public void PassAction() {
         
-        var command = actionDrop.value;
-        int param = Int32.Parse(paramDrop.options[paramDrop.value].text);
+    //     var command = actionDrop.value;
+    //     int param = Int32.Parse(paramDrop.options[paramDrop.value].text);
 
-        // Debug.Log("Passed command A " + command + " with parameter of " + param);
-        Debug.Log("Got an action!" + command + " " + param);
-        selectedAnimal.SetCommand(command, param);
-    }
+    //     // Debug.Log("Passed command A " + command + " with parameter of " + param);
+    //     Debug.Log("Got an action!" + command + " " + param);
+    //     selectedAnimal.SetCommand(command, param);
+    // }
 
     public static void Sleep() {
         toExit = true;

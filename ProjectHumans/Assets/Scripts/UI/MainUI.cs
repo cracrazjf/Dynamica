@@ -276,11 +276,9 @@ public class MainUI : MonoBehaviour
                 string objTag = countable.tag;
 
                 if (objTag == "Human" || objTag == "Animal") {
-                    AnimalUI.ReceiveClicked(countable);
-                } else if (objTag == "Plant") {
-                    PlantUI.ReceiveClicked(countable);
-                } else if (objTag == "Object") {
-                    NonlivingUI.ReceiveClicked(countable);
+                    EntityUI.ReceiveClicked(countable, true);
+                } else {
+                    EntityUI.ReceiveClicked(countable, false);
                 }
             }
         }

@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
+
 public class SimpleAI: AI {
-  Transform animalTransform;
-  List < GameObject > inSight;
-  string currentGoal = "None";
   static Vector3 blankPos = new Vector3(0, 0, 0);
+  Transform animalTransform;
+  List <GameObject> inSight;
   Vector3 randomPos = blankPos;
-  Matrix < float > decidedActions;
-  Dictionary < string, Action > goalDict;
+  Matrix <float> decidedActions;
+  List<Action> goalList;
+  int goalIndex;
+
   public SimpleAI(Animal animal, Body body, DriveSystem drives, MotorSystem motor, SensorySystem senses, Phenotype traits):
     base(body, drives, motor, senses, traits) {
       thisAnimal = animal;
@@ -27,39 +29,29 @@ public class SimpleAI: AI {
     return decidedActions;
   }
 
-  //
-  //    decidedActions[12] = 1;
-  //    for( int i = 0; i < decidedActions.Length; i++) {
-  //        toReturn[0 ,i ] = decidedActions[i];
-  //    }
-  //    for( int j = 0; j < decidedActions.Length; j++) {
-  //        toReturn[1 , j] = decidedArgs[j];
-  //    }
-  //    return toReturn;
-  //}
   public void ChooseGoal() {
+    goalIndex = driveStateLabelList.Count;
+    // for (int i = 0; i < goalIndex; i++) {
+    //   Debug.Log(driveStateLabelList[i]);
+    // }
 
-    string toSet = "None";
-    foreach(string drive in driveStateLabelList) {
-      Debug.Log("Drive is: " + drive);
-      string threshold = drive + "_threshold";
-      if (drive == "health") {
-        // if (driveStateDict[drive] < traitDict[threshold]) { toSet = "Increase health"; }
-      } else if (driveStates[driveStateIndexDict[drive]] > traits[traitIndexDict[threshold]]) {
-        toSet = "Decrease " + drive;
-      }
-    }
-    currentGoal = toSet;
+    // for (int i = 0; i < goalIndex; i++) {
+      
+    //   if (driveStates[i] > traits[i]) {
+    //     goalIndex = i;
+    //   }
+    // }
   }
 
   public void InitGoalDict() {
-    goalDict = new Dictionary < string, Action > ();
-    goalDict.Add("Decrease thirst", Consume);
-    goalDict.Add("Decrease hunger", Consume);
-    goalDict.Add("Decrease sleepiness", DecreaseSleepiness);
-    goalDict.Add("Decrease fatigue", DecreaseFatigue);
-    goalDict.Add("Increase health", IncreaseHealth);
-    goalDict.Add("None", Explore);
+    goalList = new List<Action>();
+    
+    goalList.Add(Consume);
+    goalList.Add(Consume);
+    goalList.Add(DecreaseFatigue);
+    goalList.Add(DecreaseSleepiness);
+    goalList.Add(IncreaseHealth);
+    goalList.Add(Explore);
   }
   // Action functions
   // Sets laying down to true;
