@@ -99,7 +99,6 @@ public class IntroUI : MonoBehaviour {
     }
 
     public void StartWorld() {
-        Debug.Log("Got here!");
         UpdateNumHumans();
         UpdateBiome();
         World.SetGo(true);

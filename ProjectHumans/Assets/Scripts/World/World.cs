@@ -13,7 +13,7 @@ public class World : MonoBehaviour {
     public GameObject mainCam;
     public bool paused = false;
     public static int biomeParam = 0;
-    public static int maxEntities = 100;
+    public static int maxEntities = 5000;
     public static string biomeName;
     System.Random rand = new System.Random();
 
@@ -60,7 +60,6 @@ public class World : MonoBehaviour {
     void Update() {
         if (initWorld) {
             initWorld = false;
-            Debug.Log("Should only send once");
             updateCounter = 0;
         
             LoadWorldConfig();
@@ -113,7 +112,7 @@ public class World : MonoBehaviour {
                     }
                 }
             } else if (!activePop.isFirst) {
-                SpawnGroves(populationDict[activePop.contrastPop], activePop, .2f, .5f);
+                SpawnGroves(populationDict[activePop.contrastPop], activePop, 1 - activePop.spawnChance, .5f);
             }
         }
         Debug.Log("All entities spawned");
@@ -124,7 +123,7 @@ public class World : MonoBehaviour {
 
     // make general, spawn contrastively for 2
     public void SpawnGroves(Population first, Population second, float chanceEmpty, float chanceFirst) {
-        List<Vector3>[] grid = InitGrid(10);
+        List<Vector3>[] grid = InitGrid(10, 20);
         
         for ( int i = 0; i <  grid.Length; i++ ) {
 
@@ -285,8 +284,6 @@ public class World : MonoBehaviour {
     }
 
     public void LoadTerrain() {
-        Debug.Log("Got to LoadTerrain!");
-        
         string toSend = "Terrain" + biomeName;
         AddEntity(toSend, new Vector3(0,0,0));
     }
@@ -319,11 +316,11 @@ public class World : MonoBehaviour {
         }
     }
 
-    public List<Vector3>[] InitGrid(int locations) {
-        // Okay so we're going to divide the map into an 8x8 grid
+    public List<Vector3>[] InitGrid(int locations, int gridNum) {
+        // Okay so we're going to divide the map into a grid
         // Each of those 64 zones will have an array of 10 random locations within the zone
 
-        int gridDiv = 8;
+        int gridDiv = gridNum;
         float bump = maxPosition / (gridDiv / 2);
         int numLocs = locations;
         List<Vector3>[] grid = new List<Vector3>[gridDiv * gridDiv]; 
