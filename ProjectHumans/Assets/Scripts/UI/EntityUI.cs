@@ -42,13 +42,9 @@ public class EntityUI : MonoBehaviour {
     }
 
     public void OnAwake() {
-        if (isAnimal) {
-            selectedAnimal = World.GetAnimal(passed.name);
-        } else { 
-            selectedEntity = World.GetEntity(passed.name);
-        }
+         
+        selectedEntity = World.GetEntity(passed.name);
         
-
         panel.SetActive(true);
         halo.SetActive(true);
         
@@ -56,7 +52,7 @@ public class EntityUI : MonoBehaviour {
         InitNamer();
         if (isAnimal) {
             InitDriveDisplays();
-        }
+        } else { HideDriveDisplays(); }
 
         showPanel = true;
         needsUpdate = false;
@@ -112,9 +108,16 @@ public class EntityUI : MonoBehaviour {
     public void InitDriveDisplays() {
         stateText = new Text[5];
         for (int i = 0; i < 5; i++) {
+            selectedAnimal = (Animal) selectedEntity;
+            World.PrintStates(selectedAnimal.GetDriveSystem().GetStateDict());
             string objectName = (selectedAnimal.GetDriveSystem().GetStateLabels()[i]) + "Text";
             stateText[i] = GameObject.Find(objectName).GetComponent<Text>();
         }
+    }
+
+    public void HideDriveDisplays() {
+        GameObject driveSprites = GameObject.Find("Sprites");
+        driveSprites.SetActive(false);
     }
 
     public void InitButtons() {
@@ -158,7 +161,7 @@ public class EntityUI : MonoBehaviour {
     }
 
     public void PassGenome() {
-        GenomeUI.ReceiveClicked(selectedAnimal.GetGameObject());
+        GenomeUI.ReceiveClicked(selectedEntity.GetGameObject());
         Debug.Log("Tried to pass to genome");
     }
 

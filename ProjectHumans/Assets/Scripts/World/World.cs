@@ -170,7 +170,6 @@ public class World : MonoBehaviour {
         Genome motherGenome = new Genome();
         motherGenome.InheritGenome(population.genome, true);
 
-        // Debug.Log("Spawning a " + speciesType );
         if (!passedSpawn.HasValue) { 
             spawn = CreateRandomPosition();
         } else { spawn = (Vector3) passedSpawn; }
@@ -182,6 +181,7 @@ public class World : MonoBehaviour {
 
         Entity newEnt = null;
         string speciesType = population.name;
+        Debug.Log("Spawning a " + speciesType );
 
         if (population.isItem) {
             Item newObj = new Item(speciesType, val, motherGenome, spawn);
@@ -307,9 +307,9 @@ public class World : MonoBehaviour {
         return startRotation;
     }
 
-    public static void PrintStates(Dictionary<string, object> thisStateDict) {
+    public static void PrintStates(Dictionary<string, float> thisStateDict) {
         Debug.Log("START");
-        foreach(KeyValuePair<string, object> entry in thisStateDict) {
+        foreach(KeyValuePair<string, float> entry in thisStateDict) {
             Debug.Log(entry.Key + " " + entry.Value);
         }
     }

@@ -22,6 +22,7 @@ public class NetUI : MonoBehaviour {
     protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject header;
+    protected GameObject body;
     protected GameObject mainCam;
 
     private void Start() { InitPanel(); }
@@ -29,10 +30,7 @@ public class NetUI : MonoBehaviour {
     private void Update() {
         if (toExit) { ExitPanel(); }
         if (needsUpdate) { OnAwake(); }
-        if (showPanel) { 
-            panel.SetActive(true); 
-            UpdatePanel();
-        }
+        if (showPanel) { panel.SetActive(true); }
     }
 
     public void OnAwake() {
@@ -45,6 +43,7 @@ public class NetUI : MonoBehaviour {
         InitButtons();
         showPanel = true;
         needsUpdate = false;
+        UpdatePanel();
     }
 
     public void UpdatePanel(){
@@ -68,7 +67,13 @@ public class NetUI : MonoBehaviour {
         foreach (Transform child in panel.transform) {
             if (child.name == "Header") {
                 header = child.gameObject;
-            } else if (child.name == "InputScrollView") {
+            } else if (child.name == "Body") {
+                body = child.gameObject;
+            }
+        }
+
+        foreach (Transform child in body.transform) {
+            if (child.name == "InputScrollView") {
                 inputText = child.gameObject.GetComponentInChildren<Text>();
             } else if (child.name == "OutputScrollView") {
                 outputText = child.gameObject.GetComponentInChildren<Text>();

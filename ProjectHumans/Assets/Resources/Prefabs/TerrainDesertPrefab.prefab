@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7506506231289466593}
   - component: {fileID: 7506506231289466599}
   - component: {fileID: 7506506231289466594}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: TerrainDesertPrefab
   m_TagString: Ground
   m_Icon: {fileID: 0}

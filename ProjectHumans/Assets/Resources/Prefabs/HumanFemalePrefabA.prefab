@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 149511580798932993}
   m_Layer: 0
   m_Name: Femur_R
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -324,7 +324,7 @@ GameObject:
   - component: {fileID: 5465062635730988948}
   m_Layer: 0
   m_Name: Abdomen
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -535,7 +535,7 @@ GameObject:
   - component: {fileID: 149511581529343055}
   m_Layer: 0
   m_Name: Femur_L
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -810,7 +810,7 @@ GameObject:
   - component: {fileID: 2057590151012494993}
   m_Layer: 0
   m_Name: Tibia_R
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1019,7 +1019,7 @@ GameObject:
   - component: {fileID: 9090870070145768603}
   m_Layer: 0
   m_Name: Humerus_R
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1228,7 +1228,7 @@ GameObject:
   - component: {fileID: 4072704126831120982}
   m_Layer: 0
   m_Name: Radius_R
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1437,7 +1437,7 @@ GameObject:
   - component: {fileID: 5071578130092039588}
   m_Layer: 0
   m_Name: Tibia_L
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1644,7 +1644,7 @@ GameObject:
   - component: {fileID: 8151754794839260132}
   m_Layer: 0
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1742,7 +1742,7 @@ GameObject:
   - component: {fileID: 8134183169406110496}
   m_Layer: 0
   m_Name: Breast_L
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1869,7 +1869,7 @@ GameObject:
   - component: {fileID: 836601117869877212}
   m_Layer: 0
   m_Name: Foot_L
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2077,7 +2077,7 @@ GameObject:
   - component: {fileID: 1927636036809161563}
   m_Layer: 0
   m_Name: Humerus_L
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2286,7 +2286,7 @@ GameObject:
   - component: {fileID: 8406111956964925363}
   m_Layer: 0
   m_Name: Foot_R
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2494,7 +2494,7 @@ GameObject:
   - component: {fileID: 8235655545510257603}
   m_Layer: 0
   m_Name: Hand_L
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2700,9 +2700,9 @@ GameObject:
   - component: {fileID: 3436261175547157363}
   - component: {fileID: 2690595023490320971}
   - component: {fileID: 7150025974911048308}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2799,7 +2799,7 @@ GameObject:
   - component: {fileID: 2363060366677458895}
   m_Layer: 0
   m_Name: Hand_R
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3008,7 +3008,7 @@ GameObject:
   - component: {fileID: 3459092594123115455}
   m_Layer: 0
   m_Name: Head
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3120,7 +3120,7 @@ GameObject:
   - component: {fileID: 8444900930716446328}
   - component: {fileID: 7510519466531679293}
   - component: {fileID: 2002323848499633183}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Eye_R
   m_TagString: Human
   m_Icon: {fileID: 0}
@@ -3219,9 +3219,9 @@ GameObject:
   - component: {fileID: 2126496926309256704}
   - component: {fileID: 1235214537993703248}
   - component: {fileID: 777763049156501231}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3313,7 +3313,7 @@ GameObject:
   - component: {fileID: 4012112956141998803}
   - component: {fileID: 4012112956141998801}
   - component: {fileID: 4012112956141998802}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: VisualInputCamera
   m_TagString: Human
   m_Icon: {fileID: 0}
@@ -3400,7 +3400,7 @@ GameObject:
   - component: {fileID: 8079505521201463749}
   m_Layer: 0
   m_Name: Shoulder_L
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3595,7 +3595,7 @@ GameObject:
   - component: {fileID: 4111244444600287015}
   m_Layer: 0
   m_Name: Neck
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3801,7 +3801,7 @@ GameObject:
   - component: {fileID: 5440323601906103333}
   m_Layer: 0
   m_Name: Thumb_L
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3882,7 +3882,7 @@ GameObject:
   - component: {fileID: 5633876034474685364}
   m_Layer: 0
   m_Name: Thumb_R
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3966,7 +3966,7 @@ GameObject:
   - component: {fileID: 7767763998257189609}
   m_Layer: 0
   m_Name: Breast_R
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4124,7 +4124,7 @@ GameObject:
   - component: {fileID: 7975780015785716659}
   - component: {fileID: 215225251224195782}
   - component: {fileID: 4176123361521266507}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Eye_L
   m_TagString: Human
   m_Icon: {fileID: 0}
@@ -4225,7 +4225,7 @@ GameObject:
   - component: {fileID: 8698892701160810755}
   m_Layer: 0
   m_Name: Hips
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4324,7 +4324,7 @@ GameObject:
   - component: {fileID: 4709854927724592083}
   m_Layer: 0
   m_Name: Shoulder_R
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4514,7 +4514,7 @@ GameObject:
   - component: {fileID: 7225870227532222804}
   m_Layer: 0
   m_Name: Face
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4552,7 +4552,7 @@ GameObject:
   - component: {fileID: 4557266849689608960}
   m_Layer: 0
   m_Name: Radius_L
-  m_TagString: Skeleton
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

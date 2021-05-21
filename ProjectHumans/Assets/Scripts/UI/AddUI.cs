@@ -67,6 +67,14 @@ public class AddUI : MonoBehaviour {
                 tempButton.onClick.AddListener(ExitPanel);
             } 
         }
+
+        foreach (Transform child in footer.transform) {
+            
+            if (child.name == "SpawnButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(SpawnInput);
+            } 
+        }
     }
         
     public void ExitPanel() {
