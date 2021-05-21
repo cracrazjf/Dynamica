@@ -101,16 +101,14 @@ public class IntroUI : MonoBehaviour {
     public void StartWorld() {
         UpdateNumHumans();
         UpdateBiome();
+        UpdateAI();
         World.SetGo(true);
         ExitPanel();
     }
 
-    public void GetHumanAI() {
+    public void UpdateAI() {
         int type = humanDrop.value;
-    }
-
-    public void GetNonHumanAI() {
-        int type = nonDrop.value;
+        World.SetHumanAI(type);
     }
 
     public void UpdateBiome() {

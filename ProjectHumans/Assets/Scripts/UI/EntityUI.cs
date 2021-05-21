@@ -134,7 +134,10 @@ public class EntityUI : MonoBehaviour {
             } else if (child.name == "TrashButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(TrashEntity);
-            } 
+            } else if (child.name == "ViewButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(PassView);
+            }
         }
 
         foreach (Transform child in header) {
@@ -165,13 +168,26 @@ public class EntityUI : MonoBehaviour {
         Debug.Log("Tried to pass to genome");
     }
 
+    public void PassView() {
+        if (isAnimal) {
+            ViewUI.ReceiveClicked(selectedEntity.GetName());
+        } else { World.DisplayError(); }
+        Debug.Log("Tried to pass to camera");
+    }
+
     public void PassNet() {
-        NetUI.ReceiveClicked(selectedAnimal.GetGameObject());
+        if (isAnimal) {
+            Animal toSend = (Animal) selectedEntity;
+            NetUI.ReceiveClicked(toSend.GetGameObject());
+        } else { World.DisplayError(); }
         Debug.Log("Tried to pass to nets");
     }
 
     public void PassStream() {
-        StreamUI.ReceiveClicked(selectedAnimal.GetGameObject());
+        if (isAnimal) {
+            Animal toSend = (Animal) selectedEntity;
+            StreamUI.ReceiveClicked(toSend.GetGameObject());
+        } else { World.DisplayError(); }
         Debug.Log("Tried to pass to thought stream");
     }
 

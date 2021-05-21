@@ -34,11 +34,14 @@ public class Animal : Entity {
         driveSystem = new DriveSystem(this);
         sensorySystem = new SensorySystem(this);
 
-        //activeAI = new SimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
-        //activeAI = new TestAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
-        activeAI = new NeuralAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
+        InitBrain();
     }
     
+    void InitBrain() {
+        if (World.humanAIParam == 0) {
+            activeAI = new SimpleAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype());
+        } else { activeAI = new NeuralAI(this, GetBody(), GetDriveSystem(), GetMotorSystem(), GetSensorySystem(), GetPhenotype()); }
+    }
 
     public override void UpdateEntity() {
         //Debug.Log("Updating an animal");

@@ -28,8 +28,7 @@ public class SensorySystem {
             if (visualInputCamera.targetTexture == null) {
                 visualInputCamera.targetTexture = new RenderTexture(visualResolution, visualResolution, 24);
                 /* 24 is the depth buffer, or depth texture, is actually just a render texture that contains values of how far objects in the scene are from the camera.*/
-            }
-            else {
+            } else {
                 visualResolution = visualInputCamera.targetTexture.width;
                 visualResolution = visualInputCamera.targetTexture.height;
             }
@@ -85,4 +84,9 @@ public class SensorySystem {
         visualResolution,
         System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
     }
+
+    public Camera GetInternalCam(){
+        return visualInputCamera;
+    }
+
 }

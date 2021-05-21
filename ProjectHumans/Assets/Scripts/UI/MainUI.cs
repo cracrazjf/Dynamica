@@ -6,9 +6,6 @@ using UnityEngine.UI;
 public class MainUI : MonoBehaviour
 {
     // Movement content
-    private Vector3 startPosition = new Vector3(-1, 3, 0);
-    private Quaternion startRotation = new Quaternion(0, 90, 0, 0);
-
     private float baseClimbSpeed = 8;
     private float baseMoveSpeed = 20;
     private float baseRotateSpeed = 120;
@@ -21,93 +18,91 @@ public class MainUI : MonoBehaviour
     private float xRotation = 0.0f;
     private float yRotation = 0.0f;
     private static float xTemp, yTemp, zTemp;
-
-    private bool toggleFlight = true;
-    private bool toggleRotate = false;
-    private bool toggleMovement = false;
-
+    
     // Camera content
-    private bool thirdPerson = true;
-    private bool firstPerson = false;
     private static bool followingAnimal = false;
+    private static bool centeredOn = false;
     private static Camera followedCam;
     private static GameObject mainCam;
     private static Vector3 toSet;
-    private static bool centeredOn = false;
+    
 
-    // UI content 
-    private GameObject alwaysPanel;
-    private GameObject infoPanel;
-    private GameObject optionPanel;
-    private GameObject startPanel;
+    // UI content
+    private Dictionary<string, GameObject> UXDict = new Dictionary<string, GameObject>();
+    private static Dictionary<string, bool> toggleDict = new Dictionary<string, bool>();
 
-    private GameObject pauseObj;
-    private GameObject bannerObj;
-    private Slider rotationSlider;
     public GameObject rotatePub;
-    private Slider movementSlider;
     public GameObject movePub;
-    private Slider climbSlider;
     public GameObject climbPub;
     protected Button tempButton;
 
     protected static bool needsUpdate = false;
     private static bool isPaused = false;
-    private bool isFF = false;
-    private bool isAwake = false;
-    private bool toggleHelp = false;
-    private bool toggleOptions = false;
+
+
+    public static void CheckStart() {
+        if (World.initWorld == false) {
+            IntroUI.ToggleUpdate();
+        }
+    }
     
     void Start() {
+        toggleDict.Add("isFF", false);
+        toggleDict.Add("isPaused", false);
+        toggleDict.Add("isAwake", false);
+        toggleDict.Add("showInfo", false);
+        toggleDict.Add("showOptions", false);
+        toggleDict.Add("canRotate", false);
+        toggleDict.Add("canMove", false);
+        toggleDict.Add("canFly", true);
+        toggleDict.Add("view", true);
         InitPanels();
-        transform.position = startPosition;
+        InitButtons();
         mainCam = GameObject.Find("Main Camera");
     }
 
     public void OnAwake() {
-        isAwake = true;
-        alwaysPanel.SetActive(true);
-        toggleMovement = true;
+        Toggle("isAwake");
+        ToggleUX("AlwaysPanel", true);
+        Toggle("canMove");
     }
 
-    public static void ToggleUpdate() {
-        needsUpdate = !needsUpdate;
-    }
+    public static void ToggleUpdate() { needsUpdate = !needsUpdate; }
 
     // Called once a frame
     void Update() {
-        if (needsUpdate) {
-            OnAwake();
-        }
+        if (needsUpdate) { OnAwake(); }
         CheckClick();
         MovePlayer();
 
-        if (centeredOn) { SetPosition(toSet); }
-
-        if(toggleHelp && toggleRotate) { ToggleRotate(); }
-
-        if (toggleOptions && toggleRotate) { ToggleRotate(); }
+        if (centeredOn) { mainCam.transform.position = toSet; }
     }
 
     public void InitPanels() {
-        alwaysPanel = GameObject.Find("AlwaysPanel");
-        infoPanel = GameObject.Find("InfoPanel");
-        optionPanel = GameObject.Find("OptionsPanel");
-        startPanel = GameObject.Find("StartPanel");
-        pauseObj = GameObject.Find("PauseText");
-        bannerObj = GameObject.Find("BrainText");
-        
-        alwaysPanel.SetActive(false);
-        infoPanel.SetActive(false);
-        optionPanel.SetActive(false);
-        pauseObj.SetActive(false);
-        bannerObj.SetActive(false);
+        Transform temp = GameObject.Find("RightOverlay").transform;
 
-        InitButtons();
+        foreach (Transform child in temp) {
+            UXDict.Add(child.name, child.gameObject);
+            child.gameObject.SetActive(false);
+        }
+
+        temp = GameObject.Find("CenterOverlay").transform;
+        foreach (Transform child in temp) {
+            UXDict.Add(child.name, child.gameObject);
+            child.gameObject.SetActive(false);
+        }
+        
+        temp = GameObject.Find("FreeOverlay").transform;
+        foreach (Transform child in temp) {
+            UXDict.Add(child.name, child.gameObject);
+            child.gameObject.SetActive(false);
+        }
+        
+        UXDict["IntroPanel"].SetActive(true);
     }
 
     public void InitButtons() {
-        foreach (Transform child in alwaysPanel.transform) {
+        foreach (Transform child in UXDict["AlwaysPanel"].transform) {
             if (child.name == "PauseButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(TogglePause);
@@ -116,7 +111,7 @@ public class MainUI : MonoBehaviour
                 tempButton.onClick.AddListener(ToggleFF);
             } else if (child.name == "InfoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(ToggleHelp);
+                tempButton.onClick.AddListener(ToggleInfo);
             } else if (child.name == "WalkButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ToggleView);
@@ -126,7 +121,8 @@ public class MainUI : MonoBehaviour
             }
         }
 
-        foreach (Transform child in infoPanel.transform) {
+        // Init info panel buttons
+        foreach (Transform child in UXDict["InfoPanel"].transform) {
             if (child.name == "Header") {
                 foreach (Transform grandchild in child) {
                     if (grandchild.name == "SettingsButton") {
@@ -138,7 +134,7 @@ public class MainUI : MonoBehaviour
                 foreach (Transform grandchild in child) {
                     if (grandchild.name == "CloseInfoButton") {
                         tempButton = grandchild.gameObject.GetComponent<Button>();
-                        tempButton.onClick.AddListener(ToggleHelp);
+                        tempButton.onClick.AddListener(ToggleInfo);
                     } else if (grandchild.name == "ExitButton") {
                         tempButton = grandchild.gameObject.GetComponent<Button>();
                         tempButton.onClick.AddListener(QuitPlay);
@@ -147,12 +143,13 @@ public class MainUI : MonoBehaviour
             }
         }
 
-        foreach (Transform child in optionPanel.transform) {
+        // Init option panel buttons
+        foreach (Transform child in UXDict["OptionsPanel"].transform) {
             if (child.name == "Header") {
                 foreach (Transform grandchild in child) {
                     if (grandchild.name == "InfoButton") {
                         tempButton = grandchild.gameObject.GetComponent<Button>();
-                        tempButton.onClick.AddListener(ToggleHelp);
+                        tempButton.onClick.AddListener(ToggleInfo);
                     }
                 }
             } else if (child.name == "Footer") {
@@ -173,23 +170,23 @@ public class MainUI : MonoBehaviour
     private void MovePlayer() {
         // Always called in case player goes under plane
         ResolveAltitude();
-        if (toggleMovement) {
+        if (Check("canMove")) {
 
             if (followingAnimal) {
-                bannerObj.SetActive(true);
+                ToggleUX("HumanText", true);
                 transform.position = followedCam.transform.position;
                 transform.rotation = followedCam.transform.rotation;
 
-            } else if (thirdPerson) { 
+            } else if (!Check("view")) { 
                 MoveNormally(baseMoveSpeed * moveAdjustment);
                 // Fly if legal
-                if (toggleFlight) { MoveAirborne(baseClimbSpeed * climbAdjustment); }
+                if (Check("canFly")) { MoveAirborne(baseClimbSpeed * climbAdjustment); }
                 // Hold L Ctrl to rotate
-                if (Input.GetKeyDown(KeyCode.LeftControl)) { ToggleRotate(); } 
+                if (Input.GetKeyDown(KeyCode.LeftControl)) { Toggle("canRotate"); } 
                 //Actually call the function
-                if(toggleRotate) { RotateCamera(baseRotateSpeed * rotateAdjustment); }
+                if(Check("canRotate")) { RotateCamera(baseRotateSpeed * rotateAdjustment); }
 
-            } else if (firstPerson) {
+            } else if (Check("view")) {
                 MoveNormally(baseMoveSpeed);
                 RotateCamera(baseRotateSpeed);
             }
@@ -225,8 +222,8 @@ public class MainUI : MonoBehaviour
     }
 
     public void MoveAirborne(float passedSpeed) {
-        // Climb update
         yTemp = 0f;
+        // Climb update
         if (Input.GetKey(KeyCode.Space)) {
             yTemp = transform.position.y * passedSpeed * Time.deltaTime;
             transform.position += new Vector3(0, yTemp, 0);
@@ -253,20 +250,13 @@ public class MainUI : MonoBehaviour
         yTemp = transform.position.y;
         // Checks for underground
         if (yTemp < 0) { VerticalBump(yTemp * -1); }
-
-        // Checks for eye level
-        if (firstPerson && yTemp != eyeLevel) { VerticalBump(-yTemp + eyeLevel); }
     }
 
-    public void VerticalBump(float height) {
-        transform.position += new Vector3(0, height, 0);
-    }
+    public void VerticalBump(float height) { transform.position += new Vector3(0, height, 0); }
 
     // Listens for clicks; if there's a click this function checks whether it hit something and ensures relevant info shows
     public void CheckClick() {
-
         if (Input.GetMouseButtonDown(0)) {
-            Debug.Log("Logged a click!");
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -277,51 +267,38 @@ public class MainUI : MonoBehaviour
 
                 if (objTag == "Human" || objTag == "Animal") {
                     EntityUI.ReceiveClicked(countable, true);
-                } else {
-                    EntityUI.ReceiveClicked(countable, false);
-                }
+                } else { EntityUI.ReceiveClicked(countable, false); }
             }
         }
     }
 
     public void UpdateRotateSensitivity() {
-        rotationSlider = rotatePub.GetComponent<Slider>();
-        float toUpdate = rotationSlider.value;
+        float toUpdate = rotatePub.GetComponent<Slider>().value;
         rotateAdjustment = toUpdate;
     }
 
-    public static void CheckStart() {
-        if (World.initWorld == false) {
-            IntroUI.ToggleUpdate();
-        }
-    }
-
     public void UpdateMoveSensitivity() {
-        movementSlider = movePub.GetComponent<Slider>();
-        float toUpdate = movementSlider.value;
+        float toUpdate = movePub.GetComponent<Slider>().value;
         moveAdjustment = toUpdate;
     }
 
     public void UpdateClimbSensitivity() {
-        climbSlider = climbPub.GetComponent<Slider>();
-        float toUpdate = climbSlider.value;
+        float toUpdate = climbPub.GetComponent<Slider>().value;
         climbAdjustment = toUpdate;
     }
 
     // Followed by the escape key
     public void CheckReset() {
-        if(isAwake) {
-            if(centeredOn) {
-                centeredOn = false;
-            }
-            if (firstPerson) {
+        if (Check("isAwake")) {
+            if (centeredOn) { centeredOn = false; }
+            if (!Check("view")) {
                 ToggleView();
                 VerticalBump(2f);
             } else if (followingAnimal) {
-                bannerObj.SetActive(false);
+                ToggleUX("BrainText", false);
                 followingAnimal = false;
                 VerticalBump(2f);
-            } else { ToggleHelp(); }
+            } else { ToggleInfo(); }
         }
     }
 
@@ -335,29 +312,22 @@ public class MainUI : MonoBehaviour
 
     // Toggles
 
-    // Flips from first to third person or vice versa
     public void ToggleView() {
-        firstPerson = !firstPerson;
-        thirdPerson = !thirdPerson;
-        toggleFlight =! toggleFlight;
+        Toggle("view");
+        Toggle("canFly");
     }
 
-    public void ToggleFF() {
-        isFF= !isFF;
-    }
+    public void ToggleFF() { Toggle("view"); }
 
     public void TogglePause() {
-        isPaused = !isPaused;
-        if (isPaused) { pauseObj.SetActive(true);
-        } else { pauseObj.SetActive(false); }
+        Toggle("isPaused");
+        ToggleUX("PauseText", Check("isPaused"));
     }
 
-    public void ToggleHelp() {
-        toggleHelp = !toggleHelp;
-        infoPanel.SetActive(toggleHelp);
-
-        optionPanel.SetActive(false);
-        toggleOptions = false;
+    public void ToggleInfo() {
+        Toggle("showInfo");
+        ToggleUX("InfoPanel", Check("showInfo"));
+        ToggleUX("OptionsPanel", false);
     }
 
     public void ToggleAdd() {
@@ -365,19 +335,30 @@ public class MainUI : MonoBehaviour
     }
 
     public void ToggleOptions() {
-            toggleOptions = !toggleOptions;
-            optionPanel.SetActive(toggleOptions);
-
-        infoPanel.SetActive(false);
-        toggleHelp = false;
+        Toggle("showOptions");
+        ToggleUX("OptionsPanel", Check("showOptions"));
+        ToggleUX("InfoPanel", false);
     }
 
-    public void ToggleRotate() {
-        toggleRotate = !toggleRotate;
+    void ToggleUX(string name, bool toSet) {
+        if (UXDict.ContainsKey(name)) {
+            UXDict[name].SetActive(toSet);
+        }
     }
 
-    // Getters and Setters
+    public static void Toggle(string name) {
+        if (toggleDict.ContainsKey(name)) {
+            bool antithesis = !toggleDict[name];
+            toggleDict[name] = antithesis;
+        }
+    }
 
-    public static bool GetPause() { return isPaused; }
-    public void SetPosition(Vector3 passedPos) {transform.position = passedPos;}
+    public static bool Check(string toggle) {
+        if (toggleDict.ContainsKey(toggle)) {
+            return toggleDict[toggle];
+        } else {
+            Debug.Log("Key does not exist: " + toggle);
+            return false;
+        }
+    }
 }

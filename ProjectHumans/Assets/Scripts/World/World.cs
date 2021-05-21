@@ -13,6 +13,7 @@ public class World : MonoBehaviour {
     public GameObject mainCam;
     public bool paused = false;
     public static int biomeParam = 0;
+    public static int humanAIParam;
     public static int maxEntities = 5000;
     public static string biomeName;
     System.Random rand = new System.Random();
@@ -75,7 +76,7 @@ public class World : MonoBehaviour {
         }
 
         //Debug.Log("Started an update");
-        paused = MainUI.GetPause();
+        paused = MainUI.Check("isPaused");
 
         if(!paused) {
             if(updateCompleted) {
@@ -260,6 +261,10 @@ public class World : MonoBehaviour {
         }
     }
 
+    public static void SetHumanAI(int param) {
+        humanAIParam = param;
+    }
+
     public void LoadWorldConfig(){
 
         string line;
@@ -350,5 +355,9 @@ public class World : MonoBehaviour {
             }
         }
         return grid;
+    }
+
+    public static void DisplayError() {
+        Debug.Log("Oops! Can't do that now.");
     }
 }
