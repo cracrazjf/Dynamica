@@ -365,8 +365,8 @@ public class MainUI : MonoBehaviour
     }
 
     public void ToggleOptions() {
-        toggleOptions = !toggleOptions;
-        optionPanel.SetActive(toggleOptions);
+            toggleOptions = !toggleOptions;
+            optionPanel.SetActive(toggleOptions);
 
         infoPanel.SetActive(false);
         toggleHelp = false;

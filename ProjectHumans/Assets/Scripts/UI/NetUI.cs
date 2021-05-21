@@ -29,6 +29,10 @@ public class NetUI : MonoBehaviour {
     private void Update() {
         if (toExit) { ExitPanel(); }
         if (needsUpdate) { OnAwake(); }
+        if (showPanel) { 
+            panel.SetActive(true); 
+            UpdatePanel();
+        }
     }
 
     public void OnAwake() {
@@ -42,6 +46,7 @@ public class NetUI : MonoBehaviour {
         showPanel = true;
         needsUpdate = false;
     }
+
     public void UpdatePanel(){
         string output = GetOutput();
         string input = GetInput();
@@ -85,7 +90,6 @@ public class NetUI : MonoBehaviour {
         }
     }
         
-
     public void ExitPanel() {
         panel.SetActive(false);
         showPanel = false;

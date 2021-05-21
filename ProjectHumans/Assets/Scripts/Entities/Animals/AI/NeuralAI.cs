@@ -82,9 +82,9 @@ public class NeuralAI : AI
     public NeuralAI(Animal animal, Body body, DriveSystem drives, MotorSystem motor, SensorySystem senses, Phenotype phenotype) :
                     base(body, drives, motor, senses, phenotype)
     {
-        initNetworkLayerInfoDict();
-        initLayers();
-        initConnections();
+        InitNetworkLayerInfoDict();
+        InitLayers();
+        InitConnections();
         GetOutputConnectionDict();
         InitInputs();
         InitOutputs();
@@ -92,7 +92,7 @@ public class NeuralAI : AI
         Feedforward();
     }
 
-    void initNetworkLayerInfoDict()
+    void InitNetworkLayerInfoDict()
     {
         networkLayerInfoDict = new Dictionary<string, List<string>>()
         {
@@ -129,7 +129,7 @@ public class NeuralAI : AI
         };
     }
 
-    void initLayers()
+    void InitLayers()
     {
         foreach (KeyValuePair<string, List<string>> layerInfo in networkLayerInfoDict)
         {
@@ -206,7 +206,7 @@ public class NeuralAI : AI
         ////networkLayerDict["outputActionArgumentLayer"].Output = Matrix<float>.Build.Dense(6, 1);
     }
 
-    void initConnections()
+    void InitConnections()
     {
 
         float weight_init_range = 0.0001f;
@@ -336,5 +336,31 @@ public class NeuralAI : AI
         }
 
         return networkLayerDict["outputActionLayer"].Output;
+    }
+
+    public override string GetStringInput(int vbadIndex) {
+        if(vbadIndex == 0) {
+            return networkLayerDict["inputVisionRedLayer"].Output.ToString();
+        } else if (vbadIndex == 1) {
+            return networkLayerDict["inputBodyLayer"].Output.ToString();
+        } else if (vbadIndex == 2) {
+            return networkLayerDict["inputActionLayer"].Output.ToString();
+        } else if (vbadIndex == 3) {
+            return networkLayerDict["inputDriveLayer"].Output.ToString();
+        }
+        return "Nothing to show here!";
+    }
+
+    public override string GetStringOutput(int vbadIndex) {
+        if(vbadIndex == 0) {
+            return networkLayerDict["outputVisionRedLayer"].Output.ToString();
+        } else if (vbadIndex == 1) {
+            return networkLayerDict["outputBodyLayer"].Output.ToString();
+        } else if (vbadIndex == 2) {
+            return networkLayerDict["outputActionLayer"].Output.ToString();
+        } else if (vbadIndex == 3) {
+            return networkLayerDict["outputDriveLayer"].Output.ToString();
+        }
+        return "Nothing to show here!";
     }
 }

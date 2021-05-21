@@ -33,6 +33,7 @@ public class GenomeUI : MonoBehaviour {
    private void Update() {
         if (toExit) { ExitPanel(); }
         if (needsUpdate) { OnAwake(); }
+        if (showPanel) { panel.SetActive(true); }
     }
 
     public void OnAwake() {
