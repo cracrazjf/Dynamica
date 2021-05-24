@@ -20,16 +20,17 @@ public class EntityUI : MonoBehaviour {
     static bool isAnimal;
 
     protected Button tempButton;
-    protected GameObject panel;
     protected GameObject mainCam;
+    protected Transform header;
+    protected GameObject panel;
     protected GameObject halo;
 
-    protected Text originalName;
     protected Text inputName;
+    protected Text originalName;
     protected Transform panelNamer;
     protected Transform buttonParent;
-    protected Transform header;
-
+    protected Transform spriteParent;
+    
     private void Start() { 
         InitPanel(); 
         panel.SetActive(false);
@@ -50,19 +51,21 @@ public class EntityUI : MonoBehaviour {
         
         InitButtons();
         InitNamer();
+
         if (isAnimal) {
             InitDriveDisplays();
         } else { HideDriveDisplays(); }
 
+        
+        originalName.text = selectedEntity.GetDisplayName();
         showPanel = true;
         needsUpdate = false;
-        originalName.text = selectedEntity.GetDisplayName();
     }
 
     public void UpdatePanel() {
         //halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
         //goalText.text = selectedAnimal.GetAction();
-        if(isAnimal) { UpdateDriveDisplays(); }
+        if (isAnimal) { UpdateDriveDisplays(); }
     }
 
     private void UpdateDriveDisplays() {
@@ -94,8 +97,8 @@ public class EntityUI : MonoBehaviour {
                header = child;
             } else if (child.name == "AnimalButtons") {
                 buttonParent = child;
-            } else if (child.name == "AnimalNamer") {
-                panelNamer = child;
+            } else if (child.name == "Sprites") {
+                spriteParent = child;
             } 
         }
     }
@@ -111,8 +114,7 @@ public class EntityUI : MonoBehaviour {
     }
 
     public void HideDriveDisplays() {
-        GameObject driveSprites = GameObject.Find("Sprites");
-        driveSprites.SetActive(false);
+        spriteParent.gameObject.SetActive(false);
     }
 
     public void InitButtons() {

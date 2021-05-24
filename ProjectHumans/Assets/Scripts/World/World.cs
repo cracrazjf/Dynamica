@@ -88,7 +88,7 @@ public class World : MonoBehaviour {
     }
 
     public static void SetGo(bool start) {
-        Debug.Log("Made it to world!");
+        //Debug.Log("Made it to world!");
         initWorld = start;
     }
 
@@ -180,7 +180,7 @@ public class World : MonoBehaviour {
 
         Entity newEnt = null;
         string speciesType = population.name;
-        Debug.Log("Spawning a " + speciesType );
+        //Debug.Log("Spawning a " + speciesType );
 
         if (population.isItem) {
             Item newObj = new Item(speciesType, val, motherGenome, spawn);
@@ -311,7 +311,6 @@ public class World : MonoBehaviour {
     }
 
     public static void PrintStates(Dictionary<string, float> thisStateDict) {
-        Debug.Log("START");
         foreach(KeyValuePair<string, float> entry in thisStateDict) {
             Debug.Log(entry.Key + " " + entry.Value);
         }
