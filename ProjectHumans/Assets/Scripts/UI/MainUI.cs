@@ -20,25 +20,18 @@ public class MainUI : MonoBehaviour
     private static float xTemp, yTemp, zTemp;
     
     // Camera content
-    private static bool followingAnimal = false;
-    private static bool centeredOn = false;
-    private static Camera followedCam;
-    private static GameObject mainCam;
     private static Vector3 toSet;
+    private static GameObject mainCam;
+    private static Transform centeredTransform;
     
-
     // UI content
-    private Dictionary<string, GameObject> UXDict = new Dictionary<string, GameObject>();
+    private static Dictionary<string, GameObject> UXDict = new Dictionary<string, GameObject>();
     private static Dictionary<string, bool> toggleDict = new Dictionary<string, bool>();
 
-    public GameObject rotatePub;
     public GameObject movePub;
     public GameObject climbPub;
+    public GameObject rotatePub;
     protected Button tempButton;
-
-    protected static bool needsUpdate = false;
-    private static bool isPaused = false;
-
 
     public static void CheckStart() {
         if (World.initWorld == false) {
@@ -48,57 +41,50 @@ public class MainUI : MonoBehaviour
     
     void Start() {
         toggleDict.Add("isFF", false);
-        toggleDict.Add("isPaused", false);
         toggleDict.Add("isAwake", false);
+        toggleDict.Add("isPaused", false);
         toggleDict.Add("showInfo", false);
         toggleDict.Add("showOptions", false);
+        toggleDict.Add("isFollowing", false);
+        toggleDict.Add("isCentered", false);
         toggleDict.Add("canRotate", false);
         toggleDict.Add("canMove", false);
         toggleDict.Add("canFly", true);
-        toggleDict.Add("view", true);
         InitPanels();
         InitButtons();
         mainCam = GameObject.Find("Main Camera");
     }
 
-    public void OnAwake() {
-        Toggle("isAwake");
+    public static void WakeUp() { 
+        SetToggle("isAwake", true);
         ToggleUX("AlwaysPanel", true);
         Toggle("canMove");
     }
 
-    public static void ToggleUpdate() { needsUpdate = !needsUpdate; }
-
     // Called once a frame
     void Update() {
-        if (needsUpdate) { OnAwake(); }
         CheckClick();
         MovePlayer();
 
-        if (centeredOn) { mainCam.transform.position = toSet; }
+        if (Check("isCentered")) { mainCam.transform.position = toSet; }
     }
 
     public void InitPanels() {
-        Transform temp = GameObject.Find("RightOverlay").transform;
-
-        foreach (Transform child in temp) {
-            UXDict.Add(child.name, child.gameObject);
-            child.gameObject.SetActive(false);
-        }
-
-        temp = GameObject.Find("CenterOverlay").transform;
-        foreach (Transform child in temp) {
-            UXDict.Add(child.name, child.gameObject);
-            child.gameObject.SetActive(false);
-        }
-        
-        temp = GameObject.Find("FreeOverlay").transform;
-        foreach (Transform child in temp) {
-            UXDict.Add(child.name, child.gameObject);
-            child.gameObject.SetActive(false);
-        }
+        AddChildrenUX("RightOverlay");
+        AddChildrenUX("LeftOverlay");
+        AddChildrenUX("CenterOverlay");
+        AddChildrenUX("FreeOverlay");
         
         UXDict["IntroPanel"].SetActive(true);
+    }
+
+    public void AddChildrenUX(string parent){
+        Transform temp = GameObject.Find(parent).transform;
+
+        foreach (Transform child in temp) {
+            UXDict.Add(child.name, child.gameObject);
+            child.gameObject.SetActive(false);
+        }
     }
 
     public void InitButtons() {
@@ -112,9 +98,6 @@ public class MainUI : MonoBehaviour
             } else if (child.name == "InfoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ToggleInfo);
-            } else if (child.name == "WalkButton") {
-                tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(ToggleView);
             } else if (child.name == "AddButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ToggleAdd);
@@ -172,41 +155,40 @@ public class MainUI : MonoBehaviour
         ResolveAltitude();
         if (Check("canMove")) {
 
-            if (followingAnimal) {
+            if (Check("isFollowing")) {
                 ToggleUX("HumanText", true);
-                transform.position = followedCam.transform.position;
-                transform.rotation = followedCam.transform.rotation;
-
-            } else if (!Check("view")) { 
-                MoveNormally(baseMoveSpeed * moveAdjustment);
-                // Fly if legal
-                if (Check("canFly")) { MoveAirborne(baseClimbSpeed * climbAdjustment); }
-                // Hold L Ctrl to rotate
-                if (Input.GetKeyDown(KeyCode.LeftControl)) { Toggle("canRotate"); } 
-                //Actually call the function
-                if(Check("canRotate")) { RotateCamera(baseRotateSpeed * rotateAdjustment); }
-
-            } else if (Check("view")) {
-                MoveNormally(baseMoveSpeed);
-                RotateCamera(baseRotateSpeed);
+                CenterObject(centeredTransform);
             }
+
+            MoveNormally(baseMoveSpeed * moveAdjustment);
+            // Fly if legal
+            if (Check("canFly")) { MoveAirborne(baseClimbSpeed * climbAdjustment); }
+            // Hold R Click to rotate
+            if (Input.GetMouseButtonDown(1)) {
+                     
+                SetToggle("canRotate", true); 
+            } else if (Input.GetMouseButtonUp(1)) {
+                    
+                SetToggle("canRotate", false);
+            }
+            //Actually call the function
+            if (Check("canRotate")) { RotateCamera(baseRotateSpeed * rotateAdjustment); }
+
+            
         }
         if (Input.GetKeyDown(KeyCode.Escape)) { CheckReset(); }
     }
 
     public static void CenterObject(Transform passed) {
         Debug.Log("Centering on object");
+        centeredTransform = passed;
         xTemp = passed.position.x;
         zTemp = passed.position.z;
 
         //https://forum.unity.com/threads/moving-the-camera-to-center-an-object-in-the-screen.219813/
         toSet = new Vector3(xTemp, eyeLevel, zTemp);
-        centeredOn = true;
-    }
-
-    public static void EnterAnimalCam(Camera passed) {
-        followedCam = passed;
-        followingAnimal = true;
+        SetToggle("isFollowing", true);
+        SetToggle("isCentered", true); 
     }
 
     public void MoveNormally(float passedSpeed) {
@@ -219,6 +201,10 @@ public class MainUI : MonoBehaviour
         xTemp = transform.right.x * passedSpeed * Input.GetAxis("Horizontal") * Time.deltaTime;
         zTemp = transform.right.z * passedSpeed * Input.GetAxis("Horizontal") * Time.deltaTime;
         transform.position += new Vector3(xTemp, 0, zTemp);
+        if (xTemp != 0 || zTemp!= 0) {
+            SetToggle("isCentered", false);
+            SetToggle("isFollowing", false);
+        }
     }
 
     public void MoveAirborne(float passedSpeed) {
@@ -289,17 +275,17 @@ public class MainUI : MonoBehaviour
 
     // Followed by the escape key
     public void CheckReset() {
-        if (Check("isAwake")) {
-            if (centeredOn) { centeredOn = false; }
-            if (!Check("view")) {
-                ToggleView();
-                VerticalBump(2f);
-            } else if (followingAnimal) {
-                ToggleUX("BrainText", false);
-                followingAnimal = false;
-                VerticalBump(2f);
-            } else { ToggleInfo(); }
-        }
+        SetToggle("canRotate", false);
+
+        if (!Check("isAwake")) { QuitPlay(); }
+        
+        if (Check("isFollowing")) {
+            ToggleUX("BrainText", false);
+            Toggle("isFollowing");
+            VerticalBump(2f);
+            
+        } else { ToggleInfo(); }
+        
     }
 
     public void QuitPlay() {
@@ -310,19 +296,23 @@ public class MainUI : MonoBehaviour
         #endif
     }
 
-    // Toggles
-
-    public void ToggleView() {
-        Toggle("view");
-        Toggle("canFly");
+    public static Transform GetUXPos(string name) {
+        Transform toSend = null;
+        if (UXDict.ContainsKey(name)) {
+            toSend = UXDict[name].transform;
+        }
+        return toSend;
     }
 
-    public void ToggleFF() { Toggle("view"); }
+    // Toggles
+
+    public void ToggleFF() { Toggle("isFF"); }
 
     public void TogglePause() {
         Toggle("isPaused");
         ToggleUX("PauseText", Check("isPaused"));
     }
+
 
     public void ToggleInfo() {
         Toggle("showInfo");
@@ -331,7 +321,7 @@ public class MainUI : MonoBehaviour
     }
 
     public void ToggleAdd() {
-        AddUI.OnAwake();
+        LeftUI.WakeUp();
     }
 
     public void ToggleOptions() {
@@ -340,9 +330,15 @@ public class MainUI : MonoBehaviour
         ToggleUX("InfoPanel", false);
     }
 
-    void ToggleUX(string name, bool toSet) {
+    public static void ToggleUX(string name, bool toSet) {
         if (UXDict.ContainsKey(name)) {
             UXDict[name].SetActive(toSet);
+        }
+    }
+
+    public static void SetToggle(string name, bool toSet) {
+        if (toggleDict.ContainsKey(name)) {
+            toggleDict[name] = toSet;
         }
     }
 

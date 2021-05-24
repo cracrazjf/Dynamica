@@ -58,7 +58,7 @@ public class ViewUI : MonoBehaviour {
     }
 
     public void InitPanel() {
-        panel = GameObject.Find("ViewPanel");
+        panel = MainUI.GetUXPos("ViewPanel").gameObject;
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {

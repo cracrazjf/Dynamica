@@ -59,11 +59,6 @@ public class EntityUI : MonoBehaviour {
         originalName.text = selectedEntity.GetDisplayName();
     }
 
-    public void PassAnimalCam() {
-       Camera toSend =  selectedAnimal.GetGameObject().GetComponentInChildren<Camera>();
-       MainUI.EnterAnimalCam(toSend);
-    }
-
     public void UpdatePanel() {
         //halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
         //goalText.text = selectedAnimal.GetAction();

@@ -72,7 +72,7 @@ public class World : MonoBehaviour {
             minPosition = -worldSize / 2;
 
             CreateEntities();
-            MainUI.ToggleUpdate();
+            MainUI.WakeUp();
         }
 
         //Debug.Log("Started an update");
@@ -80,10 +80,8 @@ public class World : MonoBehaviour {
 
         if(!paused) {
             if(updateCompleted) {
-                if(updateCounter%2 == 0) {
-                    updateCompleted = false;
-                    UpdateEntities();
-                }
+                updateCompleted = false;
+                UpdateEntities();
                 updateCounter++;
             }
         }

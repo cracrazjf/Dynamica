@@ -78,7 +78,7 @@ public class GenomeUI : MonoBehaviour {
     }
 
     public void InitPanel(){
-        panel = GameObject.Find("GenomePanel");
+        panel = MainUI.GetUXPos("GenomePanel").gameObject;
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {

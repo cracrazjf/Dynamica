@@ -37,8 +37,8 @@ public class IntroUI : MonoBehaviour {
     public void UpdatePanel(){}
 
     public void InitPanel(){
-        panel = GameObject.Find("StartPanel");
-        optionPanel = GameObject.Find("OptionsPanel");
+        panel = MainUI.GetUXPos("IntroPanel").gameObject;
+        optionPanel = MainUI.GetUXPos("OptionsPanel").gameObject;
         panel.SetActive(true);
 
         foreach (Transform child in panel.transform) {
