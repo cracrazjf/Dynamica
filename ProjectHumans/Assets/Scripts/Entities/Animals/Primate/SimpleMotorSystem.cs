@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 using System.Linq;
-public class PrimateMotorSystem : MotorSystem
+public class SimpleMotorSystem : MotorSystem
 {
     Transform abdomenTrans;
     PrimateBody primateBody;
