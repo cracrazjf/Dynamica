@@ -64,9 +64,10 @@ public class MainUI : MonoBehaviour
     // Called once a frame
     void Update() {
         CheckClick();
-        MovePlayer();
-
-        if (Check("isCentered")) { mainCam.transform.position = toSet; }
+        if (World.CheckUpdate()) {
+            MovePlayer();
+            if (Check("isCentered")) { mainCam.transform.position = toSet; }
+        }
     }
 
     public void InitPanels() {
@@ -83,24 +84,33 @@ public class MainUI : MonoBehaviour
 
         foreach (Transform child in temp) {
             UXDict.Add(child.name, child.gameObject);
+            //Debug.Log("Added this panel to dictionary: " + child.name);
             child.gameObject.SetActive(false);
         }
     }
 
     public void InitButtons() {
+        Transform buttonParent = null;
         foreach (Transform child in UXDict["AlwaysPanel"].transform) {
+            if (child.name == "Buttons") { buttonParent = child; }
+        }
+
+        foreach (Transform child in buttonParent) {
             if (child.name == "PauseButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(TogglePause);
             } else if (child.name == "FFButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(ToggleFF);
+                tempButton.onClick.AddListener(delegate { Toggle("isFF"); });
             } else if (child.name == "InfoButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ToggleInfo);
-            } else if (child.name == "AddButton") {
+            } else if (child.name == "SpawnButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(ToggleAdd);
+                tempButton.onClick.AddListener(delegate { WakeLeft(true);});
+            } else if (child.name == "SearchButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(delegate { WakeLeft(false);});
             }
         }
 
@@ -182,11 +192,11 @@ public class MainUI : MonoBehaviour
     public static void CenterObject(Transform passed) {
         Debug.Log("Centering on object");
         centeredTransform = passed;
-        xTemp = passed.position.x;
-        zTemp = passed.position.z;
+        
+        xTemp = passed.position.x + (centeredTransform.forward.x * - 0.25f);
+        zTemp = passed.position.z + (centeredTransform.forward.y * - 0.25f);
+        toSet = new Vector3(xTemp, 4f, zTemp);
 
-        //https://forum.unity.com/threads/moving-the-camera-to-center-an-object-in-the-screen.219813/
-        toSet = new Vector3(xTemp, eyeLevel, zTemp);
         SetToggle("isFollowing", true);
         SetToggle("isCentered", true); 
     }
@@ -234,26 +244,22 @@ public class MainUI : MonoBehaviour
 
     public void ResolveAltitude() {
         yTemp = transform.position.y;
-        // Checks for underground
+        // Checks for underground clipping
         if (yTemp < 0) { VerticalBump(yTemp * -1); }
     }
 
     public void VerticalBump(float height) { transform.position += new Vector3(0, height, 0); }
 
-    // Listens for clicks; if there's a click this function checks whether it hit something and ensures relevant info shows
     public void CheckClick() {
         if (Input.GetMouseButtonDown(0)) {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if(Physics.Raycast(ray, out hit)) {
-                // Gets the clicked object and identifies its type from the tag before waking up the relevant panel
+                // Gets the clicked object and wakes up the entity panel
                 GameObject countable = hit.transform.root.gameObject;
-                string objTag = countable.tag;
-
-                if (objTag == "Human" || objTag == "Animal") {
-                    EntityUI.ReceiveClicked(countable, true);
-                } else { EntityUI.ReceiveClicked(countable, false); }
+                Entity toPass = World.GetEntity(countable.name);
+                EntityUI.ReceiveClicked(toPass);
             }
         }
     }
@@ -300,13 +306,17 @@ public class MainUI : MonoBehaviour
         Transform toSend = null;
         if (UXDict.ContainsKey(name)) {
             toSend = UXDict[name].transform;
-        }
+        } else { Debug.Log("Unsucessful in search attempt of:  " + name); }
         return toSend;
     }
 
-    // Toggles
+    void WakeLeft(bool isSpawner) {
+        if (isSpawner) {
+            LeftUI.WakeSpawn();
+        } else {LeftUI.WakeSearch();}
+    }
 
-    public void ToggleFF() { Toggle("isFF"); }
+    // Toggles
 
     public void TogglePause() {
         Toggle("isPaused");
@@ -318,10 +328,6 @@ public class MainUI : MonoBehaviour
         Toggle("showInfo");
         ToggleUX("InfoPanel", Check("showInfo"));
         ToggleUX("OptionsPanel", false);
-    }
-
-    public void ToggleAdd() {
-        LeftUI.WakeUp();
     }
 
     public void ToggleOptions() {

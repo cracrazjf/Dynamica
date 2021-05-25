@@ -7,7 +7,7 @@ using Random=UnityEngine.Random;
 public class Plant : Entity {
 
     public Plant(string objectType, int index, Genome motherGenome, Genome fatherGenome, Vector3 spawn) 
-    : base (objectType, index, motherGenome, fatherGenome, spawn) {
+    : base (objectType, index, motherGenome, fatherGenome, spawn, false) {
         body = new Body(this, spawn);
         SetTrunkSize(Random.Range(1.85f, 3f));
     }

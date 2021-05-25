@@ -51,8 +51,10 @@ public class World : MonoBehaviour {
     public Dictionary<string, MotorSystem> allMotorDict;
 
     private Material sky;
-    private bool updateCompleted = false;
-    int updateCounter;
+    private static bool updateCompleted = false;
+    private static int updateCounter;
+
+    public static bool CheckUpdate() { return updateCompleted; }
 
     void Start() {
         mainCam = GameObject.Find("Main Camera");
@@ -296,6 +298,15 @@ public class World : MonoBehaviour {
             populationDict[entry.Key] = newPop;
         }
     }
+
+    public static Population GetPopulation(string species) {
+        if (populationDict.ContainsKey(species)) {
+            return populationDict[species];
+        }
+        return null;
+    }
+
+    public static List<string> GetPopulationNames() { return new List<string>(populationDict.Keys); }
 
     public static Vector3 CreateRandomPosition() {
         float xRan = Random.Range(World.minPosition, World.maxPosition);

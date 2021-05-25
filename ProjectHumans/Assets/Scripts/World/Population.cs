@@ -18,6 +18,10 @@ public class Population {
 
     public string contrastPop = "";
     protected List<Entity> entityList = new List<Entity>();
+    protected Dictionary<string, Entity> entityDict = new Dictionary<string, Entity>();
+
+    public  List<Entity> GetEntityList() { return entityList; }
+    public List<string> GetEntityNames() { return new List<string>(entityDict.Keys); }
 
     public Population(string passedSpeciesName, float passedSpawnChance) {
         name = passedSpeciesName;
@@ -66,6 +70,7 @@ public class Population {
 
     public void SaveEntity(Entity passed) {
         entityList.Add(passed);
+        entityDict.Add(passed.GetName(), passed);
     }
 
     public Dictionary<string, float> AverageDrives() {
@@ -86,7 +91,6 @@ public class Population {
         foreach (KeyValuePair<string, float> entry in averages) {
             averages[entry.Key] = (entry.Value / entityList.Count);
         }
-
         return averages;
     }
 }

@@ -33,6 +33,9 @@ abstract public class Entity {
     protected Phenotype phenotype;
     public Phenotype GetPhenotype() { return phenotype; }
 
+    protected bool isAnimal;
+    public bool CheckAnimal() { return isAnimal; }
+
     protected string thoughtStream = "";
     public string GetStream() { return thoughtStream; }
     public void AddThought(string thought) {
@@ -52,7 +55,7 @@ abstract public class Entity {
     public virtual string GetNetworkName(){ return networkName; }
 
     // Sexual reproduction constructor
-    public Entity(string objType, int id, Genome motherGenome, Genome fatherGenome, Vector3 spawn) {
+    public Entity(string objType, int id, Genome motherGenome, Genome fatherGenome, Vector3 spawn, bool isAnimal) {
         species = objType;
         index = id;
         name = (species + " " + index.ToString());
@@ -63,7 +66,7 @@ abstract public class Entity {
     }
 
     // Asexual reproduction constructor
-    public Entity(string objType, int id, Genome motherGenome, Vector3 spawn) {
+    public Entity(string objType, int id, Genome motherGenome, Vector3 spawn, bool isAnimal) {
         species = objType;
         index = id;
         name = (species + " " + index.ToString());

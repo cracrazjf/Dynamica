@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class Item : Entity {
     public Item(string objectType, int index, Genome motherGenome, Vector3 spawn) 
-    : base (objectType, index, motherGenome, spawn) {
+    : base (objectType, index, motherGenome, spawn, false) {
         body = new Body(this, spawn);
     }
 

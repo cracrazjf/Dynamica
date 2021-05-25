@@ -11,9 +11,8 @@ public class EntityUI : MonoBehaviour {
     protected Text[] stateText;
     protected Text goalText;
     protected Animal selectedAnimal = null;
-    protected Entity selectedEntity;
-    protected static GameObject passed;
 
+    protected static Entity selectedEntity;
     protected static bool needsUpdate;
     public static bool toExit = false;
     protected bool showPanel = false;
@@ -44,8 +43,7 @@ public class EntityUI : MonoBehaviour {
 
     public void OnAwake() {
          
-        selectedEntity = World.GetEntity(passed.name);
-        
+        isAnimal = selectedEntity.CheckAnimal();
         panel.SetActive(true);
         halo.SetActive(true);
         
@@ -63,7 +61,7 @@ public class EntityUI : MonoBehaviour {
     }
 
     public void UpdatePanel() {
-        //halo.transform.position = selectedAnimal.GetBody().GetXZPosition() + new Vector3(0, 0.01f, 0);
+        halo.transform.position = selectedEntity.GetBody().GetXZPosition() + new Vector3(0, 0.75f, 0);
         //goalText.text = selectedAnimal.GetAction();
         if (isAnimal) { UpdateDriveDisplays(); }
     }
@@ -79,11 +77,9 @@ public class EntityUI : MonoBehaviour {
         }
     }
 
-    public static void ReceiveClicked(GameObject clicked, bool animal) {
+    public static void ReceiveClicked(Entity clicked) {
         toExit = false;
-        Debug.Log("Recieved " + clicked.name + "!");
-        passed = clicked;
-        isAnimal = animal;
+        selectedEntity = clicked;
         needsUpdate = true;
     }
 
@@ -95,7 +91,7 @@ public class EntityUI : MonoBehaviour {
         foreach (Transform child in panel.transform) {
             if (child.name == "Header") {
                header = child;
-            } else if (child.name == "AnimalButtons") {
+            } else if (child.name == "EntityButtons") {
                 buttonParent = child;
             } else if (child.name == "Sprites") {
                 spriteParent = child;
@@ -115,6 +111,7 @@ public class EntityUI : MonoBehaviour {
 
     public void HideDriveDisplays() {
         spriteParent.gameObject.SetActive(false);
+
     }
 
     public void InitButtons() {
@@ -189,7 +186,7 @@ public class EntityUI : MonoBehaviour {
     }
 
     public void PassCenter() {
-        MainUI.CenterObject(passed.transform);
+        MainUI.CenterObject(selectedEntity.GetGameObject().transform);
     }
 
     public void ExitPanel() {

@@ -11,6 +11,7 @@ TagManager:
   - Skeleton
   - Button
   - Object
+  - UI
   layers:
   - Default
   - TransparentFX
