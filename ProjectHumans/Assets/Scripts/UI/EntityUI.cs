@@ -13,17 +13,16 @@ public class EntityUI : MonoBehaviour {
     protected Animal selectedAnimal = null;
 
     protected static Entity selectedEntity;
-    protected static bool needsUpdate;
-    public static bool toExit = false;
-    protected bool showPanel = false;
-    static bool isAnimal;
+    protected static bool needsUpdate = false;
+    protected static bool showPanel = false;
+    protected static bool isAnimal;
 
-    protected Button tempButton;
     protected GameObject mainCam;
     protected Transform header;
     protected GameObject panel;
     protected GameObject halo;
 
+    protected Button tempButton;
     protected Text inputName;
     protected Text originalName;
     protected Transform panelNamer;
@@ -32,35 +31,35 @@ public class EntityUI : MonoBehaviour {
     
     private void Start() { 
         InitPanel(); 
-        panel.SetActive(false);
+        InitButtons();
+        InitNamer();
+        showPanel = false;
     }
     
     private void Update() {
-        if (toExit) { ExitPanel(); }
-        if (needsUpdate) { OnAwake(); }
-        if (showPanel) { UpdatePanel(); }
-    }
-
-    public void OnAwake() {
-         
-        isAnimal = selectedEntity.CheckAnimal();
-        panel.SetActive(true);
-        halo.SetActive(true);
-        
-        InitButtons();
-        InitNamer();
+        if (needsUpdate) { UpdatePanel(); }
+        if (showPanel) {
+            panel.SetActive(true);
+            halo.SetActive(true);
+        } else { 
+            panel.SetActive(false); 
+            halo.SetActive(false);
+        }
 
         if (isAnimal) {
             InitDriveDisplays();
         } else { HideDriveDisplays(); }
+    }
 
-        
-        originalName.text = selectedEntity.GetDisplayName();
+    public static void OnAwake() {
+        isAnimal = selectedEntity.CheckAnimal();
+
         showPanel = true;
-        needsUpdate = false;
+        needsUpdate = true;
     }
 
     public void UpdatePanel() {
+        originalName.text = selectedEntity.GetDisplayName();
         halo.transform.position = selectedEntity.GetBody().GetXZPosition() + new Vector3(0, 0.75f, 0);
         //goalText.text = selectedAnimal.GetAction();
         if (isAnimal) { UpdateDriveDisplays(); }
@@ -78,9 +77,8 @@ public class EntityUI : MonoBehaviour {
     }
 
     public static void ReceiveClicked(Entity clicked) {
-        toExit = false;
         selectedEntity = clicked;
-        needsUpdate = true;
+        OnAwake();
     }
 
     public void InitPanel() {
@@ -107,12 +105,10 @@ public class EntityUI : MonoBehaviour {
             string objectName = (selectedAnimal.GetDriveSystem().GetStateLabels()[i]) + "Text";
             stateText[i] = GameObject.Find(objectName).GetComponent<Text>();
         }
+        spriteParent.gameObject.SetActive(true);
     }
 
-    public void HideDriveDisplays() {
-        spriteParent.gameObject.SetActive(false);
-
-    }
+    public void HideDriveDisplays() { spriteParent.gameObject.SetActive(false); }
 
     public void InitButtons() {
         foreach (Transform child in buttonParent) {
@@ -158,13 +154,14 @@ public class EntityUI : MonoBehaviour {
     }
 
     public void PassGenome() {
-        GenomeUI.ReceiveClicked(selectedEntity.GetGameObject());
+        GenomeUI.ReceiveClicked(selectedEntity);
         Debug.Log("Tried to pass to genome");
     }
 
     public void PassView() {
         if (isAnimal) {
-            ViewUI.ReceiveClicked(selectedEntity.GetName());
+            Animal toSend = (Animal) selectedEntity;
+            ViewUI.ReceiveClicked(toSend);
         } else { World.DisplayError(); }
         Debug.Log("Tried to pass to camera");
     }
@@ -172,7 +169,7 @@ public class EntityUI : MonoBehaviour {
     public void PassNet() {
         if (isAnimal) {
             Animal toSend = (Animal) selectedEntity;
-            NetUI.ReceiveClicked(toSend.GetGameObject());
+            NetUI.ReceiveClicked(toSend);
         } else { World.DisplayError(); }
         Debug.Log("Tried to pass to nets");
     }
@@ -180,7 +177,7 @@ public class EntityUI : MonoBehaviour {
     public void PassStream() {
         if (isAnimal) {
             Animal toSend = (Animal) selectedEntity;
-            StreamUI.ReceiveClicked(toSend.GetGameObject());
+            StreamUI.ReceiveClicked(toSend);
         } else { World.DisplayError(); }
         Debug.Log("Tried to pass to thought stream");
     }
@@ -190,9 +187,8 @@ public class EntityUI : MonoBehaviour {
     }
 
     public void ExitPanel() {
-        panel.SetActive(false);
-        halo.SetActive(false);
         showPanel = false;
+        
     }
 
     public void Rename() {
@@ -216,8 +212,4 @@ public class EntityUI : MonoBehaviour {
     //     Debug.Log("Got an action!" + command + " " + param);
     //     selectedAnimal.SetCommand(command, param);
     // }
-
-    public static void Sleep() {
-        toExit = true;
-    }
 }

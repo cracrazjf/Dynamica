@@ -8,46 +8,37 @@ using UnityEngine.Events;
 public class GenomeUI : MonoBehaviour {
 
     protected bool showMutable = true;
-    protected Text displayText;
     protected Text muteText;
 
+    protected Text genomeText;
+    protected Text phenotypeText;
     protected Genome displayGenome;
     protected Phenotype displayPhenotype;
-    protected static Entity selectedEntity;
-    protected static GameObject passed;
 
+    protected static Entity selectedEntity;
+    protected static bool showPanel = false;
     protected static bool needsUpdate = false;
-    public static bool toExit = false;
-    protected bool showPanel = false;
 
     protected Button tempButton;
-    protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject header;
-    protected GameObject mainCam;
+    protected GameObject body;
 
     private void Start() {
         InitPanel();
+        InitButtons();
     }
     
-   private void Update() {
-        if (toExit) { ExitPanel(); }
-        if (needsUpdate) { OnAwake(); }
-        if (showPanel) { panel.SetActive(true); }
+    private void Update() {
+        if (needsUpdate) { UpdatePanel(); }
+        if (showPanel) {
+            panel.SetActive(true);
+        } else { panel.SetActive(false); }
     }
 
-    public void OnAwake() {
-        NetUI.Sleep();
-        StreamUI.Sleep();
-
-        Debug.Log(passed.name);
-        selectedEntity = World.GetEntity(passed.name);
-
-        panel.SetActive(true);
-
+    public static void OnAwake() {
+        needsUpdate = true;
         showPanel = true;
-        needsUpdate = false;
-        UpdatePanel();
     }
 
     public void UpdatePanel(){
@@ -55,40 +46,40 @@ public class GenomeUI : MonoBehaviour {
         displayGenome = selectedEntity.GetGenome();
         displayPhenotype = selectedEntity.GetPhenotype();
         
-        if (showMutable) {
-            toDisplay = displayPhenotype.GetDisplayInfo();
-            muteText.text = "Mutable"; 
+        string toSend = displayPhenotype.GetQualInfo();
+        phenotypeText.text = toSend + displayPhenotype.GetTraitInfo();
 
-        } else { 
-            toDisplay = displayGenome.GetConstantInfo(); 
-            muteText.text = "Immutable";
-        }
-        displayText.text = toDisplay;
+        genomeText.text = displayGenome.GetDisplayInfo(showMutable);
 
+        needsUpdate = false;
     }
 
-    public static void ReceiveClicked(GameObject clicked) {
-        selectedEntity = World.GetEntity(clicked.name);
-        passed = clicked;
-        needsUpdate = true;
-    }
-
-    public void ToggleMutable() {
-        showMutable = !showMutable;
+    public static void ReceiveClicked(Entity clicked) {
+        selectedEntity = clicked;
+        OnAwake();
     }
 
     public void InitPanel(){
         panel = MainUI.GetUXPos("GenomePanel").gameObject;
-        panel.SetActive(false);
-
+    
         foreach (Transform child in panel.transform) {
             if (child.name == "Header") {
                 header = child.gameObject;
-            } else if (child.name == "GeneticScrollView") {
-                displayText = child.gameObject.GetComponentInChildren<Text>();
-            } 
+            } else if (child.name == "Body") {
+                body = child.gameObject;
+            }
         }
 
+        foreach (Transform child in body.transform) {
+            if (child.name == "GenomeScrollView") {
+                genomeText = child.gameObject.GetComponentInChildren<Text>();
+            } else if (child.name == "PhenotypeScrollView") {
+                phenotypeText = child.gameObject.GetComponentInChildren<Text>();
+            } 
+        }
+    }
+
+    public void InitButtons() {
         foreach (Transform child in header.transform) {
             if (child.name == "ToggleMuteButton") {
                 muteText = child.gameObject.GetComponentInChildren<Text>();
@@ -102,16 +93,9 @@ public class GenomeUI : MonoBehaviour {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(UpdatePanel);
             }
-        }
+        } 
     }
-        
-
-    public void ExitPanel() {
-        panel.SetActive(false);
-        showPanel = false;
-    }
-
-    public static void Sleep() {
-        toExit = true;
-    }
+    
+    public void ExitPanel() { showPanel = false; }
+    public void ToggleMutable() { showMutable = !showMutable; }
 }

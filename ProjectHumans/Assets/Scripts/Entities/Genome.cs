@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using UnityEngine;
 using System.Linq;
+using System.Text;
 
 
 public class Genome {
@@ -12,6 +13,8 @@ public class Genome {
     public int numGenes;
     public List<string> geneLabelList;
     public Dictionary<string, Gene> geneDict;
+    public Dictionary<string, Gene> GetGeneDict() { return geneDict; }
+    public Gene GetGene(string label) { return geneDict[label]; }
     public Dictionary<string, int> geneIndexDict;
 
     // this is where the constants get stored from each species's config file
@@ -180,17 +183,22 @@ public class Genome {
         numQuals++;
     }
 
-    public string GetConstantInfo() {
+    public string GetDisplayInfo(bool mutable) {
         string toReturn = "";
 
-        for (int i=0; i<numConstants; i++){
-            string outputString = i.ToString();
-            string label = constantLabelList[i];
-            outputString = outputString + " " + label;
-            outputString = outputString + " " + constantDict[label];
-            
-            toReturn += outputString + "\n";
+        foreach(KeyValuePair<string, Gene> entry in geneDict) {
+            Gene activeGene = entry.Value;
+            if (activeGene.mutable == mutable) {
+                toReturn += (entry.Key + "\t" + activeGene.geneType + "\n");
+                toReturn += ("\t" + SequenceToString(activeGene.geneSequence) + "\n");
+            }
         }
         return toReturn;
+    }
+
+    public string SequenceToString(BitArray values) {
+        StringBuilder sb = new StringBuilder();
+        foreach(var val in values) { sb.Append((bool)val ? "1" : "0"); }
+        return sb.ToString();
     }
 }

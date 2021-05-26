@@ -12,38 +12,29 @@ public class NetUI : MonoBehaviour {
     protected Dropdown systemDrop;
 
     protected static Entity selectedEntity;
-    protected static GameObject passed;
-
+    protected static bool showPanel = false;
     protected static bool needsUpdate = false;
-    public static bool toExit = false;
-    protected bool showPanel = false;
 
     protected Button tempButton;
-    protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject header;
     protected GameObject body;
-    protected GameObject mainCam;
 
-    private void Start() { InitPanel(); }
+    private void Start() { 
+        InitPanel();
+        InitButtons();
+    }
     
     private void Update() {
-        if (toExit) { ExitPanel(); }
-        if (needsUpdate) { OnAwake(); }
-        if (showPanel) { panel.SetActive(true); }
+        if (needsUpdate) { UpdatePanel(); }
+        if (showPanel) {
+            panel.SetActive(true);
+        } else { panel.SetActive(false); }
     }
 
-    public void OnAwake() {
-        GenomeUI.Sleep();
-        StreamUI.Sleep();
-        
-        selectedEntity = World.GetEntity(passed.name);
-        panel.SetActive(true);
-    
-        InitButtons();
+    public static void OnAwake() {
+        needsUpdate = true;
         showPanel = true;
-        needsUpdate = false;
-        UpdatePanel();
     }
 
     public void UpdatePanel(){
@@ -52,17 +43,17 @@ public class NetUI : MonoBehaviour {
         
         outputText.text = output;
         inputText.text = input;
+
+        needsUpdate = false;
     }
 
-    public static void ReceiveClicked(GameObject clicked) {
-        selectedEntity = World.GetEntity(clicked.name);
-        passed = clicked;
-        needsUpdate = true;
+    public static void ReceiveClicked(Entity clicked) {
+        selectedEntity = clicked;
+        OnAwake();
     }
 
     public void InitPanel() {
         panel = GameObject.Find("BrainPanel");
-        panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
             if (child.name == "Header") {
@@ -95,10 +86,7 @@ public class NetUI : MonoBehaviour {
         }
     }
         
-    public void ExitPanel() {
-        panel.SetActive(false);
-        showPanel = false;
-    }
+    public void ExitPanel() { showPanel = false; }
 
     // ACTUAL NN STUFF
 
@@ -124,9 +112,5 @@ public class NetUI : MonoBehaviour {
             sendInfo = rawInfo;
         }
         return sendInfo;
-    }
-
-    public static void Sleep() {
-        toExit = true;
     }
 }

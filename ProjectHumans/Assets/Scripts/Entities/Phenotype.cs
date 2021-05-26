@@ -23,13 +23,12 @@ public class Phenotype {
     public Phenotype(Entity passedObject) {
         thisEntity = passedObject;
         thisGenome = passedObject.GetGenome();
-        
         CreateGeneTraits();
         CreateConstantTraits();
     }
 
     // Add all genes in the genome gene dictionary to traits
-    private void CreateGeneTraits(){
+    private void CreateGeneTraits() {
         for (int i = 0; i < thisGenome.numGenes; i++){
             string label = thisGenome.geneLabelList[i];
             Gene currentGene = thisGenome.geneDict[label];
@@ -100,16 +99,18 @@ public class Phenotype {
         return value;
     }
 
-    public string GetDisplayInfo() {
+    public string GetTraitInfo() {
         string toReturn = "";
+        foreach(KeyValuePair<string, float> entry in traitDict) {
+            toReturn += (entry.Key + "\t" + entry.Value.ToString("0.00") + "\n");
+        }
+        return toReturn;
+    }
 
-        for (int i = 0; i < traitLabelList.Count; i++) {
-            string outputString = i.ToString();
-            string label = traitLabelList[i];
-
-            outputString = outputString + " " + label;
-            outputString = outputString + " " + traitDict[label];            
-            toReturn += outputString + "\n";
+    public string GetQualInfo() {
+        string toReturn = "";
+        foreach(KeyValuePair<string, string> entry in qualDict) {
+            toReturn += (entry.Key + "\t" + entry.Value + "\n");
         }
         return toReturn;
     }

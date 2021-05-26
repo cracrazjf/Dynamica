@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class Gene {
     
-    public string label;
-    public string geneType;
+    public string label; //show
+    public string geneType; //show
     public int geneSize;
-    public BitArray geneSequence;
-    public bool mutable;
-    public float specifiedMean;
+    public BitArray geneSequence; //show
+    public bool mutable; //show
+    public float specifiedMean; 
     public float specifiedStdev;
 
     public float mutationRate = World.worldConfigDict["Mutation_Rate"];

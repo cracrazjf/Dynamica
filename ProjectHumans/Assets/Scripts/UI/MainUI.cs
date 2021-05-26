@@ -363,4 +363,9 @@ public class MainUI : MonoBehaviour
             return false;
         }
     }
+
+    public static Vector3 GetCamPos() {
+        Vector3 toReturn = new Vector3 (mainCam.transform.position.x, 0f, mainCam.transform.position.z);
+        return toReturn;
+    }
 }

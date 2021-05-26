@@ -7,40 +7,37 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 
 public class ViewUI : MonoBehaviour {
-    public static string passed;
     protected Camera viewCam;
     protected RenderTexture thisRender;
-    protected Animal selectedAnimal;
 
-    protected static bool needsUpdate;
-    public static bool toExit = true;
-    protected bool showPanel = false;
+    protected static Animal selectedAnimal;
+    protected static bool needsUpdate = false;
+    protected static bool showPanel = false;
 
     protected GameObject cameraView;
     protected GameObject panel;
-    protected Button tempButton;
 
+    protected Button tempButton;
     protected Text originalName;
     protected Text inputName;
     protected Transform header;
 
     private void Start() { 
-        InitPanel(); 
-        panel.SetActive(false);
+        InitPanel();
+        InitButtons();
     }
     
     private void Update() {
-        if (toExit) { ExitPanel(); }
-        if (needsUpdate) { OnAwake(); }
-        if (showPanel) { UpdatePanel(); }
+        if (needsUpdate) { UpdatePanel(); }
+        if (showPanel) {
+            panel.SetActive(true);
+        } else { panel.SetActive(false); }
     }
 
-    public void OnAwake() {
+    public static void OnAwake() {
         Debug.Log("Someone woke me up!");
-        panel.SetActive(true);
-        selectedAnimal = World.GetAnimal(passed);
+        needsUpdate = true;
         showPanel = true;
-        needsUpdate = false;
     }
 
     public void UpdatePanel() {
@@ -48,18 +45,18 @@ public class ViewUI : MonoBehaviour {
         viewCam = selectedAnimal.GetSensorySystem().GetInternalCam();
         RawImage projectTo = cameraView.GetComponent<RawImage>();
         thisRender = new RenderTexture(viewCam.targetTexture);
-
         projectTo.texture = thisRender;
+
+        needsUpdate = false;
     }
 
-    public static void ReceiveClicked(string clicked) {
-        passed = clicked;
-        needsUpdate = true;
+    public static void ReceiveClicked(Animal clicked) {
+        selectedAnimal = clicked;
+        OnAwake();
     }
 
     public void InitPanel() {
         panel = MainUI.GetUXPos("ViewPanel").gameObject;
-        panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
             if (child.name == "Header") {
@@ -68,7 +65,9 @@ public class ViewUI : MonoBehaviour {
                 cameraView = child.gameObject;
             }
         }
+    }
 
+    public void InitButtons() {
         foreach (Transform child in header) {
             if (child.name == "ClosePanelButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
@@ -77,12 +76,5 @@ public class ViewUI : MonoBehaviour {
         }
     }
 
-    public void ExitPanel() {
-        panel.SetActive(false);
-        showPanel = false;
-    }
-
-    public static void Sleep() {
-        toExit = true;
-    }
+    public void ExitPanel() { showPanel = false; }
 }

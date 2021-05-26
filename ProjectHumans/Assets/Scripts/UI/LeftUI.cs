@@ -117,7 +117,6 @@ public class LeftUI : MonoBehaviour {
                 } else { tempButton.onClick.AddListener(SearchInput); }
             } 
         }
-         
     }
         
     public void ExitSpawnPanel() {
@@ -133,13 +132,14 @@ public class LeftUI : MonoBehaviour {
     public void SpawnInput() {
         int location = speciesSpawn.value;
         int type = locationSpawn.value;
-
-        if (type == 0) {
-            Debug.Log("Spawning a human");
-            World.AddEntity("Human", null);
+        string species = speciesSearch.options[type].text;
+        if (location == 1) {
+            Debug.Log("Spawning a " + species + " at this location");
+            Vector3 toSend = MainUI.GetCamPos();
+            World.AddEntity(species, toSend);
         } else {
-            Debug.Log("Spawning a tree");
-            World.AddEntity("TreeBumpy", null);
+            Debug.Log("Spawning a " + species + " at a random location");
+            World.AddEntity(species, null);
         }
     }
 
@@ -175,6 +175,9 @@ public class LeftUI : MonoBehaviour {
         string name = nameSearch.options[value].text;
 
         Entity toPass = World.GetEntity(name);
+        Debug.Log("Centering on " + name);
         EntityUI.ReceiveClicked(toPass);
+        MainUI.CenterObject(toPass.GetGameObject().transform);
+
     }
 }

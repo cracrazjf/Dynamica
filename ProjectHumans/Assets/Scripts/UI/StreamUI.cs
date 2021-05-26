@@ -7,58 +7,49 @@ using UnityEngine.Events;
 
 public class StreamUI : MonoBehaviour {
 
-    
     protected Text displayText;
-    
-    protected static Entity selectedEntity;
-    protected static GameObject passed;
 
+    protected static Entity selectedEntity;
+    protected static bool showPanel = false;
     protected static bool needsUpdate = false;
-    public static bool toExit = false;
-    protected bool showPanel = false;
 
     protected Button tempButton;
-    protected Button closePanelButton;
     protected GameObject panel;
     protected GameObject header;
     protected GameObject mainCam;
 
     private void Start() {
         InitPanel();
+        InitButtons();
+        showPanel = false;
     }
     
-   private void Update() {
-        if (toExit) { ExitPanel(); }
-        if (needsUpdate) { OnAwake(); }
+    private void Update() {
+        if (needsUpdate) { UpdatePanel(); }
+        if (showPanel) {
+            panel.SetActive(true);
+        } else { panel.SetActive(false); }
     }
 
-    public void OnAwake() {
-        NetUI.Sleep();
-        GenomeUI.Sleep();
-
-        Debug.Log(passed.name);
-        selectedEntity = World.GetEntity(passed.name);
-
-        panel.SetActive(true);
-
+    public static void OnAwake() {
+        needsUpdate = true;
         showPanel = true;
-        needsUpdate = false;
-        UpdatePanel();
     }
 
     public void UpdatePanel(){
         string toDisplay = selectedEntity.GetStream();
         displayText.text = toDisplay;
+
+        needsUpdate = false;
     }
 
-    public static void ReceiveClicked(GameObject clicked) {
-        selectedEntity = World.GetEntity(clicked.name);
-        passed = clicked;
-        needsUpdate = true;
+    public static void ReceiveClicked(Entity clicked) {
+        selectedEntity = clicked;
+        OnAwake();
     }
 
     public void InitPanel(){
-        panel = GameObject.Find("ThoughtPanel");
+        panel = MainUI.GetUXPos("ThoughtPanel").gameObject;
         panel.SetActive(false);
 
         foreach (Transform child in panel.transform) {
@@ -68,7 +59,9 @@ public class StreamUI : MonoBehaviour {
                 displayText = child.gameObject.GetComponentInChildren<Text>();
             } 
         }
+    }
 
+    public void InitButtons() {
         foreach (Transform child in header.transform) {
             if (child.name == "ClosePanelButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
@@ -80,12 +73,5 @@ public class StreamUI : MonoBehaviour {
         }
     }
         
-    public void ExitPanel() {
-        panel.SetActive(false);
-        showPanel = false;
-    }
-
-    public static void Sleep() {
-        toExit = true;
-    }
+    public void ExitPanel() { showPanel = false; }
 }
