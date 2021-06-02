@@ -17,7 +17,7 @@ public class IntroUI : MonoBehaviour {
     protected GameObject footer;
 
     protected Dropdown humanDrop;
-    protected Dropdown nonDrop;
+    protected Dropdown bodyDrop;
     protected Dropdown biomeDrop;
     
 
@@ -54,8 +54,8 @@ public class IntroUI : MonoBehaviour {
         foreach (Transform child in body.transform) {
             if (child.name == "HumanDropdown") {
                 humanDrop = child.gameObject.GetComponent<Dropdown>();
-            } else if (child.name == "NonHumanDropdown") {
-                nonDrop = child.gameObject.GetComponent<Dropdown>();
+            } else if (child.name == "HumanBodyDropdown") {
+                bodyDrop = child.gameObject.GetComponent<Dropdown>();
             } else if (child.name == "BiomeDropdown") {
                 biomeDrop = child.gameObject.GetComponent<Dropdown>();
             }
@@ -102,7 +102,8 @@ public class IntroUI : MonoBehaviour {
         UpdateNumHumans();
         UpdateBiome();
         UpdateAI();
-        World.SetGo(true);
+        UpdateHumanBody();
+        World.initWorld = true;
         ExitPanel();
     }
 
@@ -111,15 +112,22 @@ public class IntroUI : MonoBehaviour {
         World.SetHumanAI(type);
     }
 
+    public void UpdateHumanBody() {
+        int index = bodyDrop.value;
+        string type = bodyDrop.options[index].text;
+        World.SetHumanBodies(type);
+    }
+
     public void UpdateBiome() {
-        int type = biomeDrop.value;
+        int index = biomeDrop.value;
+        string type = biomeDrop.options[index].text;
         World.SetBiome(type);
     }
 
     public void UpdateNumHumans() {
         Slider humanSlider = humanPub.GetComponent<Slider>();
         int toUpdate = (int) humanSlider.value;
-        World.SetNumSpecies("Human", toUpdate);
+        World.InitNumSpecies("Human", toUpdate);
     }
 
     public static void ToggleUpdate() {

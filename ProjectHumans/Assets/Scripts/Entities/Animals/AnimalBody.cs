@@ -83,12 +83,16 @@ public class AnimalBody : Body {
         string filePath = "Prefabs/" + bodyName + "Prefab";
 
         if (thisAnimal.GetSpecies() == "Human") {
-            string label = "B";
-            float variant = thisAnimal.GetPhenotype().GetTraitDict()["variant"];
-            if (variant == 1) {
-                label = "B";
-            }
-            filePath += label;
+            string bodyPlan = World.anthroBody;
+            if (bodyPlan != "SimpleHuman") {
+                filePath = "Prefabs/" + bodyPlan + thisAnimal.GetSex() + "Prefab";
+
+                float variant = thisAnimal.GetPhenotype().GetTraitDict()["variant"];
+                string label = "A";
+                if (variant == 1) { label = "B"; }
+                filePath += label;
+
+            } else { filePath = "Prefabs/" + bodyPlan + "MalePrefab"; }
         }
         GameObject loadedPrefab = Resources.Load(filePath, typeof(GameObject)) as GameObject;
         

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7931384793505818850}
   - component: {fileID: 7931384793505818855}
   m_Layer: 2
-  m_Name: TerrainPrefab
+  m_Name: GrassTerrainPrefab
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

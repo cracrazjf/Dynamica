@@ -100,7 +100,7 @@ public class Phenotype {
     }
 
     public string GetTraitInfo() {
-        string toReturn = "";
+        string toReturn = "\n";
         foreach(KeyValuePair<string, float> entry in traitDict) {
             toReturn += (entry.Key + "\t" + entry.Value.ToString("0.00") + "\n");
         }

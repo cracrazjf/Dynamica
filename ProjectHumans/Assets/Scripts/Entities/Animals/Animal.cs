@@ -46,37 +46,30 @@ public class Animal : Entity {
     public override void UpdateEntity() {
         //Debug.Log("Updating an animal");
         if (finishedUpdate) {
-            // get the system time here
-            ResetEventTimes();
-            AddEventTime("Start Update Entity");
 
             finishedUpdate = false;
-            this.GetDriveSystem().UpdateDrives();
+            GetDriveSystem().UpdateDrives();
             Matrix<float> visualInputMatrix = GetSensorySystem().GetVisualInput();
-            AddEventTime("Get Sensory System");
-            AddEventTime("Finished Choose Action");
-            // get the system time again here, subtract
+            
             Vector<float> temp = activeAI.ChooseAction().Column(0);
-            this.GetMotorSystem().TakeAction(temp);
+            GetMotorSystem().TakeAction(temp);
             //Debug.Log(activeAI.ChooseAction(visualInputMatrix)[0,0].GetType());
             action = "In progress!";
 
             IncreaseAge(1);
-            //Debug.Log("Got through a loop");
-            finishedUpdate = true;
 
-            //PrintEventTimes();
+            finishedUpdate = true;
         }
     }
 
     public void ToggleBodyPart(string part, bool toggle) {
-        this.GetBody().GetSkeletonDict()[part].gameObject.SetActive(toggle);
+        GetBody().GetSkeletonDict()[part].gameObject.SetActive(toggle);
     }
     
     // getters and setters for body, drive system, motor system, sensory system, and action choice class
     public new AnimalBody  GetBody() { return animalBody; }
 
-    public bool GetBodyState(string state) { return (this.GetBody().GetStateDict()[state] == 1f); }
+    public bool GetBodyState(string state) { return (GetBody().GetStateDict()[state] == 1f); }
 
     public DriveSystem GetDriveSystem() { return driveSystem; }
 
@@ -86,10 +79,10 @@ public class Animal : Entity {
 
     public AI GetAI() { return activeAI; }
 
-    public string GetAction() { return this.activeAI.GetAction(); }
+    public string GetAction() { return activeAI.GetAction(); }
 
     public string GetSex() { 
-        if(this.GetPhenotype().GetTrait("sex") == 1.0) {
+        if(GetPhenotype().GetTrait("sex") == 1.0) {
             return "Male";
         } else { return "Female"; }
     }

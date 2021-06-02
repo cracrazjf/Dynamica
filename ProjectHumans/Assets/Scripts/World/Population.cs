@@ -1,96 +1,90 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Configuration;
 using System.Linq;
-
+using System.IO;
+using MathNet.Numerics.LinearAlgebra;
+using Random=UnityEngine.Random;
 
 public class Population {
     // this is the initial number that will be spawned
     public string name;
-    public float spawnChance = 0.0f;
-    public Genome genome;
-    public bool isItem = false;
-    public bool isAnimal = false;
-    public bool isPlant = false;
+    protected int numGroups;
+    protected float meanMembers;
+    protected float standardMembers;
+    protected float spawnDensity;
+    protected int updateRate;
+
+    public int GetUpdateRate() { return updateRate; }
+
+    public Genome baseGenome;
+    public string entityType;
     public bool isFirst = false;
 
-    public string contrastPop = "";
     protected List<Entity> entityList = new List<Entity>();
     protected Dictionary<string, Entity> entityDict = new Dictionary<string, Entity>();
 
     public  List<Entity> GetEntityList() { return entityList; }
     public List<string> GetEntityNames() { return new List<string>(entityDict.Keys); }
 
-    public Population(string passedSpeciesName, float passedSpawnChance) {
+    public Population(string passedSpeciesName, int groups, float mean, float std, float density, int refresh) {
         name = passedSpeciesName;
-        spawnChance = passedSpawnChance;
-        string toCast = "";
+        baseGenome = new Genome();
+        numGroups = groups;
+        meanMembers = mean;
+        standardMembers = std;
+        spawnDensity = density;
+        updateRate = refresh;
 
-        this.genome = new Genome();
         ImportPopConfig();
-    
-        contrastPop = genome.GetQual("contrast_species");
-        if (contrastPop != "none") {
-            toCast = genome.GetQual("first_contrast");
-        }
-        if (toCast == "true") { isFirst = true; }
     }
 
-    public void ImportPopConfig(){
-        string line;
-        System.IO.StreamReader file;
+    public Population(string passedSpeciesName, int refresh = 1) {
+        name = passedSpeciesName;
+        baseGenome = new Genome();
+        updateRate = refresh;
         
-        string filename = @"Assets/Scripts/config/"+ name.ToLower() + ".config";
-        file = new System.IO.StreamReader(filename);  
+        ImportPopConfig();
+    }
 
-        while((line = file.ReadLine()) != null)  
-        {  
-            string[] lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
-            string[] leftArray = lineInfo[0].Split(new[] { "." }, StringSplitOptions.None);
-            string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
+    public void UpdatePopulation() {
+        World.LogComment("Starting updating population: " + name);
+        foreach(Entity individual in entityList) {
+            individual.UpdateEntity();
+        }
+        World.LogComment("Population update completed.");
+    }
 
-            
-            if (leftArray[0] == "gene") { genome.AddGeneToGenome(leftArray[1], rightArray); 
-            } else if (leftArray[0] == "constant") {
-                genome.AddConstantToGenome(leftArray[1], rightArray);
-            } else if (leftArray[0] == "quality") {
-                genome.AddQualToGenome(leftArray[1], rightArray);
-            } else if (leftArray[0] == "object_type") {
-                if (rightArray[0] == "animal") {
-                    isAnimal = true;
-                } else if (rightArray[0] == "plant") {
-                    isPlant = true;
-                } else { isItem = true; }
+    public void ImportPopConfig() {
+        string line;
+        string[] lineInfo;
+        string worldName = "world.config";
+        worldName = World.biomeName + worldName;
+
+        using (var reader = new StreamReader(@"Assets/Scripts/config/" + worldName)) {
+            while ((line = reader.ReadLine()) != null) {
+                lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
+                string[] leftArray = lineInfo[0].Split(new[] { "." }, StringSplitOptions.None);
+                string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
+
+                if (leftArray[0] == "gene") { baseGenome.AddGeneToGenome(leftArray[1], rightArray); 
+                } else if (leftArray[0] == "constant") {
+                    baseGenome.AddConstantToGenome(leftArray[1], rightArray);
+                } else if (leftArray[0] == "quality") {
+                    baseGenome.AddQualToGenome(leftArray[1], rightArray);
+                } else if (leftArray[0] == "object_type") {
+                    entityType = rightArray[0];
+                    Debug.Log("Saving object type for " + name + " as " + entityType);
+                } 
             }
-        }  
-        file.Close();
+        } 
     }
 
     public void SaveEntity(Entity passed) {
         entityList.Add(passed);
         entityDict.Add(passed.GetName(), passed);
-    }
-
-    public Dictionary<string, float> AverageDrives() {
-        Dictionary<string, float> averages = new Dictionary<string, float>();
-
-        foreach (Entity ent in entityList) {
-            Animal animal = (Animal) ent;
-            DriveSystem currentDrives = animal.GetDriveSystem();
-            if (averages.Count == 0) {
-                averages = currentDrives.GetStateDict();
-            } else {
-                foreach (KeyValuePair<string, float> entry in currentDrives.GetStateDict()) {
-                    averages[entry.Key] += currentDrives.GetState(entry.Key);
-                }
-            }
-        }
-
-        foreach (KeyValuePair<string, float> entry in averages) {
-            averages[entry.Key] = (entry.Value / entityList.Count);
-        }
-        return averages;
     }
 }

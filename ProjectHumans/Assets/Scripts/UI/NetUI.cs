@@ -95,7 +95,7 @@ public class NetUI : MonoBehaviour {
         int vbadIndex = systemDrop.value;
         string aiType = selectedEntity.GetNetworkName();
         if (aiType != "Unresponsive"){
-            Animal brainOwner = World.GetAnimal(selectedEntity.GetName());
+            Animal brainOwner = (Animal) selectedEntity;
             string rawInfo = brainOwner.GetAI().GetStringInput(vbadIndex);
             sendInfo = rawInfo;
         }
@@ -107,7 +107,7 @@ public class NetUI : MonoBehaviour {
         int vbadIndex = systemDrop.value;
         string aiType = selectedEntity.GetNetworkName();
         if (aiType != "Unresponsive"){
-            Animal brainOwner = World.GetAnimal(selectedEntity.GetName());
+            Animal brainOwner = (Animal) selectedEntity;
             string rawInfo = brainOwner.GetAI().GetStringOutput(vbadIndex);
             sendInfo = rawInfo;
         }

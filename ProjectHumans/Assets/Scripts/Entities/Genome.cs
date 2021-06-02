@@ -29,6 +29,8 @@ public class Genome {
     public string GetQual(string qual) { return qualDict[qual]; }
     public Dictionary<string, string> GetQualDict() { return qualDict; }
 
+
+    // sexual, needs work
     public Genome(Genome motherGenome, Genome fatherGenome) {
         numGenes = 0;
         geneLabelList = new List<string>();
@@ -46,6 +48,7 @@ public class Genome {
         InheritGenome(motherGenome, fatherGenome);
     }
 
+    // asexual, fine (ish) as is
     public Genome(Genome motherGenome) {
         numGenes = 0;
         geneLabelList = new List<string>();
@@ -78,7 +81,7 @@ public class Genome {
         qualDict = new Dictionary<string, string>();
     }
 
-
+    // do this
     public bool InheritGenome(Genome motherGenome, Genome fatherGenome) {
         bool success = true;
 
@@ -184,7 +187,7 @@ public class Genome {
     }
 
     public string GetDisplayInfo(bool mutable) {
-        string toReturn = "";
+        string toReturn = "\n";
 
         foreach(KeyValuePair<string, Gene> entry in geneDict) {
             Gene activeGene = entry.Value;

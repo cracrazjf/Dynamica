@@ -60,7 +60,8 @@ abstract public class Entity {
         index = id;
         name = (species + " " + index.ToString());
         displayName = name;
-
+        this.isAnimal = isAnimal;
+        
         genome = new Genome(motherGenome, fatherGenome);
         phenotype = new Phenotype(this);
     }
@@ -71,6 +72,7 @@ abstract public class Entity {
         index = id;
         name = (species + " " + index.ToString());
         displayName = name;
+        this.isAnimal = isAnimal;
 
         genome = new Genome(motherGenome);
         phenotype = new Phenotype(this);

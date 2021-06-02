@@ -2570,7 +2570,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268426331496481879}
   m_Layer: 0
-  m_Name: HumanFemalePrefabB
+  m_Name: ComplexHumanFemalePrefabB
   m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
