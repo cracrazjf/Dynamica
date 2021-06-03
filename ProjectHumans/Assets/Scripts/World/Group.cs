@@ -28,6 +28,7 @@ public class Group {
     }
 
     public static void SpawnMembers(Population population, int numEntities, float density, Vector3 origin) {
+        Debug.Log("Num ents: " + numEntities);
         // Density in a 1x1 unit area
         float range = numEntities / density;
 
