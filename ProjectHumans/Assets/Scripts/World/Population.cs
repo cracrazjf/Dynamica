@@ -61,10 +61,9 @@ public class Population {
     public void ImportPopConfig() {
         string line;
         string[] lineInfo;
-        string worldName = "world.config";
-        worldName = World.biomeName + worldName;
+        string filename = name + ".config";
 
-        using (var reader = new StreamReader(@"Assets/Scripts/config/" + worldName)) {
+        using (var reader = new StreamReader(@"Assets/Scripts/config/" + filename)) {
             while ((line = reader.ReadLine()) != null) {
                 lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
                 string[] leftArray = lineInfo[0].Split(new[] { "." }, StringSplitOptions.None);

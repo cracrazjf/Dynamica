@@ -118,11 +118,13 @@ public class World : MonoBehaviour {
     // For initial entity spawning
     public static Entity AddEntity(Population population, Nullable<Vector3> passedSpawn) {
         int val = IndexEntity(population.name);
-        Vector3 spawn = (Vector3) passedSpawn;
+        Vector3 spawn;
         Genome motherGenome = new Genome();
         motherGenome.InheritGenome(population.baseGenome, true);
 
-        if (!passedSpawn.HasValue) { spawn = CreateRandomPosition(); } 
+        if (passedSpawn.HasValue) { 
+            spawn = (Vector3) passedSpawn;
+        } else { spawn = CreateRandomPosition(); } 
 
         if (population.entityType == "item") { 
             return new Item(population.name, val, motherGenome, spawn);
@@ -213,26 +215,25 @@ public class World : MonoBehaviour {
         
         using (var reader = new StreamReader(@"Assets/Scripts/config/" + worldName)) {
             while ((line = reader.ReadLine()) != null) {
+                Debug.Log(line);
                 lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
                 string[] leftArray = lineInfo[0].Split(new[] { "," }, StringSplitOptions.None);
                 string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
                 if (rightArray.Length < 5) {
-                    Debug.Log("Adding to short dictionary: " + leftArray[1]);
                     if (leftArray[0] != "Constant") {
-                        Debug.Log("Here");
                         InitNumSpecies(leftArray[1], Int32.Parse(rightArray[0]));
-                        SavePopulation(new Population(leftArray[1]));
+                        Population temp = new Population(leftArray[1]);
+                        SavePopulation(temp);
                     } else if (leftArray[0] == "Constant") { worldConfigDict.Add(leftArray[1], float.Parse(rightArray[0])); }
 
                 } else {
-                    Debug.Log("Adding to long dictionary: " + leftArray[1]);
                     int groups = Int32.Parse(rightArray[0]);
                     float mean = float.Parse(rightArray[1]);
                     float std = float.Parse(rightArray[2]);
                     float density = float.Parse(rightArray[3]);
                     int refresh = Int32.Parse(rightArray[4]);
-
-                    SavePopulation(new Population(leftArray[1], groups, mean, std, density, refresh));
+                    Population temp = new Population(leftArray[1], groups, mean, std, density, refresh);
+                    SavePopulation(temp);
                 }
             }
         } 
