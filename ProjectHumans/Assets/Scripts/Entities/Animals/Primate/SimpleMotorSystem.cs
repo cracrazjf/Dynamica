@@ -7,410 +7,214 @@ using System.Linq;
 public class SimpleMotorSystem : MotorSystem
 {
     Transform abdomenTrans;
+    Transform leftEye;
+    Transform rightEye;
     PrimateBody primateBody;
     Vector3 goalPos;
     int footUpdates = 0;
     bool firstRight = true; // change this at some point like handedness
     private float xMin = -1f, xMax = 1f;
     private float timeValue = 0.0f;
+    HingeJoint rightFemur;
+    HingeJoint leftFemur;
+    HingeJoint rightTibia;
+    HingeJoint leftTibia;
+    HingeJoint rightHumerus;
+    HingeJoint leftHumerus;
+    HingeJoint rightRadius;
+    HingeJoint leftRadius;
 
     public SimpleMotorSystem(Animal animal) : base(animal) {
         Debug.Log("A simple ape was born!");
         abdomenTrans = thisBody.abdomen.transform;
+        leftEye = thisBody.head.transform.GetChild(1).GetChild(1);
+        rightEye = thisBody.head.transform.GetChild(1).GetChild(0);
         primateBody = (PrimateBody)thisBody;
-        StandUp();
-    }
-    
-    public override void Crouch() {
-        if (stateDict["crouch"] == -1f) {
-            CrouchDown(); }
-        else if (stateDict["crouch"] == 1f) {
-            SitUp();
-        } else { Rest(); }
-        LegCheck();
+        rightFemur = thisBody.GetSkeleton("Femur_R").GetComponent<HingeJoint>();
+        leftFemur = thisBody.GetSkeleton("Femur_L").GetComponent<HingeJoint>();
+        rightTibia = thisBody.GetSkeleton("Tibia_R").GetComponent<HingeJoint>();
+        leftTibia = thisBody.GetSkeleton("Tibia_L").GetComponent<HingeJoint>();
+        rightHumerus = thisBody.GetSkeleton("Humerus_R").GetComponent<HingeJoint>();
+        leftHumerus = thisBody.GetSkeleton("Humerus_L").GetComponent<HingeJoint>();
+        rightRadius = thisBody.GetSkeleton("Radius_R").GetComponent<HingeJoint>();
+        leftRadius = thisBody.GetSkeleton("Radius_L").GetComponent<HingeJoint>();
     }
 
-    public override void Sit() {
-        if (stateDict["sit"] == -1f) {
-            SitDown();
-        } else { SitUp(); }
-        LegCheck();
-    }
-
-    public override void Lay() {
-        if (stateDict["lay"] == -1f) {
-            LayDown();
-        } else if (stateDict["lay"] == 1f) {
-            SitUp();
-        } else { Rest(); }
-        LegCheck();
-    }
-
-    public override void Stand() {
-        if (stateDict["stand"] == 1f) {
-            StandUp();
-        } else if (stateDict["stand"] == -1f) {
-            SitDown();
-        } else { Rest(); }
-        LegCheck();
-    }
-    public override void Rotate() {
-        if(thisBody.GetState("standing") == 1f) {
-            float degree = stateDict["rotate"] * 0.5f;
-            float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
-
-            thisBody.globalPos.Rotate(0, rotatingSpeed, 0, Space.World);
-        } else {
-            float degree = stateDict["rotate"] * 0.25f;
-            float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
-            abdomenTrans.Rotate(0, rotatingSpeed, 0, Space.Self);
+    public override void Consume()
+    {
+        if(states[11] == 1)
+        {
+            JointSpring humerusHingeSpring = rightHumerus.spring;
+            JointSpring radiusHingeSpring = rightRadius.spring;
+            humerusHingeSpring.targetPosition = -80;
+            rightHumerus.spring = humerusHingeSpring;
+            radiusHingeSpring.targetPosition = -80;
+            rightRadius.spring = radiusHingeSpring;
         }
-    }
-    public override void TakeSteps() {
-        UnlockFeet();
-        if (primateBody.CheckSitting()) {
-            StandUp();
-        } else {
-            float direction = stateDict["take steps"];
-            float stepProportion = direction * thisAnimal.GetPhenotype().GetTrait("max_step") * 0.8f;
-
-            ConfigurableJoint legR = thisBody.GetSkeleton("Femur_R").GetComponent<ConfigurableJoint>();
-            ConfigurableJoint legL = thisBody.GetSkeleton("Femur_L").GetComponent<ConfigurableJoint>();
-
-            float crouchAdjustR = legR.targetRotation.x;
-            float crouchAdjustL = legL.targetRotation.x;
-
-            float xQR = Mathf.Lerp(xMin, xMax, timeValue) + crouchAdjustR/90;
-            float xQL = Mathf.Lerp(xMax, xMin, timeValue) + crouchAdjustL/90;
-            timeValue += 0.5f * Time.deltaTime;
-
-            if (timeValue > 1.0f) {
-                timeValue = 0.0f;
-                firstRight = !firstRight;
-            }
-
-            if (firstRight) {
-                // Right foot first
-                legR.targetRotation = new Quaternion(xQR, 0, 0, 1);
-                legL.targetRotation = new Quaternion(xQL, 0, 0, 1);
-
-                if (xQL > -0.25f) {
-                thisBody.DisableKinematic("Foot_L");
-                } else {
-                thisBody.EnsureKinematic("Foot_L");
-                }
-
-                if (xQR > -0.25f) {
-                thisBody.DisableKinematic("Foot_R");
-                } else {
-                thisBody.EnsureKinematic("Foot_R");
-                }
-            } else {
-                // Left foot first
-                legL.targetRotation = new Quaternion(xQR, 0, 0, 1);
-                legR.targetRotation = new Quaternion(xQL, 0, 0, 1);
-
-                if (xQR > -0.25f) {
-                thisBody.DisableKinematic("Foot_L");
-                } else {
-                thisBody.EnsureKinematic("Foot_L");
-                }
-
-                if (xQL > -0.25f) {
-                thisBody.DisableKinematic("Foot_R");
-                } else {
-                thisBody.EnsureKinematic("Foot_R");
-                }
-            }
-            
-            float diff = (float) Math.Sqrt((xQR * xQR) + (xQL * xQL));
-            // Super important to move parts of the body, not the whole gameObject. 
-            abdomenTrans.Translate(abdomenTrans.forward * stepProportion * Time.deltaTime * diff);
-            
-            LegCheck();
+        else
+        {
+            JointSpring humerusHingeSpring = leftHumerus.spring;
+            JointSpring radiusHingeSpring = leftRadius.spring;
+            humerusHingeSpring.targetPosition = 80;
+            leftHumerus.spring = humerusHingeSpring;
+            radiusHingeSpring.targetPosition = 80;
+            leftRadius.spring = radiusHingeSpring;
         }
     }
 
-    public override void UseHand() {
-        GameObject holder = GetActiveHand();
-
-        if (stateDict["hand action"] == 1f) { 
-            PickUp();
-        } else { DropArm(); }
-    }
-    public override void Consume() {
-        thisAnimal.AddThought("Tried to eat something");
-        GameObject holder = GetActiveHand();
-
-        if (ArmTo(thisBody.head.transform.position)) {
-            thisBody.EatObject(holder.name);
-            DropArm();
+    public override void Crouch()
+    {
+        if (abdomenTrans.localPosition.y > thisAnimal.GetPhenotype().GetTrait("default_max_reach_y"))
+        {
+            abdomenTrans.Translate(-abdomenTrans.up * 5 * Time.deltaTime, Space.Self);
         }
-    }
-    public override void Sleep() {
-        if (stateDict["consume"] == 1f) {
-            FallAsleep();
-        } else { WakeUp(); }
-    }
-
-    public override void Rest() {
-        thisAnimal.AddThought("Resting");
-        thisBody.RestAdjust();
-    }
-
-    public override void Look() {
-        if (stateDict["look"] == 1f) {
-            LookAt();
-        } else { LookForward(); }
-    }
-
-    // BEGIN HELPER FUNCTIONS
-    void SitDown() {
-        if (((PrimateBody)thisBody).CheckCrouchingTop()) {
-            thisBody.SlerpRotateTo("Abdomen", Quaternion.identity, 0.5f);
-            Vector3 toSend = abdomenTrans.position;
-            double sitHeight = thisBody.GetHeight() / 2.25;
-            if (toSend.y > sitHeight) {
-                BendLegs(.5f, 0.15f);
-                abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
-            } else {
-                thisBody.EnsureKinematic("Abdomen");
-                thisBody.FreeRotation("Abdomen");
-                thisAnimal.AddThought("I think I'm sitting");
-                thisBody.SetState("sitting", 1f);
-            }
-        } else { CrouchDown(); }
-    }
-    void SitUp() {
-        thisAnimal.AddThought("Tried to lift abdomen");
-        thisBody.EnsureKinematic("Abdomen");
-        thisBody.SlerpRotateTo("Abdomen", Quaternion.identity, 0.5f);
-    }
-
-    void LayDown() {
-        thisAnimal.AddThought("Tried to lay down");
-        if (thisAnimal.GetBodyState("sitting")) {
-            Collapse();
-            //thisBody.RotateJointTo("Femur_R", new Quaternion(-1, 0, 0, 1));
-            //thisBody.RotateJointTo("Femur_L", new Quaternion(-1, 0, 0, 1));
-        } else { SitDown(); }
-    }
-    
-    void StandUp() {
-        Vector3 toSend = abdomenTrans.localPosition;
-        if(abdomenTrans.rotation.x > 15f || abdomenTrans.rotation.x < -15f) {
-            SitUp();
-        } else {
-            if (Math.Pow(toSend.y - 0.2f, 2) > 0.05 ) {
-                if (toSend.y < 0.2f) {
-                    abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * .5f);
-                } else {
-                    abdomenTrans.Translate(Vector3.up * (Time.deltaTime) * -.5f);
-                } 
-            } else {
-               thisAnimal.AddThought("I think I'm standing");
-               thisBody.SetState("standing", 1f);
+        else
+        {
+            if (abdomenTrans.localRotation.x < 0.5)
+            {
+                abdomenTrans.Rotate(30 * Time.deltaTime, 0, 0);
             }
         }
-    }
-    
-    void PickUp() {
-        thisAnimal.AddThought("Tried to pick something up");
-        GameObject holder = GetActiveHand();
+        JointSpring femurHingeSpring = rightFemur.spring;
+        JointSpring tibiaHingeSpring = rightTibia.spring;
+        femurHingeSpring.targetPosition = -120;
+        rightFemur.spring = femurHingeSpring;
+        leftFemur.spring = femurHingeSpring;
+        tibiaHingeSpring.targetPosition = 160;
+        rightTibia.spring = tibiaHingeSpring;
+        leftTibia.spring = tibiaHingeSpring;
 
-        if (ArmToGoal()) {
-            GrabWithHolder(holder);
-            DropArm();
-        }
-    }
-    
-    void SetDown() {
-        thisAnimal.AddThought("Tried to set something down");
-        GameObject holder = GetActiveHand();
-        if (thisBody.CheckSitting()) {
-            RemoveFromHolder(holder);
-        } else { KneelDown(); }
-    }
-    // Functional
-    void WakeUp() {
-        thisAnimal.AddThought("Waking up");
-        ToggleEyes(true);
-        thisBody.SetState("sleeping", -1f);
-    }
-
-    void FallAsleep() {
-        thisAnimal.AddThought("Sleeping");
-        ToggleEyes(false);
-
-        if (thisBody.CheckLaying()) {
-            thisBody.SetState("sleeping", 1f);
-            thisBody.SleepAdjust();
-        } else { LayDown(); }
-    }
-
-    // Functional (but hated)
-    void LookForward() {
-        Quaternion toSend = Quaternion.LookRotation(thisBody.globalPos.forward);
-        thisBody.RotateJointTo("Head", toSend);
-    }
-
-   // Need to look at active hand
-    void LookAt() {
-        GameObject holder = GetActiveHand();
-        Vector3 direction = (holder.transform.position - thisBody.head.transform.position).normalized;
-        Quaternion toSend = Quaternion.LookRotation(direction);
-        thisBody.RotateJointTo("Head", toSend);
-    }
-    
-    bool ArmTo(Vector3 targetPos) {
-        string arm = GetActiveHand().name;
-        thisBody.EnsureKinematic(arm);
-        Transform armTrans = thisBody.GetSkeletonDict()[arm].transform;
-        armTrans.position = Vector3.Slerp(armTrans.position, targetPos, Time.deltaTime);
-        return (armTrans.position == targetPos);
-    }
-
-    // Functional
-    void BendKnees(float degree) {
-        Quaternion toSend = new Quaternion(degree, 0, 0, 0);
-        thisBody.RotateJointTo("Tibia_L", toSend);
-        thisBody.RotateJointTo("Tibia_R", toSend);
-    }
-    
-    void BendLegs(float xDegree, float yDegree) {
-        Quaternion sendLeft = new Quaternion(xDegree, yDegree, 0, 1f);
-        Quaternion sendRight = new Quaternion(xDegree, yDegree, 0, 1f);
-        thisBody.RotateJointTo("Femur_L", sendLeft);
-        thisBody.RotateJointTo("Femur_R", sendRight);
-    }
-
-
-    bool ArmToGoal() {
-        Vector3 abAdj = primateBody.abAdjLeft;
-        string arm = GetActiveHand().name;
-        if (stateDict["active right"] == 1f) {
-            abAdj = primateBody.abAdjRight;
-        }
-
-        float xTrans = stateDict["RP x"] * thisBody.xMax;
-        float yTrans = stateDict["RP y"] * thisBody.yMax;
-        float zTrans = stateDict["RP z"] * thisBody.zMax;
-
-        Vector3 toAdd = new Vector3(.5f, -.5f, 1f);
-        // need to attach .abs to these
-        if (xTrans <= 1f && yTrans <= 1f && zTrans <= 1f) {
-            toAdd = new Vector3(xTrans, yTrans, zTrans);
-        } else {
-             thisAnimal.AddThought("Can't reach that far!");
-        }
         
-        Transform armTrans = GetActiveHand().transform;
-        Vector3 goalPos = abdomenTrans.position + abAdj + toAdd;
+    }
+        
 
-        thisBody.EnsureKinematic(armTrans.name);
-        armTrans.position = Vector3.Slerp(armTrans.position, goalPos, Time.deltaTime);
-        return (armTrans.position == goalPos);
-    }
-    // Functional
-    void DropArm() {
-        string arm = GetActiveHand().name;
-        thisBody.DisableKinematic(arm);
-    }
-    
-    void KneelDown() {
-        Vector3 toSend = abdomenTrans.position;
-        if (toSend.y > thisBody.GetHeight() / 2 + 0.5) {
-            BendLegs(.25f, 0f);
-            BendKnees(-.33f);
-            abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -1));
-        } else { thisAnimal.AddThought("I think I'm kneeling"); }
-    }
+    public override void Lay()
+    {
+        JointSpring femurHingeSpring = rightFemur.spring;
+        JointSpring tibiaHingeSpring = rightTibia.spring;
+        femurHingeSpring.targetPosition = -80;
+        rightFemur.spring = femurHingeSpring;
+        leftFemur.spring = femurHingeSpring;
+        tibiaHingeSpring.targetPosition = -100;
+        rightTibia.spring = tibiaHingeSpring;
+        leftTibia.spring = tibiaHingeSpring;
+        abdomenTrans.localPosition = new Vector3(0, -0.84f, 0);
+        if (abdomenTrans.localRotation.x >= -0.7)
+        {
+            abdomenTrans.Rotate(-30 * Time.deltaTime, 0, 0);
+        }
+        else
+        {
+            abdomenTrans.localPosition = new Vector3(0, -2.5f, 0);
+        }
 
-    void CrouchDown() {
-        thisAnimal.AddThought("Crouching down");
-        if (((PrimateBody)thisBody).CheckCrouchingBottom()) {
-            BendLegs(-1f, 0f);
-            BendLegs(.33f, 0f);
-            BendKnees(-.25f);
-            LockFeet();
-            abdomenTrans.Translate(Vector3.up * (Time.deltaTime * -0.75f));
-            UnlockFeet();
-            thisBody.SlerpRotateTo("Abdomen", new Quaternion(0.55f, 0, 0, 1), 0.5f);
-        } else { thisBody.SetState("crouching", 1f); }
     }
 
-    void Collapse() {
-        thisAnimal.AddThought("Collapsing");
-        thisBody.DisableKinematic("Abdomen");
+    public override void Look()
+    {
+        throw new NotImplementedException();
     }
 
-    void GrabWithHolder(GameObject holder) {
-        thisAnimal.AddThought("Tried to grab something");
-        Vector3 forCollider = holder.transform.position;
-        Collider[] hitColliders = Physics.OverlapSphere(forCollider, .025f);
-        Rigidbody toConnect = holder.GetComponent<Rigidbody>();
+    public override void Rest()
+    {
+        Sit();
+    }
 
-        foreach (var hit in hitColliders) {
-            if (!thisBody.GetSkeletonDict().ContainsKey(hit.gameObject.name)) {
-                if (CheckMovableObject(hit.gameObject)) {
-                    FixedJoint newJoint = hit.gameObject.AddComponent<FixedJoint>() as FixedJoint;
-                    newJoint.connectedBody = toConnect;
-                } else { thisAnimal.AddThought("Object too big to lift!"); }
-            } else { thisAnimal.AddThought("Nothing to pick up!"); }
+    public override void Rotate() {
+        float degree = stateDict["rotate"];
+        float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
+        abdomenTrans.Rotate(0, 10 * Time.deltaTime, 0, Space.Self);
+    }
+
+    public override void Sit()
+    {
+        JointSpring femurHingeSpring = rightFemur.spring;
+        JointSpring tibiaHingeSpring = rightTibia.spring;
+        femurHingeSpring.targetPosition = -180;
+        rightFemur.spring = femurHingeSpring;
+        leftFemur.spring = femurHingeSpring;
+        tibiaHingeSpring.targetPosition = 120;
+        rightTibia.spring = tibiaHingeSpring;
+        leftTibia.spring = tibiaHingeSpring;
+        abdomenTrans.localPosition = new Vector3(0, -2.0f, 0);
+    }
+
+    public override void Sleep()
+    {
+        leftEye.localScale = new Vector3(0.4f, 0.0f, 0.4f);
+        rightEye.localScale = new Vector3(0.4f, 0.0f, 0.4f);
+    }
+
+    public override void Stand()
+    {
+        if(thisBody.GetState("crouching") == 1)
+        {
+            if (abdomenTrans.localRotation.x > 0)
+            {
+                abdomenTrans.Rotate(-30 * Time.deltaTime, 0, 0);
+            }
+            JointSpring femurHingeSpring = rightFemur.spring;
+            JointSpring tibiaHingeSpring = rightTibia.spring;
+            femurHingeSpring.targetPosition = 0;
+            rightFemur.spring = femurHingeSpring;
+            leftFemur.spring = femurHingeSpring;
+            tibiaHingeSpring.targetPosition = 0;
+            rightTibia.spring = tibiaHingeSpring;
+            leftTibia.spring = tibiaHingeSpring;
+            abdomenTrans.localPosition = new Vector3(0, 0, 0);
+        }
+        else if (thisBody.GetState("sitting") == 1)
+        {
+            JointSpring femurHingeSpring = rightFemur.spring;
+            JointSpring tibiaHingeSpring = rightTibia.spring;
+            femurHingeSpring.targetPosition = 0;
+            rightFemur.spring = femurHingeSpring;
+            leftFemur.spring = femurHingeSpring;
+            tibiaHingeSpring.targetPosition = 0;
+            rightTibia.spring = tibiaHingeSpring;
+            leftTibia.spring = tibiaHingeSpring;
+            abdomenTrans.localPosition = new Vector3(0, 0, 0);
         }
     }
 
-    void RemoveFromHolder(GameObject holder) {
-        string holderName = holder.name;
-        if (thisBody.GetHeld(holderName) != null) { thisBody.RemoveObject(holderName); }
+    public override void TakeSteps() {
+        float stepRange = stateDict["take steps"] * thisAnimal.GetPhenotype().GetTrait("max_step");
+        abdomenTrans.Translate(abdomenTrans.forward * stepRange * Time.deltaTime, Space.Self);
     }
 
-    bool CheckMovableObject(GameObject toLift) {
-        float liftMass = toLift.GetComponent<Rigidbody>().mass;
-        return (liftMass < thisBody.rigidbody.mass);
-    }
-
-    GameObject GetActiveHand() {
-        if (stateDict["active right"] == 1f) {
-            return thisBody.GetSkeleton("Hand_R");
-        } else { return thisBody.GetSkeleton("Hand_L"); }
-    }
-
-    void ToggleEyes(bool open) {
-        Transform head = thisBody.GetSkeleton("Head").transform;
-        Transform face = null;
-        foreach (Transform part in head) {
-            if (part.name == "Face") {
-                face = part;
-                break;
+    public override void UseHand()
+    {
+        float reach_x = stateDict["RP x"] * thisAnimal.GetPhenotype().GetTrait("default_max_reach_x");
+        float reach_z = stateDict["RP z"] * thisAnimal.GetPhenotype().GetTrait("default_max_reach_z");
+        Vector3 direction = new Vector3(1, 0, 0);
+        if(stateDict["right"] == 1)
+        {
+            rightHumerus.axis = direction;
+            JointSpring humerusHingeSpring = rightHumerus.spring;
+            humerusHingeSpring.targetPosition = stateDict["angle"] * 180;
+            rightHumerus.spring = humerusHingeSpring;
+            int maxColliders = 10;
+            Collider[] hitColliders = new Collider[maxColliders];
+            int numColliders = Physics.OverlapSphereNonAlloc(thisBody.GetSkeleton("Hand_R").transform.position, 0.5f, hitColliders);
+            if (numColliders > 0)
+            {
+                hitColliders[0].transform.parent = thisBody.GetSkeleton("Hand_R").transform;
+                thisBody.GetSkeleton("Hand_R").transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
             }
         }
-
-        foreach (Transform feature in face) {
-            if (feature.name == "Eye_R" || feature.name == "Eye_L") {
-                feature.gameObject.SetActive(open);
-            }
-        }
-    }
-
-    void LockFeet() {
-        thisBody.EnsureKinematic("Foot_R");
-        thisBody.EnsureKinematic("Foot_L");
-    }
-
-
-    void UnlockFeet() {
-        thisBody.DisableKinematic("Foot_R");
-        thisBody.DisableKinematic("Foot_L");
-    }
-
-    void LegCheck() {
-        foreach (string leg in thisBody.LegList) {
-            float rotCheck = thisBody.GetSkeleton(leg).transform.rotation.y;
-            if (rotCheck > 0.40f || rotCheck < -0.40f) {
-                Debug.Log("Fixing leg: " + leg);
-                thisBody.SlerpRotateTo(leg, Quaternion.identity, 1f);
-                thisBody.DisableKinematic(leg);
+        if(stateDict["left"] ==  1)
+        {
+            leftHumerus.axis = direction;
+            JointSpring humerusHingeSpring = rightHumerus.spring;
+            humerusHingeSpring.targetPosition = stateDict["angle"] * 180;
+            leftHumerus.spring = humerusHingeSpring;
+            int maxColliders = 10;
+            Collider[] hitColliders = new Collider[maxColliders];
+            int numColliders = Physics.OverlapSphereNonAlloc(thisBody.GetSkeleton("Hand_R").transform.position, 0.5f, hitColliders);
+            if (numColliders > 0)
+            {
+                hitColliders[0].transform.parent = thisBody.GetSkeleton("Hand_L").transform;
+                thisBody.GetSkeleton("Hand_L").transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
             }
         }
     }

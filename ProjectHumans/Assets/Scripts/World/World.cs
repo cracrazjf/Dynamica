@@ -266,7 +266,7 @@ public class World : MonoBehaviour {
     public static Vector3 CreateRandomPosition() {
         float xRan = Random.Range(World.minPosition, World.maxPosition);
         float zRan = Random.Range(World.minPosition, World.maxPosition);
-        Vector3 newStartPosition = new Vector3 (xRan, 0.5f, zRan); 
+        Vector3 newStartPosition = new Vector3 (xRan, 0.75f, zRan); 
 
         return newStartPosition;
     }

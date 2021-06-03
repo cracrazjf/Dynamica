@@ -40,10 +40,12 @@ public abstract class MotorSystem
             "rest",        // 8 -1 or 1 (or 0 if not switched)
             "look",        // 9 -1 or 1 (or 0 if not switched)
             "hand action", // 10, release/maintain/grab
-            "active right",// 11  -1 or 1 (1 if right)
+            "right",// 11  -1 or 1 (1 if right)
+            "left",
             "RP x",        // 12  -1 to 1, proportion of max range from start pos
             "RP y",        // 13
-            "RP z"         // 14
+            "RP z",        // 14
+            "angle"
         };
         this.InitStates(stateLabelList);
         this.InitActionDict();
@@ -63,17 +65,8 @@ public abstract class MotorSystem
     }
 
     public void TakeAction(Vector<float> actions) {
-        if (actions[8] != 1) {
-            for(int i = 0; i < states.Count - numArgs; i++) {
-                if (actions[i] != 0) {
-                    SetState(i, actions[i]);
-                    //Debug.Log("Doing action at " + i);
-                    actionList[i].DynamicInvoke();
-                }
-            } 
-        } else {
-            Rest();
-        }
+        actionList[0]();
+        //actionList[10]();
     }
 
     void InitStates(List<string> passedList) {

@@ -27,7 +27,7 @@ public class Animal : Entity {
             
         animalBody = new PrimateBody(this, spawn);
         body = animalBody;
-        motorSystem = new PrimateMotorSystem(this);
+        motorSystem = new SimpleMotorSystem(this);
             
         visualInputCamera = animalBody.GetGameObject().GetComponentInChildren<Camera>();
         
