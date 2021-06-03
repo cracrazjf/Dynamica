@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Linq;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Distributions;
 using Random=UnityEngine.Random;
 
 public class World : MonoBehaviour {
@@ -21,6 +22,7 @@ public class World : MonoBehaviour {
     /// This dict keeps track of the total number of each kind of object that has been created
     public static Dictionary<string, int> entityCountDict = new Dictionary<string, int>();
     public static Dictionary<string, int> startingCountsDict = new Dictionary<string, int>();
+    public static Dictionary<string, Group> assortedGroupDict = new Dictionary<string, Group>();
 
     public static Dictionary<string, Population> populationDict = new Dictionary<string, Population>();
     public static Dictionary<string, float> worldConfigDict = new Dictionary<string, float>();
@@ -86,7 +88,6 @@ public class World : MonoBehaviour {
             if (startingCountsDict.ContainsKey(speciesType)) {
                 for (int i = 0; i < startingCountsDict[speciesType]; i++) {
                     if (i == 0) { 
-                        Debug.Log(activePop.name);
                         SaveEntity(AddEntity(activePop, new Vector3(0f,0f,0f)), activePop); 
                     } else { SaveEntity(AddEntity(activePop, null), activePop); }
                 }
@@ -98,15 +99,24 @@ public class World : MonoBehaviour {
         updateCompleted = true;
     }
 
-    // make general, spawn contrastively for 2
+    
     public void SpawnGroups(Population population) {
-        List<Vector3>[] grid = InitGrid(10, 20);
-        for ( int i = 0; i <  grid.Length; i++ ) { }
+        Debug.Log("Trying to spawn clusters of " + population.name);
+        List<Vector3>[] grid = InitGrid(population.numGroups, (int) (population.meanMembers * 2));
+        for ( int i = 0; i <  population.numGroups; i++ ) {
+            // Generate a normalized val for num members
+            Normal normalDist = new Normal(population.meanMembers, population.standardMembers);
+            double numMembers = normalDist.Sample();
+
+            int clusterIndex = (int) Random.Range(0, ((population.numGroups - 1) * (population.numGroups - 1)));
+            Group toAdd = new Group(population, (int) numMembers, population.spawnDensity, grid[clusterIndex][0]);
+            population.SaveGroup(toAdd);
+        }
     }
 
     public static void DestroyComponent(Component passed) { Destroy(passed); }
 
-
+    // Makes life easier for spawning without pop reference
     public static Entity AddEntity(string species, Nullable<Vector3> passedSpawn) {
         if(populationDict.ContainsKey(species)) {
             Population toPass = populationDict[species];
@@ -184,9 +194,11 @@ public class World : MonoBehaviour {
         updateCompleted = false;
         foreach(KeyValuePair<string, Population> entry in populationDict) {
             Population activePop = entry.Value;
-            Debug.Log("updating population: " + activePop.name);
             int modCheck = activePop.GetUpdateRate();
-            if (updateCounter % modCheck == 0) { activePop.UpdatePopulation(); }
+            if (updateCounter % modCheck == 0) { 
+                LogComment("Updating population: " + activePop.name);
+                activePop.UpdatePopulation(); 
+            }
         }
         updateCompleted = true;
     }
@@ -215,7 +227,6 @@ public class World : MonoBehaviour {
         
         using (var reader = new StreamReader(@"Assets/Scripts/config/" + worldName)) {
             while ((line = reader.ReadLine()) != null) {
-                Debug.Log(line);
                 lineInfo = line.Split(new[] { "=" }, StringSplitOptions.None);
                 string[] leftArray = lineInfo[0].Split(new[] { "," }, StringSplitOptions.None);
                 string[] rightArray = lineInfo[1].Split(new[] { "," }, StringSplitOptions.None);
@@ -248,6 +259,10 @@ public class World : MonoBehaviour {
 
     public static List<string> GetPopulationNames() { return new List<string>(populationDict.Keys); }
 
+    public static string NameGroup() { return ( "Assorted Group " + assortedGroupDict.Count()); }
+
+    public static void SaveGroup(Group passed) { assortedGroupDict.Add(passed.GetName(), passed); }
+
     public static Vector3 CreateRandomPosition() {
         float xRan = Random.Range(World.minPosition, World.maxPosition);
         float zRan = Random.Range(World.minPosition, World.maxPosition);
@@ -265,13 +280,13 @@ public class World : MonoBehaviour {
         foreach(KeyValuePair<string, float> entry in thisStateDict) { LogComment(entry.Key + " " + entry.Value); }
     }
 
-    public List<Vector3>[] InitGrid(int locations, int gridNum) {
+    public List<Vector3>[] InitGrid(int gridWidth, int numLocations) {
         // Okay so we're going to divide the map into a grid
         // Each of those 64 zones will have an array of 10 random locations within the zone
 
-        int gridDiv = gridNum;
+        int gridDiv = gridWidth;
         float bump = maxPosition / (gridDiv / 2);
-        int numLocs = locations;
+        int numLocs = numLocations;
         List<Vector3>[] grid = new List<Vector3>[gridDiv * gridDiv]; 
 
         for (int i = 0; i < grid.Length; i++) {

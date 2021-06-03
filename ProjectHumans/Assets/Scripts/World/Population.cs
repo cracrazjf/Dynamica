@@ -12,10 +12,10 @@ using Random=UnityEngine.Random;
 public class Population {
     // this is the initial number that will be spawned
     public string name;
-    protected int numGroups;
-    protected float meanMembers;
-    protected float standardMembers;
-    protected float spawnDensity;
+    public int numGroups;
+    public float meanMembers;
+    public float standardMembers;
+    public float spawnDensity;
     protected int updateRate;
 
     public int GetUpdateRate() { return updateRate; }
@@ -26,6 +26,7 @@ public class Population {
 
     protected List<Entity> entityList = new List<Entity>();
     protected Dictionary<string, Entity> entityDict = new Dictionary<string, Entity>();
+    protected Dictionary<string, Group> groupDict = new Dictionary<string, Group>();
 
     public  List<Entity> GetEntityList() { return entityList; }
     public List<string> GetEntityNames() { return new List<string>(entityDict.Keys); }
@@ -85,5 +86,14 @@ public class Population {
     public void SaveEntity(Entity passed) {
         entityList.Add(passed);
         entityDict.Add(passed.GetName(), passed);
+    }
+
+    public void SaveGroup(Group passed) {
+        groupDict.Add(passed.GetName(), passed);
+    }
+
+    public string NameGroup() {
+        string toName = name + " Group " + groupDict.Count();
+        return toName;
     }
 }

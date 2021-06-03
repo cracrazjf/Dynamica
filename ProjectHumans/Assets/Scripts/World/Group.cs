@@ -7,17 +7,20 @@ using System.Linq;
 using Random=UnityEngine.Random;
 
 public class Group {
-    public string name;
+    protected string name;
+    public string GetName() { return name; }
 
     protected static List<Entity> memberList = new List<Entity>();
     protected static Dictionary<string, Entity> memberDict = new Dictionary<string, Entity>();
     public static List<Entity> GetEntityList() { return memberList; }
 
     public Group(Population population, int numEntities, float density, Vector3 origin) {
+        name = population.NameGroup();
         SpawnMembers(population, numEntities, density, origin);
     }
 
     public Group(List<Entity> passedList) {
+
         foreach (Entity ent in passedList) {
             memberList.Add(ent);
             memberDict[ent.GetName()] = ent;
@@ -33,6 +36,7 @@ public class Group {
             float zRan = Random.Range(origin.z - range, origin.z + range);
             Vector3 memberPos = new Vector3 (xRan, 0, zRan);
 
+            Debug.Log("Got here!");
             Entity newMember = World.AddEntity(population, memberPos);
             World.SaveEntity(newMember, population);
             SaveMember(newMember);
@@ -43,4 +47,6 @@ public class Group {
         memberList.Add(passed);
         memberDict.Add(passed.GetName(), passed);
     }
+
+    
 }
