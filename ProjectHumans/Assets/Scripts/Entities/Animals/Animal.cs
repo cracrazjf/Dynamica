@@ -44,7 +44,7 @@ public class Animal : Entity {
     }
 
     public override void UpdateEntity() {
-        //Debug.Log("Updating an animal");
+        Debug.Log("Updating an animal");
         if (finishedUpdate) {
 
             finishedUpdate = false;

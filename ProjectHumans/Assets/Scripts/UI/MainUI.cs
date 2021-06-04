@@ -42,7 +42,7 @@ public class MainUI : MonoBehaviour
     void Start() {
         toggleDict.Add("isFF", false);
         toggleDict.Add("isAwake", false);
-        toggleDict.Add("isPaused", true);
+        toggleDict.Add("isPaused", false);
         toggleDict.Add("showInfo", false);
         toggleDict.Add("showOptions", false);
         toggleDict.Add("isFollowing", false);
