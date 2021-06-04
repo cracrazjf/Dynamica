@@ -38,14 +38,15 @@ public abstract class MotorSystem
             "consume",     // 6, set to consumable if ongoing
             "sleep",       // 7, awake/maintain/fall asleep
             "rest",        // 8 -1 or 1 (or 0 if not switched)
-            "look",        // 9 -1 or 1 (or 0 if not switched)
+            "look vertically",
+            "look horizontally",// 9 -1 or 1 (or 0 if not switched)
             "hand action", // 10, release/maintain/grab
             "right",// 11  -1 or 1 (1 if right)
             "left",
             "RP x",        // 12  -1 to 1, proportion of max range from start pos
             "RP y",        // 13
             "RP z",        // 14
-            "angle"
+            
         };
         this.InitStates(stateLabelList);
         this.InitActionDict();
@@ -65,7 +66,8 @@ public abstract class MotorSystem
     }
 
     public void TakeAction(Vector<float> actions) {
-        actionList[0]();
+        stateDict["look horizontally"] = 0.5f;
+        //actionList[9]();
         //actionList[10]();
     }
 

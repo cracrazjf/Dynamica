@@ -23,6 +23,7 @@ public class SimpleMotorSystem : MotorSystem
     HingeJoint leftHumerus;
     HingeJoint rightRadius;
     HingeJoint leftRadius;
+    HingeJoint head;
 
     public SimpleMotorSystem(Animal animal) : base(animal) {
         Debug.Log("A simple ape was born!");
@@ -38,17 +39,18 @@ public class SimpleMotorSystem : MotorSystem
         leftHumerus = thisBody.GetSkeleton("Humerus_L").GetComponent<HingeJoint>();
         rightRadius = thisBody.GetSkeleton("Radius_R").GetComponent<HingeJoint>();
         leftRadius = thisBody.GetSkeleton("Radius_L").GetComponent<HingeJoint>();
+        head = thisBody.head.GetComponent<HingeJoint>();
     }
 
     public override void Consume()
     {
-        if(states[11] == 1)
+        if(stateDict["consume"] == 1)
         {
             JointSpring humerusHingeSpring = rightHumerus.spring;
             JointSpring radiusHingeSpring = rightRadius.spring;
             humerusHingeSpring.targetPosition = -80;
             rightHumerus.spring = humerusHingeSpring;
-            radiusHingeSpring.targetPosition = -80;
+            radiusHingeSpring.targetPosition = -130;
             rightRadius.spring = radiusHingeSpring;
         }
         else
@@ -57,7 +59,7 @@ public class SimpleMotorSystem : MotorSystem
             JointSpring radiusHingeSpring = leftRadius.spring;
             humerusHingeSpring.targetPosition = 80;
             leftHumerus.spring = humerusHingeSpring;
-            radiusHingeSpring.targetPosition = 80;
+            radiusHingeSpring.targetPosition = 130;
             leftRadius.spring = radiusHingeSpring;
         }
     }
@@ -112,7 +114,22 @@ public class SimpleMotorSystem : MotorSystem
 
     public override void Look()
     {
-        throw new NotImplementedException();
+        if(stateDict["look horizontally"] != 0)
+        {
+            Debug.Log("here");
+            JointSpring headSpring = head.spring;
+            head.axis = new Vector3(0, 1, 0);
+            //headSpring.targetPosition = 90;
+            //head.spring = headSpring;
+
+        }
+        if(stateDict["look vertically"] != 0)
+        {
+            JointSpring headSpring = head.spring;
+            head.axis = new Vector3(1, 0, 0);
+            headSpring.targetPosition = stateDict["look vertically"] * 180;
+            head.spring = headSpring;
+        }
     }
 
     public override void Rest()
@@ -187,11 +204,11 @@ public class SimpleMotorSystem : MotorSystem
         float reach_x = stateDict["RP x"] * thisAnimal.GetPhenotype().GetTrait("default_max_reach_x");
         float reach_z = stateDict["RP z"] * thisAnimal.GetPhenotype().GetTrait("default_max_reach_z");
         Vector3 direction = new Vector3(1, 0, 0);
-        if(stateDict["right"] == 1)
+        if(stateDict["right"] != 0)
         {
             rightHumerus.axis = direction;
             JointSpring humerusHingeSpring = rightHumerus.spring;
-            humerusHingeSpring.targetPosition = stateDict["angle"] * 180;
+            humerusHingeSpring.targetPosition = stateDict["right"] * 180;
             rightHumerus.spring = humerusHingeSpring;
             int maxColliders = 10;
             Collider[] hitColliders = new Collider[maxColliders];
@@ -202,11 +219,11 @@ public class SimpleMotorSystem : MotorSystem
                 thisBody.GetSkeleton("Hand_R").transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
             }
         }
-        if(stateDict["left"] ==  1)
+        if(stateDict["left"] != 0)
         {
             leftHumerus.axis = direction;
             JointSpring humerusHingeSpring = rightHumerus.spring;
-            humerusHingeSpring.targetPosition = stateDict["angle"] * 180;
+            humerusHingeSpring.targetPosition = stateDict["left"] * 180;
             leftHumerus.spring = humerusHingeSpring;
             int maxColliders = 10;
             Collider[] hitColliders = new Collider[maxColliders];

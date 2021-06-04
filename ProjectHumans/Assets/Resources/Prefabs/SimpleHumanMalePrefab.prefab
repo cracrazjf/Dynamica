@@ -141,8 +141,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 418845280962990356}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.075, y: 0.3, z: -0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.075000145, y: 0.3000002, z: 0}
   m_LocalScale: {x: 0.25, y: 0.8, z: 0.25}
   m_Children: []
   m_Father: {fileID: 8574545253074136211}
@@ -815,7 +815,7 @@ HingeJoint:
   m_GameObject: {fileID: 2279846045140341692}
   m_ConnectedBody: {fileID: 2279846045150876411}
   m_Anchor: {x: 0, y: 0.38, z: 0}
-  m_Axis: {x: 1, y: 1, z: 0}
+  m_Axis: {x: 1, y: 0, z: 1}
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: -0.00000011920929, y: -0.3462498, z: 0}
   m_UseSpring: 1
@@ -828,10 +828,10 @@ HingeJoint:
     targetVelocity: 0
     force: 0
     freeSpin: 0
-  m_UseLimits: 0
+  m_UseLimits: 1
   m_Limits:
-    min: 0
-    max: 0
+    min: -183.6901
+    max: 1.1211767
     bounciness: 0
     bounceMinVelocity: 0.2
     contactDistance: 0
@@ -2479,8 +2479,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7831718110529669165}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.075, y: 0.9, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.07500027, y: 0.90000004, z: 0}
   m_LocalScale: {x: 0.2, y: 0.85, z: 0.2}
   m_Children: []
   m_Father: {fileID: 8574545253074136211}
@@ -2560,7 +2560,7 @@ HingeJoint:
   m_GameObject: {fileID: 7831718110529669165}
   m_ConnectedBody: {fileID: 6564993468296186952}
   m_Anchor: {x: 0, y: -0.31, z: 0}
-  m_Axis: {x: 1, y: 1, z: 0}
+  m_Axis: {x: 1, y: 0, z: 1}
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: -0.00000023841858, y: 0.42062506, z: 0}
   m_UseSpring: 1
@@ -2573,10 +2573,10 @@ HingeJoint:
     targetVelocity: 0
     force: 0
     freeSpin: 0
-  m_UseLimits: 0
+  m_UseLimits: 1
   m_Limits:
     min: 0
-    max: 0
+    max: 178.63312
     bounciness: 0
     bounceMinVelocity: 0.2
     contactDistance: 0
@@ -2696,20 +2696,20 @@ HingeJoint:
   m_GameObject: {fileID: 7938902763191156237}
   m_ConnectedBody: {fileID: 1450077999168301664}
   m_Anchor: {x: 0, y: 0.9359957, z: 0}
-  m_Axis: {x: 0, y: 1, z: 0}
+  m_Axis: {x: 0, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: -0.000000018626451, y: 0.480005, z: 0.20000009}
-  m_UseSpring: 0
+  m_UseSpring: 1
   m_Spring:
-    spring: 0
-    damper: 0
+    spring: 200
+    damper: 100
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
     targetVelocity: 0
     force: 0
     freeSpin: 0
-  m_UseLimits: 0
+  m_UseLimits: 1
   m_Limits:
     min: 0
     max: 0

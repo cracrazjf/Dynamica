@@ -87,8 +87,10 @@ public class World : MonoBehaviour {
 
             if (startingCountsDict.ContainsKey(speciesType)) {
                 for (int i = 0; i < startingCountsDict[speciesType]; i++) {
-                    if (i == 0) { 
-                        SaveEntity(AddEntity(activePop, new Vector3(0f,0f,0f)), activePop); 
+                    if (i == 0) {
+                        if (speciesType != "Human") {
+                            SaveEntity(AddEntity(activePop, new Vector3(0f,0f,0f)), activePop);
+                        } else { SaveEntity(AddEntity(activePop, null), activePop); }
                     } else { SaveEntity(AddEntity(activePop, null), activePop); }
                 }
             } else {
