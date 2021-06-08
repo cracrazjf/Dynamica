@@ -66,6 +66,7 @@ public class SimpleMotorSystem : MotorSystem
 
     public override void Crouch()
     {
+        Debug.Log("here");
         if (abdomenTrans.localPosition.y > thisAnimal.GetPhenotype().GetTrait("default_max_reach_y"))
         {
             abdomenTrans.Translate(-abdomenTrans.up * 5 * Time.deltaTime, Space.Self);

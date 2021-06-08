@@ -66,8 +66,9 @@ public abstract class MotorSystem
     }
 
     public void TakeAction(Vector<float> actions) {
+        Debug.Log("taking actions");
         stateDict["look horizontally"] = 0.5f;
-        //actionList[9]();
+        actionList[0]();
         //actionList[10]();
     }
 

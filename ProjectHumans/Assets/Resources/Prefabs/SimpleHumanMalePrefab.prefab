@@ -222,7 +222,7 @@ HingeJoint:
   m_GameObject: {fileID: 418845280962990356}
   m_ConnectedBody: {fileID: 2279846045774549997}
   m_Anchor: {x: 0, y: -0.5, z: 0}
-  m_Axis: {x: 1, y: 0, z: 0}
+  m_Axis: {x: 0, y: 0, z: 1}
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: -0.53317297, y: 0.366004, z: 0}
   m_UseSpring: 1
@@ -237,8 +237,8 @@ HingeJoint:
     freeSpin: 0
   m_UseLimits: 1
   m_Limits:
-    min: -45
-    max: 90
+    min: -180
+    max: 180
     bounciness: 0
     bounceMinVelocity: 0.2
     contactDistance: 0
@@ -949,7 +949,7 @@ HingeJoint:
   m_GameObject: {fileID: 2279846045150876409}
   m_ConnectedBody: {fileID: 2279846045774549997}
   m_Anchor: {x: 0, y: 0.5, z: 0}
-  m_Axis: {x: 1, y: 0, z: 0}
+  m_Axis: {x: 0, y: 0, z: 1}
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0.53317297, y: 0.366004, z: 0}
   m_UseSpring: 1
@@ -964,8 +964,8 @@ HingeJoint:
     freeSpin: 0
   m_UseLimits: 1
   m_Limits:
-    min: -90
-    max: 45
+    min: -180
+    max: 180
     bounciness: 0
     bounceMinVelocity: 0.2
     contactDistance: 0
@@ -2562,7 +2562,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -0.31, z: 0}
   m_Axis: {x: 1, y: 0, z: 1}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.00000023841858, y: 0.42062506, z: 0}
+  m_ConnectedAnchor: {x: -0.0000008046627, y: 0.42062485, z: 0}
   m_UseSpring: 1
   m_Spring:
     spring: 200
