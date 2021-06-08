@@ -241,6 +241,27 @@ public class World: MonoBehaviour {
     humanAIParam = param;
   }
 
+  public static AnimalBody GetAnimalBody(Animal passed, Vector3 spawn, string species) {
+    AnimalBody toReturn;
+
+    if(species == "Human") {
+      if (anthroBody == "SimpleHuman") {
+        toReturn = new PrimateBody(passed, true, spawn);
+      } else { toReturn = new PrimateBody(passed, false, spawn); }
+    } else { toReturn = new AnimalBody(passed, spawn); }
+    return toReturn;
+  }
+
+  public static MotorSystem GetMotor(Animal passed, string species) {
+    MotorSystem toReturn;
+
+    if(species == "Human") {
+      if (anthroBody == "SimpleHuman") {
+        toReturn = new SimplePrimateMotorSystem(passed);
+      } else { toReturn = new PrimateMotorSystem(passed); }
+    } else { toReturn = new SimpleMotorSystem(passed); }
+    return toReturn;
+  }
   public void LoadWorldConfig() {
     string worldName = "world.config";
     worldName = biomeName + worldName;

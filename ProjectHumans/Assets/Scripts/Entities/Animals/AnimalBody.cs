@@ -39,6 +39,7 @@ public class AnimalBody : Body {
             "alive"
         };
         InitStates(stateLabelList);
+        InitGameObject(position);
         InitBodyDicts();
         InitHolders();
         PlaceBody(position);
@@ -82,18 +83,6 @@ public class AnimalBody : Body {
         string bodyName = thisAnimal.GetSpecies() + thisAnimal.GetSex();
         string filePath = "Prefabs/" + bodyName + "Prefab";
 
-        if (thisAnimal.GetSpecies() == "Human") {
-            string bodyPlan = World.anthroBody;
-            if (bodyPlan != "SimpleHuman") {
-                filePath = "Prefabs/" + bodyPlan + thisAnimal.GetSex() + "Prefab";
-
-                float variant = thisAnimal.GetPhenotype().GetTraitDict()["variant"];
-                string label = "A";
-                if (variant == 1) { label = "B"; }
-                filePath += label;
-
-            } else { filePath = "Prefabs/" + bodyPlan + "MalePrefab"; }
-        }
         GameObject loadedPrefab = Resources.Load(filePath, typeof(GameObject)) as GameObject;
         
         this.gameObject = (GameObject.Instantiate(loadedPrefab, new Vector3(0,0,0), Quaternion.identity) as GameObject);

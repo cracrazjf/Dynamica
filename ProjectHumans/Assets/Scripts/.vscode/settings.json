@@ -1,4 +1,11 @@
 {
     "omnisharp.useEditorFormattingSettings": false,
-    "editor.defaultFormatter": "vscode.git"
+    "editor.defaultFormatter": "vscode.git",
+    "files.exclude": {
+        "**/*.meta": true
+    },
+    "search.exclude": {
+        "*.meta": true,
+        "**/*.meta": true
+    }
 }

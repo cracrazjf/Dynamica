@@ -14,6 +14,7 @@ public class Animal : Entity {
     private static AnimalBody animalBody;
     private static DriveSystem driveSystem;
     private static MotorSystem motorSystem;
+    public static void SetMotorSystem(MotorSystem motor) { motorSystem = motor; }
     private static SensorySystem sensorySystem;
     private bool finishedUpdate = true;
     protected AI activeAI;
@@ -24,17 +25,20 @@ public class Animal : Entity {
 
     public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome, Vector3 spawn) 
     : base (objectType, index, motherGenome, fatherGenome, spawn, true) {
-            
-        animalBody = new PrimateBody(this, spawn);
-        body = animalBody;
-        motorSystem = new SimpleMotorSystem(this);
-            
+
+        InitBodyControl(spawn);
         visualInputCamera = animalBody.GetGameObject().GetComponentInChildren<Camera>();
         
         driveSystem = new DriveSystem(this);
         sensorySystem = new SensorySystem(this);
 
         InitBrain();
+    }
+
+    void InitBodyControl(Vector3 spawn) {
+        animalBody = World.GetAnimalBody(this, spawn, species);
+        motorSystem = World.GetMotor(this, species);
+        body = animalBody;
     }
     
     void InitBrain() {
