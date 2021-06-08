@@ -65,11 +65,29 @@ public abstract class MotorSystem
         states[index] = val;
     }
 
+
+
     public void TakeAction(Vector<float> actions) {
-        Debug.Log("taking actions");
-        stateDict["look horizontally"] = 0.5f;
-        actionList[0]();
-        //actionList[10]();
+        //stateDict["look vertically"] = 0.5f;
+        ////stateDict["look horizontally"] = 0.5f;
+        //actionList[9]();// look
+
+        //actionList[0](); // crouch
+
+        //actionList[1](); //sit
+
+        //actionList[2](); //lay
+
+        //stateDict["take steps"] = 1.0f;
+        //actionList[5](); //take steps
+
+        //actionList[6](); //consume
+        //actionList[7](); //sleep
+        stateDict["right"] = 0.3f;
+        stateDict["RP x"] = 1;
+        stateDict["RP z"] = 1;
+        actionList[10](); //usehand
+
     }
 
     void InitStates(List<string> passedList) {

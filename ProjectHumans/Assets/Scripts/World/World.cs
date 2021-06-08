@@ -367,7 +367,7 @@ public class World: MonoBehaviour {
 
   public static void LogComment(string comment) {
     using(StreamWriter writetext = new StreamWriter("runtime.txt")) {
-      Debug.Log("Writing to log: " + comment);
+      //Debug.Log("Writing to log: " + comment);
       string toSend = DateTime.Now.ToString() + ":\t" + comment;
       writetext.WriteLine(toSend);
     }
