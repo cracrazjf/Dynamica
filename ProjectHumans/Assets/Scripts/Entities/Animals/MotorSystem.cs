@@ -41,8 +41,7 @@ public abstract class MotorSystem
             "look vertically",
             "look horizontally",// 9 -1 or 1 (or 0 if not switched)
             "hand action", // 10, release/maintain/grab
-            "right",// 11  -1 or 1 (1 if right)
-            "left",
+            "active right",// 11  -1 if left, or 1 if right
             "RP x",        // 12  -1 to 1, proportion of max range from start pos
             "RP y",        // 13
             "RP z",        // 14

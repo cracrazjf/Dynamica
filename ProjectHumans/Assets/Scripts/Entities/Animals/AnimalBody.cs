@@ -30,6 +30,7 @@ public class AnimalBody : Body {
     public Dictionary<string, GameObject> GetHoldings() {return holdings;}
 
     public AnimalBody(Animal animal, Vector3 position) : base((Entity) animal, position) {
+        thisAnimal = animal;
         stateLabelList = new List<string> {
             "standing", 
             "sitting",
@@ -39,7 +40,6 @@ public class AnimalBody : Body {
             "alive"
         };
         InitStates(stateLabelList);
-        InitGameObject(position);
         InitBodyDicts();
         InitHolders();
         PlaceBody(position);

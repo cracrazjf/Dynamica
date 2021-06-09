@@ -13,6 +13,7 @@ public class PrimateBody : AnimalBody {
     public bool simple;
 
     public PrimateBody(Animal animal, bool isSimple, Vector3 position) : base(animal, position) {
+        thisAnimal = animal;
         abAdjLeft = GetSkeleton("Hand_L").transform.position - GetSkeleton("Abdomen").transform.position; 
         abAdjRight = GetSkeleton("Hand_R").transform.position - GetSkeleton("Abdomen").transform.position;
 
@@ -29,8 +30,10 @@ public class PrimateBody : AnimalBody {
     public override void InitGameObject(Vector3 pos) {
         string filePath;
         string bodyPlan = World.anthroBody;
+        thisAnimal = (Animal) thisEntity;
 
         if (!simple) {
+            Debug.Log(thisAnimal.GetName());
             filePath = "Prefabs/" + bodyPlan + thisAnimal.GetSex() + "Prefab";
 
             float variant = thisAnimal.GetPhenotype().GetTraitDict()["variant"];

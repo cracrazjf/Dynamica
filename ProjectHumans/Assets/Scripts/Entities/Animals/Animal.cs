@@ -25,13 +25,9 @@ public class Animal : Entity {
 
     public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome, Vector3 spawn) 
     : base (objectType, index, motherGenome, fatherGenome, spawn, true) {
-
         InitBodyControl(spawn);
-        visualInputCamera = animalBody.GetGameObject().GetComponentInChildren<Camera>();
-        
         driveSystem = new DriveSystem(this);
         sensorySystem = new SensorySystem(this);
-
         InitBrain();
     }
 
@@ -39,6 +35,7 @@ public class Animal : Entity {
         animalBody = World.GetAnimalBody(this, spawn, species);
         motorSystem = World.GetMotor(this, species);
         body = animalBody;
+        visualInputCamera = animalBody.GetGameObject().GetComponentInChildren<Camera>();
     }
     
     void InitBrain() {

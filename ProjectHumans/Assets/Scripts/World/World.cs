@@ -243,7 +243,6 @@ public class World: MonoBehaviour {
 
   public static AnimalBody GetAnimalBody(Animal passed, Vector3 spawn, string species) {
     AnimalBody toReturn;
-
     if(species == "Human") {
       if (anthroBody == "SimpleHuman") {
         toReturn = new PrimateBody(passed, true, spawn);
