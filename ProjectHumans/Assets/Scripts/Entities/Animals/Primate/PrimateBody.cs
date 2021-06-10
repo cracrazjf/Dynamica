@@ -10,9 +10,8 @@ public class PrimateBody : AnimalBody {
     public Vector3 abAdjLeft;
     public Vector3 footAdjRight;
     public Vector3 footAdjLeft;
-    public bool simple;
 
-    public PrimateBody(Animal animal, bool isSimple, Vector3 position) : base(animal, position) {
+    public PrimateBody(Animal animal, Vector3 position) : base(animal, position) {
         thisAnimal = animal;
         abAdjLeft = GetSkeleton("Hand_L").transform.position - GetSkeleton("Abdomen").transform.position; 
         abAdjRight = GetSkeleton("Hand_R").transform.position - GetSkeleton("Abdomen").transform.position;
@@ -23,8 +22,6 @@ public class PrimateBody : AnimalBody {
         LegList = new List<string>();
         LegList.Add("Femur_R");
         LegList.Add("Femur_L");
-
-        simple = isSimple;
     }
 
     public override void InitGameObject(Vector3 pos) {
@@ -32,17 +29,15 @@ public class PrimateBody : AnimalBody {
         string bodyPlan = World.anthroBody;
         thisAnimal = (Animal) thisEntity;
 
-        if (!simple) {
-            Debug.Log(thisAnimal.GetName());
-            filePath = "Prefabs/" + bodyPlan + thisAnimal.GetSex() + "Prefab";
+        filePath = "Prefabs/" + bodyPlan + thisAnimal.GetSex() + "Prefab";
 
+        if (bodyPlan == "ComplexHuman") { 
             float variant = thisAnimal.GetPhenotype().GetTraitDict()["variant"];
             string label = "A";
-            if (variant == 1) { label = "B"; }
+            if (variant == 1) { label = "B"; } 
             filePath += label;
+        }
 
-        } else { filePath = "Prefabs/" + bodyPlan + "MalePrefab"; }
-        
         GameObject loadedPrefab = Resources.Load(filePath, typeof(GameObject)) as GameObject;
         
         this.gameObject = (GameObject.Instantiate(loadedPrefab, new Vector3(0,0,0), Quaternion.identity) as GameObject);
@@ -51,8 +46,6 @@ public class PrimateBody : AnimalBody {
         rigidbody = GetGameObject().GetComponent<Rigidbody>();
         globalPos = this.gameObject.transform;
     }
-
-
 
     public override void UpdateBodyStates() {
         if (CheckSitting()) {

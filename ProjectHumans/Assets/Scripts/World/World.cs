@@ -245,8 +245,8 @@ public class World: MonoBehaviour {
     AnimalBody toReturn;
     if(species == "Human") {
       if (anthroBody == "SimpleHuman") {
-        toReturn = new PrimateBody(passed, true, spawn);
-      } else { toReturn = new PrimateBody(passed, false, spawn); }
+        toReturn = new PrimateBody(passed, spawn);
+      } else { toReturn = new PrimateBody(passed, spawn); }
     } else { toReturn = new AnimalBody(passed, spawn); }
     return toReturn;
   }

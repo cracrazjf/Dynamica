@@ -8,7 +8,6 @@ public class PrimateMotorSystem : MotorSystem {
     Transform abdomenTrans;
     PrimateBody primateBody;
     Vector3 goalPos;
-    int footUpdates = 0;
     bool firstRight = true; // change this at some point like handedness
     private float xMin = -1f, xMax = 1f;
     private float timeValue = 0.0f;

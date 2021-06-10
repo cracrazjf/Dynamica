@@ -42,7 +42,6 @@ public class GenomeUI : MonoBehaviour {
     }
 
     public void UpdatePanel(){
-        string toDisplay = "";
         displayGenome = selectedEntity.GetGenome();
         displayPhenotype = selectedEntity.GetPhenotype();
         

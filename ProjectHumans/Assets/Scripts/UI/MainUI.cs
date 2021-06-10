@@ -9,7 +9,6 @@ public class MainUI : MonoBehaviour
     private float baseClimbSpeed = 8;
     private float baseMoveSpeed = 20;
     private float baseRotateSpeed = 120;
-    private static float eyeLevel = 2.55f;
 
     private float climbAdjustment = 0.5f;
     private float moveAdjustment = 0.5f;

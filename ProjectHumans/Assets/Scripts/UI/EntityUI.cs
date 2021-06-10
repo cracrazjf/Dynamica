@@ -68,8 +68,6 @@ public class EntityUI : MonoBehaviour {
     private void UpdateDriveDisplays() {
         Vector<float> passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
         for(int i = 0; i < 5; i++) {
-            float adjust = 100f;
-            if (i < 2) { adjust = -100f; }
 
             float toDisplay = (passedDrives[i] * 100f);
             stateText[i].text = ((int)toDisplay).ToString();

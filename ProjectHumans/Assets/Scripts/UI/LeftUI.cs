@@ -68,7 +68,6 @@ public class LeftUI : MonoBehaviour {
 
     public void InitHeaderFooter(Transform panel, bool isSpawner) {
         Transform header = null, body = null, footer = null;
-        Dropdown firstReturn = null, secondReturn = null;
 
         foreach (Transform child in panel) {
             if (child.name == "Header") {

@@ -204,10 +204,10 @@ public class SimplePrimateMotorSystem : MotorSystem {
                 thisBody.GetSkeleton("Hand_R").transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
             }
         }
-        if(stateDict["left"] != 0) {
+        if(stateDict["active left"] != 0) {
             leftHumerus.axis.Set(reach_x, 0, reach_z);
             JointSpring humerusHingeSpring = rightHumerus.spring;
-            humerusHingeSpring.targetPosition = stateDict["left"] * 180;
+            humerusHingeSpring.targetPosition = stateDict["active left"] * 180;
             leftHumerus.spring = humerusHingeSpring;
             int maxColliders = 10;
             Collider[] hitColliders = new Collider[maxColliders];

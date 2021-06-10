@@ -5,48 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 
 public class SimpleMotorSystem : MotorSystem {
-    protected Animal thisAnimal;
-    protected AnimalBody thisBody;
-    protected List<Action> actionList;
-    protected Vector<float> paramCopy;
-
-    protected Vector<float> states;
-    protected List<string> stateLabelList;
-    protected Dictionary<string, int> stateIndexDict;
-    protected Dictionary<string, float> stateDict;
-    protected int numArgs;
-    
-    public Vector<float> GetStates() { return states; }
-    public float GetState(string place) { return stateDict[place]; }
-    public List<string> GetStateLabels() { return stateLabelList; }
-    public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
-    public Dictionary<string, float> GetStateDict() { return stateDict; }
-
-
     public SimpleMotorSystem(Animal passed) : base(passed) {}
-
-    public void SetState(string label, float val) {
-        stateDict[label] = val;
-        int currentIndex = stateIndexDict[label];
-        states[currentIndex] = val;
-    }
-
-    public void SetState(int index, float val) {
-        string label  = stateLabelList[index];
-        stateDict[label] = val;
-        states[index] = val;
-    }
-
-
-
-    public void TakeAction(Vector<float> actions) {
-        
-        stateDict["right"] = 0.3f;
-        stateDict["RP x"] = 1;
-        stateDict["RP z"] = 1;
-        actionList[10](); //usehand
-
-    }
 
     void InitStates(List<string> passedList) {
         states = Vector<float>.Build.Dense(passedList.Count);

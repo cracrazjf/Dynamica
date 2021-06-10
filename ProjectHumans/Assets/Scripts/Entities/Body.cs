@@ -10,6 +10,7 @@ public class Body {
     protected float height;
     protected float heightScale;
     protected float currentMass;
+
     public Rigidbody rigidbody;
     protected GameObject gameObject;
 
@@ -37,7 +38,6 @@ public class Body {
         thisEntity = passed;
         displacement = thisEntity.GetPhenotype().GetTraitDict()["displacement"];
         InitHeight();
-        Debug.Log(passed.GetName());
         InitGameObject(position);
         passed.SetGameObject(this.gameObject);
         InitNutrition();
