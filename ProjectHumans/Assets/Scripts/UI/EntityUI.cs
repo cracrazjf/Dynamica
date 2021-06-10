@@ -16,7 +16,6 @@ public class EntityUI : MonoBehaviour {
     protected static bool needsUpdate = false;
     protected static bool showPanel = false;
     protected static bool isAnimal;
-
     protected GameObject mainCam;
     protected Transform header;
     protected GameObject panel;
@@ -37,28 +36,37 @@ public class EntityUI : MonoBehaviour {
     }
     
     private void Update() {
-        if (needsUpdate) { UpdatePanel(); }
         if (showPanel) {
             panel.SetActive(true);
             halo.SetActive(true);
+
+            if (isAnimal) {
+                InitDriveDisplays();
+            } else { HideDriveDisplays(); }
+
         } else { 
             panel.SetActive(false); 
             halo.SetActive(false);
         }
 
-        if (isAnimal) {
-            InitDriveDisplays();
-        } else { HideDriveDisplays(); }
+        if (needsUpdate) { UpdatePanel(); }
+
     }
 
     public static void OnAwake() {
         isAnimal = selectedEntity.CheckAnimal();
-
+        if (!isAnimal) { 
+            Debug.Log("It seems this entity is not an animal"); 
+        } else {
+            Debug.Log("A-okay!");
+        }
+        
         showPanel = true;
         needsUpdate = true;
     }
 
     public void UpdatePanel() {
+
         originalName.text = selectedEntity.GetDisplayName();
         halo.transform.position = selectedEntity.GetBody().GetXZPosition() + new Vector3(0, 0.75f, 0);
         //goalText.text = selectedAnimal.GetAction();
@@ -66,6 +74,7 @@ public class EntityUI : MonoBehaviour {
     }
 
     private void UpdateDriveDisplays() {
+        selectedAnimal = (Animal) selectedEntity;
         Vector<float> passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
         for(int i = 0; i < 5; i++) {
 
@@ -101,6 +110,7 @@ public class EntityUI : MonoBehaviour {
             selectedAnimal = (Animal) selectedEntity;
             World.PrintStates(selectedAnimal.GetDriveSystem().GetStateDict());
             string objectName = (selectedAnimal.GetDriveSystem().GetStateLabels()[i]) + "Text";
+            // state text is null for some
             stateText[i] = GameObject.Find(objectName).GetComponent<Text>();
         }
         spriteParent.gameObject.SetActive(true);

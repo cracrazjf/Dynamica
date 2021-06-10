@@ -832,7 +832,7 @@ ConfigurableJoint:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1464802234800488191}
-  m_ConnectedBody: {fileID: 0}
+  m_ConnectedBody: {fileID: 7721156338279916581}
   m_Anchor: {x: 0, y: 0.50000006, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 0
@@ -842,8 +842,8 @@ ConfigurableJoint:
   m_XMotion: 0
   m_YMotion: 0
   m_ZMotion: 0
-  m_AngularXMotion: 1
-  m_AngularYMotion: 1
+  m_AngularXMotion: 0
+  m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
     spring: 0
@@ -4499,7 +4499,6 @@ GameObject:
   - component: {fileID: 5342740036365785003}
   - component: {fileID: 7908829505773888353}
   - component: {fileID: 7721156338279916581}
-  - component: {fileID: 7312793679532884909}
   m_Layer: 0
   m_Name: Head
   m_TagString: Human
@@ -4588,20 +4587,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!138 &7312793679532884909
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8557176809163604660}
-  m_ConnectedBody: {fileID: 2544762074650771433}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &8676500549945097856
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ public class MainUI : MonoBehaviour
 {
     // Movement content
     private float baseClimbSpeed = 8;
-    private float baseMoveSpeed = 20;
+    private float baseMoveSpeed = 40;
     private float baseRotateSpeed = 120;
 
     private float climbAdjustment = 0.5f;

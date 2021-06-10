@@ -77,7 +77,7 @@ public class Population {
                     baseGenome.AddQualToGenome(leftArray[1], rightArray);
                 } else if (leftArray[0] == "object_type") {
                     entityType = rightArray[0];
-                    Debug.Log("Saving object type for " + name + " as " + entityType);
+                    //Debug.Log("Saving object type for " + name + " as " + entityType);
                 } 
             }
         } 

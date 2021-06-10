@@ -3005,7 +3005,6 @@ GameObject:
   - component: {fileID: 1244327850484384125}
   - component: {fileID: 3936228398949447095}
   - component: {fileID: 8092410271162057333}
-  - component: {fileID: 3459092594123115455}
   m_Layer: 0
   m_Name: Head
   m_TagString: Human
@@ -3094,20 +3093,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!138 &3459092594123115455
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3287828592938980450}
-  m_ConnectedBody: {fileID: 697845023915228297}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &3600003930805775937
 GameObject:
   m_ObjectHideFlags: 0
@@ -3700,7 +3685,7 @@ ConfigurableJoint:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4515971448048156063}
-  m_ConnectedBody: {fileID: 0}
+  m_ConnectedBody: {fileID: 8092410271162057333}
   m_Anchor: {x: 0, y: 0.50000006, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 0
@@ -3710,8 +3695,8 @@ ConfigurableJoint:
   m_XMotion: 0
   m_YMotion: 0
   m_ZMotion: 0
-  m_AngularXMotion: 1
-  m_AngularYMotion: 1
+  m_AngularXMotion: 0
+  m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
     spring: 0

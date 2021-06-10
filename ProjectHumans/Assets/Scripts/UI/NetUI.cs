@@ -82,6 +82,9 @@ public class NetUI : MonoBehaviour {
                 tempButton.onClick.AddListener(UpdatePanel);
             } else if (child.name == "SystemDropdown") {
                 systemDrop = child.gameObject.GetComponent<Dropdown>();
+            } else if (child.name == "GraphButton") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(WakeGraph);
             }
         }
     }
@@ -112,5 +115,9 @@ public class NetUI : MonoBehaviour {
             sendInfo = rawInfo;
         }
         return sendInfo;
+    }
+
+    public void WakeGraph() {
+        GraphWindow.ReceiveClicked(selectedEntity);
     }
 }
