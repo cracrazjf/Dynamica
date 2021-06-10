@@ -193,7 +193,7 @@ public class MainUI : MonoBehaviour
         centeredTransform = passed;
         
         xTemp = passed.position.x + (centeredTransform.forward.x * - 0.25f);
-        zTemp = passed.position.z + (centeredTransform.forward.y * - 0.25f);
+        zTemp = passed.position.z + (centeredTransform.forward.z * - 0.25f);
         toSet = new Vector3(xTemp, 4f, zTemp);
 
         SetToggle("isFollowing", true);
@@ -311,8 +311,8 @@ public class MainUI : MonoBehaviour
 
     void WakeLeft(bool isSpawner) {
         if (isSpawner) {
-            LeftUI.WakeSpawn();
-        } else {LeftUI.WakeSearch();}
+            SpawnUI.WakeSpawn();
+        } else {SearchUI.WakeSearch();}
     }
 
     // Toggles
