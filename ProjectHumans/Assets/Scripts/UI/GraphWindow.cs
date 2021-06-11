@@ -21,9 +21,6 @@ public class GraphWindow : MonoBehaviour {
     
     private void Update() {
         if (needsUpdate) { UpdatePanel(); }
-        if (showPanel) {
-            panel.SetActive(true);
-        } else { panel.SetActive(false); }
     }
 
     public static void OnAwake() {
@@ -31,9 +28,14 @@ public class GraphWindow : MonoBehaviour {
         showPanel = true;
     }
 
-    public void UpdatePanel(){
+    public void UpdatePanel() {
+        if (showPanel) {
+            panel.SetActive(true);
+        } else { panel.SetActive(false); }
+        
         needsUpdate = false;
         CreateNode(new Vector2(100, 100));
+        CreateNode(new Vector2(50, 150));
     }
 
     public static void ReceiveClicked(Entity clicked) {
@@ -71,8 +73,25 @@ public class GraphWindow : MonoBehaviour {
         }
     }
 
-    private void CreateNode(Vector2 anchoredPos) {
-        GameObject activeNode = new GameObject("rectangle", typeof(Image));
+    private void DrawPoints(List<Vector2> values, bool connectValues) {
+        float yMax = 100f;
+        float xMax = 250f;
+
+        GameObject lastNode = null;
+        for (int i = 0; i < values.Count; i++) {
+            float xPos = (values[i].x / xMax);
+            float yPos = (values[i].y / yMax);
+
+            GameObject newNode = CreateNode(new Vector2(xPos, yPos));
+            if (connectValues) {
+                if (lastNode != null) { ConnectNodes(lastNode.GetComponent<RectTransform>().anchoredPosition, newNode.GetComponent<RectTransform>().anchoredPosition); }
+            }
+            lastNode = newNode;
+        }
+    }
+
+    private GameObject CreateNode(Vector2 anchoredPos) {
+        GameObject activeNode = new GameObject("DrawnNode", typeof(Image));
         activeNode.transform.SetParent(graphSpace, false);
         activeNode.GetComponent<Image>().sprite = nodeSprite;
 
@@ -81,6 +100,24 @@ public class GraphWindow : MonoBehaviour {
         rectTransform.sizeDelta = new Vector2(10, 10);
         rectTransform.anchorMin = new Vector2(0, 0);
         rectTransform.anchorMax = new Vector2(0, 0);
+
+        return activeNode;
+    }
+
+    private void ConnectNodes(Vector2 startPos, Vector2 endPos) {
+        GameObject drawnLine = new GameObject("PointConnection", typeof(Image));
+        drawnLine.transform.SetParent(graphSpace, false);
+        drawnLine.GetComponent<Image>().color = new Color();
+
+        RectTransform rectTransform = drawnLine.GetComponent<RectTransform>();
+        Vector2 dir = (startPos - endPos).normalized;
+        float distance = Vector2.Distance(startPos, endPos);
+        rectTransform.anchorMin = new Vector2(0, 0);
+        rectTransform.anchorMax = new Vector2(0, 0);
+        rectTransform.sizeDelta = new Vector2(distance, 2f);
+        rectTransform.anchoredPosition = startPos + dir * distance * .5f;
+        float normAngle = Mathf.Atan2(dir.x, dir.y);
+        rectTransform.localEulerAngles = new Vector3(0, 0, normAngle);
     }
         
     public void ExitPanel() { showPanel = false; }

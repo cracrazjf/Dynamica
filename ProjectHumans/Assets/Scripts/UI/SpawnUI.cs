@@ -20,14 +20,15 @@ public class SpawnUI : MonoBehaviour {
     }
     
     private void Update() {
-        if (showPanel) {
-            panel.SetActive(true);
-        } else { panel.SetActive(false); }
-
         if (needsUpdate) { UpdatePanel(); }
     }
 
     private void UpdatePanel() {
+        if (showPanel) {
+            panel.SetActive(true);
+        } else { panel.SetActive(false); }
+
+
         UpdateSpeciesNames();
 
         needsUpdate = false;
