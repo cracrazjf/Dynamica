@@ -44,7 +44,7 @@ public class GraphWindow : MonoBehaviour {
     }
 
     public void InitPanel() {
-        panel = GameObject.Find("GraphPanel");
+        panel = MainUI.GetUXPos("GraphPanel").gameObject;
 
         foreach (Transform child in panel.transform) {
             if (child.name == "Header") {

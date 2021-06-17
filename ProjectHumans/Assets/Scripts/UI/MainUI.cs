@@ -83,7 +83,7 @@ public class MainUI : MonoBehaviour
 
         foreach (Transform child in temp) {
             UXDict.Add(child.name, child.gameObject);
-            //Debug.Log("Added this panel to dictionary: " + child.name);
+            Debug.Log("Added this panel to dictionary: " + child.name);
             child.gameObject.SetActive(false);
         }
     }

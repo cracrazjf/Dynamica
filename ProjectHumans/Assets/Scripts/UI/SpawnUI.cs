@@ -40,7 +40,7 @@ public class SpawnUI : MonoBehaviour {
     }
 
     public void InitPanel(){
-        panel = GameObject.Find("SpawnPanel");
+        panel = MainUI.GetUXPos("SpawnPanel").gameObject;
         panel.SetActive(false);
         InitHeaderFooter(panel.transform);
     }

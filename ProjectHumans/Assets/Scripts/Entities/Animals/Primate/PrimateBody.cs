@@ -31,12 +31,12 @@ public class PrimateBody : AnimalBody {
 
         filePath = "Prefabs/" + bodyPlan + thisAnimal.GetSex() + "Prefab";
 
-        if (bodyPlan == "ComplexHuman") { 
-            float variant = thisAnimal.GetPhenotype().GetTraitDict()["variant"];
-            string label = "A";
-            if (variant == 1) { label = "B"; } 
-            filePath += label;
-        }
+        // if (bodyPlan == "ComplexHuman") { 
+        //     float variant = thisAnimal.GetPhenotype().GetTraitDict()["variant"];
+        //     string label = "A";
+        //     if (variant == 1) { label = "B"; } 
+        //     filePath += label;
+        // }
 
         GameObject loadedPrefab = Resources.Load(filePath, typeof(GameObject)) as GameObject;
         

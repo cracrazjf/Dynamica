@@ -42,7 +42,7 @@ public class SearchUI : MonoBehaviour {
 
 
     public void InitPanel(){
-        panel = GameObject.Find("SearchPanel");
+        panel = MainUI.GetUXPos("SearchPanel").gameObject;
         panel.SetActive(false);
         InitHeaderFooter(panel.transform);
     }
