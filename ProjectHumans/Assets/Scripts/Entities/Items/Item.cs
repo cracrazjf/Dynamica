@@ -14,7 +14,7 @@ public class Item : Entity {
 
     public override void UpdateEntity() {
         if (this.GetSpecies() == "Crabapple") {
-            this.gameObject.GetComponent<MeshRenderer> ().material.color = new Color(1f,0.75f,.25f,1f);
+            this.gameObject.GetComponent<MeshRenderer>().material.color = new Color(1f,0.75f,.25f,1f);
         }
     }
 }

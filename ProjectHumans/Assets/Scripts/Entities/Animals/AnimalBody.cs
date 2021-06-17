@@ -66,9 +66,14 @@ public class AnimalBody : Body {
         foreach (Transform child in globalPos) {
             limbDict.Add(child.name, child.gameObject);
             foreach(Transform grandChild in child) {
-                skeletonDict.Add(grandChild.name, grandChild.gameObject);
+                if(grandChild.name != "Eyes") {
+                    skeletonDict.Add(grandChild.name, grandChild.gameObject);
+                }
                 if (grandChild.TryGetComponent(out ConfigurableJoint configurable)) {
                     jointDict.Add(grandChild.name, configurable);
+                }
+                foreach(Transform greatChild in grandChild) {
+                    skeletonDict.Add(greatChild.name, greatChild.gameObject);
                 }
             }  
         }
@@ -314,6 +319,17 @@ public class AnimalBody : Body {
         }
     }
 
-    
+    public void Recolor(Color passedColor) {
+        foreach(KeyValuePair<string, GameObject> skeleton in skeletonDict) {
+            if (skeleton.Value.TryGetComponent(out MeshRenderer mesh)) {
+                mesh.material.color = passedColor;
+            }
+        }
+    }
+
+    public void RecolorPart(Color passedColor, string part) {
+        GameObject tobject = GetSkeleton(part);
+        tobject.GetComponent<MeshRenderer>().material.color = passedColor;
+    }
 }
 

@@ -44,8 +44,10 @@ public class ViewUI : MonoBehaviour {
         // Set viewport texture to camera texture
         viewCam = selectedAnimal.GetSensorySystem().GetInternalCam();
         RawImage projectTo = cameraView.GetComponent<RawImage>();
-        thisRender = new RenderTexture(viewCam.targetTexture);
-        projectTo.texture = thisRender;
+        viewCam.targetTexture = (RenderTexture) projectTo.texture;
+        
+        //thisRender = new RenderTexture(viewCam.targetTexture);
+        //projectTo.texture = thisRender;
 
         needsUpdate = false;
     }
