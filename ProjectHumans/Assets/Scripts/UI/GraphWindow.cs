@@ -121,4 +121,11 @@ public class GraphWindow : MonoBehaviour {
     }
         
     public void ExitPanel() { showPanel = false; }
+
+    public void LayerFiller(GameObject displayBox, List<float> values, List<string> labels) {
+        // Place HorizontalLayoutGroup
+        // Make box for each 
+        // Attach OnClick
+        // color and number item
+    }
 }
