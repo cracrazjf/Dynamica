@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GraphWindow : MonoBehaviour {
+public class VisualModeling : MonoBehaviour {
     [SerializeField] private Sprite nodeSprite;
     private RectTransform graphSpace;
     protected static Entity selectedEntity;
@@ -123,9 +123,34 @@ public class GraphWindow : MonoBehaviour {
     public void ExitPanel() { showPanel = false; }
 
     public void LayerFiller(GameObject displayBox, List<float> values, List<string> labels) {
+        Color32 lowColor = Color.red;
+        Color32 highColor = Color.green;
+
         // Place HorizontalLayoutGroup
-        // Make box for each 
-        // Attach OnClick
-        // color and number item
+        HorizontalLayoutGroup newGroup = displayBox.AddComponent(typeof(HorizontalLayoutGroup)) as HorizontalLayoutGroup;
+        // Make box for each
+        for (int i = 0; i < values.Count; i++) {
+            string activeLabel = labels[i];
+            GameObject activeUnit = new GameObject(activeLabel, typeof(Button));
+            activeUnit.transform.SetParent(displayBox.transform, false);
+            // Attach OnClick
+            Button tempButton = activeUnit.GetComponent<Button>();
+            tempButton.onClick.AddListener(delegate { ShowReducedWeights(activeLabel); });
+            // color and number item
+            Color32 lerpedColor =  Color.white;
+            lerpedColor = Color32.Lerp(lowColor, highColor, values[i]);
+        }
+    }
+
+    public void ShowFullNetwork(){
+        // Attach boxes for all VBAD
+        // Fill boxes with LayerFiller
+        // Attach mouse-over that opens weights for component
+
+        // Other side?
+    }
+    public void ShowReducedWeights(string selectedLabel) {
+        // Reduce to show based on clicked
     }
 }
+

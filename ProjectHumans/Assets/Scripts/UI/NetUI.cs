@@ -118,6 +118,6 @@ public class NetUI : MonoBehaviour {
     }
 
     public void WakeGraph() {
-        GraphWindow.ReceiveClicked(selectedEntity);
+        VisualModeling.ReceiveClicked(selectedEntity);
     }
 }
