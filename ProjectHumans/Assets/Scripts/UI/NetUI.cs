@@ -71,7 +71,7 @@ public class NetUI : MonoBehaviour {
                 tempButton.onClick.AddListener(ExitPanel);
             } else if (child.name == "WeightTab") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(delegate { WakePage("Weight"); });
+                tempButton.onClick.AddListener(WakeWeights);
             } else if (child.name == "PerformanceTab") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(delegate { WakePage("Performance"); });
@@ -125,5 +125,15 @@ public class NetUI : MonoBehaviour {
                 activePage = panelName;
             } else { page.Value.SetActive(false); }
         }
+    }
+
+    public void WakeWeights() {
+        WakePage("Weight");
+        GameObject passBox = GameObject.Find("InputActs");
+        List<float> vals = new List<float>();
+        vals.Add(0.5f);
+        List<string> names = new List<string>();
+        names.Add("Vision");
+        VisualModeling.LayerFiller(passBox, vals, names);
     }
 }

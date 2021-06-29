@@ -47,6 +47,7 @@ public class EntityUI : MonoBehaviour {
         } else { 
             panel.SetActive(false); 
             halo.SetActive(false);
+            needsUpdate = false;
         }
 
         if (needsUpdate) { UpdatePanel(); }
@@ -54,6 +55,7 @@ public class EntityUI : MonoBehaviour {
     }
 
     public static void OnAwake() {
+
         isAnimal = selectedEntity.CheckAnimal();
         if (!isAnimal) { 
             Debug.Log("It seems this entity is not an animal"); 
@@ -74,6 +76,8 @@ public class EntityUI : MonoBehaviour {
     }
 
     private void UpdateDriveDisplays() {
+        spriteParent.gameObject.SetActive(true);
+        
         selectedAnimal = (Animal) selectedEntity;
         Vector<float> passedDrives = selectedAnimal.GetDriveSystem().GetStates(); 
         for(int i = 0; i < 5; i++) {
@@ -106,6 +110,7 @@ public class EntityUI : MonoBehaviour {
 
     public void InitDriveDisplays() {
         stateText = new Text[5];
+        spriteParent.gameObject.SetActive(true);
         for (int i = 0; i < 5; i++) {
             selectedAnimal = (Animal) selectedEntity;
             World.PrintStates(selectedAnimal.GetDriveSystem().GetStateDict());
@@ -113,7 +118,6 @@ public class EntityUI : MonoBehaviour {
             // state text is null for some
             stateText[i] = GameObject.Find(objectName).GetComponent<Text>();
         }
-        spriteParent.gameObject.SetActive(true);
     }
 
     public void HideDriveDisplays() { spriteParent.gameObject.SetActive(false); }
@@ -196,7 +200,8 @@ public class EntityUI : MonoBehaviour {
 
     public void ExitPanel() {
         showPanel = false;
-        
+        selectedEntity = null;
+        selectedAnimal = null;
     }
 
     public void Rename() {

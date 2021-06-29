@@ -23,8 +23,7 @@ public class PrimateBody : AnimalBody {
         LegList.Add("Femur_R");
         LegList.Add("Femur_L");
 
-        Color toSet = Color.black;
-        Recolor(toSet);
+        //Recolor(toSet);
     }
 
     public override void InitGameObject(Vector3 pos) {

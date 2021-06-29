@@ -122,7 +122,7 @@ public class VisualModeling : MonoBehaviour {
         
     public void ExitPanel() { showPanel = false; }
 
-    public void LayerFiller(GameObject displayBox, List<float> values, List<string> labels) {
+    public static void LayerFiller(GameObject displayBox, List<float> values, List<string> labels) {
         Color32 lowColor = Color.red;
         Color32 highColor = Color.green;
 
@@ -149,7 +149,7 @@ public class VisualModeling : MonoBehaviour {
 
         // Other side?
     }
-    public void ShowReducedWeights(string selectedLabel) {
+    public static void ShowReducedWeights(string selectedLabel) {
         // Reduce to show based on clicked
     }
 }
