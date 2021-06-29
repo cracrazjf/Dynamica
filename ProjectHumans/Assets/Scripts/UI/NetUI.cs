@@ -19,6 +19,9 @@ public class NetUI : MonoBehaviour {
     protected GameObject panel;
     protected GameObject header;
     protected GameObject body;
+    private static Dictionary<string, GameObject> childDict = new Dictionary<string, GameObject>();
+
+    public string activePage = "Weight";
 
     private void Start() { 
         InitPanel();
@@ -37,13 +40,8 @@ public class NetUI : MonoBehaviour {
         showPanel = true;
     }
 
-    public void UpdatePanel(){
-        string output = GetOutput();
-        string input = GetInput();
-        
-        outputText.text = output;
-        inputText.text = input;
-
+    public void UpdatePanel() {
+        WakePage(activePage);
         needsUpdate = false;
     }
 
@@ -54,21 +52,15 @@ public class NetUI : MonoBehaviour {
 
     public void InitPanel() {
         panel = GameObject.Find("BrainPanel");
-
         foreach (Transform child in panel.transform) {
-            if (child.name == "Header") {
+            if (child.name == "Header") { 
+                // Don't add header to this dictionary
                 header = child.gameObject;
-            } else if (child.name == "Body") {
-                body = child.gameObject;
+            } else {
+                childDict.Add(child.name, child.gameObject);
+                Debug.Log("Added this panel to dictionary: " + child.name);
+                child.gameObject.SetActive(false);
             }
-        }
-
-        foreach (Transform child in body.transform) {
-            if (child.name == "InputScrollView") {
-                inputText = child.gameObject.GetComponentInChildren<Text>();
-            } else if (child.name == "OutputScrollView") {
-                outputText = child.gameObject.GetComponentInChildren<Text>();
-            } 
         }
     }
 
@@ -77,14 +69,18 @@ public class NetUI : MonoBehaviour {
             if (child.name == "ClosePanelButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
                 tempButton.onClick.AddListener(ExitPanel);
-            } else if (child.name == "RefreshButton") {
+            } else if (child.name == "WeightTab") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(UpdatePanel);
-            } else if (child.name == "SystemDropdown") {
-                systemDrop = child.gameObject.GetComponent<Dropdown>();
-            } else if (child.name == "GraphButton") {
+                tempButton.onClick.AddListener(delegate { WakePage("Weight"); });
+            } else if (child.name == "PerformanceTab") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(WakeGraph);
+                tempButton.onClick.AddListener(delegate { WakePage("Performance"); });
+            } else if (child.name == "KnowledgeTab") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(delegate { WakePage("Knowledge"); });
+            } else if (child.name == "NetworkTab") {
+                tempButton = child.gameObject.GetComponent<Button>();
+                tempButton.onClick.AddListener(delegate { WakePage("Network"); });
             }
         }
     }
@@ -119,5 +115,15 @@ public class NetUI : MonoBehaviour {
 
     public void WakeGraph() {
         VisualModeling.ReceiveClicked(selectedEntity);
+    }
+
+    public void WakePage(string panelName) {
+        string checkName = panelName + "Page";
+        foreach(KeyValuePair<string, GameObject> page in childDict) {
+            if (page.Key == checkName) {
+                page.Value.SetActive(true);
+                activePage = panelName;
+            } else { page.Value.SetActive(false); }
+        }
     }
 }

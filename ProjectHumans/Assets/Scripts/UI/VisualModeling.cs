@@ -142,7 +142,7 @@ public class VisualModeling : MonoBehaviour {
         }
     }
 
-    public void ShowFullNetwork(){
+    public void ShowFullNetwork() {
         // Attach boxes for all VBAD
         // Fill boxes with LayerFiller
         // Attach mouse-over that opens weights for component
