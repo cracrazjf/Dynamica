@@ -15,8 +15,8 @@ public class VisualModeling : MonoBehaviour {
     protected GameObject body;
 
     private void Start() { 
-        InitPanel();
-        InitButtons();
+        //InitPanel();
+        //InitButtons();
     }
     
     private void Update() {
@@ -127,15 +127,20 @@ public class VisualModeling : MonoBehaviour {
         Color32 highColor = Color.green;
 
         // Place HorizontalLayoutGroup
-        HorizontalLayoutGroup newGroup = displayBox.AddComponent(typeof(HorizontalLayoutGroup)) as HorizontalLayoutGroup;
+        VerticalLayoutGroup newGroup = displayBox.AddComponent(typeof(VerticalLayoutGroup)) as VerticalLayoutGroup;
+
         // Make box for each
         for (int i = 0; i < values.Count; i++) {
             string activeLabel = labels[i];
-            GameObject activeUnit = new GameObject(activeLabel, typeof(Button));
+            GameObject activeUnit = new GameObject(activeLabel, typeof(Image));
             activeUnit.transform.SetParent(displayBox.transform, false);
+            string filePath = "Materials/UI/AppleIcon";
+            activeUnit.GetComponent<Image>().sprite = Resources.Load(filePath, typeof(Sprite)) as Sprite;
+
             // Attach OnClick
-            Button tempButton = activeUnit.GetComponent<Button>();
+            Button tempButton = activeUnit.AddComponent<Button>() as Button;
             tempButton.onClick.AddListener(delegate { ShowReducedWeights(activeLabel); });
+
             // color and number item
             Color32 lerpedColor =  Color.white;
             lerpedColor = Color32.Lerp(lowColor, highColor, values[i]);
