@@ -161,7 +161,7 @@ public class TestMotor : MonoBehaviour
         if (hand < 0)
         {
             Vector3 axis = new Vector3(0, 0, 0);
-            rightHumerus.axis = axis;
+            leftHumerus.axis = axis;
             setAxis = false;
             JointSpring humerusHingeSpring = leftHumerus.spring;
             humerusHingeSpring.targetPosition = 0;
@@ -182,9 +182,11 @@ public class TestMotor : MonoBehaviour
         }
         else
         {
+            Vector3 axis = new Vector3(1, 0, 1);
+            leftHumerus.axis = axis;
             JointSpring humerusHingeSpring = leftHumerus.spring;
             JointSpring radiusHingeSpring = leftRadius.spring;
-            humerusHingeSpring.targetPosition = -50;
+            humerusHingeSpring.targetPosition = 30;
             leftHumerus.spring = humerusHingeSpring;
             radiusHingeSpring.targetPosition = 130;
             leftRadius.spring = radiusHingeSpring;

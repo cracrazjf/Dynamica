@@ -7,6 +7,7 @@ public class TestAI : MonoBehaviour
     public List<GameObject> inSight = new List<GameObject>();
     public TestMotor motor;
     public bool facingTarget;
+    public float thirst = 10;
     void Start()
     {
         
@@ -17,16 +18,25 @@ public class TestAI : MonoBehaviour
     {
         UpdateFOV(transform, 45, 10);
         ReachAndGrab();
+
     }
 
     void consume()
     {
-
+        if(thirst > 9)
+        {
+            if (motor.leftHand.GetChild(1).CompareTag("Water"))
+            {
+                motor.Consume(-1);
+                thirst = 0;
+            }
+        }
     }
     void ReachAndGrab()
     {
         foreach (GameObject x in inSight)
         {
+
             if (IsReachable(x) || motor.reached)
             {
                 
@@ -35,7 +45,11 @@ public class TestAI : MonoBehaviour
                     if (motor.leftHand.childCount > 1)
                     {
                         motor.Stand();
-                        motor.PutDownHand(-1);
+                        if (thirst > 9)
+                        {
+                            motor.Consume(-1);
+                            thirst = 0;
+                        }
                     }
                     else
                     {
