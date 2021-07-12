@@ -12,6 +12,7 @@ TagManager:
   - Button
   - Object
   - UI
+  - Water
   layers:
   - Default
   - TransparentFX
@@ -21,8 +22,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Ground
+  - Body Parts
   - 
   - 
   - 

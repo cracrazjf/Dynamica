@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33833221872646144}
   - component: {fileID: 23640863304328254}
   - component: {fileID: 8835571363580230578}
+  - component: {fileID: 6880048897067952397}
   m_Layer: 0
   m_Name: WaterPrefab
   m_TagString: Object
@@ -99,3 +100,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!136 &6880048897067952397
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875389735474708}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.08000014
+  m_Height: 0.4743478
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.23591255, z: 0}
