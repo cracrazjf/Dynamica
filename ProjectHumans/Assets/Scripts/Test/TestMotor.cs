@@ -193,4 +193,47 @@ public class TestMotor : MonoBehaviour
             consumed = true;
         }
     }
+    public void Sit()
+    {
+        JointSpring femurHingeSpring = rightFemur.spring;
+        JointSpring tibiaHingeSpring = rightTibia.spring;
+        femurHingeSpring.targetPosition = -150;
+        rightFemur.spring = femurHingeSpring;
+        leftFemur.spring = femurHingeSpring;
+        tibiaHingeSpring.targetPosition = 15;
+        rightTibia.spring = tibiaHingeSpring;
+        leftTibia.spring = tibiaHingeSpring;
+        if (abdomenTrans.localPosition.y > -2.0)
+        {
+            abdomenTrans.Translate(-Vector3.up * 1 * Time.deltaTime, Space.Self);
+        }
+    }
+
+    public void Lay()
+    {
+        JointSpring femurHingeSpring = rightFemur.spring;
+        JointSpring tibiaHingeSpring = rightTibia.spring;
+        femurHingeSpring.targetPosition = -50;
+        rightFemur.spring = femurHingeSpring;
+        leftFemur.spring = femurHingeSpring;
+        tibiaHingeSpring.targetPosition = -100;
+        rightTibia.spring = tibiaHingeSpring;
+        leftTibia.spring = tibiaHingeSpring;
+        //abdomenTrans.localPosition = new Vector3(0, -0.84f, 0);
+        if (abdomenTrans.localRotation.x >= -0.7)
+        {
+            abdomenTrans.Rotate(-30 * Time.deltaTime, 0, 0);
+        }
+        
+        if (abdomenTrans.localPosition.y > -2.5)
+        {
+            Debug.Log("here");
+            abdomenTrans.Translate(transform.right * 1 * Time.deltaTime, Space.Self);
+        }
+    }
+    public void Sleep()
+    {
+        leftEye.localScale = new Vector3(0.4f, 0.0f, 0.4f);
+        rightEye.localScale = new Vector3(0.4f, 0.0f, 0.4f);
+    }
 }

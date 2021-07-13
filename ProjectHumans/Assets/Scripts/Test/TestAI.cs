@@ -17,8 +17,9 @@ public class TestAI : MonoBehaviour
     void Update()
     {
         UpdateFOV(transform, 45, 10);
-        ReachAndGrab();
-
+        //ReachAndGrab();
+        //motor.Sit();
+        Sleep();
     }
 
     void consume()
@@ -73,6 +74,11 @@ public class TestAI : MonoBehaviour
                 }
             }
         }
+    }
+    public void Sleep()
+    {
+        motor.Lay();
+        motor.Sleep();
     }
     public void FacePosition(Vector3 targetPos)
     {
