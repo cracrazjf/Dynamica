@@ -8,6 +8,8 @@ public class TestAI : MonoBehaviour
     public TestMotor motor;
     public bool facingTarget;
     public float thirst = 10;
+    public float rotatedAngle = 0.0f;
+    public Vector3 randomPosition = Vector3.negativeInfinity;
     void Start()
     {
         
@@ -17,19 +19,48 @@ public class TestAI : MonoBehaviour
     void Update()
     {
         UpdateFOV(transform, 45, 10);
-        //ReachAndGrab();
-        //motor.Sit();
-        Sleep();
+        DecreaseThirst();
     }
 
-    void consume()
+    void Explore()
     {
-        if(thirst > 9)
+        if (randomPosition.Equals(Vector3.negativeInfinity))
         {
-            if (motor.leftHand.GetChild(1).CompareTag("Water"))
+            randomPosition = GenerateRandomPos();
+            Debug.Log("picked a new position");
+            Debug.Log(randomPosition);
+        }
+        if(Vector3.Distance(transform.position, randomPosition) < 1)
+        {
+            randomPosition = Vector3.negativeInfinity;
+        }
+        else
+        {
+            FacePosition(randomPosition);
+            if (IsFacing(randomPosition))
             {
-                motor.Consume(-1);
-                thirst = 0;
+                motor.TakingSteps();
+            }
+        }
+        
+    }
+    void DecreaseThirst()
+    {
+        if(inSight.Count > 0)
+        {
+            rotatedAngle = 0;
+            ReachAndGrab();
+        }
+        else
+        {
+            if(rotatedAngle <= 360)
+            {
+                motor.Rotate(10);
+                rotatedAngle += 10 * Time.deltaTime;
+            }
+            else
+            {
+                Explore();
             }
         }
     }
@@ -135,6 +166,12 @@ public class TestAI : MonoBehaviour
         Gizmos.color = Color.blue;
     }
 
+    public Vector3 GenerateRandomPos()
+    {
+        float randomX = Random.Range(-10, 10);
+        float randomZ = Random.Range(-10, 10);
+        return new Vector3(transform.position.x + randomX, 0.6f, transform.position.z + randomZ);
+    }
 
     public void UpdateFOV(Transform checkingObject, float maxAngle, float maxRadius)
     {

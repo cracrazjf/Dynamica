@@ -15,6 +15,7 @@ public class TestMotor : MonoBehaviour
     bool firstRight = true; // change this at some point like handedness
     private float xMin = -1f, xMax = 1f;
     private float timeValue = 0.0f;
+    public float rotatedAngle = 0.0f;
     public HingeJoint rightFemur;
     public HingeJoint leftFemur;
     public HingeJoint rightTibia;
@@ -28,6 +29,7 @@ public class TestMotor : MonoBehaviour
     public bool isCrouching;
     public bool reached;
     public bool consumed;
+    
     // Start is called before the first frame update
     void Start()
     {
