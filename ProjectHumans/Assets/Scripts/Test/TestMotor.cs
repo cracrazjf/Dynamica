@@ -157,8 +157,11 @@ public class TestMotor : MonoBehaviour
             rightHumerus.axis = axis;
             setAxis = false;
             JointSpring humerusHingeSpring = rightHumerus.spring;
+            JointSpring radiusHingeSpring = rightRadius.spring;
             humerusHingeSpring.targetPosition = 0;
+            radiusHingeSpring.targetPosition = 0;
             rightHumerus.spring = humerusHingeSpring;
+            rightRadius.spring = radiusHingeSpring;
         }
         if (hand < 0)
         {
@@ -166,8 +169,11 @@ public class TestMotor : MonoBehaviour
             leftHumerus.axis = axis;
             setAxis = false;
             JointSpring humerusHingeSpring = leftHumerus.spring;
+            JointSpring radiusHingeSpring = leftRadius.spring;
             humerusHingeSpring.targetPosition = 0;
+            radiusHingeSpring.targetPosition = 0;
             leftHumerus.spring = humerusHingeSpring;
+            leftRadius.spring = radiusHingeSpring;
         }
     }
     public void Consume(int hand)

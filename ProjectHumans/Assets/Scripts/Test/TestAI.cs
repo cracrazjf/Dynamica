@@ -20,30 +20,12 @@ public class TestAI : MonoBehaviour
     {
         UpdateFOV(transform, 45, 10);
         DecreaseThirst();
+        if(Input.GetKey(KeyCode.Space))
+        {
+            motor.PutDownHand(-1);
+        }
     }
-
-    void Explore()
-    {
-        if (randomPosition.Equals(Vector3.negativeInfinity))
-        {
-            randomPosition = GenerateRandomPos();
-            Debug.Log("picked a new position");
-            Debug.Log(randomPosition);
-        }
-        if(Vector3.Distance(transform.position, randomPosition) < 1)
-        {
-            randomPosition = Vector3.negativeInfinity;
-        }
-        else
-        {
-            FacePosition(randomPosition);
-            if (IsFacing(randomPosition))
-            {
-                motor.TakingSteps();
-            }
-        }
-        
-    }
+    
     void DecreaseThirst()
     {
         if(inSight.Count > 0)
@@ -105,6 +87,28 @@ public class TestAI : MonoBehaviour
                 }
             }
         }
+    }
+    void Explore()
+    {
+        if (randomPosition.Equals(Vector3.negativeInfinity))
+        {
+            randomPosition = GenerateRandomPos();
+            Debug.Log("picked a new position");
+            Debug.Log(randomPosition);
+        }
+        if (Vector3.Distance(transform.position, randomPosition) < 1)
+        {
+            randomPosition = Vector3.negativeInfinity;
+        }
+        else
+        {
+            FacePosition(randomPosition);
+            if (IsFacing(randomPosition))
+            {
+                motor.TakingSteps();
+            }
+        }
+
     }
     public void Sleep()
     {

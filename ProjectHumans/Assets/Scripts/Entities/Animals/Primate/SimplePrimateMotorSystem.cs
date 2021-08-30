@@ -23,6 +23,11 @@ public class SimplePrimateMotorSystem : MotorSystem {
     HingeJoint rightRadius;
     HingeJoint leftRadius;
     HingeJoint neck;
+    Transform rightHand;
+    Transform leftHand;
+    public bool isCrouching;
+    public bool setAxis;
+    public bool reached;
 
     public SimplePrimateMotorSystem(Animal animal) : base(animal) {
         Debug.Log("A simple ape was born!");
@@ -42,7 +47,7 @@ public class SimplePrimateMotorSystem : MotorSystem {
     }
 
     public override void Consume() {
-        if(stateDict["consume"] == 1)
+        if(stateDict["active"] == 1)
         {
             JointSpring humerusHingeSpring = rightHumerus.spring;
             JointSpring radiusHingeSpring = rightRadius.spring;
@@ -62,19 +67,19 @@ public class SimplePrimateMotorSystem : MotorSystem {
         }
     }
 
-    public override void Crouch() {
-        if (abdomenTrans.localPosition.y > thisAnimal.GetPhenotype().GetTrait("default_max_reach_y"))
+    public override void TakeSteps()
+    {
+        float stepRange = stateDict["take steps"] * thisAnimal.GetPhenotype().GetTrait("max_step");
+        abdomenTrans.Translate(abdomenTrans.forward * stepRange * Time.deltaTime, Space.World);
+    }
 
-        { 
-            abdomenTrans.Translate(-abdomenTrans.up * 2 * Time.deltaTime, Space.Self);
-        }
-        else
-        {
-            if (abdomenTrans.localRotation.x < 0.5)
-            {
-                abdomenTrans.Rotate(30 * Time.deltaTime, 0, 0);
-            }
-        }
+    public override void Rotate()
+    {
+        float degree = stateDict["rotate"];
+        float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
+        abdomenTrans.Rotate(0, rotatingSpeed * Time.deltaTime, 0, Space.Self);
+    }
+    public override void Crouch() {
         JointSpring femurHingeSpring = rightFemur.spring;
         JointSpring tibiaHingeSpring = rightTibia.spring;
         femurHingeSpring.targetPosition = -120;
@@ -83,11 +88,91 @@ public class SimplePrimateMotorSystem : MotorSystem {
         tibiaHingeSpring.targetPosition = 160;
         rightTibia.spring = tibiaHingeSpring;
         leftTibia.spring = tibiaHingeSpring;
-
-        
+        if (abdomenTrans.localPosition.y > -1.3)
+        {
+            abdomenTrans.Translate(-abdomenTrans.up * 2 * Time.deltaTime, Space.Self);
+        }
+        else
+        {
+            if (abdomenTrans.localRotation.x < 0.5)
+            {
+                abdomenTrans.Rotate(30 * Time.deltaTime, 0, 0);
+            }
+            else
+            {
+                isCrouching = true;
+            }
+        }
     }
-        
-
+    public override void Stand()
+    {
+        if (abdomenTrans.localPosition.y < -0.25)
+        {
+            abdomenTrans.Translate(Vector3.up * 2 * Time.deltaTime, Space.Self);
+        }
+        if (abdomenTrans.localRotation.x > 0)
+        {
+            abdomenTrans.Rotate(-30 * Time.deltaTime, 0, 0);
+        }
+        JointSpring femurHingeSpring = rightFemur.spring;
+        JointSpring tibiaHingeSpring = rightTibia.spring;
+        femurHingeSpring.targetPosition = 0;
+        rightFemur.spring = femurHingeSpring;
+        leftFemur.spring = femurHingeSpring;
+        tibiaHingeSpring.targetPosition = 0;
+        rightTibia.spring = tibiaHingeSpring;
+        leftTibia.spring = tibiaHingeSpring;
+    }
+    public override void UseHand()
+    {
+        float reach_x = stateDict["RP x"];
+        float reach_z = stateDict["RP z"];
+        LayerMask layermask = ~(1 << 8 | 1 << 9);
+        if (stateDict["right"] != 0)
+        {
+            if (!setAxis)
+            {
+                Vector3 axis = new Vector3(reach_x, 0, reach_z);
+                rightHumerus.axis = axis;
+                setAxis = true;
+            }
+            JointSpring humerusHingeSpring = rightHumerus.spring;
+            humerusHingeSpring.targetPosition = stateDict["right"] * 180;
+            rightHumerus.spring = humerusHingeSpring;
+            int maxColliders = 10;
+            Collider[] hitColliders = new Collider[maxColliders];
+            int numColliders = Physics.OverlapSphereNonAlloc(rightHand.position, 0.5f, hitColliders, layermask);
+            if (numColliders > 0)
+            {
+                hitColliders[0].transform.parent = rightHand;
+                rightHand.GetChild(0).localPosition = new Vector3(0, 0, 0);
+                reached = true;
+            }
+        }
+        if (stateDict["active left"] != 0)
+        {
+            if (!setAxis)
+            {
+                Vector3 axis = new Vector3(reach_x, 0, reach_z);
+                leftHumerus.axis = axis;
+                setAxis = true;
+            }
+            JointSpring humerusHingeSpring = rightHumerus.spring;
+            humerusHingeSpring.targetPosition = stateDict["right"] * 180;
+            leftHumerus.spring = humerusHingeSpring;
+            int maxColliders = 10;
+            Collider[] hitColliders = new Collider[maxColliders];
+            int numColliders = Physics.OverlapSphereNonAlloc(leftHand.position, 0.5f, hitColliders, layermask);
+            if (numColliders > 0)
+            {
+                hitColliders[0].transform.GetComponent<Rigidbody>().isKinematic = true;
+                hitColliders[0].transform.parent = leftHand;
+                leftHand.GetChild(1).localPosition = new Vector3(0, 0, 0);
+                leftHand.GetChild(1).localRotation = Quaternion.Euler(283.640747f, 84.107254f, 138.337387f);
+                reached = true;
+            }
+        }
+    }
     public override void Lay() {
         JointSpring femurHingeSpring = rightFemur.spring;
         JointSpring tibiaHingeSpring = rightTibia.spring;
@@ -97,16 +182,16 @@ public class SimplePrimateMotorSystem : MotorSystem {
         tibiaHingeSpring.targetPosition = -100;
         rightTibia.spring = tibiaHingeSpring;
         leftTibia.spring = tibiaHingeSpring;
-        abdomenTrans.localPosition = new Vector3(0, -0.84f, 0);
+        //abdomenTrans.localPosition = new Vector3(0, -0.84f, 0);
         if (abdomenTrans.localRotation.x >= -0.7)
         {
             abdomenTrans.Rotate(-30 * Time.deltaTime, 0, 0);
         }
-        else
-        {
-            abdomenTrans.localPosition = new Vector3(0, -2.5f, 0);
-        }
 
+        if (abdomenTrans.localPosition.y > -2.5)
+        {
+            abdomenTrans.Translate(thisAnimal.GetGameObject().transform.right * 1 * Time.deltaTime, Space.Self);
+        }
     }
 
     public override void Look() {
@@ -131,12 +216,6 @@ public class SimplePrimateMotorSystem : MotorSystem {
         Sit();
     }
 
-    public override void Rotate() {
-        float degree = stateDict["rotate"];
-        float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
-        abdomenTrans.Rotate(0, 10 * Time.deltaTime, 0, Space.Self);
-    }
-
     public override void Sit() {
         JointSpring femurHingeSpring = rightFemur.spring;
         JointSpring tibiaHingeSpring = rightTibia.spring;
@@ -146,7 +225,10 @@ public class SimplePrimateMotorSystem : MotorSystem {
         tibiaHingeSpring.targetPosition = 15;
         rightTibia.spring = tibiaHingeSpring;
         leftTibia.spring = tibiaHingeSpring;
-        abdomenTrans.localPosition = new Vector3(0, -2.0f, 0);
+        if (abdomenTrans.localPosition.y > -2.0)
+        {
+            abdomenTrans.Translate(-Vector3.up * 1 * Time.deltaTime, Space.Self);
+        }
     }
 
     public override void Sleep() {
@@ -154,69 +236,9 @@ public class SimplePrimateMotorSystem : MotorSystem {
         rightEye.localScale = new Vector3(0.4f, 0.0f, 0.4f);
     }
 
-    public override void Stand() {
-        if (thisBody.GetState("crouching") == 1) {
-            if (abdomenTrans.localRotation.x > 0) { abdomenTrans.Rotate(-30 * Time.deltaTime, 0, 0); }
 
-            JointSpring femurHingeSpring = rightFemur.spring;
-            JointSpring tibiaHingeSpring = rightTibia.spring;
-            femurHingeSpring.targetPosition = 0;
-            rightFemur.spring = femurHingeSpring;
-            leftFemur.spring = femurHingeSpring;
-            tibiaHingeSpring.targetPosition = 0;
-            rightTibia.spring = tibiaHingeSpring;
-            leftTibia.spring = tibiaHingeSpring;
-            abdomenTrans.localPosition = new Vector3(0, 0, 0);
 
-        } else if (thisBody.GetState("sitting") == 1) {
-            JointSpring femurHingeSpring = rightFemur.spring;
-            JointSpring tibiaHingeSpring = rightTibia.spring;
-            femurHingeSpring.targetPosition = 0;
-            rightFemur.spring = femurHingeSpring;
-            leftFemur.spring = femurHingeSpring;
-            tibiaHingeSpring.targetPosition = 0;
-            rightTibia.spring = tibiaHingeSpring;
-            leftTibia.spring = tibiaHingeSpring;
-            abdomenTrans.localPosition = new Vector3(0, 0, 0);
-        }
-    }
+    
 
-    public override void TakeSteps() {
-        float stepRange = stateDict["take steps"] * thisAnimal.GetPhenotype().GetTrait("max_step");
-        abdomenTrans.Translate(abdomenTrans.forward * stepRange * Time.deltaTime, Space.Self);
-    }
-
-    public override void UseHand() {
-        float reach_x = stateDict["RP x"];
-        float reach_z = stateDict["RP z"];
-        if(stateDict["right"] != 0)
-        {
-            rightHumerus.axis.Set(1,0,1);
-            JointSpring humerusHingeSpring = rightHumerus.spring;
-            humerusHingeSpring.targetPosition = stateDict["right"] * 180;
-            rightHumerus.spring = humerusHingeSpring;
-            int maxColliders = 10;
-            Collider[] hitColliders = new Collider[maxColliders];
-            int numColliders = Physics.OverlapSphereNonAlloc(thisBody.GetSkeleton("Hand_R").transform.position, 0.5f, hitColliders);
-            if (numColliders > 0)
-            {
-                hitColliders[0].transform.parent = thisBody.GetSkeleton("Hand_R").transform;
-                thisBody.GetSkeleton("Hand_R").transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
-            }
-        }
-        if(stateDict["active left"] != 0) {
-            leftHumerus.axis.Set(reach_x, 0, reach_z);
-            JointSpring humerusHingeSpring = rightHumerus.spring;
-            humerusHingeSpring.targetPosition = stateDict["active left"] * 180;
-            leftHumerus.spring = humerusHingeSpring;
-            int maxColliders = 10;
-            Collider[] hitColliders = new Collider[maxColliders];
-            int numColliders = Physics.OverlapSphereNonAlloc(thisBody.GetSkeleton("Hand_R").transform.position, 0.5f, hitColliders);
-            if (numColliders > 0)
-            {
-                hitColliders[0].transform.parent = thisBody.GetSkeleton("Hand_L").transform;
-                thisBody.GetSkeleton("Hand_L").transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
-            }
-        }
-    }
+    
 }
