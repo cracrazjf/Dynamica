@@ -33,7 +33,6 @@ public class PrimateBody : AnimalBody {
         thisAnimal = (Animal) thisEntity;
 
         filePath = "Prefabs/" + bodyPlan + thisAnimal.GetSex() + "Prefab";
-
         // if (bodyPlan == "ComplexHuman") { 
         //     float variant = thisAnimal.GetPhenotype().GetTraitDict()["variant"];
         //     string label = "A";

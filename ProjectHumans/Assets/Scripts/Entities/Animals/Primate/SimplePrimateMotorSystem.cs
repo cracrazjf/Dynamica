@@ -5,6 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
 using System.Linq;
 public class SimplePrimateMotorSystem : MotorSystem {
+   
     Transform abdomenTrans;
     Transform leftEye;
     Transform rightEye;
@@ -23,17 +24,14 @@ public class SimplePrimateMotorSystem : MotorSystem {
     HingeJoint rightRadius;
     HingeJoint leftRadius;
     HingeJoint neck;
-    Transform rightHand;
-    Transform leftHand;
-    public bool isCrouching;
-    public bool setAxis;
-    public bool reached;
+    
+
 
     public SimplePrimateMotorSystem(Animal animal) : base(animal) {
         Debug.Log("A simple ape was born!");
-        abdomenTrans = thisBody.abdomen.transform;
-        leftEye = thisBody.head.transform.GetChild(1).GetChild(1);
-        rightEye = thisBody.head.transform.GetChild(1).GetChild(0);
+        abdomenTrans = thisAnimal.GetGameObject().transform;
+        leftEye = thisBody.head.transform.GetChild(0).GetChild(1);
+        rightEye = thisBody.head.transform.GetChild(0).GetChild(0);
         primateBody = (PrimateBody)thisBody;
         rightFemur = thisBody.GetSkeleton("Femur_R").GetComponent<HingeJoint>();
         leftFemur = thisBody.GetSkeleton("Femur_L").GetComponent<HingeJoint>();
@@ -44,8 +42,9 @@ public class SimplePrimateMotorSystem : MotorSystem {
         rightRadius = thisBody.GetSkeleton("Radius_R").GetComponent<HingeJoint>();
         leftRadius = thisBody.GetSkeleton("Radius_L").GetComponent<HingeJoint>();
         neck = thisBody.GetSkeleton("Neck").GetComponent<HingeJoint>();
+        rightHand = thisBody.GetSkeleton("Hand_R").transform;
+        leftHand = thisBody.GetSkeleton("Hand_L").transform;
     }
-
     public override void Consume() {
         if(stateDict["active"] == 1)
         {
@@ -69,6 +68,7 @@ public class SimplePrimateMotorSystem : MotorSystem {
 
     public override void TakeSteps()
     {
+        Debug.Log("taking steps");
         float stepRange = stateDict["take steps"] * thisAnimal.GetPhenotype().GetTrait("max_step");
         abdomenTrans.Translate(abdomenTrans.forward * stepRange * Time.deltaTime, Space.World);
     }
@@ -141,7 +141,7 @@ public class SimplePrimateMotorSystem : MotorSystem {
             rightHumerus.spring = humerusHingeSpring;
             int maxColliders = 10;
             Collider[] hitColliders = new Collider[maxColliders];
-            int numColliders = Physics.OverlapSphereNonAlloc(rightHand.position, 0.5f, hitColliders, layermask);
+            int numColliders = 0;//Physics.OverlapSphereNonAlloc(rightHand.position, 0.5f, hitColliders, layermask);
             if (numColliders > 0)
             {
                 hitColliders[0].transform.parent = rightHand;

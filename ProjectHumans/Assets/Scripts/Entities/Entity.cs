@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
-using System.Text;
-using System.IO;
 using UnityEngine;
-using Random=UnityEngine.Random;
 
 abstract public class Entity {
 

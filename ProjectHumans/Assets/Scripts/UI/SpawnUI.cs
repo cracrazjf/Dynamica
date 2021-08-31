@@ -14,7 +14,7 @@ public class SpawnUI : MonoBehaviour {
     protected Dropdown locationSpawn;
     protected Dropdown speciesSpawn;
 
-       private void Start() { 
+       private void Start() {
         InitPanel(); 
         showPanel = false;
     }

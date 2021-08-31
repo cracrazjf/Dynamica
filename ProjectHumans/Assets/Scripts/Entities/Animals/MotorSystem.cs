@@ -8,13 +8,13 @@ public abstract class MotorSystem
 {
     protected Animal thisAnimal;
     protected AnimalBody thisBody;
-    protected List<Action> actionList;
+    public List<Action> actionList;
     protected Vector<float> paramCopy;
 
     protected Vector<float> states;
     protected List<string> stateLabelList;
     protected Dictionary<string, int> stateIndexDict;
-    protected Dictionary<string, float> stateDict;
+    public Dictionary<string, float> stateDict;
     protected int numArgs;
     
     public Vector<float> GetStates() { return states; }
@@ -23,6 +23,11 @@ public abstract class MotorSystem
     public Dictionary<string, int> GetStateIndices() { return stateIndexDict; }
     public Dictionary<string, float> GetStateDict() { return stateDict; }
 
+    public bool isCrouching;
+    public bool setAxis;
+    public bool reached;
+    public Transform rightHand;
+    public Transform leftHand;
 
     public MotorSystem(Animal passed) {
         thisAnimal = passed;
@@ -68,25 +73,9 @@ public abstract class MotorSystem
 
 
     public void TakeAction(Vector<float> actions) {
-        //stateDict["look vertically"] = 0.5f;
-        ////stateDict["look horizontally"] = 0.5f;
-        //actionList[9]();// look
-
-        //actionList[0](); // crouch
-
-        //actionList[1](); //sit
-
-        //actionList[2](); //lay
 
         //stateDict["take steps"] = 1.0f;
         //actionList[5](); //take steps
-
-        //actionList[6](); //consume
-        //actionList[7](); //sleep
-        stateDict["right"] = 0.3f;
-        stateDict["RP x"] = 1;
-        stateDict["RP z"] = 1;
-        actionList[10](); //usehand
 
     }
 
