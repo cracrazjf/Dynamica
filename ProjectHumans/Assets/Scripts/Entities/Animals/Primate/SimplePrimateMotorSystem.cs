@@ -7,6 +7,7 @@ using System.Linq;
 public class SimplePrimateMotorSystem : MotorSystem {
    
     Transform abdomenTrans;
+    Transform bodyTrans;
     Transform leftEye;
     Transform rightEye;
     PrimateBody primateBody;
@@ -29,7 +30,8 @@ public class SimplePrimateMotorSystem : MotorSystem {
 
     public SimplePrimateMotorSystem(Animal animal) : base(animal) {
         Debug.Log("A simple ape was born!");
-        abdomenTrans = thisAnimal.GetGameObject().transform;
+        bodyTrans = thisAnimal.GetGameObject().transform;
+        abdomenTrans = thisBody.GetSkeleton("Abdomen").transform;
         leftEye = thisBody.head.transform.GetChild(0).GetChild(1);
         rightEye = thisBody.head.transform.GetChild(0).GetChild(0);
         primateBody = (PrimateBody)thisBody;
@@ -70,14 +72,14 @@ public class SimplePrimateMotorSystem : MotorSystem {
     {
         Debug.Log("taking steps");
         float stepRange = stateDict["take steps"] * thisAnimal.GetPhenotype().GetTrait("max_step");
-        abdomenTrans.Translate(abdomenTrans.forward * stepRange * Time.deltaTime, Space.World);
+        bodyTrans.Translate(bodyTrans.forward * stepRange * Time.deltaTime, Space.World);
     }
 
     public override void Rotate()
     {
         float degree = stateDict["rotate"];
         float rotatingSpeed = degree * thisAnimal.GetPhenotype().GetTrait("max_rotation");
-        abdomenTrans.Rotate(0, rotatingSpeed * Time.deltaTime, 0, Space.Self);
+        bodyTrans.Rotate(0, rotatingSpeed * Time.deltaTime, 0, Space.Self);
     }
     public override void Crouch() {
         JointSpring femurHingeSpring = rightFemur.spring;
@@ -128,7 +130,7 @@ public class SimplePrimateMotorSystem : MotorSystem {
         float reach_x = stateDict["RP x"];
         float reach_z = stateDict["RP z"];
         LayerMask layermask = ~(1 << 8 | 1 << 9);
-        if (stateDict["right"] != 0)
+        if (stateDict["active right"] != 0)
         {
             if (!setAxis)
             {
@@ -157,8 +159,8 @@ public class SimplePrimateMotorSystem : MotorSystem {
                 leftHumerus.axis = axis;
                 setAxis = true;
             }
-            JointSpring humerusHingeSpring = rightHumerus.spring;
-            humerusHingeSpring.targetPosition = stateDict["right"] * 180;
+            JointSpring humerusHingeSpring = leftHumerus.spring;
+            humerusHingeSpring.targetPosition = stateDict["active left"] * 180;
             leftHumerus.spring = humerusHingeSpring;
             int maxColliders = 10;
             Collider[] hitColliders = new Collider[maxColliders];

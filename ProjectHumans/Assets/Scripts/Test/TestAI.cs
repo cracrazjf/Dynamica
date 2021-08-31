@@ -145,6 +145,7 @@ public class TestAI : MonoBehaviour
     public bool IsFacing(Vector3 targetPos)
     {
         float angle = Vector3.Angle(transform.forward, targetPos - transform.position);
+        Debug.Log(angle);
         if (angle <= 13f)
         {
             facingTarget = true;

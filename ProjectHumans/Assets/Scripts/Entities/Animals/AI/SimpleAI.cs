@@ -46,16 +46,17 @@ public class SimpleAI: AI {
         }
         else
         {
-            if (rotatedAngle <= 360)
-            {
-                thisMotor.stateDict["rotate"] = 1.0f;
-                thisMotor.actionList[4]();
-                rotatedAngle += 10 * Time.deltaTime;
-            }
-            else
-            {
-                Explore();
-            }
+            Explore();
+            //if (rotatedAngle <= 360)
+            //{
+            //    thisMotor.stateDict["rotate"] = 1.0f;
+            //    thisMotor.actionList[4]();
+            //    rotatedAngle += 10 * Time.deltaTime;
+            //}
+            //else
+            //{
+            //    Explore();
+            //}
         }
     }
     void ReachAndGrab()
@@ -81,10 +82,9 @@ public class SimpleAI: AI {
                     else
                     {
                         thisMotor.actionList[10]();
-                        thisMotor.stateDict["active left"] = 1;
+                        thisMotor.stateDict["active left"] = 0.5f;
                         thisMotor.stateDict["RP x"] = 1;
                         thisMotor.stateDict["RP z"] = 0.2f;
-                        thisMotor.stateDict["right"] = 0.33f;
                     }
                 }
                 else
@@ -128,7 +128,6 @@ public class SimpleAI: AI {
         }
 
     }
-
     public void Sleep()
     {
         thisMotor.actionList[2]();
@@ -140,17 +139,16 @@ public class SimpleAI: AI {
         {
             if (GetRelativePosition(targetPos) == -1)
             {
-                thisMotor.stateDict["rotate"] = 1.0f;
+                thisMotor.stateDict["rotate"] = -1.0f;
                 thisMotor.actionList[4]();
             }
             else
             {
-                thisMotor.stateDict["rotate"] = -1.0f;
+                thisMotor.stateDict["rotate"] = 1.0f;
                 thisMotor.actionList[4]();
             }
         }
     }
-
     public int GetRelativePosition(Vector3 targetPos)
     {
         Vector3 relativePosition = transform.InverseTransformPoint(targetPos);
@@ -164,24 +162,23 @@ public class SimpleAI: AI {
         }
         return 0;
     }
-
     public bool IsFacing(Vector3 targetPos)
     {
         float angle = Vector3.Angle(transform.forward, targetPos - transform.position);
         Debug.Log(angle);
         if (angle <= 13f)
         {
+            Debug.Log("facing");
             facingTarget = true;
             return true;
         }
         facingTarget = false;
         return false;
     }
-
     public bool IsReachable(GameObject target)
     {
         float distance = Vector3.Distance(transform.position, target.transform.position);
-        if (distance < 1.0f)
+        if (distance < 1f)
         {
             return true;
         }
@@ -191,7 +188,7 @@ public class SimpleAI: AI {
     {
         float randomX = UnityEngine.Random.Range(-10, 10);
         float randomZ = UnityEngine.Random.Range(-10, 10);
-        return new Vector3(transform.position.x + randomX, 0.6f, transform.position.z + randomZ);
+        return new Vector3(transform.position.x + randomX, 0.75f, transform.position.z + randomZ);
     }
     public void UpdateFOV(Transform checkingObject, float maxAngle, float maxRadius)
     {

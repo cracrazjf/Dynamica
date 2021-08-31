@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7931384793505818852}
   - component: {fileID: 7931384793505818850}
   - component: {fileID: 7931384793505818855}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: GrassTerrainPrefab
   m_TagString: Ground
   m_Icon: {fileID: 0}
