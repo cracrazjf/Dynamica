@@ -517,6 +517,10 @@ PrefabInstance:
       propertyPath: m_Spring.spring
       value: 300
       objectReference: {fileID: 0}
+    - target: {fileID: 418845280962990355, guid: b0341692d0c50e048ba9a05486282cbe, type: 3}
+      propertyPath: m_Spring.targetPosition
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 418845280962990356, guid: b0341692d0c50e048ba9a05486282cbe, type: 3}
       propertyPath: m_Layer
       value: 9

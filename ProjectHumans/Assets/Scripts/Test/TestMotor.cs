@@ -106,13 +106,15 @@ public class TestMotor : MonoBehaviour
         LayerMask layermask = ~(1 << 8 | 1 << 9);
         if (hand > 0)
         {
+            JointSpring humerusHingeSpring = rightHumerus.spring;
             if (!setAxis)
             {
+                humerusHingeSpring.targetPosition = 0;
+                rightHumerus.spring = humerusHingeSpring;
                 Vector3 axis = new Vector3(reach_x, 0, reach_z);
                 rightHumerus.axis = axis;
                 setAxis = true;
             }
-            JointSpring humerusHingeSpring = rightHumerus.spring;
             humerusHingeSpring.targetPosition = angle * 180;
             rightHumerus.spring = humerusHingeSpring;
             int maxColliders = 10;
@@ -127,13 +129,15 @@ public class TestMotor : MonoBehaviour
         }
         if (hand < 0)
         {
+            JointSpring humerusHingeSpring = leftHumerus.spring;
             if (!setAxis)
             {
+                humerusHingeSpring.targetPosition = 0;
+                leftHumerus.spring = humerusHingeSpring;
                 Vector3 axis = new Vector3(reach_x, 0, reach_z);
                 leftHumerus.axis = axis;
                 setAxis = true;
             }
-            JointSpring humerusHingeSpring = rightHumerus.spring;
             humerusHingeSpring.targetPosition = angle * 180;
             leftHumerus.spring = humerusHingeSpring;
             int maxColliders = 10;
@@ -153,27 +157,27 @@ public class TestMotor : MonoBehaviour
     {
         if (hand > 0)
         {
-            Vector3 axis = new Vector3(0, 0, 0);
-            rightHumerus.axis = axis;
-            setAxis = false;
             JointSpring humerusHingeSpring = rightHumerus.spring;
             JointSpring radiusHingeSpring = rightRadius.spring;
             humerusHingeSpring.targetPosition = 0;
             radiusHingeSpring.targetPosition = 0;
             rightHumerus.spring = humerusHingeSpring;
             rightRadius.spring = radiusHingeSpring;
+            Vector3 axis = new Vector3(0, 0, 0);
+            rightHumerus.axis = axis;
+            setAxis = false;
         }
         if (hand < 0)
         {
-            Vector3 axis = new Vector3(0, 0, 0);
-            leftHumerus.axis = axis;
-            setAxis = false;
             JointSpring humerusHingeSpring = leftHumerus.spring;
             JointSpring radiusHingeSpring = leftRadius.spring;
-            humerusHingeSpring.targetPosition = 0;
+            humerusHingeSpring.targetPosition = -45;
             radiusHingeSpring.targetPosition = 0;
             leftHumerus.spring = humerusHingeSpring;
             leftRadius.spring = radiusHingeSpring;
+            Vector3 axis = new Vector3(0, 0, 0);
+            leftHumerus.axis = axis;
+            setAxis = false;
         }
     }
     public void Consume(int hand)
@@ -184,7 +188,7 @@ public class TestMotor : MonoBehaviour
             JointSpring radiusHingeSpring = rightRadius.spring;
             humerusHingeSpring.targetPosition = -50;
             rightHumerus.spring = humerusHingeSpring;
-            radiusHingeSpring.targetPosition = -130;
+            radiusHingeSpring.targetPosition = -120;
             rightRadius.spring = radiusHingeSpring;
             consumed = true;
         }
@@ -196,7 +200,7 @@ public class TestMotor : MonoBehaviour
             JointSpring radiusHingeSpring = leftRadius.spring;
             humerusHingeSpring.targetPosition = 30;
             leftHumerus.spring = humerusHingeSpring;
-            radiusHingeSpring.targetPosition = 130;
+            radiusHingeSpring.targetPosition = 120;
             leftRadius.spring = radiusHingeSpring;
             consumed = true;
         }

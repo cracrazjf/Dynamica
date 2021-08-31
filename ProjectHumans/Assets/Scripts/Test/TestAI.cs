@@ -19,11 +19,16 @@ public class TestAI : MonoBehaviour
     void Update()
     {
         UpdateFOV(transform, 45, 10);
-        DecreaseThirst();
-        if(Input.GetKey(KeyCode.Space))
-        {
-            motor.PutDownHand(-1);
-        }
+        //DecreaseThirst();
+        //if (Input.GetKey(KeyCode.Space))
+        //{
+        //    motor.PutDownHand(-1);
+        //}
+        //if (Input.GetKey(KeyCode.Return))
+        //{
+        //    motor.UseHand(-1, 1, 0.2f, 0.33f);
+        //    motor.Consume(-1);
+        //}
     }
     
     void DecreaseThirst()
