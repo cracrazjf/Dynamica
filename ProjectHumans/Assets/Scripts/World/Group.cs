@@ -34,7 +34,7 @@ public class Group {
         for (int i = 0; i < numEntities; i++) {
             float xRan = Random.Range(origin.x - range, origin.x + range);
             float zRan = Random.Range(origin.z - range, origin.z + range);
-            Vector3 memberPos = new Vector3 (0, 0, 0);
+            Vector3 memberPos = new Vector3 (xRan, 0, zRan);
 
             Entity newMember = World.AddEntity(population, memberPos);
             World.SaveEntity(newMember, population);
