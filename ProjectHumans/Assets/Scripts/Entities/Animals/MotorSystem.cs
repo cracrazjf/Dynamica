@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
@@ -8,15 +8,17 @@ public abstract class MotorSystem
 {
     protected Animal thisAnimal;
     protected AnimalBody thisBody;
-    public List<Action> actionList;
+    protected List<Action> actionList;
     protected Vector<float> paramCopy;
 
     protected Vector<float> states;
     protected List<string> stateLabelList;
     protected Dictionary<string, int> stateIndexDict;
-    public Dictionary<string, float> stateDict;
+    protected Dictionary<string, float> stateDict;
     protected int numArgs;
-    
+
+    protected List<string> skeletonInUse = new List<string>();
+    protected bool illigalAction;
     public Vector<float> GetStates() { return states; }
     public float GetState(string place) { return stateDict[place]; }
     public List<string> GetStateLabels() { return stateLabelList; }
@@ -43,14 +45,13 @@ public abstract class MotorSystem
             "consume",     // 6, set to consumable if ongoing
             "sleep",       // 7, awake/maintain/fall asleep
             "rest",        // 8 -1 or 1 (or 0 if not switched)
-            "look vertically",   // 9 -1 or 1 (or 0 if not switched)
-            "look horizontally", // 10 -1 or 1 (or 0 if not switched)
-            "hand action", // 11, release/maintain/grab
-            "active right",// 12  -1 if left, or 1 if right
-            "active left", // 13  -1 if left, or 1 if right
-            "RP x",        // 14  -1 to 1, proportion of max range from start pos
-            "RP y",        // 15
-            "RP z",        // 16
+            "look",        // 9
+            "use hands",   // 10 -1 left / 1 right
+            "look vertically",   // 11 -1 or 1 (or 0 if not switched)
+            "look horizontally", // 12 -1 or 1 (or 0 if not switched)
+            "RP x",        // 13  -1 to 1, proportion of max range from start pos
+            "RP y",        // 14
+            "RP z",        // 15
             
         };
         this.InitStates(stateLabelList);
@@ -70,12 +71,90 @@ public abstract class MotorSystem
         states[index] = val;
     }
 
-
+    public void CheckActionLegality()
+    {
+        if (skeletonInUse.Any(o => o != skeletonInUse[0]))
+        {
+            illigalAction = true;
+            Collapse();
+        }
+        else
+        {
+            illigalAction = false;
+        }
+    }
 
     public void TakeAction(Vector<float> actions) {
-
-        //stateDict["take steps"] = 1.0f;
-        //actionList[5](); //take steps
+        skeletonInUse.Clear();
+        Debug.Log(illigalAction);
+        TakeSteps();
+        
+        if (Input.GetKey(KeyCode.Return))
+        {
+            Lay();
+            //states[stateIndexDict["use hands"]] = -1;
+            //states[stateIndexDict["RP x"]] = -1f;
+            //states[stateIndexDict["RP y"]] = 0f;
+            //states[stateIndexDict["RP z"]] = -0.5f;
+            //UseHand();
+        }
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            Reset();
+            //states[stateIndexDict["use hands"]] = -1;
+            //states[stateIndexDict["RP x"]] = 0f;
+            //states[stateIndexDict["RP y"]] = 0f;
+            //states[stateIndexDict["RP z"]] = 0f;
+            //UseHand();
+        }
+        //for (int i = 0; i < states.Count; i++)
+        //{
+        //    states[i] = actions[i];
+        //}
+        //if (states[stateIndexDict["take steps"]] != 0)
+        //{
+        //    TakeSteps();
+        //}
+        //if (states[stateIndexDict["rotate"]] != 0)
+        //{
+        //    Rotate();
+        //}
+        //if (states[stateIndexDict["crouch"]] != 0)
+        //{
+        //    Crouch();
+        //}
+        //if (states[stateIndexDict["sit"]] != 0)
+        //{
+        //    Sit();
+        //}
+        //if (states[stateIndexDict["lay"]] != 0)
+        //{
+        //    Lay();
+        //}
+        //if (states[stateIndexDict["stand"]] != 0)
+        //{
+        //    Stand();
+        //}
+        //if (states[stateIndexDict["consume"]] != 0)
+        //{
+        //    Consume();
+        //}
+        //if (states[stateIndexDict["sleep"]] != 0)
+        //{
+        //    Sleep();
+        //}
+        //if (states[stateIndexDict["rest"]] != 0)
+        //{
+        //    Rest();
+        //}
+        //if (states[stateIndexDict["look"]] != 0)
+        //{
+        //    Look();
+        //}
+        //if (states[stateIndexDict["use hands"]] != 0)
+        //{
+        //    UseHand();
+        //}
 
     }
 
@@ -121,4 +200,7 @@ public abstract class MotorSystem
     public abstract void Rest();
     public abstract void Look();
     public abstract void UseHand();
+    public abstract void Collapse();
+
+    public abstract void Reset();
 }

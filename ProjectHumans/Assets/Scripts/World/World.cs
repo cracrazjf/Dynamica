@@ -55,7 +55,6 @@ public class World: MonoBehaviour {
 
     void Start() {
         mainCam = GameObject.Find("Main Camera");
-        Debug.Log("here");
     }
 
     void Update() {

@@ -52,7 +52,6 @@ public class Animal : Entity {
             
             Vector<float> temp = activeAI.ChooseAction().Column(0);
             GetMotorSystem().TakeAction(temp);
-            //Debug.Log(activeAI.ChooseAction(visualInputMatrix)[0,0].GetType());
             action = "In progress!";
 
             IncreaseAge(1);
@@ -60,7 +59,6 @@ public class Animal : Entity {
             finishedUpdate = true;
         }
     }
-
     public void ToggleBodyPart(string part, bool toggle) {
         GetBody().GetSkeletonDict()[part].gameObject.SetActive(toggle);
     }

@@ -31,8 +31,8 @@ public class PrimateBody : AnimalBody {
         string filePath;
         string bodyPlan = World.anthroBody;
         thisAnimal = (Animal) thisEntity;
-
-        filePath = "Prefabs/" + bodyPlan + thisAnimal.GetSex() + "Prefab";
+        filePath = "Prefabs/SimpleHuman" + thisAnimal.GetSex() + "Prefab";
+        //filePath = "Prefabs/" + bodyPlan + thisAnimal.GetSex() + "Prefab";
         // if (bodyPlan == "ComplexHuman") { 
         //     float variant = thisAnimal.GetPhenotype().GetTraitDict()["variant"];
         //     string label = "A";
@@ -59,8 +59,7 @@ public class PrimateBody : AnimalBody {
     }
     
     public override bool CheckSitting() {
-        // float bodyExtent = abdomen.GetComponent<Collider>().bounds.extents.y;
-        // return Physics.Raycast(abdomen.transform.position, -abdomen.transform.up, bodyExtent + 0.2f);
+
         return CheckCrouchingTop();
     }
 

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5558126206980732243}
   - component: {fileID: 5558126206980023229}
   - component: {fileID: 5558126206978983523}
+  - component: {fileID: 980215793963800547}
   - component: {fileID: 6419458664304142513}
   - component: {fileID: 5915116282223404728}
   m_Layer: 0
@@ -84,6 +85,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &980215793963800547
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558126206981039901}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.2
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!136 &6419458664304142513
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -94,8 +109,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 1
-  m_Height: 3
+  m_Radius: 1.3490796
+  m_Height: 3.5
   m_Direction: 1
   m_Center: {x: 0, y: 3.5, z: 0}
 --- !u!54 &5915116282223404728
@@ -127,7 +142,6 @@ GameObject:
   - component: {fileID: 9033885092825491177}
   - component: {fileID: 5562890259541154046}
   - component: {fileID: 2241163203080896675}
-  - component: {fileID: 7214730659060350735}
   m_Layer: 0
   m_Name: Trunk
   m_TagString: Plant
@@ -228,20 +242,6 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!136 &7214730659060350735
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7376389112592385852}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.15
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.1, y: 0.5, z: 0}
 --- !u!1 &9161727607228393013
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,28 +19,28 @@ public class TestAI : MonoBehaviour
     void Update()
     {
         UpdateFOV(transform, 45, 10);
-        //DecreaseThirst();
-        //if (Input.GetKey(KeyCode.Space))
-        //{
-        //    motor.PutDownHand(-1);
-        //}
-        //if (Input.GetKey(KeyCode.Return))
-        //{
-        //    motor.UseHand(-1, 1, 0.2f, 0.33f);
-        //    motor.Consume(-1);
-        //}
+        DecreaseThirst();
+        if (Input.GetKey(KeyCode.Space))
+        {
+            motor.PutDownHand(-1);
+        }
+        if (Input.GetKey(KeyCode.Return))
+        {
+            motor.UseHand(-1, -0.6f, 0, -0.3f);
+            motor.Consume(-1);
+        }
     }
-    
+
     void DecreaseThirst()
     {
-        if(inSight.Count > 0)
+        if (inSight.Count > 0)
         {
             rotatedAngle = 0;
             ReachAndGrab();
         }
         else
         {
-            if(rotatedAngle <= 360)
+            if (rotatedAngle <= 360)
             {
                 motor.Rotate(10);
                 rotatedAngle += 10 * Time.deltaTime;
@@ -55,10 +55,9 @@ public class TestAI : MonoBehaviour
     {
         foreach (GameObject x in inSight)
         {
-
             if (IsReachable(x) || motor.reached)
             {
-                
+
                 if (motor.isCrouching)
                 {
                     if (motor.leftHand.childCount > 1)
@@ -66,13 +65,14 @@ public class TestAI : MonoBehaviour
                         motor.Stand();
                         if (thirst > 9)
                         {
+                            motor.UseHand(-1, -0.5f, 0.6f, -0.3f);
                             motor.Consume(-1);
                             thirst = 0;
                         }
                     }
                     else
                     {
-                        motor.UseHand(-1, 1, 0.2f, 0.33f);
+                        motor.UseHand(-1, -1f, 0, -0.5f);
                     }
                 }
                 else
@@ -150,7 +150,6 @@ public class TestAI : MonoBehaviour
     public bool IsFacing(Vector3 targetPos)
     {
         float angle = Vector3.Angle(transform.forward, targetPos - transform.position);
-        Debug.Log(angle);
         if (angle <= 13f)
         {
             facingTarget = true;
@@ -162,7 +161,7 @@ public class TestAI : MonoBehaviour
     public bool IsReachable(GameObject target)
     {
         float distance = Vector3.Distance(transform.position, target.transform.position);
-        if (distance < 1.0f)
+        if (distance < 1f)
         {
             return true;
         }
@@ -198,17 +197,17 @@ public class TestAI : MonoBehaviour
                 float angle = Vector3.Angle(checkingObject.forward, directionBetween);
                 if (angle <= maxAngle)
                 {
-                    
-                    Ray ray = new Ray(checkingObject.position, overlaps[i].transform.position - checkingObject.position);
-                    RaycastHit hit;
-                    if (Physics.Raycast(ray, out hit, maxRadius))
-                    {
-                        
-                        if (hit.transform == overlaps[i].transform)
-                        {
-                            inSight.Add(overlaps[i].gameObject);
-                        }
-                    }
+                    inSight.Add(overlaps[i].gameObject);
+                    //Ray ray = new Ray(checkingObject.position, overlaps[i].transform.position - checkingObject.position);
+                    //RaycastHit hit;
+                    //if (Physics.Raycast(ray, out hit, maxRadius))
+                    //{
+
+                    //    if (hit.transform == overlaps[i].transform)
+                    //    {
+                    //        
+                    //    }
+                //}
                 }
             }
         }

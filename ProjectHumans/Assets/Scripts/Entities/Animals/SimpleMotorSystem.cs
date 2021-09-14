@@ -70,4 +70,13 @@ public class SimpleMotorSystem : MotorSystem {
     public override void UseHand() {
         Debug.Log("Called here.");
     }
+    public override void Collapse()
+    {
+        Debug.Log("Called here.");
+    }
+
+    public override void Reset()
+    {
+        Debug.Log("Called here.");
+    }
 }

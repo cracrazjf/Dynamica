@@ -162,6 +162,15 @@ public class PrimateMotorSystem : MotorSystem {
         } else { LookForward(); }
     }
 
+    public override void Collapse()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Reset()
+    {
+        throw new NotImplementedException();
+    }
     // BEGIN HELPER FUNCTIONS
     void SitDown() {
         if (((PrimateBody)thisBody).CheckCrouchingTop()) {
@@ -337,10 +346,6 @@ public class PrimateMotorSystem : MotorSystem {
         } else { thisBody.SetState("crouching", 1f); }
     }
 
-    void Collapse() {
-        thisAnimal.AddThought("Collapsing");
-        thisBody.DisableKinematic("Abdomen");
-    }
 
     void GrabWithHolder(GameObject holder) {
         thisAnimal.AddThought("Tried to grab something");

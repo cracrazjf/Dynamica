@@ -42,7 +42,6 @@ public class SensorySystem {
         {
             UpdateVisualInput();
             //string outputString = visualInputArray.GetLength(0).ToString() + "," + visualInputArray.GetLength(1).ToString();
-            //Debug.Log(visualInputArray[1, 1]);
         }
         return visualInputArray;
     }

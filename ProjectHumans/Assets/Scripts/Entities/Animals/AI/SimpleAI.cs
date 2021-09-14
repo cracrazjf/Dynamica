@@ -30,7 +30,7 @@ public class SimpleAI: AI {
         transform = thisAnimal.GetGameObject().transform;
         decidedActions = Matrix < float > .Build.Dense(actionStates.Count(), 1);
         UpdateFOV(transform, 45, 10);
-        DecreaseThirst();
+        //DecreaseThirst();
         return decidedActions;
     }
 
@@ -46,17 +46,15 @@ public class SimpleAI: AI {
         }
         else
         {
-            Explore();
-            //if (rotatedAngle <= 360)
-            //{
-            //    thisMotor.stateDict["rotate"] = 1.0f;
-            //    thisMotor.actionList[4]();
-            //    rotatedAngle += 10 * Time.deltaTime;
-            //}
-            //else
-            //{
-            //    Explore();
-            //}
+            if (rotatedAngle <= 360)
+            {
+                decidedActions[4,0] = 1.0f;
+                rotatedAngle += 10 * Time.deltaTime;
+            }
+            else
+            {
+                Explore();
+            }
         }
     }
     void ReachAndGrab()
@@ -74,22 +72,25 @@ public class SimpleAI: AI {
                         thisMotor.Stand();
                         if (thirst > 9)
                         {
-                            thisMotor.stateDict["active"] = -1;
-                            thisMotor.actionList[6]();
+                            decidedActions[10, 0] = -1;
+                            decidedActions[13, 0] = -0.5f;
+                            decidedActions[14, 0] = 0.6f;
+                            decidedActions[15, 0] = -0.3f;
+                            decidedActions[6, 0] = -1;
                             thirst = 0;
                         }
                     }
                     else
                     {
-                        thisMotor.actionList[10]();
-                        thisMotor.stateDict["active left"] = 0.5f;
-                        thisMotor.stateDict["RP x"] = 1;
-                        thisMotor.stateDict["RP z"] = 0.2f;
+                        decidedActions[10, 0] = -1;
+                        decidedActions[13, 0] = -1f;
+                        decidedActions[14, 0] = 0f;
+                        decidedActions[15, 0] = -0.5f;
                     }
                 }
                 else
                 {
-                    thisMotor.actionList[0]();
+                    decidedActions[0,0] = 1;
                 }
             }
             else
@@ -99,7 +100,7 @@ public class SimpleAI: AI {
                     FacePosition(x.transform.position);
                     if (facingTarget)
                     {
-                        thisMotor.actionList[5]();
+                        decidedActions[5, 0] = 1;
                     }
                 }
             }
@@ -110,8 +111,6 @@ public class SimpleAI: AI {
         if (randomPosition.Equals(Vector3.negativeInfinity))
         {
             randomPosition = GenerateRandomPos();
-            Debug.Log("picked a new position");
-            Debug.Log(randomPosition);
         }
         if (Vector3.Distance(transform.position, randomPosition) < 1)
         {
@@ -122,16 +121,15 @@ public class SimpleAI: AI {
             FacePosition(randomPosition);
             if (IsFacing(randomPosition))
             {
-                thisMotor.stateDict["take steps"] = 1.0f;
-                thisMotor.actionList[5]();
+                decidedActions[5, 0] = 1.0f;
             }
         }
 
     }
     public void Sleep()
     {
-        thisMotor.actionList[2]();
-        thisMotor.actionList[7]();
+        decidedActions[2,0] = 1;
+        decidedActions[7,0] = 1;
     }
     public void FacePosition(Vector3 targetPos)
     {
@@ -139,13 +137,11 @@ public class SimpleAI: AI {
         {
             if (GetRelativePosition(targetPos) == -1)
             {
-                thisMotor.stateDict["rotate"] = -1.0f;
-                thisMotor.actionList[4]();
+                decidedActions[4,0] = -1.0f;
             }
             else
             {
-                thisMotor.stateDict["rotate"] = 1.0f;
-                thisMotor.actionList[4]();
+                decidedActions[4,0] = 1.0f;
             }
         }
     }
@@ -165,10 +161,8 @@ public class SimpleAI: AI {
     public bool IsFacing(Vector3 targetPos)
     {
         float angle = Vector3.Angle(transform.forward, targetPos - transform.position);
-        Debug.Log(angle);
         if (angle <= 13f)
         {
-            Debug.Log("facing");
             facingTarget = true;
             return true;
         }
@@ -205,17 +199,8 @@ public class SimpleAI: AI {
                 float angle = Vector3.Angle(checkingObject.forward, directionBetween);
                 if (angle <= maxAngle)
                 {
+                    inSight.Add(overlaps[i].gameObject);
 
-                    Ray ray = new Ray(checkingObject.position, overlaps[i].transform.position - checkingObject.position);
-                    RaycastHit hit;
-                    if (Physics.Raycast(ray, out hit, maxRadius))
-                    {
-
-                        if (hit.transform == overlaps[i].transform)
-                        {
-                            inSight.Add(overlaps[i].gameObject);
-                        }
-                    }
                 }
             }
         }
