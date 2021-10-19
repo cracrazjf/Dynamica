@@ -15,7 +15,7 @@ public class SpawnUI : MonoBehaviour {
     protected Dropdown speciesSpawn;
 
        private void Start() {
-        InitPanel(); 
+        SpawnInput(); 
         showPanel = false;
     }
     
@@ -74,7 +74,7 @@ public class SpawnUI : MonoBehaviour {
                 
             } else if (child.name == "RefreshButton") {
                 tempButton = child.gameObject.GetComponent<Button>();
-                tempButton.onClick.AddListener(delegate { needsUpdate = true; }); ; 
+                tempButton.onClick.AddListener(delegate { needsUpdate = true; }); 
                 
             }
         }
@@ -109,7 +109,6 @@ public class SpawnUI : MonoBehaviour {
     // This method is used by both panels
     public void UpdateSpeciesNames() {
         List<string> populationNames = World.GetPopulationNames();
-
         if (showPanel) {
             speciesSpawn.ClearOptions();
             speciesSpawn.AddOptions(populationNames);

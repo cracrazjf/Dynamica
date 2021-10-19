@@ -2946,6 +2946,7 @@ GameObject:
   - component: {fileID: 4749152752706455513}
   - component: {fileID: 4749152752706455515}
   - component: {fileID: 4749152752706455512}
+  - component: {fileID: 5005396648817047224}
   m_Layer: 9
   m_Name: VisualInputCamera
   m_TagString: Human
@@ -3000,7 +3001,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 9248d0aef83b116498711ff6a2c7fa19, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -3018,6 +3019,15 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4749152752706455518}
   m_Enabled: 0
+--- !u!45 &5005396648817047224
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4749152752706455518}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: 9aa8ed67591432941bb76f12eb23ff91, type: 2}
 --- !u!1 &4749152752747669060
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,26 +14,31 @@ public class SensorySystem {
     int visualResolution;
 
     public SensorySystem(Animal animal) {
+        
         this.thisAnimal = animal;
         visualInputCamera = thisAnimal.GetGameObject().GetComponentInChildren<Camera>();
+        
         visualResolution = (int)this.thisAnimal.GetPhenotype().GetTraitDict()["visual_resolution"];
-    
+        
         InitVisualInput();
+        
+
     }
 
     public void InitVisualInput() {
-        visualInputArray = Matrix<float>.Build.Dense(3, visualResolution * visualResolution);
+        
 
         if (visualInputCamera != null) {
             if (visualInputCamera.targetTexture == null) {
                 visualInputCamera.targetTexture = new RenderTexture(visualResolution, visualResolution, 24);
                 /* 24 is the depth buffer, or depth texture, is actually just a render texture that contains values of how far objects in the scene are from the camera.*/
             } else {
+                
                 visualResolution = visualInputCamera.targetTexture.width;
-                visualResolution = visualInputCamera.targetTexture.height;
+                Debug.Log(visualResolution);
             }
         }
-
+        visualInputArray = Matrix<float>.Build.Dense(3, visualResolution * visualResolution);
         UpdateVisualInput();
     }
 
@@ -50,21 +55,21 @@ public class SensorySystem {
         if (this.thisAnimal.visualInputCamera.gameObject.activeInHierarchy) {
             
             Texture2D visualInputTexture = new Texture2D(visualResolution, visualResolution, TextureFormat.RGB24, false);
-
+            
             this.thisAnimal.visualInputCamera.Render();
             RenderTexture.active = this.thisAnimal.visualInputCamera.targetTexture;
             visualInputTexture.ReadPixels(new Rect(0, 0, visualResolution, visualResolution), 0, 0);
-
             Color[] colorArray = visualInputTexture.GetPixels();
             
             int resolutionSquared = visualResolution*visualResolution;
+            
             for (int i=0; i<resolutionSquared; i++){
-                visualInputArray[0,i] = colorArray[i].r;
-                visualInputArray[1,i] = colorArray[i].g;
-                visualInputArray[2,i] = colorArray[i].b;
+                visualInputArray[0,i] = (colorArray[i].r * 2) - 1;
+                visualInputArray[1,i] = (colorArray[i].g * 2) - 1;
+                visualInputArray[2,i] = (colorArray[i].b * 2) - 1;
             }
             //SaveVisualImage(visualInputTexture);
-    
+
         } else {
             Debug.Log("Camera is off");
         }

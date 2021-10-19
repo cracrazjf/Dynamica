@@ -105,9 +105,9 @@ public class AnimalBody : Body {
 
         if (passedList != null){
             for (int i = 0; i < passedList.Count; i++) {
-                states[i] = 0f;
+                states[i] = 1f;
                 stateIndexDict[passedList[i]] = i;
-                stateDict[passedList[i]] = 0f;
+                stateDict[passedList[i]] = 1f;
             }
         } else { Debug.Log("No body states passed to this animal"); }
     }

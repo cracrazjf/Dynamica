@@ -7,7 +7,7 @@ using MathNet.Numerics.LinearAlgebra;
 public class AI 
 {
     protected Animal thisAnimal;
-    protected  Matrix<float> visualInput;
+    protected Matrix<float> visualInput;
 
     protected Vector<float> bodyStates;
     protected List<string> bodyStateLabelList;
@@ -71,6 +71,23 @@ public class AI
     public string GetAction() {
         return "In progress!";
     }
+    public Vector<float> GetDriveStates()
+    {
+        return driveStates;
+    }
+    public Vector<float> GetBodyStates()
+    {
+        return bodyStates;
+    }
+    public Vector<float> GetActionStates()
+    {
+        return actionStates;
+    }
+    public Matrix<float> GetVisualInput()
+    {
+        return visualInput;
+    }
+
 
     public virtual string GetStringInput(int vbadIndex) {
         return("This AI cannot format inputs");

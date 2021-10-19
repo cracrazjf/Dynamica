@@ -363,4 +363,9 @@ public class NeuralAI : AI
         }
         return "Nothing to show here!";
     }
+
+    public Dictionary<string, Layer> GetNetworkLayerDict()
+    {
+        return networkLayerDict;
+    }
 }

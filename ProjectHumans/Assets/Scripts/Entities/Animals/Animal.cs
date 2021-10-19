@@ -24,10 +24,14 @@ public class Animal : Entity {
 
     public Animal(string objectType, int index, Genome motherGenome, Genome fatherGenome, Vector3 spawn) 
     : base (objectType, index, motherGenome, fatherGenome, spawn, true) {
+        
         InitBodyControl(spawn);
+        
         driveSystem = new DriveSystem(this);
+        
         sensorySystem = new SensorySystem(this);
         InitBrain();
+        
     }
 
     void InitBodyControl(Vector3 spawn) {

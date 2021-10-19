@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Sunset3
   m_Shader: {fileID: 4800000, guid: eb3c6fb598ded4c71b8968e1c40a3b4d, type: 3}
-  m_ShaderKeywords: _HORIZONLINEBLENDMODE_ADD _SUNHALOBLENDMODE_ADD _VIEW_FINAL
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _HORIZONLINEBLENDMODE_ADD _SUNHALOBLENDMODE_ADD
+    _VIEW_FINAL
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -94,3 +95,4 @@ Material:
     - _SkyGradientTop: {r: 0, g: 0, b: 0, a: 1}
     - _SunDiscColor: {r: 1, g: 1, b: 1, a: 1}
     - _SunHaloColor: {r: 1, g: 0.37821245, b: 0.108490564, a: 1}
+  m_BuildTextureStacks: []

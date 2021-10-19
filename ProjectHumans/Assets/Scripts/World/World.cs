@@ -55,36 +55,51 @@ public class World: MonoBehaviour {
 
     void Start() {
         mainCam = GameObject.Find("Main Camera");
+        CreateEntities();
     }
 
     void Update() {
-    if (initWorld) {
-        initWorld = false;
-        updateCounter = 0;
+        
+        if (initWorld) {
+            initWorld = false;
+            updateCounter = 0;
 
-        LoadWorldConfig();
+            LoadWorldConfig();
 
-        worldSize = worldConfigDict["World_Size"];
-        maxPosition = worldSize / 2;
-        minPosition = -worldSize / 2;
+            worldSize = worldConfigDict["World_Size"];
+            maxPosition = worldSize / 2;
+            minPosition = -worldSize / 2;
 
-        CreateEntities();
-        MainUI.WakeUp();
-    }
-
-    paused = MainUI.Check("isPaused");
-    if (!paused) {
-        if (updateCompleted) {
-        UpdateEntities();
-        updateCounter++;
+            CreateEntities();
+            
+            MainUI.WakeUp();
         }
-    }
+
+        paused = MainUI.Check("isPaused");
+        if (!paused)
+        {
+            if (updateCompleted)
+            {
+                UpdateEntities();
+                updateCounter++;
+                
+            }
+        }
+        //if (entityList.Count > 0)
+        //{
+        //    foreach(Entity x in entityList)
+        //    {
+        //        Debug.Log(x.GetGameObject().name);
+        //    }
+            
+        //}
+        
     }
 
     void CreateEntities() {
-
-    foreach(KeyValuePair < string, Population > entry in populationDict) {
+        foreach (KeyValuePair < string, Population > entry in populationDict) {
         Population activePop = entry.Value;
+            
         string speciesType = entry.Key;
         entityCountDict[speciesType] = 0;
 
@@ -94,7 +109,8 @@ public class World: MonoBehaviour {
             if (speciesType != "Human") {
                 SaveEntity(AddEntity(activePop, new Vector3(0f, 0f, 0f)), activePop);
             } else {
-                SaveEntity(AddEntity(activePop, null), activePop);
+                            SaveEntity(AddEntity(activePop, null), activePop);
+                            
             }
             } else {
 
@@ -129,6 +145,7 @@ public class World: MonoBehaviour {
 
     // Makes life easier for spawning without pop reference
     public static Entity AddEntity(string species, Nullable < Vector3 > passedSpawn) {
+        
     if (populationDict.ContainsKey(species)) {
         Population toPass = populationDict[species];
         return AddEntity(toPass, passedSpawn);
@@ -140,7 +157,8 @@ public class World: MonoBehaviour {
 
     // For initial entity spawning
     public static Entity AddEntity(Population population, Nullable < Vector3 > passedSpawn) {
-    int val = IndexEntity(population.name);
+
+        int val = IndexEntity(population.name);
     Vector3 spawn;
     Genome motherGenome = new Genome();
     motherGenome.InheritGenome(population.baseGenome, true);
@@ -154,14 +172,14 @@ public class World: MonoBehaviour {
     if (population.entityType == "item") {
         return new Item(population.name, val, motherGenome, spawn);
     } else {
-        Genome fatherGenome = new Genome();
+            Genome fatherGenome = new Genome();
         fatherGenome.InheritGenome(population.baseGenome, true);
 
         if (population.entityType == "plant") {
         return new Plant(population.name, val, motherGenome, fatherGenome, spawn);
         } else {
-        return new Animal(population.name, val, motherGenome, fatherGenome, spawn);
-        }
+                return new Animal(population.name, val, motherGenome, fatherGenome, spawn);
+            }
     }
     }
 

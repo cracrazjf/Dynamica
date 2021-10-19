@@ -27,9 +27,9 @@ public class MainUI : MonoBehaviour
     private static Dictionary<string, GameObject> UXDict = new Dictionary<string, GameObject>();
     private static Dictionary<string, bool> toggleDict = new Dictionary<string, bool>();
 
-    public GameObject movePub;
-    public GameObject climbPub;
-    public GameObject rotatePub;
+    public float movePub;
+    public float climbPub;
+    public float rotatePub;
     protected Button tempButton;
 
     public static void CheckStart() {
@@ -62,11 +62,11 @@ public class MainUI : MonoBehaviour
 
     // Called once a frame
     void Update() {
-        CheckClick();
-        if (World.CheckUpdate()) {
-            MovePlayer();
-            if (Check("isCentered")) { mainCam.transform.position = toSet; }
-        }
+        //CheckClick();
+        //if (World.CheckUpdate()) {
+        //    MovePlayer();
+        //    if (Check("isCentered")) { mainCam.transform.position = toSet; }
+        //}
     }
 
     public void InitPanels() {
@@ -185,7 +185,7 @@ public class MainUI : MonoBehaviour
 
             
         }
-        if (Input.GetKeyDown(KeyCode.Escape)) { CheckReset(); }
+        //if (Input.GetKeyDown(KeyCode.Escape)) { CheckReset(); }
     }
 
     public static void CenterObject(Transform passed) {
@@ -264,17 +264,17 @@ public class MainUI : MonoBehaviour
     }
 
     public void UpdateRotateSensitivity() {
-        float toUpdate = rotatePub.GetComponent<Slider>().value;
+        float toUpdate = rotatePub;
         rotateAdjustment = toUpdate;
     }
 
     public void UpdateMoveSensitivity() {
-        float toUpdate = movePub.GetComponent<Slider>().value;
+        float toUpdate = movePub;
         moveAdjustment = toUpdate;
     }
 
     public void UpdateClimbSensitivity() {
-        float toUpdate = climbPub.GetComponent<Slider>().value;
+        float toUpdate = climbPub;
         climbAdjustment = toUpdate;
     }
 
